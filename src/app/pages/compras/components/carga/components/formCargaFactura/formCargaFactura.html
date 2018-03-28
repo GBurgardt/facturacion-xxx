@@ -1,0 +1,352 @@
+<form class="row form-compras">
+   
+      <div class="form-group col-sm-2">
+          <label for="f1_cod_proovedor">Codigo Proovedor</label>
+        <input type="text" class="form-control" id="f1_cod_proovedor" placeholder="Codigo">
+      </div>
+      <div class="form-group col-sm-3">
+        <label for="f1_nombre">Nombre</label>  
+        <input type="text" class="form-control" id="f1_nombre" placeholder="Nombre del Proovedor">
+      </div>
+
+
+      <div class="form-group col-sm-3">
+        <label for="f1_cuit">Nro Cuit</label>   
+        <input type="email" class="form-control" id="f1_cuit" placeholder="CUIT">
+      </div>
+
+        <div class="form-group col-sm-3">
+        <label for="f1_iva"> Iva</label>     
+        <input type="text" class="form-control" id="f1_iva" placeholder="IVA">
+      </div>
+     
+    <!-- 
+
+        Comprobante
+    
+    -->
+    
+    <div class="col-md-6">
+      <div>
+        <ba-card cardTitle="Comprobante" baCardClass="with-scroll">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="inputFirstName">Tipo Comprobante</label>
+                  <select class="form-control" id="f1_tipo_comp">
+                    <option>Factura A</option>
+                    <option>Nota de Debito A</option>
+                    <option>Nota de Debito B</option>
+                    <option>Comprobante Interno</option>
+                  </select>
+                </div>
+              </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                  <label for="f1_nro_comp_0">_</label>
+                  <input type="text" class="form-control" id="f1_nro_comp_0" placeholder="">
+                </div>
+              </div>
+                
+            <div class="col-sm-3">
+                <div class="form-group">
+                  <label for="f1_nro_comp_1">Número</label>
+                  <input type="text" class="form-control" id="f1_nro_comp_1" placeholder="">
+                </div>
+              </div>
+                <div class="col-sm-3">
+                <div class="form-group">
+                  <label for="f1_moneda">Moneda</label>
+                  <select class="form-control" id="f1_moneda">
+                    <option>Peso</option>
+                    <option>Dolar</option>
+                    
+                  </select>
+                </div>
+              </div>
+                <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="f1_fecha_comp">Fecha Comprobante</label>
+                    <div class="input-group">
+                        <input type="text"
+                               id="f1_fecha_comp"
+                               class="form-control"
+                               uib-datepicker-popup="dd/MM/yyyy"
+                               placeholder="DD/MM/YYYY"
+                               max-date="dateTo"
+                               close-text="Close"
+                               ng-model="dateFrom"
+                               show-weeks="true"
+                               is-open="dateFromOpened"
+                               ng-click="dateFromOpened = true"
+                               filter-by="placed"
+                               filter-type="dateFrom"
+                               ng-blur="gridActions.filter()"
+                               ng-focus="gridActions.filter()"
+                               show-weeks="false"
+                               close-text="Close"/>
+                        <span class="input-group-btn">
+                            <label for="f1_fecha_comp" class="btn btn-default">
+                                <i class="fa fa-calendar"></i></label>
+                          </span>
+                    </div>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="f1_fecha_vence">Fecha Vencimiento</label>
+                  <div class="input-group">
+                        <input type="text"
+                               id="f1_fecha_vence"
+                               class="form-control"
+                               uib-datepicker-popup="dd/MM/yyyy"
+                               placeholder="DD/MM/YYYY"
+                               max-date="dateTo"
+                               close-text="Close"
+                               ng-model="dateFrom"
+                               show-weeks="true"
+                               is-open="dateFromOpened"
+                               ng-click="dateFromOpened = true"
+                               filter-by="placed"
+                               filter-type="dateFrom"
+                               ng-blur="gridActions.filter()"
+                               ng-focus="gridActions.filter()"
+                               show-weeks="false"
+                               close-text="Close"/>
+                        <span class="input-group-btn">
+                            <label for="f1_fecha_comp" class="btn btn-default">
+                                <i class="fa fa-calendar"></i></label>
+                          </span>
+                    </div>
+                </div>
+              </div>
+            </div>
+           
+        </ba-card>
+      </div>
+    </div>
+    
+    
+<!--  
+Comprobante Relacionado
+-->
+    
+    <div class="col-md-6">
+      <div>
+        <ba-card cardTitle="Comprobante Relacionado" baCardClass="with-scroll">
+        <div class="row">
+          <div class="col-sm-5">
+                <div class="form-group">
+                  <label for="f1_tipo_comp_rel">Tipo Comprobante</label>
+                  <select class="form-control" id="f1_tipo_comp">
+                    <option>Factura A</option>
+                    <option>Factura B</option>
+                    <option>Remitos</option>  
+                    <option>Nota de Debito A</option>
+                    <option>Nota de Debito B</option>
+                    <option>Comprobante Interno</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-2">
+                <div class="form-group">
+                  <label for="f1_nro_comp_rel_0">_</label>
+                  <input type="text" class="form-control" id="f1_nro_comp_rel_0" placeholder="">
+                </div>
+              </div>
+              <div class="col-sm-5">
+                <div class="form-group">
+                  <label for="f1_nro_comp_rel_1">Número</label>
+                  <input type="text" class="form-control" id="f1_nro_comp_rel_1" placeholder="">
+                </div>
+              </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <ba-checkbox [(ngModel)]="isChecked" [label]="'Todos los Pendientes'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                </div>
+            </div>
+              
+            <div class="col-sm-9">
+                <div class="form-group">
+                 <label for="f1_tipo_comp_2">Tipo Comprobante</label>
+                  <select class="form-control" id="f1_tipo_comp_2">
+                    <option>Factura A</option>
+                    <option>Factura B</option>
+                    <option>Remitos</option>  
+                    <option>Nota de Debito A</option>
+                    <option>Nota de Debito B</option>
+                    <option>Comprobante Interno</option>
+                  </select>
+                </div>
+            </div>
+          
+            </div>
+            
+            
+          
+          </ba-card>
+      </div>
+    </div>
+    
+    
+    
+    <!-- 
+
+    ARTICULOS
+
+
+    -->
+    
+    
+    <div class="col-md-12">
+      <div>
+        <div class="widgets">
+
+          <div class="row">
+            <ba-card cardTitle="Articulos" baCardClass="with-scroll" class="smart-table-container">
+              <ng2-smart-table [settings]="settings" [source]="source" (deleteConfirm)="onDeleteConfirm($event)"></ng2-smart-table>
+            </ba-card>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    
+    
+     <!-- 
+
+    TRAZABILIDAD
+
+
+    -->
+    
+    
+    
+    
+     <div class="col-md-12">
+      <div>
+        <ba-card cardTitle="2) TRAZABILIDAD" baCardClass="with-scroll">
+        <div class="row">
+          
+            </div>
+            
+            
+          
+          </ba-card>
+      </div>
+    </div>
+    
+    
+     <!-- 
+
+    FACTURA
+
+
+    -->
+    
+    
+    
+    
+     <div class="col-md-12">
+      <div>
+        <ba-card cardTitle="3) FACTURA" baCardClass="with-scroll">
+        <div class="row">
+          
+          
+        </div>
+            
+        </ba-card>
+      </div>
+    </div>
+    
+    
+    
+<!--  MODULO TAB  
+    
+    
+   
+  <md-content>
+    <md-tabs md-dynamic-height md-border-bottom>
+      <md-tab label="one">
+        <md-content class="md-padding">
+          <h1 class="md-display-2">Tab One</h1>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin consectetur felis nec, feugiat ultricies mi.</p>
+        </md-content>
+      </md-tab>
+      <md-tab label="two">
+        <md-content class="md-padding">
+          <h1 class="md-display-2">Tab Two</h1>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis ante augue. Phasellus volutpat neque ac dui mattis vulputate. Etiam consequat aliquam cursus. In sodales pretium ultrices. Maecenas lectus est, sollicitudin consectetur felis nec, feugiat ultricies mi. Aliquam erat volutpat. Nam placerat, tortor in ultrices porttitor, orci enim rutrum enim, vel tempor sapien arcu a tellus. Vivamus convallis sodales ante varius gravida. Curabitur a purus vel augue ultrices ultricies id a nisl. Nullam malesuada consequat diam, a facilisis tortor volutpat et. Sed urna dolor, aliquet vitae posuere vulputate, euismod ac lorem. Sed felis risus, pulvinar at interdum quis, vehicula sed odio. Phasellus in enim venenatis, iaculis tortor eu, bibendum ante. Donec ac tellus dictum neque volutpat blandit. Praesent efficitur faucibus risus, ac auctor purus porttitor vitae. Phasellus ornare dui nec orci posuere, nec luctus mauris semper.</p>
+          <p>Morbi viverra, ante vel aliquet tincidunt, leo dolor pharetra quam, at semper massa orci nec magna. Donec posuere nec sapien sed laoreet. Etiam cursus nunc in condimentum facilisis. Etiam in tempor tortor. Vivamus faucibus egestas enim, at convallis diam pulvinar vel. Cras ac orci eget nisi maximus cursus. Nunc urna libero, viverra sit amet nisl at, hendrerit tempor turpis. Maecenas facilisis convallis mi vel tempor. Nullam vitae nunc leo. Cras sed nisl consectetur, rhoncus sapien sit amet, tempus sapien.</p>
+          <p>Integer turpis erat, porttitor vitae mi faucibus, laoreet interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo lectus.</p>
+        </md-content>
+      </md-tab>
+      <md-tab label="three">
+        <md-content class="md-padding">
+          <h1 class="md-display-2">Tab Three</h1>
+          <p>Integer turpis erat, porttitor vitae mi faucibus, laoreet interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo lectus.</p>
+        </md-content>
+      </md-tab>
+    </md-tabs>
+  </md-content>
+
+    
+    
+    -->
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<!--
+
+   
+    <div class="col-md-6">
+      <div>
+        <ba-card cardTitle="Basic Form" baCardClass="with-scroll">
+          <basic-form></basic-form>
+        </ba-card>
+      </div>
+
+      <div>
+        <ba-card cardTitle="Horizontal Form" baCardClass="with-scroll">
+          <horizontal-form></horizontal-form>
+        </ba-card>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div>
+        <ba-card cardTitle="Form Without Labels" baCardClass="with-scroll">
+          <without-labels-form></without-labels-form>
+        </ba-card>
+      </div>
+      <div>
+        <ba-card cardTitle="Block Form" baCardClass="with-scroll">
+          <block-form></block-form>
+        </ba-card>
+      </div>
+    </div>
+  -->
+    
+    </form>
