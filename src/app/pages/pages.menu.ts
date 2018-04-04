@@ -16,7 +16,7 @@ export const PAGES_MENU = [
       },
         
     {
-        path: 'principal',
+        path: 'dashboard',
         data: {
           menu: {
             title: 'general.menu.Inicio',
@@ -117,7 +117,7 @@ export const PAGES_MENU = [
         },
         children: [
           {
-            path: 'cargar-factura',
+            path: 'carga',
             data: {
               menu: {
                 title: 'general.menu.cargacompra',
