@@ -8,29 +8,29 @@ import { ModuleWithProviders } from '@angular/core';
 export const routes: Routes = [
     {
     path: 'login',
-    loadChildren: 'app/pages/login/login.module#LoginModule'
+    loadChildren: 'app/pages/main/login/login.module#LoginModule'
   },
     
   {
     path: 'register',
-    loadChildren: 'app/pages/register/register.module#RegisterModule'
+    loadChildren: 'app/pages/main/register/register.module#RegisterModule'
   },
   {
     path: 'pages',
     component: Pages,
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', loadChildren: './dashboard/dashboard.module#DashboardModule' },
-      { path: 'compras', loadChildren: './compras/compras.module#ComprasModule' },    
+      { path: 'dashboard', loadChildren: './main/dashboard/dashboard.module#DashboardModule' },
+      { path: 'compras', loadChildren: './main/compras/compras.module#ComprasModule' },    
      
       // Paginas de ejemplos para desarrollo
-      { path: 'editors', loadChildren: './editors/editors.module#EditorsModule' },
-      { path: 'components', loadChildren: './components/components.module#ComponentsModule' },
-      { path: 'charts', loadChildren: './charts/charts.module#ChartsModule' },
-      { path: 'ui', loadChildren: './ui/ui.module#UiModule' },
-      { path: 'forms', loadChildren: './forms/forms.module#FormsModule' },
-      { path: 'tables', loadChildren: './tables/tables.module#TablesModule' },
-      { path: 'maps', loadChildren: './maps/maps.module#MapsModule' }
+      { path: 'editors', loadChildren: './examples/editors/editors.module#EditorsModule' },
+      { path: 'components', loadChildren: './examples/components/components.module#ComponentsModule' },
+      { path: 'charts', loadChildren: './examples/charts/charts.module#ChartsModule' },
+      { path: 'ui', loadChildren: './examples/ui/ui.module#UiModule' },
+      { path: 'forms', loadChildren: './examples/forms/forms.module#FormsModule' },
+      { path: 'tables', loadChildren: './examples/tables/tables.module#TablesModule' },
+      { path: 'maps', loadChildren: './examples/maps/maps.module#MapsModule' }
     ]
   }
 ];

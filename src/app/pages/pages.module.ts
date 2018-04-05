@@ -6,15 +6,17 @@ import { NgaModule } from '../theme/nga.module';
 import { AppTranslationModule } from '../app.translation.module';
 
 import { Pages } from './pages.component';
-
-
-
-
+import { DefaultModal } from './reusable/modals/default-modal/default-modal.component';
 
 
 @NgModule({
   imports: [CommonModule, AppTranslationModule, NgaModule, routing],
-  declarations: [Pages]
+  declarations: [
+    Pages,
+    DefaultModal
+  ],
+  entryComponents: [
+    DefaultModal
+  ]
 })
-export class PagesModule {
-}
+export class PagesModule {}
