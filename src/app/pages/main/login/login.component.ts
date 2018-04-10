@@ -4,7 +4,6 @@ import { LoginService } from '../../../services/loginservice';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 
-
 @Component({
     selector: 'login',
     templateUrl: './login.html',
@@ -30,14 +29,22 @@ export class Login {
         this.password = this.form.controls['password'];
     }
 
-    public onSubmit(values: Object): void {
+    async onSubmit(values: Object) {
         this.submitted = true;
         if (this.form.valid) {
-            if ((this.usuario.value == "kernel") && (this.password.value == "kernel")) {
+            try {
+                // Me logueo y obtengo la respuesta
+                const respLogin = await this.loginService.login(this.usuario.value)(this.password.value);
+
+                // Guardo la data importante
+                this.loginService.saveLoginData(respLogin);
+
+                // Redirecciono al dashboard
                 this.router.navigate(['/pages/dashboard']);
-            } else {
-                this.loginService.showModalError();
-            };
+
+            }catch(ex) {
+                console.log(ex);
+            }
         }
     }
 

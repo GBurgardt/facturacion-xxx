@@ -4,5 +4,10 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false,
+    production: false,
+    facturacionRest: {
+        urlBase: 'http://10.0.0.35:8080/FacturacionRest/ws',
+        //urlBase: 'http://localhost:8080/facturacionRest/ws',
+        timeoutDefault: 60000  //60 seg
+    }
 };

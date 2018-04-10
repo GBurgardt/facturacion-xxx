@@ -31,6 +31,7 @@ export type StoreType = {
   disposeOldHosts: () => void
 };
 
+
 /**
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
