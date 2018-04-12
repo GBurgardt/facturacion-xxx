@@ -5,7 +5,7 @@ import { AuthService } from './authService';
 import { AppState } from 'app/app.service';
 
 @Injectable()
-export class LoginService {
+export class UtilsService {
 
     constructor(
         private modalService: NgbModal,
@@ -13,18 +13,12 @@ export class LoginService {
         private appState: AppState
     ) { }
 
-
     /**
-     * Se loguea al backend y retorna la respuesta
+     * Método que muestra un modal con el error de logueo
      */
-    login = (usuario) => (clave) => this.authService.login(usuario, clave);
-
-    /**
-     * Guarda data importante del logueo
-     */
-    saveLoginData = (respLogin) => {
-        this.appState.set('usuarioActivo', respLogin.datos.cuenta);
-        this.appState.set('empresaActiva', respLogin.datos.empresa);
-        this.appState.set('tokenActivo', respLogin.datos.token);
+    showModal = (titulo) => (descripcion) => {
+        const activeModal = this.modalService.open(DefaultModal, { size: 'sm' });
+        activeModal.componentInstance.modalHeader = titulo;
+        activeModal.componentInstance.modalContent = descripcion;
     }
 }

@@ -3,6 +3,7 @@ import { FormGroup, AbstractControl, FormBuilder, Validators } from '@angular/fo
 import { LoginService } from '../../../services/loginservice';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
+import { UtilsService } from 'app/services/utilsService';
 
 @Component({
     selector: 'login',
@@ -18,7 +19,8 @@ export class Login {
     constructor(
         fb: FormBuilder,
         private loginService: LoginService,
-        private router: Router
+        private router: Router,
+        private utilsService: UtilsService
         
     ) {
         this.form = fb.group({
@@ -43,7 +45,10 @@ export class Login {
                 this.router.navigate(['/pages/dashboard']);
 
             }catch(ex) {
-                console.log(ex);
+                const errorBody = JSON.parse(ex['_body']);
+
+                console.log(errorBody);
+                this.utilsService.showModal(errorBody.control.codigo)(errorBody.control.descripcion);
             }
         }
     }

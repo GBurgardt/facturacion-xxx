@@ -22,6 +22,7 @@ import {
   BaContentTop,
   BaFullCalendar,
   BaMenuItem,
+  BaLogo,
   BaMenu,
   BaMsgCenter,
   BaMultiCheckbox,
@@ -42,7 +43,8 @@ import {
 import {
   BaAppPicturePipe,
   BaKameleonPicturePipe,
-  BaProfilePicturePipe
+  BaProfilePicturePipe,
+  BaEmpresaPicturePipe
 } from './pipes';
 
 import {
@@ -66,6 +68,7 @@ const NGA_COMPONENTS = [
   BaContentTop,
   BaFullCalendar,
   BaMenuItem,
+  BaLogo,
   BaMenu,
   BaMsgCenter,
   BaMultiCheckbox,
@@ -85,7 +88,8 @@ const NGA_DIRECTIVES = [
 const NGA_PIPES = [
   BaAppPicturePipe,
   BaKameleonPicturePipe,
-  BaProfilePicturePipe
+  BaProfilePicturePipe,
+  BaEmpresaPicturePipe
 ];
 
 const NGA_SERVICES = [

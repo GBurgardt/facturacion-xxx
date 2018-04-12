@@ -9,6 +9,7 @@ import { routing }       from './login.routing';
 import { LoginService } from '../../../services/loginservice';
 import { DefaultModal } from '../../reusable/modals/default-modal/default-modal.component';
 import { AuthService } from '../../../services/authService';
+import { UtilsService } from '../../../services/utilsService';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { AuthService } from '../../../services/authService';
   ],
   providers: [
     LoginService,
-    AuthService
+    AuthService,
+    UtilsService
   ],
   
 })
