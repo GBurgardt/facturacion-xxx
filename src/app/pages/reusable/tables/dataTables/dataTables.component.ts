@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { DataTablesService } from './dataTables.service';
 
 @Component({
-    selector: 'data-tables',
-    templateUrl: './dataTables.html',
-    styleUrls: ['./dataTables.scss']
+  selector: 'data-tables',
+  templateUrl: './dataTables.html',
+  styleUrls: ['./dataTables.scss']
 })
 export class DataTables {
 
@@ -15,10 +15,10 @@ export class DataTables {
     sortOrder = "asc";
 
     constructor(private service: DataTablesService) {
-        this.service.getData().then((data) => {
-            this.data = data;
-        });
-    }
+    this.service.getData().then((data) => {
+      this.data = data;
+    });
+  }
 
     toInt(num: string) {
         return +num;
@@ -27,5 +27,5 @@ export class DataTables {
     sortByWordLength = (a: any) => {
         return a.city.length;
     }
-
+  
 }

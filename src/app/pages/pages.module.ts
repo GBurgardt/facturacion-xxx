@@ -7,7 +7,7 @@ import { AppTranslationModule } from '../app.translation.module';
 
 import { Pages } from './pages.component';
 import { DefaultModal } from './reusable/modals/default-modal/default-modal.component';
-
+import { LocalStorageService } from 'app/services/localStorageService';
 
 @NgModule({
     imports: [
@@ -22,6 +22,9 @@ import { DefaultModal } from './reusable/modals/default-modal/default-modal.comp
     ],
     entryComponents: [
         DefaultModal
+    ],
+    providers: [
+        LocalStorageService
     ]
 })
 export class PagesModule { }

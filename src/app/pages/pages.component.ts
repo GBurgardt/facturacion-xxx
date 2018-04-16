@@ -3,10 +3,12 @@ import { Routes } from '@angular/router';
 
 import { BaMenuService } from '../theme';
 import { PAGES_MENU } from './pages.menu';
+import { AppState } from 'app/app.service';
+import { LocalStorageService } from '../services/localStorageService';
 
 @Component({
-  selector: 'pages',
-  template: `
+    selector: 'pages',
+    template: `
     <ba-sidebar></ba-sidebar>
     
     <div class="al-main">
@@ -32,12 +34,20 @@ import { PAGES_MENU } from './pages.menu';
 })
 export class Pages {
 
-  constructor(private _menuService: BaMenuService,) {
-  }
+    constructor(
+        private _menuService: BaMenuService,
+        private appState: AppState,
+        private localStorageService: LocalStorageService
+    ) {
+    }
 
-  ngOnInit() {
-    this._menuService.updateMenuByRoutes(<Routes>PAGES_MENU);
-  }
+    ngOnInit() {
+        // Ahora el menu se obtiene del localStorage, donde es almacenada cuando el user se loguea
+        //this._menuService.updateMenuByRoutes(<Routes>PAGES_MENU);
+        this._menuService.updateMenuByRoutes(
+            this.localStorageService.getObject('menuActivo')
+        );
+    }
 }
 
 

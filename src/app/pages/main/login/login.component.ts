@@ -37,12 +37,13 @@ export class Login {
             try {
                 // Me logueo y obtengo la respuesta
                 const respLogin = await this.loginService.login(this.usuario.value)(this.password.value);
-
-                // Guardo la data importante
-                this.loginService.saveLoginData(respLogin);
-
+                
+                // Completa el login
+                this.loginService.completeLogin(respLogin);
+                
                 // Redirecciono al dashboard
                 this.router.navigate(['/pages/dashboard']);
+
 
             }catch(ex) {
                 const errorBody = JSON.parse(ex['_body']);
