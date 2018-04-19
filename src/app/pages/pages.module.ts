@@ -9,22 +9,32 @@ import { Pages } from './pages.component';
 import { DefaultModal } from './reusable/modals/default-modal/default-modal.component';
 import { LocalStorageService } from 'app/services/localStorageService';
 
+// import { DataTableModule } from "angular2-datatable";
+// import { DataTables } from './reusable/tables/dataTables';
+// import { DataFilterPipe } from './reusable/tables/dataTables/data-filter.pipe';
+// import { DataTablesService } from './reusable/tables/dataTables/dataTables.service';
+
 @NgModule({
     imports: [
         CommonModule, 
         AppTranslationModule, 
         NgaModule, 
-        routing
+        routing,
+        // DataTableModule
     ],
     declarations: [
         Pages,
-        DefaultModal
+        DefaultModal,
+        // DataTables,
+        // DataFilterPipe
     ],
     entryComponents: [
-        DefaultModal
+        DefaultModal,
+        // DataTables
     ],
     providers: [
-        LocalStorageService
+        LocalStorageService,
+        // DataTablesService
     ]
 })
 export class PagesModule { }

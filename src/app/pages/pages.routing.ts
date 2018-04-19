@@ -21,7 +21,8 @@ export const routes: Routes = [
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'dashboard', loadChildren: './main/dashboard/dashboard.module#DashboardModule' },
-            { path: 'comprobantes', loadChildren: './main/comprobantes/comprobantes.module#ComprobantesModule' },
+            { path: 'tablas', loadChildren: './main/tablas/tablas.module#TablasModule' },
+            
 
             // Paginas de ejemplos para desarrollo
             { path: 'editors', loadChildren: './examples/editors/editors.module#EditorsModule' },

@@ -5,36 +5,40 @@
                 <div class="col-sm-2">
                     <label class="label-control">Rows on page</label>
                     <select class="form-control input-sm" [(ngModel)]="rowsOnPage">
-                    <option [ngValue]="5">5</option>
-                    <option [ngValue]="10">10</option>
-                    <option [ngValue]="15">15</option>
-                </select>
+                        <option [ngValue]="5">5</option>
+                        <option [ngValue]="10">10</option>
+                        <option [ngValue]="15">15</option>
+                    </select>
                 </div>
+
                 <div class="col-sm-4">
                     <div class="row">
                         <label class="col-sm-12 label-control">Sort by</label>
                     </div>
+
                     <div class="row">
                         <div class="offset-sm-1 col-sm-5">
                             <div class="row">
                                 <select class="form-control input-sm" [(ngModel)]="sortBy">
-                            <option ngValue="name">Name</option>
-                            <option ngValue="email">Email</option>
-                            <option ngValue="age">Age</option>
-                            <option [ngValue]="sortByWordLength">City</option>
-                        </select>
+                                    <option ngValue="name">Name</option>
+                                    <option ngValue="email">Email</option>
+                                    <option ngValue="age">Age</option>
+                                    <option [ngValue]="sortByWordLength">City</option>
+                                </select>
                             </div>
                         </div>
+
                         <div class="offset-sm-1 col-sm-5">
                             <div class="row">
                                 <select class="form-control input-sm" [(ngModel)]="sortOrder">
-                            <option ngValue="asc">Ascending</option>
-                            <option ngValue="desc">Descending</option>
-                            <option ngValue="badValue">Bad value</option>
-                        </select>
+                                    <option ngValue="asc">Ascending</option>
+                                    <option ngValue="desc">Descending</option>
+                                    <option ngValue="badValue">Bad value</option>
+                                </select>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
             <div class="panel panel-default">
@@ -44,7 +48,14 @@
                     <thead>
                         <tr>
                             <th style="width: 10%"></th>
-                            <th style="width: 20%">
+
+                            <!-- Recorro y muestro las columnas recibidas en el input -->
+                            <th class="table-column" *ngFor="let col of columns" [ngStyle]="getStyleFromCol(col)">
+                                <mfDefaultSorter by="name">{{col.nombre}}</mfDefaultSorter>
+                            </th>
+
+
+                            <!-- <th style="width: 20%">
                                 <mfDefaultSorter by="name">Name</mfDefaultSorter>
                             </th>
                             <th style="width: 40%">
@@ -55,7 +66,7 @@
                             </th>
                             <th style="width: 20%">
                                 <mfDefaultSorter [by]="sortByWordLength">City</mfDefaultSorter>
-                            </th>
+                            </th> -->
                         </tr>
                         <tr>
                             <th colspan="5">
