@@ -5,6 +5,7 @@ import { AuthService } from './authService';
 import { BaMenuService } from 'app/theme';
 import { Routes } from '@angular/router';
 import { LocalStorageService } from 'app/services/localStorageService';
+import { environment } from 'environments/environment';
 
 @Injectable()
 export class LoginService {
@@ -27,11 +28,11 @@ export class LoginService {
      */
     completeLogin = (respLogin) => {
         // Guardo datos importantes del login (TODO: Cambiar por LocalStorage)
-        this.localStorageService.setObject('usuarioActivo', respLogin.datos.cuenta);
-        this.localStorageService.setObject('accesoActivo', respLogin.datos.acceso);
-        this.localStorageService.setObject('perfilActivo', respLogin.datos.perfil);
+        this.localStorageService.setObject(environment.localStorage.usuario, respLogin.datos.cuenta);
+        this.localStorageService.setObject(environment.localStorage.acceso, respLogin.datos.acceso);
+        this.localStorageService.setObject(environment.localStorage.perfil, respLogin.datos.perfil);
         // Guardo los menus PARSEADOS en el localStorage
-        this.localStorageService.setObject('menuActivo', <Routes>this.generatePagesMenu(respLogin.datos.perfil.sucursal.menuSucursal));
+        this.localStorageService.setObject(environment.localStorage.menu, <Routes>this.generatePagesMenu(respLogin.datos.perfil.sucursal.menuSucursal));
     }
 
     /**

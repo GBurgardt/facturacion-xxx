@@ -26,12 +26,7 @@ export class DataTables {
     sortOrder = "asc";
 
     constructor() { }
-
-    ngOnInit() {
-        console.log('columns');
-        console.log(this.columns);
-    }
-
+    
     toInt(num: string) {
         return +num;
     }

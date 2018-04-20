@@ -96,4 +96,58 @@ export class AuthService {
         ).toPromise();
     }
 
+    /** 
+    * @description Obtiene una lista de usuarios correspondientes a una empresa
+    * @argument token
+    */
+    getUsuariosList(token: string) {
+        return this.request(
+            [],
+            'GET',
+            {
+                token: token,
+            },
+            'usuarios',
+            {},
+            {}
+        );
+    }
+
+    /** 
+    * @description Obtiene una lista de los perfiles disponibles de una sucursal
+    * @argument token
+    * @argument sucursal
+    */
+    getPerfilesList(token: string, sucursal: string) {
+        return this.request(
+            [],
+            'POST',
+            {
+                token: token
+            },
+            'perfiles',
+            {
+                idSucursal: sucursal
+            },
+            {}
+        );
+    }
+
+    /**
+     * Obtiene una lista de sucursales de la empresa
+     * @param token 
+     */
+    getSucursalesList(token: string) {
+        return this.request(
+            [],
+            'GET',
+            {
+                token: token
+            },
+            'sucursales',
+            {},
+            {}
+        );
+    }
+
 }

@@ -5,6 +5,7 @@ import { BaMenuService } from '../theme';
 import { PAGES_MENU } from './pages.menu';
 import { AppState } from 'app/app.service';
 import { LocalStorageService } from '../services/localStorageService';
+import { environment } from 'environments/environment';
 
 @Component({
     selector: 'pages',
@@ -45,7 +46,7 @@ export class Pages {
         // Ahora el menu se obtiene del localStorage, donde es almacenada cuando el user se loguea
         //this._menuService.updateMenuByRoutes(<Routes>PAGES_MENU);
         this._menuService.updateMenuByRoutes(
-            this.localStorageService.getObject('menuActivo')
+            this.localStorageService.getObject(environment.localStorage.menu)
         );
     }
 }

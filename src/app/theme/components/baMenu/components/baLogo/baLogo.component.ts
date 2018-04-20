@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { LocalStorageService } from '../../../../../services/localStorageService';
+import { environment } from 'environments/environment';
 
 @Component({
     selector: 'ba-logo',
@@ -11,7 +12,6 @@ export class BaLogo {
     nombreEmpresa: string;
 
     constructor(private localStorageService: LocalStorageService) {
-        console.log(this.localStorageService.getObject('perfilActivo').sucursal.empresa.nombre);
-        this.nombreEmpresa = this.localStorageService.getObject('perfilActivo').sucursal.empresa.nombre;
+        this.nombreEmpresa = this.localStorageService.getObject(environment.localStorage.perfil).sucursal.empresa.nombre;
     }
 }

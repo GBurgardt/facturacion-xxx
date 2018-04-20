@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { DataTablesService } from '../../../reusable/tables/dataTables/dataTables.service';
+import { UsuariosService } from '../../../../services/usuariosService';
+import { LocalStorageService } from '../../../../services/localStorageService';
+import { environment } from 'environments/environment';
 
 @Component({
     selector: 'maps',
@@ -10,31 +13,37 @@ import { DataTablesService } from '../../../reusable/tables/dataTables/dataTable
 export class Usuarios {
 
     // Data de la tabla
-    dataComprobantes;
+    dataUsuarios;
 
     // Columnas de la tabla
     tableColumns;
 
     constructor(
-        private service: DataTablesService
+        private service: DataTablesService,
+        private usuariosService: UsuariosService,
+        private localStorageService: LocalStorageService
     ) {
-        // Guardo las columnas de la tabla
+        // Guardo las columnas de la tabla con sus respectivas anchuras
         this.tableColumns = [
             {
                 nombre: 'nombre',
-                ancho: '20%'
+                ancho: '30%'
+            },
+            {
+                nombre: 'mail',
+                ancho: '40%'
             },
             {
                 nombre: 'telefono',
-                ancho: '20%'
+                ancho: '30%'
             }
         ]
 
-        // Guardo los datos
-        this.dataComprobantes = this.service.getData();
-    }
+        // Obtengo el token activo
+        const accesoActivo = this.localStorageService.getObject(environment.localStorage.acceso);
 
-    ngOnInit() {
+        // Obtengo la lista de usuarios
+        this.dataUsuarios = this.usuariosService.getUsuariosList(accesoActivo.token);
     }
 
 }

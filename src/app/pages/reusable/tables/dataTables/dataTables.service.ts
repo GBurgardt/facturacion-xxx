@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class DataTablesService {
 
-  dataTableData = [{
+    dataTableData = [{
         'name': 'Wing',
         'email': 'tellus.eu.augue@arcu.com',
         'regDate': '2016-01-09T14:48:34-08:00',
@@ -703,13 +703,362 @@ export class DataTablesService {
         'city': 'Kobbegem',
         'age': 22
     }
-];
+    ];
 
-  getData(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(this.dataTableData);
-      }, 2000);
-    });
-  }
+    dataTableUsuarios = [
+        {
+            "nombre": "Morgan Cooper",
+            "mail": "morgancooper@katakana.com",
+            "telefono": "+1 (959) 459-2505"
+        },
+        {
+            "nombre": "Ortega Gilbert",
+            "mail": "ortegagilbert@katakana.com",
+            "telefono": "+1 (959) 486-2805"
+        },
+        {
+            "nombre": "Ramos Yates",
+            "mail": "ramosyates@katakana.com",
+            "telefono": "+1 (953) 599-3351"
+        },
+        {
+            "nombre": "Wooten Crosby",
+            "mail": "wootencrosby@katakana.com",
+            "telefono": "+1 (852) 553-3467"
+        },
+        {
+            "nombre": "Harris Downs",
+            "mail": "harrisdowns@katakana.com",
+            "telefono": "+1 (847) 554-3003"
+        },
+        {
+            "nombre": "Haynes Wall",
+            "mail": "hayneswall@katakana.com",
+            "telefono": "+1 (830) 410-3899"
+        },
+        {
+            "nombre": "Ryan Nolan",
+            "mail": "ryannolan@katakana.com",
+            "telefono": "+1 (928) 532-3912"
+        },
+        {
+            "nombre": "Lucas Smith",
+            "mail": "lucassmith@katakana.com",
+            "telefono": "+1 (932) 539-2492"
+        },
+        {
+            "nombre": "Kirkland Oneal",
+            "mail": "kirklandoneal@katakana.com",
+            "telefono": "+1 (965) 490-3958"
+        },
+        {
+            "nombre": "Lillian Ross",
+            "mail": "lillianross@katakana.com",
+            "telefono": "+1 (918) 455-2836"
+        },
+        {
+            "nombre": "Cornelia Dominguez",
+            "mail": "corneliadominguez@katakana.com",
+            "telefono": "+1 (820) 545-3140"
+        },
+        {
+            "nombre": "Hurst Clarke",
+            "mail": "hurstclarke@katakana.com",
+            "telefono": "+1 (829) 539-2299"
+        },
+        {
+            "nombre": "Nolan Hull",
+            "mail": "nolanhull@katakana.com",
+            "telefono": "+1 (840) 416-3085"
+        },
+        {
+            "nombre": "Prince Guerra",
+            "mail": "princeguerra@katakana.com",
+            "telefono": "+1 (925) 456-2447"
+        },
+        {
+            "nombre": "Sabrina Waters",
+            "mail": "sabrinawaters@katakana.com",
+            "telefono": "+1 (964) 447-3811"
+        },
+        {
+            "nombre": "Karina Hanson",
+            "mail": "karinahanson@katakana.com",
+            "telefono": "+1 (805) 596-2327"
+        },
+        {
+            "nombre": "Reyna Barker",
+            "mail": "reynabarker@katakana.com",
+            "telefono": "+1 (905) 525-3771"
+        },
+        {
+            "nombre": "Aurora Jimenez",
+            "mail": "aurorajimenez@katakana.com",
+            "telefono": "+1 (902) 412-2032"
+        },
+        {
+            "nombre": "Horn Albert",
+            "mail": "hornalbert@katakana.com",
+            "telefono": "+1 (897) 461-2733"
+        },
+        {
+            "nombre": "Joyner Hahn",
+            "mail": "joynerhahn@katakana.com",
+            "telefono": "+1 (980) 402-2317"
+        },
+        {
+            "nombre": "Dana Buckner",
+            "mail": "danabuckner@katakana.com",
+            "telefono": "+1 (922) 587-3987"
+        },
+        {
+            "nombre": "Leonard Wade",
+            "mail": "leonardwade@katakana.com",
+            "telefono": "+1 (823) 545-2904"
+        },
+        {
+            "nombre": "Jerry Payne",
+            "mail": "jerrypayne@katakana.com",
+            "telefono": "+1 (931) 506-3776"
+        },
+        {
+            "nombre": "Glenna Yang",
+            "mail": "glennayang@katakana.com",
+            "telefono": "+1 (859) 548-3876"
+        },
+        {
+            "nombre": "Fernandez Petersen",
+            "mail": "fernandezpetersen@katakana.com",
+            "telefono": "+1 (833) 451-3609"
+        },
+        {
+            "nombre": "Melody Elliott",
+            "mail": "melodyelliott@katakana.com",
+            "telefono": "+1 (923) 529-2126"
+        },
+        {
+            "nombre": "Coffey Contreras",
+            "mail": "coffeycontreras@katakana.com",
+            "telefono": "+1 (897) 524-2933"
+        },
+        {
+            "nombre": "Deidre Beck",
+            "mail": "deidrebeck@katakana.com",
+            "telefono": "+1 (805) 585-2321"
+        },
+        {
+            "nombre": "Cecile Burke",
+            "mail": "cecileburke@katakana.com",
+            "telefono": "+1 (883) 493-3710"
+        },
+        {
+            "nombre": "Bianca Dorsey",
+            "mail": "biancadorsey@katakana.com",
+            "telefono": "+1 (868) 454-2316"
+        },
+        {
+            "nombre": "Erica Houston",
+            "mail": "ericahouston@katakana.com",
+            "telefono": "+1 (964) 533-3285"
+        },
+        {
+            "nombre": "Caldwell Mckinney",
+            "mail": "caldwellmckinney@katakana.com",
+            "telefono": "+1 (855) 554-3097"
+        },
+        {
+            "nombre": "Hampton Long",
+            "mail": "hamptonlong@katakana.com",
+            "telefono": "+1 (927) 443-3588"
+        },
+        {
+            "nombre": "Muriel Daniels",
+            "mail": "murieldaniels@katakana.com",
+            "telefono": "+1 (938) 557-2183"
+        },
+        {
+            "nombre": "Randall Calhoun",
+            "mail": "randallcalhoun@katakana.com",
+            "telefono": "+1 (952) 515-2073"
+        },
+        {
+            "nombre": "Charles Barton",
+            "mail": "charlesbarton@katakana.com",
+            "telefono": "+1 (956) 577-3245"
+        },
+        {
+            "nombre": "Tucker Leach",
+            "mail": "tuckerleach@katakana.com",
+            "telefono": "+1 (981) 518-3426"
+        },
+        {
+            "nombre": "Gertrude Klein",
+            "mail": "gertrudeklein@katakana.com",
+            "telefono": "+1 (843) 600-3715"
+        },
+        {
+            "nombre": "Leanna Mathews",
+            "mail": "leannamathews@katakana.com",
+            "telefono": "+1 (954) 511-2581"
+        },
+        {
+            "nombre": "Belinda Gomez",
+            "mail": "belindagomez@katakana.com",
+            "telefono": "+1 (901) 402-3366"
+        },
+        {
+            "nombre": "Britt Burgess",
+            "mail": "brittburgess@katakana.com",
+            "telefono": "+1 (949) 409-3859"
+        },
+        {
+            "nombre": "Park Robertson",
+            "mail": "parkrobertson@katakana.com",
+            "telefono": "+1 (833) 415-2848"
+        },
+        {
+            "nombre": "Ramirez Tanner",
+            "mail": "ramireztanner@katakana.com",
+            "telefono": "+1 (940) 538-2910"
+        },
+        {
+            "nombre": "Hyde Watson",
+            "mail": "hydewatson@katakana.com",
+            "telefono": "+1 (907) 401-3994"
+        },
+        {
+            "nombre": "Bush Gallagher",
+            "mail": "bushgallagher@katakana.com",
+            "telefono": "+1 (924) 411-3721"
+        },
+        {
+            "nombre": "Riggs Glover",
+            "mail": "riggsglover@katakana.com",
+            "telefono": "+1 (922) 507-2841"
+        },
+        {
+            "nombre": "Ola Moses",
+            "mail": "olamoses@katakana.com",
+            "telefono": "+1 (953) 480-2916"
+        },
+        {
+            "nombre": "Jeanie Pennington",
+            "mail": "jeaniepennington@katakana.com",
+            "telefono": "+1 (851) 491-2737"
+        },
+        {
+            "nombre": "Cathryn Glenn",
+            "mail": "cathrynglenn@katakana.com",
+            "telefono": "+1 (801) 439-3620"
+        },
+        {
+            "nombre": "Silvia Olsen",
+            "mail": "silviaolsen@katakana.com",
+            "telefono": "+1 (974) 493-2741"
+        },
+        {
+            "nombre": "Lorie Moreno",
+            "mail": "loriemoreno@katakana.com",
+            "telefono": "+1 (936) 458-3432"
+        },
+        {
+            "nombre": "Mathews Holmes",
+            "mail": "mathewsholmes@katakana.com",
+            "telefono": "+1 (975) 419-2754"
+        },
+        {
+            "nombre": "Kaye Carney",
+            "mail": "kayecarney@katakana.com",
+            "telefono": "+1 (827) 414-2545"
+        },
+        {
+            "nombre": "Winifred Preston",
+            "mail": "winifredpreston@katakana.com",
+            "telefono": "+1 (879) 511-2074"
+        },
+        {
+            "nombre": "Esmeralda Sandoval",
+            "mail": "esmeraldasandoval@katakana.com",
+            "telefono": "+1 (894) 412-2473"
+        },
+        {
+            "nombre": "Shelton Huff",
+            "mail": "sheltonhuff@katakana.com",
+            "telefono": "+1 (822) 522-2276"
+        },
+        {
+            "nombre": "Thornton Wells",
+            "mail": "thorntonwells@katakana.com",
+            "telefono": "+1 (813) 560-2580"
+        },
+        {
+            "nombre": "Jami King",
+            "mail": "jamiking@katakana.com",
+            "telefono": "+1 (840) 532-3258"
+        },
+        {
+            "nombre": "Cindy Herring",
+            "mail": "cindyherring@katakana.com",
+            "telefono": "+1 (904) 593-3947"
+        },
+        {
+            "nombre": "Mcknight Day",
+            "mail": "mcknightday@katakana.com",
+            "telefono": "+1 (979) 587-2624"
+        },
+        {
+            "nombre": "Avis Curtis",
+            "mail": "aviscurtis@katakana.com",
+            "telefono": "+1 (801) 438-3350"
+        },
+        {
+            "nombre": "Nannie Velazquez",
+            "mail": "nannievelazquez@katakana.com",
+            "telefono": "+1 (970) 488-3896"
+        },
+        {
+            "nombre": "Woodward Wilcox",
+            "mail": "woodwardwilcox@katakana.com",
+            "telefono": "+1 (812) 446-3587"
+        },
+        {
+            "nombre": "Allyson Farmer",
+            "mail": "allysonfarmer@katakana.com",
+            "telefono": "+1 (882) 406-2158"
+        },
+        {
+            "nombre": "Brittany Frank",
+            "mail": "brittanyfrank@katakana.com",
+            "telefono": "+1 (985) 459-2823"
+        },
+        {
+            "nombre": "Powell Graves",
+            "mail": "powellgraves@katakana.com",
+            "telefono": "+1 (990) 407-3764"
+        },
+        {
+            "nombre": "Richmond Mcclain",
+            "mail": "richmondmcclain@katakana.com",
+            "telefono": "+1 (860) 574-3118"
+        }
+    ];
+
+    getData(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(this.dataTableData);
+            }, 2000);
+        });
+    }
+
+    /**
+     * Genera un mock de datos para la tabla usuarios
+     */
+    getDataMockOfUsuarios(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(this.dataTableUsuarios);
+            }, 2000);
+        });
+    }
 }

@@ -9,5 +9,11 @@ export const environment = {
         urlBase: 'http://10.0.0.35:8080/FacturacionRest/ws',
         //urlBase: 'http://localhost:8080/facturacionRest/ws',
         timeoutDefault: 60000  //60 seg
+    },
+    localStorage: {
+        acceso: 'accesoActivo',
+        menu: 'menuActivo',
+        perfil: 'perfilActivo',
+        usuario: 'usuarioActivo'
     }
 };

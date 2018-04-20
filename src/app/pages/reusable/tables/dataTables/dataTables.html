@@ -1,6 +1,6 @@
 <div class="widgets">
     <div class="row">
-        <ba-card title="Basic Example" baCardClass="with-scroll" class="data-table-container">
+        <ba-card baCardClass="with-scroll" class="data-table-container">
             <div class="row">
                 <div class="col-sm-2">
                     <label class="label-control">Rows on page</label>
@@ -20,10 +20,9 @@
                         <div class="offset-sm-1 col-sm-5">
                             <div class="row">
                                 <select class="form-control input-sm" [(ngModel)]="sortBy">
-                                    <option ngValue="name">Name</option>
-                                    <option ngValue="email">Email</option>
-                                    <option ngValue="age">Age</option>
-                                    <option [ngValue]="sortByWordLength">City</option>
+                                    <option class="sort-option" *ngFor="let col of columns" ngValue="name">
+                                        {{col.nombre}}
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -40,12 +39,14 @@
                     </div>
 
                 </div>
+
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">User information</div>
 
                 <table class="table table-striped" [mfData]="data | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
                     <thead>
+                        
                         <tr>
                             <th style="width: 10%"></th>
 
@@ -53,7 +54,6 @@
                             <th class="table-column" *ngFor="let col of columns" [ngStyle]="getStyleFromCol(col)">
                                 <mfDefaultSorter by="name">{{col.nombre}}</mfDefaultSorter>
                             </th>
-
 
                             <!-- <th style="width: 20%">
                                 <mfDefaultSorter by="name">Name</mfDefaultSorter>
@@ -67,23 +67,37 @@
                             <th style="width: 20%">
                                 <mfDefaultSorter [by]="sortByWordLength">City</mfDefaultSorter>
                             </th> -->
+
                         </tr>
+
                         <tr>
                             <th colspan="5">
                                 Filter by name:
                                 <input class="form-control" [(ngModel)]="filterQuery" />
                             </th>
                         </tr>
+    
+                        
                     </thead>
                     <tbody>
                         <tr *ngFor="let item of mf.data">
-                            <td>
-                                <button (click)="remove(item)" class="btn btn-danger">x</button>
+                            <td class="btn-container">
+                                <div (click)="edit(item)" class="btn-accion btn-editar">
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                </div>
+                                <div (click)="remove(item)" class="btn-accion btn-remover">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </div>
                             </td>
-                            <td>{{item.name}}</td>
-                            <td>{{item.email}}</td>
-                            <td class="text-right">{{item.age}}</td>
-                            <td>{{item.city | uppercase}}</td>
+
+                            <!-- <td *ngFor="let col of columns">
+                                {{item[col.nombre]}}
+                            </td> -->
+
+                            <td>{{item.nombre}}</td>
+                            <td>{{item.mail}}</td>
+                            <td class="text-right">{{item.telefono}}</td>
+                            
                         </tr>
                     </tbody>
                     <tfoot>

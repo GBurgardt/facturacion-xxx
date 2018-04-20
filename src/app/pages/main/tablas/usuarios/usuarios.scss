@@ -1,3 +1,9 @@
-.abm-usuarios {
-    
+.usuarios {
+    .btn-container {
+        display: flex;
+        justify-content: flex-end;
+        .btn-new-user {
+            margin: 5% 6% 0;
+        }
+    }
 }

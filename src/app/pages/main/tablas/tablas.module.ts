@@ -9,25 +9,38 @@ import { Tablas } from 'app/pages/main/tablas';
 import { Comprobantes } from './comprobantes';
 import { Usuarios } from './usuarios';
 
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { NgaModule } from '../../../theme/nga.module';
+import { NuevoUsuario } from './usuarios/components/nuevoUsuario';
+import { UsuariosService } from '../../../services/usuariosService';
+import { AuthService } from '../../../services/authService';
+import { LocalStorageService } from '../../../services/localStorageService';
+
+
+
 @NgModule({
-  imports: [
-    routing,
-    
-    DataTableModule,
-    
-  ],
-  declarations: [
-    Tablas,
-    
-    DataTables,
-    DataFilterPipe,
-    Comprobantes,
-    Usuarios
-  ],
-  providers: [
-    
-    DataTablesService
-  ]
+    imports: [
+        routing,
+        DataTableModule,
+        CommonModule,
+        FormsModule,
+        NgaModule
+    ],
+    declarations: [
+        Tablas,
+        DataTables,
+        DataFilterPipe,
+        Comprobantes,
+        Usuarios,
+        NuevoUsuario
+    ],
+    providers: [
+        DataTablesService,
+        UsuariosService,
+        AuthService,
+        LocalStorageService
+    ]
 })
-export class TablesModule {
+export class TablasModule {
 }

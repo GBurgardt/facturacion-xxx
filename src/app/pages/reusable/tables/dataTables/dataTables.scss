@@ -9,10 +9,42 @@
     }
 }
 
-.panel {
-    .table {
-        .table-column {
-            text-transform: capitalize;
+.data-table-container {
+
+    .panel {
+        .table {
+            .table-column {
+                text-transform: capitalize;
+            }
+    
+            tbody {
+                .btn-container{
+                    display: flex;
+                    justify-content: space-evenly;
+                    .btn-accion {
+                        margin: 2%;
+                        font-size: 0.9rem;
+                        padding: 5px 9px;
+                        cursor: pointer;
+                        padding-top: 0;
+                    }
+                    .btn-editar {
+                        i {
+                            vertical-align: middle;
+                        }
+                    }
+                }
+            }
         }
     }
+
+    .form-control {
+        .sort-option{
+            text-transform: capitalize;
+        }
+
+    }
+
+    
+    
 }
