@@ -5,6 +5,8 @@ import { Usuario } from '../../../../../../models/usuario';
 import { Sucursal } from 'app/models/sucursal';
 import { Perfil } from '../../../../../../models/perfil';
 import { environment } from 'environments/environment';
+import { UtilsService } from '../../../../../../services/utilsService';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'nuevo-usuario',
@@ -22,7 +24,7 @@ export class NuevoUsuario {
     infoNewUser: {
         nombre: string;
         email: string;
-        contrasena: string;
+        clave: string;
         telefono: string;
         sucursal: Sucursal;
         perfil: Perfil;
@@ -30,15 +32,14 @@ export class NuevoUsuario {
 
     constructor(
         private usuariosService: UsuariosService,
-        private localStorageService: LocalStorageService
+        private utilsService: UtilsService,
+        private router: Router
     ) {
         // Obtengo las sucursales disponibles de la empresa
-        this.sucursales = usuariosService.getSucursalesFromEmpresa(
-            this.localStorageService.getObject(environment.localStorage.acceso).token
-        );
+        this.sucursales = usuariosService.getSucursalesFromEmpresa();
 
         // Inicializo en null la sucursal y el perfil
-        this.infoNewUser = {nombre: null, email: null, contrasena: null, telefono: null, sucursal: null, perfil: null};
+        this.infoNewUser = {nombre: null, email: null, clave: null, telefono: null, sucursal: null, perfil: null};
     }
 
     /**
@@ -46,18 +47,44 @@ export class NuevoUsuario {
      * @param event 
      */
     changeSucursal(event) {
-        this.perfiles = this.usuariosService.getPerfilesFromSucursal(
-            this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(
-            this.infoNewUser.sucursal.idSucursal
-        );
+        this.usuariosService.getPerfilesFromSucursal(
+            this.infoNewUser.perfil.sucursal.idSucursal
+        ).subscribe(a=>{
+            console.log(a);
+            debugger;
+        });
+        // this.perfiles = this.usuariosService.getPerfilesFromSucursal(
+        //     this.infoNewUser.perfil.sucursal.idSucursal
+        // );
     }
 
     /**
      * Finaliza la creacion del user
      */
-    onClickCrearUsuario = () => {
-        console.log(this.infoNewUser);
+    onClickCrearUsuario = async () => {
+        
+        try {
+            // Creo el usuario nuevo
+            const respUsuarioCreado = await this.usuariosService.registrarUsuario(
+                this.infoNewUser
+            );
+    
+            // Muestro mensaje de okey y redirecciono a la lista de usuarios
+            this.utilsService.showModal(
+                respUsuarioCreado.control.codigo
+            )(
+                respUsuarioCreado.control.descripcion
+            )(
+                () => this.router.navigate(['/pages/tablas/usuarios']) 
+            );
+        }
+        catch(ex) {
+            const errorBody = JSON.parse(ex['_body']);
+
+            // Mostrar mensaje de error
+            this.utilsService.showModal(errorBody.control.codigo)(errorBody.control.descripcion);
+            
+        }
     }
 
 }

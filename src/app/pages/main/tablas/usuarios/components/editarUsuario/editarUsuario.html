@@ -1,0 +1,66 @@
+<div class="editar-usuario">
+    <ba-card cardTitle="Editar Usuario" baCardClass="with-scroll">
+        <div class="row">
+            <!-- <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="Usuario">Usuario</label>
+                    <select [(ngModel)]="usuarioEnEdicion" class="form-control" id="Usuario">
+                        <option *ngFor="let usuario of usuarios | async" [ngValue]="usuario">
+                            {{usuario.nombre}}
+                        </option>
+                    </select>
+                </div>
+            </div> -->
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="inputFirstName">Nombre</label>
+                    <input [(ngModel)]="usuarioEnEdicion.nombre" type="text" class="form-control" id="inputFirstName" placeholder="Nombre">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="inputEmail">Email</label>
+                    <input [(ngModel)]="usuarioEnEdicion.email" type="email" class="form-control" id="inputEmail" placeholder="Email">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="Clave">Clave</label>
+                    <input [(ngModel)]="usuarioEnEdicion.clave" type="password" class="form-control" id="Clave" placeholder="Clave">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="Sucursal">Sucursal</label>
+                    <select [(ngModel)]="usuarioEnEdicion.perfil.sucursal" (change)="changeSucursal($event)" class="form-control" id="Sucursal">
+                        <option *ngFor="let suc of sucursales | async" [ngValue]="suc" [selected]="suc.idSucursal === 1">
+                            {{suc.nombre}} - {{suc.domicilio}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="Perfil">Perfil</label>
+                    <select [(ngModel)]="usuarioEnEdicion.perfil" (change)="changePerfil($event)" class="form-control" id="Perfil" [disabled]="!usuarioEnEdicion.perfil.sucursal">
+                        <option *ngFor="let per of perfiles | async" [ngValue]="per">
+                            {{per.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="Telefono">Telefono</label>
+                    <input [(ngModel)]="usuarioEnEdicion.telefono" type="text" class="form-control" id="Telefono" placeholder="Telefono">
+                </div>
+            </div>
+        </div>
+        <button (click)="onClickEditarUsuario()" type="submit" class="btn btn-primary">Editar Usuario</button>
+    </ba-card>
+
+</div>

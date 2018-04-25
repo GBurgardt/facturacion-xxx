@@ -16,6 +16,8 @@ import { NuevoUsuario } from './usuarios/components/nuevoUsuario';
 import { UsuariosService } from '../../../services/usuariosService';
 import { AuthService } from '../../../services/authService';
 import { LocalStorageService } from '../../../services/localStorageService';
+import { EditarUsuario } from './usuarios/components/editarUsuario';
+import { UtilsService } from '../../../services/utilsService';
 
 
 
@@ -33,13 +35,15 @@ import { LocalStorageService } from '../../../services/localStorageService';
         DataFilterPipe,
         Comprobantes,
         Usuarios,
-        NuevoUsuario
+        NuevoUsuario,
+        EditarUsuario
     ],
     providers: [
         DataTablesService,
         UsuariosService,
         AuthService,
-        LocalStorageService
+        LocalStorageService,
+        UtilsService
     ]
 })
 export class TablasModule {

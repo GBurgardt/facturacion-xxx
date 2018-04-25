@@ -1,6 +1,7 @@
 import { Perfil } from "./perfil";
 
 export class Usuario {
+    idUsuario: number;
     email: string;
     nombre: string;
     clave: string;
@@ -8,6 +9,7 @@ export class Usuario {
     perfil: Perfil;
 
     constructor (usuario?: {
+        id: number,
         email: string, 
         nombre:string, 
         clave:string,
@@ -26,12 +28,14 @@ export class Usuario {
         }
     }) {
         if (usuario) {
+            this.idUsuario = usuario.id;
             this.email = usuario.email;
             this.nombre = usuario.nombre;
             this.clave = usuario.clave;
             this.telefono = usuario.telefono;
             this.perfil = new Perfil(usuario.perfil);
         } else {
+            this.idUsuario = null;
             this.email = null;
             this.nombre = null;
             this.clave = null;

@@ -21,6 +21,10 @@ export class DataTables {
     @Input() data;
     @Input() sortBy: string;
 
+    // Funciones que se disparan cuando se da en edit o remove
+    @Input() edit;
+    @Input() remove;
+
     filterQuery = "";
     rowsOnPage = 10;
     sortOrder = "asc";

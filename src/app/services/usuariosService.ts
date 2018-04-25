@@ -2,29 +2,29 @@ import { Injectable } from '@angular/core';
 import { AuthService } from 'app/services/authService';
 import { Sucursal } from '../models/sucursal';
 import { Perfil } from 'app/models/perfil';
+import { Usuario } from '../models/usuario';
+import { LocalStorageService } from './localStorageService';
+import { environment } from 'environments/environment';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class UsuariosService {
 
     constructor(
-        private authService: AuthService
+        private authService: AuthService,
+        private localStorageService: LocalStorageService
     ) { }
 
     /**
      * Obtiene la lista de usuarios correspondiente
      */
-    getUsuariosList = (token) => {
-
-        // Mappeo solamente los datos que uso
-        const listaUsuarios = this.authService.getUsuariosList(token).map(listUsuarios => {
+    getUsuariosList = () => {
+        const listaUsuarios: Observable<Usuario[]> = this.authService.getUsuariosList(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        ).map(listUsuarios => {
             return listUsuarios.arraydatos.map(usuario => {
-                return {
-                    nombre: usuario.nombre,
-                    mail: usuario.email,
-                    telefono: usuario.telefono
-                }
+                return new Usuario(usuario);
             })
-
         });
 
         return listaUsuarios;
@@ -33,41 +33,69 @@ export class UsuariosService {
     /**
      * Obtiene los perfiles de una sucursal
      */
-    getPerfilesFromSucursal = (token) => (idSucursal) => {
-        return this.authService.getPerfilesList(token, idSucursal).map(perfilesResp => 
-            perfilesResp.arraydatos.map(perfil => new Perfil(perfil))
-        );
+    getPerfilesFromSucursal =  (idSucursal) => {
+        console.log(idSucursal);
+        return this.authService.getPerfilesList(
+                this.localStorageService.getObject(environment.localStorage.acceso).token, 
+                idSucursal
+            ).map(  
+                perfilesResp => {
+                    
+                    return perfilesResp.arraydatos.map(perfil => new Perfil(perfil));
+                }
+            );
     }
 
     /**
      * Obtiene las sucursales disponible de la empresa
      */
-    getSucursalesFromEmpresa = (token) => {
-        return this.authService.getSucursalesList(token).map(sucursalesResp => 
+    getSucursalesFromEmpresa = () => {
+        return this.authService.getSucursalesList(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        ).map(sucursalesResp => 
             sucursalesResp.arraydatos.map(sucursal => new Sucursal(sucursal))
         );
     }
 
+    /**
+     * Registra un nuevo usuario
+     */
+    registrarUsuario = (infoNewUser: any) => {
+        return this.authService.registrarUsuario(
+            infoNewUser, 
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        );
+    }
 
+    /**
+     * Edita un usuario existente
+     */
+    editarUsuario = (usuarioEditado: Usuario) => {
+        return this.authService.editarUsuario(
+            usuarioEditado, 
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        );
+    }
 
-    // .then(resp => {
-            
-    //     const test = resp.arraydatos.map(dato => {
-    //         return {
-    //             nombre: dato.nombre,
-    //             mail: dato.email,
-    //             telefono: dato.telefono
-    //         }
-    //     });
+    /**
+     * Borra un usuario
+     */
+    removeUsuario = (usuarioABorrar: Usuario) => {
+        return this.authService.removeUsuario(
+            usuarioABorrar,
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        );
+    }
 
-    //     this.dataUsuarios = new Promise((resolve, reject) => {
-    //         setTimeout(() => {
-    //             resolve(test);
-    //         }, 2000);
-    //     });
-
-        
-        
-    // });
+    /**
+     * Dado un idUsuario retorno un observable con el usuario correspondiente
+     * @argument idUsuario idUsuario del usuario
+     */
+    getUsuarioById = (idUsuario: number) => {
+        // Obtengo todos los users de la empresa actual y busco el usuario por el idUsuario
+        return this.getUsuariosList().map((usuariosList: Usuario[]) =>
+            usuariosList.find(usuario => usuario.idUsuario === idUsuario)
+        );
+    }
 
 }

@@ -7,7 +7,7 @@ import { NgaModule } from '../../../theme/nga.module';
 import { Login } from './login.component';
 import { routing }       from './login.routing';
 import { LoginService } from '../../../services/loginservice';
-import { DefaultModal } from '../../reusable/modals/default-modal/default-modal.component';
+
 import { AuthService } from '../../../services/authService';
 import { UtilsService } from '../../../services/utilsService';
 

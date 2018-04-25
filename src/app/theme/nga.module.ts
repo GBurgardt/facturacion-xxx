@@ -23,6 +23,7 @@ import {
   BaFullCalendar,
   BaMenuItem,
   BaLogo,
+  BaExit,
   BaMenu,
   BaMsgCenter,
   BaMultiCheckbox,
@@ -59,6 +60,7 @@ import {
   EqualPasswordsValidator
 } from './validators';
 
+
 const NGA_COMPONENTS = [
   BaAmChart,
   BaBackTop,
@@ -69,6 +71,7 @@ const NGA_COMPONENTS = [
   BaFullCalendar,
   BaMenuItem,
   BaLogo,
+  BaExit,
   BaMenu,
   BaMsgCenter,
   BaMultiCheckbox,
