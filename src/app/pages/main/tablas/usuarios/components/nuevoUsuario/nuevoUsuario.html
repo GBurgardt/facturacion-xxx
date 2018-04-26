@@ -4,19 +4,19 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="inputFirstName">Nombre</label>
-                    <input [(ngModel)]="infoNewUser.nombre" type="text" class="form-control" id="inputFirstName" placeholder="Nombre">
+                    <input [(ngModel)]="usuarioNuevo.nombre" type="text" class="form-control" id="inputFirstName" placeholder="Nombre">
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="inputEmail">Email</label>
-                    <input [(ngModel)]="infoNewUser.email" type="email" class="form-control" id="inputEmail" placeholder="Email">
+                    <input [(ngModel)]="usuarioNuevo.email" type="email" class="form-control" id="inputEmail" placeholder="Email">
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="clave">Clave</label>
-                    <input [(ngModel)]="infoNewUser.clave" type="password" class="form-control" id="Clave" placeholder="Clave">
+                    <input [(ngModel)]="usuarioNuevo.clave" type="password" class="form-control" id="Clave" placeholder="Clave">
                 </div>
             </div>
         </div>
@@ -24,7 +24,7 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="Sucursal">Sucursal</label>
-                    <select [(ngModel)]="infoNewUser.sucursal" (change)="changeSucursal($event)" class="form-control" id="Sucursal">
+                    <select [(ngModel)]="usuarioNuevo.perfil.sucursal" (change)="changeSucursal($event)" class="form-control" id="Sucursal">
                         <option *ngFor="let suc of sucursales | async" [ngValue]="suc" [selected]="suc.idSucursal === 1">
                             {{suc.nombre}} - {{suc.domicilio}}
                         </option>
@@ -35,7 +35,7 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="Perfil">Perfil</label>
-                    <select [(ngModel)]="infoNewUser.perfil" class="form-control" id="Perfil" [disabled]="!infoNewUser.sucursal">
+                    <select [(ngModel)]="usuarioNuevo.perfil" class="form-control" id="Perfil" [disabled]="!usuarioNuevo.perfil.sucursal">
                         <option *ngFor="let per of perfiles | async" [ngValue]="per">
                             {{per.descripcion}}
                         </option>
@@ -46,11 +46,11 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="Telefono">Telefono</label>
-                    <input [(ngModel)]="infoNewUser.telefono" type="text" class="form-control" id="Telefono" placeholder="Telefono">
+                    <input [(ngModel)]="usuarioNuevo.telefono" type="text" class="form-control" id="Telefono" placeholder="Telefono">
                 </div>
             </div>
         </div>
-        <button (click)="onClickCrearUsuario()" type="submit" class="btn btn-primary">Crear Usuario</button>
+        <button (click)="onClickCrearUsuario()" type="submit" class="btn btn-primary">Confirmar</button>
     </ba-card>
 
 </div>

@@ -20,15 +20,8 @@ export class NuevoUsuario {
     // Perfiles disponible para tal sucursal
     perfiles;
 
-    // Info del usuario a crear
-    infoNewUser: {
-        nombre: string;
-        email: string;
-        clave: string;
-        telefono: string;
-        sucursal: Sucursal;
-        perfil: Perfil;
-    };
+    // Usuario nuevo
+    usuarioNuevo: Usuario = new Usuario();
 
     constructor(
         private usuariosService: UsuariosService,
@@ -38,24 +31,16 @@ export class NuevoUsuario {
         // Obtengo las sucursales disponibles de la empresa
         this.sucursales = usuariosService.getSucursalesFromEmpresa();
 
-        // Inicializo en null la sucursal y el perfil
-        this.infoNewUser = {nombre: null, email: null, clave: null, telefono: null, sucursal: null, perfil: null};
     }
 
     /**
      * Se dispara cuando se cambia la sucursal en el dropdown
      * @param event 
      */
-    changeSucursal(event) {
-        this.usuariosService.getPerfilesFromSucursal(
-            this.infoNewUser.perfil.sucursal.idSucursal
-        ).subscribe(a=>{
-            console.log(a);
-            debugger;
-        });
-        // this.perfiles = this.usuariosService.getPerfilesFromSucursal(
-        //     this.infoNewUser.perfil.sucursal.idSucursal
-        // );
+    changeSucursal(event) {        
+        this.perfiles = this.usuariosService.getPerfilesFromSucursal(
+            this.usuarioNuevo.perfil.sucursal
+        );
     }
 
     /**
@@ -66,7 +51,7 @@ export class NuevoUsuario {
         try {
             // Creo el usuario nuevo
             const respUsuarioCreado = await this.usuariosService.registrarUsuario(
-                this.infoNewUser
+                this.usuarioNuevo
             );
     
             // Muestro mensaje de okey y redirecciono a la lista de usuarios
@@ -76,7 +61,7 @@ export class NuevoUsuario {
                 respUsuarioCreado.control.descripcion
             )(
                 () => this.router.navigate(['/pages/tablas/usuarios']) 
-            );
+            )();
         }
         catch(ex) {
             const errorBody = JSON.parse(ex['_body']);

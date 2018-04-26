@@ -53,7 +53,7 @@ export class EditarUsuario {
      */
     changeSucursal(event) {
         this.perfiles = this.usuariosService.getPerfilesFromSucursal(
-            this.usuarioEnEdicion.perfil.sucursal.idSucursal
+            this.usuarioEnEdicion.perfil.sucursal
         );
     }
 
@@ -85,7 +85,7 @@ export class EditarUsuario {
                 respUsuarioEditado.control.descripcion
             )(
                 () => this.router.navigate(['/pages/tablas/usuarios']) 
-            );
+            )();
         }
         catch(ex) {
             console.log(ex);

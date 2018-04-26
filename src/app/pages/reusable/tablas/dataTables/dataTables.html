@@ -13,7 +13,7 @@
 
                 <div class="col-sm-4">
                     <div class="row">
-                        <label class="col-sm-12 label-control">Sort by</label>
+                        <label class="col-sm-12 label-control" style="padding-left: 9%;">Sort by</label>
                     </div>
 
                     <div class="row">
@@ -42,29 +42,17 @@
 
             </div>
             <div class="panel panel-default">
-                <div class="panel-heading">User information</div>
-
                 <table class="table table-striped" [mfData]="data | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
                     <thead>
-                        
+
                         <tr>
                             <th style="width: 10%"></th>
-
                             <!-- Recorro y muestro las columnas recibidas en el input -->
                             <th class="table-column" *ngFor="let col of columns" [ngStyle]="getStyleFromCol(col)">
                                 <mfDefaultSorter by="name">{{col.nombre}}</mfDefaultSorter>
                             </th>
-
                         </tr>
 
-                        <tr>
-                            <th colspan="5">
-                                Filter by name:
-                                <input class="form-control" [(ngModel)]="filterQuery" />
-                            </th>
-                        </tr>
-    
-                        
                     </thead>
                     <tbody>
                         <tr *ngFor="let item of mf.data">
@@ -77,19 +65,23 @@
                                 </div>
                             </td>
 
-                            <!-- <td *ngFor="let col of columns">
-                                {{item[col.nombre]}}
-                            </td> -->
-
-                            <td>{{item.nombre}}</td>
-                            <td>{{item.mail}}</td>
-                            <td class="text-right">{{item.telefono}}</td>
+                            <!-- Si la columna tiene subkey es porque item[col.key] es un objeto, y quiero mostrar una subkey de ese objeto -->
+                            <td *ngFor="let col of columns">
+                                <div *ngIf="!col.subkey">
+                                    {{item[col.key]}}
+                                </div>
+                                <div *ngIf="col.subkey">
+                                    {{(item[col.key])[col.subkey]}}
+                                </div>
+                            </td>
                             
                         </tr>
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="5">
+                            <!-- TODO: Aca cambié de 5 a 12, ver si no tiene consecuencias -->
+                            <!-- <td colspan="5"> -->
+                            <td colspan="12">
                                 <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
                             </td>
                         </tr>

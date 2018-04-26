@@ -6,56 +6,58 @@ import { environment } from 'environments/environment';
 import { Router } from '@angular/router';
 import { Usuario } from 'app/models/usuario';
 import { UtilsService } from '../../../../services/utilsService';
+import { RubrosService } from '../../../../services/rubrosService';
+import { Rubro } from 'app/models/rubro';
 
 @Component({
-    selector: 'maps',
-    // template: `<router-outlet></router-outlet>`
-    styleUrls: ['./usuarios.scss'],
-    templateUrl: './usuarios.html'
+    selector: 'rubros',
+    styleUrls: ['./rubros.scss'],
+    templateUrl: './rubros.html'
 })
-export class Usuarios {
+export class Rubros {
 
     // Data de la tabla
-    dataUsuarios;
+    tableData;
 
     // Columnas de la tabla
     tableColumns;
 
     constructor(
         private service: DataTablesService,
-        private usuariosService: UsuariosService,
+        private rubrosService: RubrosService,
         private router: Router,
         private utilsService: UtilsService
     ) {
         // Guardo las columnas de la tabla con sus respectivas anchuras
         this.tableColumns = [
             {
-                nombre: 'nombre',
-                key: 'nombre',
+                nombre: 'descripcion',
+                key: 'descripcion',
                 ancho: '30%'
             },
             {
-                nombre: 'email',
-                key: 'email',
+                nombre: 'empresa',
+                key: 'empresa',
+                subkey: 'nombre',
                 ancho: '30%'
             },
             {
-                nombre: 'telefono',
-                key: 'telefono',
+                nombre: 'cuit empresa',
+                key: 'empresa',
+                subkey: 'cuit',
                 ancho: '30%'
             }
         ]
-        // Obtengo la lista de usuarios
-        this.dataUsuarios = this.usuariosService.getUsuariosList();
+        
+        this.tableData = this.rubrosService.getRubrosList();
     }
 
     /**
      * Redireciona a la pagina de editar
      */
-    onClickEdit = (usuario) => {
-        console.log(usuario);
-        // Redirecciono al dashboard
-        this.router.navigate(['/pages/tablas/usuarios/editar', usuario.idUsuario]);
+    onClickEdit = (rubro: Rubro) => {
+       
+        this.router.navigate(['/pages/tablas/rubros/editar', rubro.idRubro]);
     }
 
     /**
@@ -71,10 +73,10 @@ export class Usuarios {
         )(
            async () => {
                 // Borro usuario
-                const respUsuarioBorrado = await this.usuariosService.removeUsuario(usuario);     
+                //const respUsuarioBorrado = await this.usuariosService.removeUsuario(usuario);     
                 
                 // Obtengo la lista de usuarios actualizada
-                this.dataUsuarios = this.usuariosService.getUsuariosList();
+                //this.dataTipoComprobantes = this.usuariosService.getUsuariosList();
             }
         )({
             tipoModal: 'confirmation'

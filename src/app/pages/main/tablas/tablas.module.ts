@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { routing } from './tablas.routing';
 
 import { DataTableModule } from "angular2-datatable";
-import { DataTables } from '../../reusable/tables/dataTables';
-import { DataFilterPipe } from '../../reusable/tables/dataTables/data-filter.pipe';
-import { DataTablesService } from '../../reusable/tables/dataTables/dataTables.service';
+import { DataTables } from '../../reusable/tablas/dataTables';
+import { DataFilterPipe } from '../../reusable/tablas/dataTables/data-filter.pipe';
+import { DataTablesService } from '../../reusable/tablas/dataTables/dataTables.service';
 import { Tablas } from 'app/pages/main/tablas';
-import { Comprobantes } from './comprobantes';
+
 import { Usuarios } from './usuarios';
 
 import { CommonModule } from '@angular/common';
@@ -18,6 +18,15 @@ import { AuthService } from '../../../services/authService';
 import { LocalStorageService } from '../../../services/localStorageService';
 import { EditarUsuario } from './usuarios/components/editarUsuario';
 import { UtilsService } from '../../../services/utilsService';
+import { TipoComprobantes } from './tipoComprobantes';
+import { TipoComprobantesService } from '../../../services/tipoComprobantesService';
+import { EditarTipoComprobante } from './tipoComprobantes/components/editarTipoComprobante';
+import { NuevoTipoComprobante } from './tipoComprobantes/components/nuevoTipoComprobante';
+import { RubrosService } from '../../../services/rubrosService';
+import { Rubros } from './rubros';
+import { NuevoRubro } from './rubros/components/nuevoRubro';
+import { EditarRubro } from './rubros/components/editarRubro';
+import { NuevoRecurso } from '../../reusable/formularios/nuevoRecurso';
 
 
 
@@ -33,17 +42,25 @@ import { UtilsService } from '../../../services/utilsService';
         Tablas,
         DataTables,
         DataFilterPipe,
-        Comprobantes,
         Usuarios,
         NuevoUsuario,
-        EditarUsuario
+        EditarUsuario,
+        TipoComprobantes,
+        NuevoTipoComprobante,
+        EditarTipoComprobante,
+        Rubros,
+        NuevoRubro,
+        EditarRubro,
+        NuevoRecurso
     ],
     providers: [
         DataTablesService,
         UsuariosService,
         AuthService,
         LocalStorageService,
-        UtilsService
+        UtilsService,
+        TipoComprobantesService,
+        RubrosService
     ]
 })
 export class TablasModule {

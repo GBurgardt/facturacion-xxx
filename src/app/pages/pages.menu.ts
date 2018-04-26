@@ -48,14 +48,6 @@ export const PAGES_MENU = [
                         }
                     },
                     {
-                        path: 'comprobantes',
-                        data: {
-                            menu: {
-                                title: 'general.menu.comprobantes',
-                            }
-                        }
-                    },
-                    {
                         path: 'ptovta',
                         data: {
                             menu: {

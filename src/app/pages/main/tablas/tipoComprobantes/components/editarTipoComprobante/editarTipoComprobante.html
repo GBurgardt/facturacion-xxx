@@ -1,0 +1,57 @@
+<div class="editar-tipo-comprobante">
+    <ba-card cardTitle="Editar Tipo Comprobante" baCardClass="with-scroll">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="inputFirstName">Codigo</label>
+                    <input [(ngModel)]="tipoComprobanteEnEdicion.codigoComp" type="text" class="form-control" id="codigoComp" placeholder="Codigo">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="inputEmail">Descripcion Corta</label>
+                    <input [(ngModel)]="tipoComprobanteEnEdicion.descCorta" type="email" class="form-control" id="descCorta" placeholder="Desc Corta">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="Clave">Descripcion</label>
+                    <input [(ngModel)]="tipoComprobanteEnEdicion.descripcion" type="text" class="form-control" id="descripcion" placeholder="Descripcion">
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="inputFirstName">Curso Legal</label>
+                    <input [(ngModel)]="tipoComprobanteEnEdicion.cursoLegal" type="text" class="form-control" id="cursoLegal" placeholder="Curso legal">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="inputEmail">Codigo Afip</label>
+                    <input [(ngModel)]="tipoComprobanteEnEdicion.codigoAfip" type="text" class="form-control" id="codigoAfip" placeholder="Codigo Afip">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="Clave">D/H</label>
+                    <input [(ngModel)]="tipoComprobanteEnEdicion.surenu" type="text" class="form-control" id="surenu" placeholder="D/H">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label for="inputFirstName">Observaciones</label>
+                    <input [(ngModel)]="tipoComprobanteEnEdicion.observaciones" type="text" class="form-control" id="observaciones" placeholder="Observaciones">
+                </div>
+            </div>
+        </div>
+
+        <button (click)="onClickEditarTipoComprobante()" type="submit" class="btn btn-primary">Confirmar</button>
+    </ba-card>
+
+</div>

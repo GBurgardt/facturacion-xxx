@@ -20,7 +20,6 @@ export class UtilsService {
     showModal = (titulo) => (descripcion) => (onClick?) => (datos?) => {
         // Creo el modal
         let activeModal;
-
         // Me fijo el tipo de modal a mostrar
         if (datos && datos.tipoModal === 'confirmation') {
             // Si o no modal
@@ -33,7 +32,6 @@ export class UtilsService {
             activeModal.componentInstance.modalHeader = titulo;
             activeModal.componentInstance.modalContent = descripcion;
         }
-
         if (onClick) {
             activeModal.result.then(result => {
                 // Si hizo click en 'Si', entonces ejecuto la acción.

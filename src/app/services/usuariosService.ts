@@ -33,11 +33,11 @@ export class UsuariosService {
     /**
      * Obtiene los perfiles de una sucursal
      */
-    getPerfilesFromSucursal =  (idSucursal) => {
-        console.log(idSucursal);
+    getPerfilesFromSucursal =  (sucursal: Sucursal) => {
+        console.log(sucursal);
         return this.authService.getPerfilesList(
                 this.localStorageService.getObject(environment.localStorage.acceso).token, 
-                idSucursal
+                sucursal.idSucursal
             ).map(  
                 perfilesResp => {
                     
@@ -60,9 +60,9 @@ export class UsuariosService {
     /**
      * Registra un nuevo usuario
      */
-    registrarUsuario = (infoNewUser: any) => {
+    registrarUsuario = (usuarioNuevo: Usuario) => {
         return this.authService.registrarUsuario(
-            infoNewUser, 
+            usuarioNuevo, 
             this.localStorageService.getObject(environment.localStorage.acceso).token
         );
     }

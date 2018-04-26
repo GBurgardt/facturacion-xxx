@@ -13,6 +13,9 @@ import * as crypto from 'crypto-js';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 import 'rxjs/add/operator/toPromise';
+import { TipoComprobante } from '../models/tipoComprobante';
+import { resourcesREST } from 'constantes/resoursesREST';
+import { Rubro } from 'app/models/rubro';
 
 @Injectable()
 export class AuthService {
@@ -36,6 +39,7 @@ export class AuthService {
         body: any,
         queryParams: any
     ) {
+
         // Creo los headerss
         let auxHeaders: Headers = new Headers(headers);
         auxHeaders.append('Content-Type', 'application/json'); 
@@ -74,7 +78,7 @@ export class AuthService {
             method: method,
             search: null,
             headers: auxHeaders,
-            body: JSON.stringify(body)
+            body: (Object.keys(body).length === 0 && body.constructor === Object) ? null : JSON.stringify(body)
         };
 
         var reqOptions = new RequestOptions(opciones);
@@ -126,7 +130,7 @@ export class AuthService {
     * @argument token
     * @argument sucursal
     */
-    getPerfilesList(token: string, sucursal: string) {
+    getPerfilesList(token: string, sucursal: number) {
         return this.request(
             [],
             RequestMethod.Post,
@@ -162,28 +166,20 @@ export class AuthService {
     * @description Obtiene una lista de usuarios correspondientes a una empresa
     * @argument token
     */
-    registrarUsuario(infoNewUser: {
-        nombre: string;
-        email: string;
-        clave: string;
-        telefono: string;
-        sucursal: Sucursal;
-        perfil: Perfil;
-    }, token) {
+    registrarUsuario(usuario: Usuario, token) {
         return this.request(
             [],
             RequestMethod.Post,
             {
-                clave: crypto.MD5(infoNewUser.clave),
-                //clave: infoNewUser.clave,
+                clave: crypto.MD5(usuario.clave),
                 token: token
             },
             'usuarios',
             {
-                nombre: infoNewUser.nombre,
-                telefono: infoNewUser.telefono,
-                perfil: infoNewUser.perfil.idPerfil,
-                mail: infoNewUser.email
+                nombre: usuario.nombre,
+                telefono: usuario.telefono,
+                perfil: usuario.perfil.idPerfil,
+                mail: usuario.email
             },
             {}
         ).toPromise();
@@ -222,17 +218,152 @@ export class AuthService {
     */
     removeUsuario(usuario: Usuario, token) {
         return this.request(
-            [],
+            [usuario.idUsuario.toString()],
             RequestMethod.Delete,
             {
                 token: token
             },
             'usuarios',
+            {},
+            {}
+        ).toPromise();
+    }
+
+    /** 
+    * @description Edita un tipo de comprobante
+    * @argument token
+    * @argument tipoComprobante
+    */
+    editarTipoComprobante(tipoComprobante: TipoComprobante, token) {
+        console.log(tipoComprobante);
+        return this.request(
+            [],
+            RequestMethod.Put,
             {
-                idUsuario: usuario.idUsuario
+                token: token
+            },
+            'cteTipo',
+            {
+                idCteTipo: tipoComprobante.idCteTipo,
+                codigoComp: tipoComprobante.codigoComp,
+                descCorta: tipoComprobante.descCorta,
+                descripcion: tipoComprobante.descripcion,
+                cursoLegal: tipoComprobante.cursoLegal,
+                codigoAfip: tipoComprobante.codigoAfip,
+                surenu: tipoComprobante.surenu,
+                observaciones: tipoComprobante.observaciones ? tipoComprobante.observaciones : ''
             },
             {}
         ).toPromise();
     }
+
+    /** 
+    * @description Registra un tipo comprobante
+    * @argument tipoComprobante
+    * @argument token
+    */
+    registrarTipoComprobante(tipoComprobante: TipoComprobante, token) {
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token
+            },
+            'cteTipo',
+            {
+                codigoComp: tipoComprobante.codigoComp,
+                descCorta: tipoComprobante.descCorta,
+                descripcion: tipoComprobante.descripcion,
+                cursoLegal: tipoComprobante.cursoLegal,
+                codigoAfip: tipoComprobante.codigoAfip,
+                surenu: tipoComprobante.surenu,
+                observaciones: tipoComprobante.observaciones ? tipoComprobante.observaciones : ''
+            },
+            {}
+        ).toPromise();
+    }
+
+    /** 
+    * @description Registra un rubro
+    * @argument rubro
+    * @argument token
+    */
+    registrarRubro(rubro: Rubro, token) {
+
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve('mock');
+            }, 300);
+        });
+
+        // return this.request(
+        //     [],
+        //     RequestMethod.Post,
+        //     {
+        //         token: token
+        //     },
+        //     'rubros',
+        //     {
+        //         codigoComp: tipoComprobante.codigoComp,
+        //         descCorta: tipoComprobante.descCorta,
+        //         descripcion: tipoComprobante.descripcion,
+        //         cursoLegal: tipoComprobante.cursoLegal,
+        //         codigoAfip: tipoComprobante.codigoAfip,
+        //         surenu: tipoComprobante.surenu,
+        //         observaciones: tipoComprobante.observaciones ? tipoComprobante.observaciones : ''
+        //     },
+        //     {}
+        // ).toPromise();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////              MÉTODOS REUTILIZABLES          ///////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+
+
+    /** 
+    * @description Obtiene una lista de un recurso especificado
+    * @argument token
+    * @argument resource Ejemplos: 'cteTipo', 'rubros'
+    */
+    getResource = (token: string) => (nombreResource: string) => {
+        // Si el resource solicitado no está incluido en la lista de recursos disponisbles, retorno un error
+        if (!Object.keys(resourcesREST).includes(nombreResource)) {
+            return Observable.throw('Recurso inexistente')
+        }
+
+        return this.request(
+            [],
+            RequestMethod.Get,
+            {
+                token: token,
+            },
+            nombreResource,
+            {},
+            {}
+        );
+    }
+
+    // postResource = (token: string) => (nombreResource: string) => {
+    //     return this.request(
+    //         [],
+    //         RequestMethod.Post,
+    //         {
+    //             token: token
+    //         },
+    //         'rubros',
+    //         {
+    //             codigoComp: tipoComprobante.codigoComp,
+    //             descCorta: tipoComprobante.descCorta,
+    //             descripcion: tipoComprobante.descripcion,
+    //             cursoLegal: tipoComprobante.cursoLegal,
+    //             codigoAfip: tipoComprobante.codigoAfip,
+    //             surenu: tipoComprobante.surenu,
+    //             observaciones: tipoComprobante.observaciones ? tipoComprobante.observaciones : ''
+    //         },
+    //         {}
+    //     ).toPromise();
+    // }
+
 
 }

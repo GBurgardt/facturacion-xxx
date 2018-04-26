@@ -30,7 +30,7 @@ export class DataTables {
     sortOrder = "asc";
 
     constructor() { }
-    
+
     toInt(num: string) {
         return +num;
     }

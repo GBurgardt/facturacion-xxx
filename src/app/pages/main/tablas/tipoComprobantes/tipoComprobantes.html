@@ -1,14 +1,14 @@
-<div class="usuarios">
+<div class="tipo-comprobantes">
     <data-tables sortBy="nombre"
-                 [data]="dataUsuarios | async"
+                 [data]="dataTipoComprobantes | async"
                  [columns]="tableColumns"
                  [edit]="onClickEdit"
                  [remove]="onClickRemove" >
     </data-tables>
     
     <div class="btn-container">
-        <button routerLink="/pages/tablas/usuarios/nuevo" type="submit" class="btn btn-default btn-new-user" translate>
-            Nuevo usuario
+        <button routerLink="/pages/tablas/tipos-comprobantes/nuevo" type="submit" class="btn btn-default btn-new-user" translate>
+            Nuevo tipo comprobante
         </button>
     </div>
     

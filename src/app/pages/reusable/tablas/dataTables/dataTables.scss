@@ -16,8 +16,18 @@
             .table-column {
                 text-transform: capitalize;
             }
+
+            thead {
+                tr th {
+                    text-align: center;
+                }
+            }
     
             tbody {
+                tr td {
+                    text-align: center;
+                }
+
                 .btn-container{
                     display: flex;
                     justify-content: space-evenly;
@@ -35,6 +45,10 @@
                     }
                 }
             }
+        }
+
+        .table-striped {
+            margin-top: 3%;
         }
     }
 

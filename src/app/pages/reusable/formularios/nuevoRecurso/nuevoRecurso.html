@@ -1,0 +1,16 @@
+<div *ngIf="recurso" class="nuevo-recurso">
+    <ba-card cardTitle="{{titulo}}" baCardClass="with-scroll">
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label for="descripcion">Descripcion</label>
+                    <input [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion" placeholder="Descripcion del rubro">
+                </div>
+            </div>
+        </div>
+
+        
+        <button (click)="onClickCrear()" type="submit" class="btn btn-primary">Confirmar</button>
+    </ba-card>
+</div>

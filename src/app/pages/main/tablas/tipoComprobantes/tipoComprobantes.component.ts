@@ -6,56 +6,75 @@ import { environment } from 'environments/environment';
 import { Router } from '@angular/router';
 import { Usuario } from 'app/models/usuario';
 import { UtilsService } from '../../../../services/utilsService';
+import { TipoComprobantesService } from 'app/services/tipoComprobantesService';
 
 @Component({
-    selector: 'maps',
-    // template: `<router-outlet></router-outlet>`
-    styleUrls: ['./usuarios.scss'],
-    templateUrl: './usuarios.html'
+    selector: 'tipo-comprobantes',
+    styleUrls: ['./tipoComprobantes.scss'],
+    templateUrl: './tipoComprobantes.html'
 })
-export class Usuarios {
+export class TipoComprobantes {
 
     // Data de la tabla
-    dataUsuarios;
+    dataTipoComprobantes;
 
     // Columnas de la tabla
     tableColumns;
 
     constructor(
         private service: DataTablesService,
-        private usuariosService: UsuariosService,
+        private tipoComprobantesService: TipoComprobantesService,
         private router: Router,
         private utilsService: UtilsService
     ) {
         // Guardo las columnas de la tabla con sus respectivas anchuras
         this.tableColumns = [
             {
-                nombre: 'nombre',
-                key: 'nombre',
-                ancho: '30%'
+                nombre: 'codigo',
+                key: 'codigoComp',
+                ancho: '10%'
             },
             {
-                nombre: 'email',
-                key: 'email',
-                ancho: '30%'
+                nombre: 'descripcion corta',
+                key: 'descCorta',
+                ancho: '10%'
             },
             {
-                nombre: 'telefono',
-                key: 'telefono',
-                ancho: '30%'
+                nombre: 'descripcion',
+                key: 'descripcion',
+                ancho: '20%'
+            },
+            {
+                nombre: 'Curso legal',
+                key: 'cursoLegal',
+                ancho: '10%'
+            },
+            {
+                nombre: 'codigo afip',
+                key: 'codigoAfip',
+                ancho: '10%'
+            },
+            {
+                nombre: 'D/H',
+                key: 'surenu',
+                ancho: '10%'
+            },
+            {
+                nombre: 'Observaciones',
+                key: 'observaciones',
+                ancho: '20%'
             }
         ]
         // Obtengo la lista de usuarios
-        this.dataUsuarios = this.usuariosService.getUsuariosList();
+        this.dataTipoComprobantes = this.tipoComprobantesService.getTipoComprobantesList();
     }
 
     /**
      * Redireciona a la pagina de editar
      */
-    onClickEdit = (usuario) => {
-        console.log(usuario);
+    onClickEdit = (tipoComprobante) => {
         // Redirecciono al dashboard
-        this.router.navigate(['/pages/tablas/usuarios/editar', usuario.idUsuario]);
+        this.router.navigate(['/pages/tablas/tipos-comprobantes/editar', tipoComprobante.idCteTipo]);
     }
 
     /**
@@ -71,10 +90,10 @@ export class Usuarios {
         )(
            async () => {
                 // Borro usuario
-                const respUsuarioBorrado = await this.usuariosService.removeUsuario(usuario);     
+                //const respUsuarioBorrado = await this.usuariosService.removeUsuario(usuario);     
                 
                 // Obtengo la lista de usuarios actualizada
-                this.dataUsuarios = this.usuariosService.getUsuariosList();
+                //this.dataTipoComprobantes = this.usuariosService.getUsuariosList();
             }
         )({
             tipoModal: 'confirmation'

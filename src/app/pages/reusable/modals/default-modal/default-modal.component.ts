@@ -30,6 +30,6 @@ export class DefaultModal implements OnInit {
     ngOnInit() { }
 
     closeModal() {
-        this.activeModal.close();
+        this.activeModal.close(true);
     }
 }

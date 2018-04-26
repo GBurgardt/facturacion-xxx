@@ -11,9 +11,9 @@ import { LocalStorageService } from 'app/services/localStorageService';
 import { ConfirmationModal } from './reusable/modals/confirmation-modal/confirmation-modal.component';
 
 // import { DataTableModule } from "angular2-datatable";
-// import { DataTables } from './reusable/tables/dataTables';
-// import { DataFilterPipe } from './reusable/tables/dataTables/data-filter.pipe';
-// import { DataTablesService } from './reusable/tables/dataTables/dataTables.service';
+// import { DataTables } from './reusable/tablas/dataTables';
+// import { DataFilterPipe } from './reusable/tablas/dataTables/data-filter.pipe';
+// import { DataTablesService } from './reusable/tablas/dataTables/dataTables.service';
 
 @NgModule({
     imports: [
