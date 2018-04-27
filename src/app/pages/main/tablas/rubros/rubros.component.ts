@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
-import { DataTablesService } from '../../../reusable/tablas/dataTables/dataTables.service';
-import { UsuariosService } from '../../../../services/usuariosService';
 import { LocalStorageService } from '../../../../services/localStorageService';
 import { environment } from 'environments/environment';
 import { Router } from '@angular/router';
-import { Usuario } from 'app/models/usuario';
 import { UtilsService } from '../../../../services/utilsService';
 import { RubrosService } from '../../../../services/rubrosService';
 import { Rubro } from 'app/models/rubro';
@@ -23,7 +20,6 @@ export class Rubros {
     tableColumns;
 
     constructor(
-        private service: DataTablesService,
         private rubrosService: RubrosService,
         private router: Router,
         private utilsService: UtilsService
@@ -52,31 +48,20 @@ export class Rubros {
         this.tableData = this.rubrosService.getRubrosList();
     }
 
-    /**
-     * Redireciona a la pagina de editar
-     */
-    onClickEdit = (rubro: Rubro) => {
-       
+    onClickEdit = (rubro: Rubro) => {   
         this.router.navigate(['/pages/tablas/rubros/editar', rubro.idRubro]);
     }
 
-    /**
-     * Borra el usuario y muestra un mensajito avisando tal accion
-     */
     onClickRemove = async(usuario) => {
-        
-        // Pregunto si está seguro
         this.utilsService.showModal(
-            'Borrar usuario'
+            'Borrar rubro'
         )(
-            '¿Estás seguro de borrar el usuario?'
+            '¿Estás seguro de borrar el rubro?'
         )(
            async () => {
-                // Borro usuario
-                //const respUsuarioBorrado = await this.usuariosService.removeUsuario(usuario);     
+                const respRubro = await this.rubrosService.removeRubro(usuario);     
                 
-                // Obtengo la lista de usuarios actualizada
-                //this.dataTipoComprobantes = this.usuariosService.getUsuariosList();
+                this.tableData = this.rubrosService.getRubrosList();
             }
         )({
             tipoModal: 'confirmation'

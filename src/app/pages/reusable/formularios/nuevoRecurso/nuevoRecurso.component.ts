@@ -5,6 +5,8 @@ import { UtilsService } from 'app/services/utilsService';
 import { AuthService } from '../../../../services/authService';
 
 // Funciones de lodash
+import * as _ from 'lodash';
+
 
 
 @Component({
@@ -21,12 +23,27 @@ export class NuevoRecurso {
     // Recurso a llenar
     @Input() recurso: any = null;
 
+    // Las keys del recurso separadas en arrays de 3 (ejemplo: [[a,b,c],[d,e,f],...])
+    chunkKeys;
+
     constructor(
         private authService: AuthService,
         private utilsService: UtilsService,
         private router: Router
     ) { }
 
+    ngOnInit() {
+
+        const keys = Object.keys(this.recurso);
+
+        this.chunkKeys = _.chunk(keys, 3);
+        console.log(this.chunkKeys);
+        
+
+
+
+    }
+    
 
 
 
@@ -64,9 +81,7 @@ export class NuevoRecurso {
             // )();
         }
         catch(ex) {
-            const errorBody = JSON.parse(ex['_body']);
-
-            this.utilsService.showModal(errorBody.control.codigo)(errorBody.control.descripcion);            
+            this.utilsService.decodeErrorResponse(ex);           
         }
     }
 

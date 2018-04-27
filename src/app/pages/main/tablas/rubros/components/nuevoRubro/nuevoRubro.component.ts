@@ -37,9 +37,7 @@ export class NuevoRubro {
             )();
         }
         catch(ex) {
-            const errorBody = JSON.parse(ex['_body']);
-
-            this.utilsService.showModal(errorBody.control.codigo)(errorBody.control.descripcion);            
+            this.utilsService.decodeErrorResponse(ex);       
         }
     }
 

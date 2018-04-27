@@ -10,7 +10,7 @@ import { Tablas } from 'app/pages/main/tablas';
 import { Usuarios } from './usuarios';
 
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgaModule } from '../../../theme/nga.module';
 import { NuevoUsuario } from './usuarios/components/nuevoUsuario';
 import { UsuariosService } from '../../../services/usuariosService';
@@ -27,6 +27,10 @@ import { Rubros } from './rubros';
 import { NuevoRubro } from './rubros/components/nuevoRubro';
 import { EditarRubro } from './rubros/components/editarRubro';
 import { NuevoRecurso } from '../../reusable/formularios/nuevoRecurso';
+import { SubRubrosService } from '../../../services/subRubrosService';
+import { SubRubros } from './subRubros';
+import { NuevoSubRubro } from './subRubros/components/nuevoSubRubro';
+import { EditarSubRubro } from './subRubros/components/editarSubRubro';
 
 
 
@@ -51,7 +55,10 @@ import { NuevoRecurso } from '../../reusable/formularios/nuevoRecurso';
         Rubros,
         NuevoRubro,
         EditarRubro,
-        NuevoRecurso
+        NuevoRecurso,
+        SubRubros,
+        NuevoSubRubro,
+        EditarSubRubro
     ],
     providers: [
         DataTablesService,
@@ -60,7 +67,8 @@ import { NuevoRecurso } from '../../reusable/formularios/nuevoRecurso';
         LocalStorageService,
         UtilsService,
         TipoComprobantesService,
-        RubrosService
+        RubrosService,
+        SubRubrosService
     ]
 })
 export class TablasModule {

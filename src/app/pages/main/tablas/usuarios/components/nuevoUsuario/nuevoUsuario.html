@@ -4,13 +4,13 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="inputFirstName">Nombre</label>
-                    <input [(ngModel)]="usuarioNuevo.nombre" type="text" class="form-control" id="inputFirstName" placeholder="Nombre">
+                    <input  [(ngModel)]="usuarioNuevo.nombre" type="text" class="form-control" id="inputFirstName" placeholder="Nombre">
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="inputEmail">Email</label>
-                    <input [(ngModel)]="usuarioNuevo.email" type="email" class="form-control" id="inputEmail" placeholder="Email">
+                    <input  [(ngModel)]="usuarioNuevo.email" type="email" class="form-control" id="inputEmail" placeholder="Email">
                 </div>
             </div>
             <div class="col-sm-4">
@@ -24,7 +24,7 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="Sucursal">Sucursal</label>
-                    <select [(ngModel)]="usuarioNuevo.perfil.sucursal" (change)="changeSucursal($event)" class="form-control" id="Sucursal">
+                    <select [compareWith]="compareWithSucursal" [(ngModel)]="usuarioNuevo.perfil.sucursal" (change)="changeSucursal($event)" class="form-control" id="Sucursal">
                         <option *ngFor="let suc of sucursales | async" [ngValue]="suc" [selected]="suc.idSucursal === 1">
                             {{suc.nombre}} - {{suc.domicilio}}
                         </option>
@@ -35,7 +35,7 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="Perfil">Perfil</label>
-                    <select [(ngModel)]="usuarioNuevo.perfil" class="form-control" id="Perfil" [disabled]="!usuarioNuevo.perfil.sucursal">
+                    <select [compareWith]="compareWithPerfil" [(ngModel)]="usuarioNuevo.perfil" class="form-control" id="Perfil" [disabled]="!usuarioNuevo.perfil.sucursal">
                         <option *ngFor="let per of perfiles | async" [ngValue]="per">
                             {{per.descripcion}}
                         </option>
@@ -50,7 +50,17 @@
                 </div>
             </div>
         </div>
-        <button (click)="onClickCrearUsuario()" type="submit" class="btn btn-primary">Confirmar</button>
+
+        <button [disabled]="utilsService.checkIfIncomplete(usuarioNuevo)(
+                    usuarioNuevo.perfil.idPerfil === null || 
+                    usuarioNuevo.perfil.sucursal.idSucursal === null
+                )"
+                (click)="onClickCrearUsuario()" 
+                type="submit" 
+                class="btn btn-primary">
+            Confirmar
+        </button>
+
     </ba-card>
 
 </div>

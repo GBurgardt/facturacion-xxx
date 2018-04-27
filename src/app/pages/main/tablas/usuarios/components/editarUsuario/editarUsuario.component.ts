@@ -21,10 +21,10 @@ export class EditarUsuario {
     usuarioEnEdicion: Usuario = new Usuario();
 
     // Sucursales de la empresa
-    sucursales;
+    sucursales: Observable<Sucursal[]>;
 
     // Perfiles disponible para tal sucursal
-    perfiles;
+    perfiles: Observable<Perfil[]>;
 
     constructor(
         private usuariosService: UsuariosService,
@@ -36,15 +36,25 @@ export class EditarUsuario {
         this.sucursales = usuariosService.getSucursalesFromEmpresa();
         
         // Busco el id del usuario a editar en la ruta
-        this.route.params.subscribe(params => 
+        this.route.params.subscribe(params => {
+            
             // Obtengo el usuario que se va a editar
             this.usuariosService.getUsuarioById(parseInt(params.idUsuario)).subscribe(usuario =>{
                 this.usuarioEnEdicion = usuario;
-                console.log('this.usuarioEnEdicion');
-                console.log(this.usuarioEnEdicion);
-            })
-        );
+    
+                // Obtengo los perfiles disponibles de la sucursal del usuario
+                this.perfiles = usuariosService.getPerfilesFromSucursal(this.usuarioEnEdicion.perfil.sucursal)
+            });   
+        });
+        
+    }
 
+    compareWithSucursal(item1: Sucursal, item2: Sucursal) {
+        return item1.idSucursal === item2.idSucursal;
+    }
+
+    compareWithPerfil(item1: Perfil, item2: Perfil) {
+        return item1.idPerfil === item2.idPerfil;
     }
 
     /**
@@ -58,11 +68,12 @@ export class EditarUsuario {
     }
 
     /**
-     * Se dispara cuando se cambia la sucursal en el dropdown
+     * Se dispara cuando se cambia el perfil en el dropdown
      * @param event 
      */
     changePerfil(event) {
-        console.log(this.usuarioEnEdicion.perfil.sucursal);
+        //console.log(this.usuarioEnEdicion.perfil.sucursal);
+        //console.log(this.usuarioEnEdicion);
     }
 
     /**
@@ -88,11 +99,7 @@ export class EditarUsuario {
             )();
         }
         catch(ex) {
-            console.log(ex);
-            const errorBody = JSON.parse(ex['_body']);
-
-            // Mostrar mensaje de error
-            this.utilsService.showModal(errorBody.control.codigo)(errorBody.control.descripcion);
+            this.utilsService.decodeErrorResponse(ex);
             
         }
     }

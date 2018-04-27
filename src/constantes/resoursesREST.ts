@@ -4,5 +4,6 @@
 export const resourcesREST = {
     cteTipo: 'cteTipo',
     rubros: 'rubros',
-    sucursales: 'sucursales'
+    sucursales: 'sucursales',
+    subRubros: 'subRubros'
 };

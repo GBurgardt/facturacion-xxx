@@ -25,7 +25,23 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="inputFirstName">Curso Legal</label>
-                    <input [(ngModel)]="tipoComprobanteNuevo.cursoLegal" type="text" class="form-control" id="cursoLegal" placeholder="Curso legal">
+
+                    <div class="radio-curso-legal">
+                        <div class="col-md-4">
+                            <label class="radio-inline custom-radio nowrap">
+                                <input type="radio" name="inlineRadioOptions" id="inlineRadio1" [value]="true" [(ngModel)]="tipoComprobanteNuevo.cursoLegal">
+                                <span>Si</span>
+                            </label>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="radio-inline custom-radio nowrap">
+                                <input type="radio" name="inlineRadioOptions" id="inlineRadio2" [value]="false" [(ngModel)]="tipoComprobanteNuevo.cursoLegal">
+                                <span>No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- <input [(ngModel)]="tipoComprobanteNuevo.cursoLegal" type="text" class="form-control" id="cursoLegal" placeholder="Curso legal"> -->
                 </div>
             </div>
             <div class="col-sm-4">
@@ -50,7 +66,15 @@
                 </div>
             </div>
         </div>
-        <button (click)="onClickCrearTipoComprobante()" type="submit" class="btn btn-primary">Confirmar</button>
+        <button [disabled]="utilsService.checkIfIncomplete(tipoComprobanteNuevo)(
+                    usuarioNuevo.perfil.idPerfil === null || 
+                    usuarioNuevo.perfil.sucursal.idSucursal === null
+                )"
+                (click)="onClickCrearTipoComprobante()" 
+                type="submit" 
+                class="btn btn-primary">
+            Confirmar
+        </button>
     </ba-card>
 
 </div>

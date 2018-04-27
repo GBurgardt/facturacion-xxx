@@ -1,7 +1,4 @@
 import { Component } from '@angular/core';
-import { DataTablesService } from '../../../reusable/tablas/dataTables/dataTables.service';
-import { UsuariosService } from '../../../../services/usuariosService';
-import { LocalStorageService } from '../../../../services/localStorageService';
 import { environment } from 'environments/environment';
 import { Router } from '@angular/router';
 import { Usuario } from 'app/models/usuario';
@@ -22,7 +19,6 @@ export class TipoComprobantes {
     tableColumns;
 
     constructor(
-        private service: DataTablesService,
         private tipoComprobantesService: TipoComprobantesService,
         private router: Router,
         private utilsService: UtilsService
@@ -77,23 +73,19 @@ export class TipoComprobantes {
         this.router.navigate(['/pages/tablas/tipos-comprobantes/editar', tipoComprobante.idCteTipo]);
     }
 
-    /**
-     * Borra el usuario y muestra un mensajito avisando tal accion
-     */
-    onClickRemove = async(usuario) => {
+    
+    onClickRemove = async(tipoComprobante) => {
         
         // Pregunto si está seguro
         this.utilsService.showModal(
-            'Borrar usuario'
+            'Borrar tipo comprobante'
         )(
-            '¿Estás seguro de borrar el usuario?'
+            '¿Estás seguro de borrar el tipo de comprobante?'
         )(
            async () => {
-                // Borro usuario
-                //const respUsuarioBorrado = await this.usuariosService.removeUsuario(usuario);     
+                const respUsuarioBorrado = await this.tipoComprobantesService.removeTipoComprobante(tipoComprobante);     
                 
-                // Obtengo la lista de usuarios actualizada
-                //this.dataTipoComprobantes = this.usuariosService.getUsuariosList();
+                this.dataTipoComprobantes = this.tipoComprobantesService.getTipoComprobantesList();
             }
         )({
             tipoModal: 'confirmation'

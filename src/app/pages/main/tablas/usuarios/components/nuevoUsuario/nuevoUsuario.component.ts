@@ -7,6 +7,8 @@ import { Perfil } from '../../../../../../models/perfil';
 import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
 import { Router } from '@angular/router';
+import { isString } from 'util';
+
 
 @Component({
     selector: 'nuevo-usuario',
@@ -28,6 +30,13 @@ export class NuevoUsuario {
         private utilsService: UtilsService,
         private router: Router
     ) {
+
+        // Required del form
+        // this.form = fb.group({
+        //     'nombre': ['', Validators.compose([Validators.required])],
+        //     'email': ['', Validators.compose([Validators.required])]
+        // });
+
         // Obtengo las sucursales disponibles de la empresa
         this.sucursales = usuariosService.getSucursalesFromEmpresa();
 
@@ -50,10 +59,10 @@ export class NuevoUsuario {
         
         try {
             // Creo el usuario nuevo
-            const respUsuarioCreado = await this.usuariosService.registrarUsuario(
+            const respUsuarioCreado: any = await this.usuariosService.registrarUsuario(
                 this.usuarioNuevo
             );
-    
+
             // Muestro mensaje de okey y redirecciono a la lista de usuarios
             this.utilsService.showModal(
                 respUsuarioCreado.control.codigo
@@ -64,12 +73,17 @@ export class NuevoUsuario {
             )();
         }
         catch(ex) {
-            const errorBody = JSON.parse(ex['_body']);
-
-            // Mostrar mensaje de error
-            this.utilsService.showModal(errorBody.control.codigo)(errorBody.control.descripcion);
-            
+            this.utilsService.decodeErrorResponse(ex);
         }
+    }
+
+    
+    compareWithSucursal(item1: Sucursal, item2: Sucursal) {
+        return item1.idSucursal === item2.idSucursal;
+    }
+
+    compareWithPerfil(item1: Perfil, item2: Perfil) {
+        return item1.idPerfil === item2.idPerfil;
     }
 
 }

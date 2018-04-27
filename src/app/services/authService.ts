@@ -16,6 +16,7 @@ import 'rxjs/add/operator/toPromise';
 import { TipoComprobante } from '../models/tipoComprobante';
 import { resourcesREST } from 'constantes/resoursesREST';
 import { Rubro } from 'app/models/rubro';
+import { SubRubro } from 'app/models/subRubro';
 
 @Injectable()
 export class AuthService {
@@ -284,36 +285,149 @@ export class AuthService {
     }
 
     /** 
+    * @description Borrar tipo comprobante
+    * @argument token
+    * @argument tipoComprobante
+    */
+    removeTipoComprobante(tipoComprobante: TipoComprobante, token) {
+        return this.request(
+            [tipoComprobante.idCteTipo.toString()],
+            RequestMethod.Delete,
+            {
+                token: token
+            },
+            'cteTipo',
+            {},
+            {}
+        ).toPromise();
+    }
+
+    /** 
     * @description Registra un rubro
     * @argument rubro
     * @argument token
     */
     registrarRubro(rubro: Rubro, token) {
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token
+            },
+            'rubros',
+            {
+                idRubro: rubro.idRubro,
+                descripcion: rubro.descripcion
+            },
+            {}
+        ).toPromise();
+    }
 
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve('mock');
-            }, 300);
-        });
+    /** 
+    * @description Registra un subrubro
+    * @argument rubro
+    * @argument token
+    */
+    registrarSubRubro(recurso: SubRubro, token) {
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token
+            },
+            'subRubros',
+            {
+                idSubRubro: recurso.idSubRubro,
+                descripcion: recurso.descripcion,
+                idRubro: recurso.rubro.idRubro
+            },
+            {}
+        ).toPromise();
+    }
 
-        // return this.request(
-        //     [],
-        //     RequestMethod.Post,
-        //     {
-        //         token: token
-        //     },
-        //     'rubros',
-        //     {
-        //         codigoComp: tipoComprobante.codigoComp,
-        //         descCorta: tipoComprobante.descCorta,
-        //         descripcion: tipoComprobante.descripcion,
-        //         cursoLegal: tipoComprobante.cursoLegal,
-        //         codigoAfip: tipoComprobante.codigoAfip,
-        //         surenu: tipoComprobante.surenu,
-        //         observaciones: tipoComprobante.observaciones ? tipoComprobante.observaciones : ''
-        //     },
-        //     {}
-        // ).toPromise();
+    /** 
+   * @description Editar un rubro
+   * @argument token
+   * @argument rubro
+   */
+    editarRubro(rubro: Rubro, token) {
+        console.log(rubro);
+        return this.request(
+            [],
+            RequestMethod.Put,
+            {
+                token: token
+            },
+            'rubros',
+            {
+                idRubro: rubro.idRubro,
+                descripcion: rubro.descripcion
+            },
+            {}
+        ).toPromise();
+    }
+
+    /** 
+      * @description Editar un sub rubro
+      * @argument token
+      * @argument recurso
+      */
+    editarSubRubro(recurso: SubRubro, token) {
+        console.log(recurso);
+        return this.request(
+            [],
+            RequestMethod.Put,
+            {
+                token: token
+            },
+            'subRubros',
+            {
+                idSubRubro: recurso.idSubRubro,
+                descripcion: recurso.descripcion,
+                idRubro: recurso.rubro.idRubro
+            },
+            {}
+        ).toPromise();
+    }
+
+
+    /** 
+    * @description Borrar rubro
+    * @argument token
+    * @argument rubro
+    */
+    removeRubro(rubro: Rubro, token) {
+        return this.request(
+            [rubro.idRubro.toString()],
+            RequestMethod.Delete,
+            {
+                token: token
+            },
+            'rubros',
+            {},
+            {}
+        ).toPromise();
+    }
+
+    /** 
+    * @description Borrar subrubro
+    * @argument token
+    * @argument recurso
+    */
+    removeSubRubro(recurso: SubRubro, token) {
+        return this.request(
+            [
+                recurso.rubro.idRubro.toString(), 
+                recurso.idSubRubro.toString()
+            ],
+            RequestMethod.Delete,
+            {
+                token: token
+            },
+            'subRubros',
+            {},
+            {}
+        ).toPromise();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -326,7 +440,7 @@ export class AuthService {
     * @argument token
     * @argument resource Ejemplos: 'cteTipo', 'rubros'
     */
-    getResource = (token: string) => (nombreResource: string) => {
+    getResourceList = (token: string) => (nombreResource: string) => {
         // Si el resource solicitado no está incluido en la lista de recursos disponisbles, retorno un error
         if (!Object.keys(resourcesREST).includes(nombreResource)) {
             return Observable.throw('Recurso inexistente')

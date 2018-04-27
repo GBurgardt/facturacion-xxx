@@ -34,8 +34,8 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="Sucursal">Sucursal</label>
-                    <select [(ngModel)]="usuarioEnEdicion.perfil.sucursal" (change)="changeSucursal($event)" class="form-control" id="Sucursal">
-                        <option *ngFor="let suc of sucursales | async" [ngValue]="suc" [selected]="suc.idSucursal === 1">
+                    <select [compareWith]="compareWithSucursal" [(ngModel)]="usuarioEnEdicion.perfil.sucursal" (change)="changeSucursal($event)" class="form-control" id="Sucursal">
+                        <option *ngFor="let suc of sucursales | async" [ngValue]="suc">
                             {{suc.nombre}} - {{suc.domicilio}}
                         </option>
                     </select>
@@ -45,7 +45,7 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="Perfil">Perfil</label>
-                    <select [(ngModel)]="usuarioEnEdicion.perfil" (change)="changePerfil($event)" class="form-control" id="Perfil" [disabled]="!usuarioEnEdicion.perfil.sucursal">
+                    <select [compareWith]="compareWithPerfil" [(ngModel)]="usuarioEnEdicion.perfil" (change)="changePerfil($event)" class="form-control" id="Perfil" [disabled]="!usuarioEnEdicion.perfil.sucursal">
                         <option *ngFor="let per of perfiles | async" [ngValue]="per">
                             {{per.descripcion}}
                         </option>

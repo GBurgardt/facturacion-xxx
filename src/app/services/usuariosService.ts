@@ -6,13 +6,15 @@ import { Usuario } from '../models/usuario';
 import { LocalStorageService } from './localStorageService';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs/Observable';
+import { UtilsService } from './utilsService';
 
 @Injectable()
 export class UsuariosService {
 
     constructor(
         private authService: AuthService,
-        private localStorageService: LocalStorageService
+        private localStorageService: LocalStorageService,
+        private utilsService: UtilsService
     ) { }
 
     /**
@@ -33,14 +35,12 @@ export class UsuariosService {
     /**
      * Obtiene los perfiles de una sucursal
      */
-    getPerfilesFromSucursal =  (sucursal: Sucursal) => {
-        console.log(sucursal);
+    getPerfilesFromSucursal = (sucursal: Sucursal) => {
         return this.authService.getPerfilesList(
                 this.localStorageService.getObject(environment.localStorage.acceso).token, 
                 sucursal.idSucursal
             ).map(  
                 perfilesResp => {
-                    
                     return perfilesResp.arraydatos.map(perfil => new Perfil(perfil));
                 }
             );
@@ -61,10 +61,15 @@ export class UsuariosService {
      * Registra un nuevo usuario
      */
     registrarUsuario = (usuarioNuevo: Usuario) => {
-        return this.authService.registrarUsuario(
-            usuarioNuevo, 
-            this.localStorageService.getObject(environment.localStorage.acceso).token
-        );
+
+        if (!this.utilsService.validateEmail(usuarioNuevo.email)) {
+            return this.utilsService.getPromiseErrorResponse('Error')('Email invalido');
+        } else {
+            return this.authService.registrarUsuario(
+                usuarioNuevo, 
+                this.localStorageService.getObject(environment.localStorage.acceso).token
+            );
+        }
     }
 
     /**

@@ -55,11 +55,7 @@ export class EditarTipoComprobante {
             )();
         }
         catch(ex) {
-            console.log(ex);
-            const errorBody = JSON.parse(ex['_body']);
-
-            // Mostrar mensaje de error
-            this.utilsService.showModal(errorBody.control.codigo)(errorBody.control.descripcion);
+            this.utilsService.decodeErrorResponse(ex);
             
         }
     }

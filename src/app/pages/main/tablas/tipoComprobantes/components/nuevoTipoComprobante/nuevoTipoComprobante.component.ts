@@ -16,8 +16,6 @@ import { TipoComprobantesService } from '../../../../../../services/tipoComproba
     templateUrl: './nuevoTipoComprobante.html',
 })
 export class NuevoTipoComprobante {
-
-
     // Usuario nuevo
     tipoComprobanteNuevo: TipoComprobante = new TipoComprobante();
 
@@ -48,10 +46,7 @@ export class NuevoTipoComprobante {
             )();
         }
         catch(ex) {
-            const errorBody = JSON.parse(ex['_body']);
-
-            // Mostrar mensaje de error
-            this.utilsService.showModal(errorBody.control.codigo)(errorBody.control.descripcion);
+            this.utilsService.decodeErrorResponse(ex);
             
         }
     }

@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import { DataTablesService } from '../../../reusable/tablas/dataTables/dataTables.service';
 import { UsuariosService } from '../../../../services/usuariosService';
-import { LocalStorageService } from '../../../../services/localStorageService';
 import { environment } from 'environments/environment';
 import { Router } from '@angular/router';
 import { Usuario } from 'app/models/usuario';
@@ -22,7 +20,6 @@ export class Usuarios {
     tableColumns;
 
     constructor(
-        private service: DataTablesService,
         private usuariosService: UsuariosService,
         private router: Router,
         private utilsService: UtilsService

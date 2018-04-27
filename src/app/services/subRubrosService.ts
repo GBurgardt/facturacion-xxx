@@ -4,10 +4,10 @@ import { LocalStorageService } from './localStorageService';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs/Observable';
 import { resourcesREST } from 'constantes/resoursesREST';
-import { Rubro } from '../models/rubro';
+import { SubRubro } from '../models/subRubro';
 
 @Injectable()
-export class RubrosService {
+export class SubRubrosService {
 
     constructor(
         private authService: AuthService,
@@ -15,44 +15,44 @@ export class RubrosService {
     ) { }
 
 
-    getRubrosList = () => {
-        const listaRubros: Observable<Rubro[]> = this.authService.getResourceList(
+    getSubRubrosList = () => {
+        const lista: Observable<SubRubro[]> = this.authService.getResourceList(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
-            resourcesREST.rubros
-        ).map(listRubros => {
-            return listRubros.arraydatos.map(rubro => {
-                return new Rubro(rubro);
+            resourcesREST.subRubros
+        ).map(list => {
+            return list.arraydatos.map(resource => {
+                return new SubRubro(resource);
             })
         });
 
-        return listaRubros;
+        return lista;
     }
 
-    getRubroById = (idRubro: number) => {
-        return this.getRubrosList().map((rubrosList: Rubro[]) =>
-            rubrosList.find(rubro => rubro.idRubro === idRubro)
+    getSubRubroById = (idSubRubro: number) => {
+        return this.getSubRubrosList().map((list: SubRubro[]) =>
+            list.find(recurso => recurso.idSubRubro === idSubRubro)
         );
     }
 
     
-    editarRubro = (rubroEditado: Rubro) => {
-        return this.authService.editarRubro(
-            rubroEditado, 
+    editarSubRubro = (recurso: SubRubro) => {
+        return this.authService.editarSubRubro(
+            recurso, 
             this.localStorageService.getObject(environment.localStorage.acceso).token
         );
     }
 
-    registrarRubro = (rubro: Rubro) => {
-        return this.authService.registrarRubro(
-            rubro, 
+    registrarSubRubro = (recurso: SubRubro) => {
+        return this.authService.registrarSubRubro(
+            recurso, 
             this.localStorageService.getObject(environment.localStorage.acceso).token
         );
     }
 
-    removeRubro = (rubro: Rubro) => {
-        return this.authService.removeRubro(
-            rubro,
+    removeSubRubro = (recurso: SubRubro) => {
+        return this.authService.removeSubRubro(
+            recurso,
             this.localStorageService.getObject(environment.localStorage.acceso).token
         );
     }

@@ -10,6 +10,9 @@ import { NuevoTipoComprobante } from './tipoComprobantes/components/nuevoTipoCom
 import { Rubros } from './rubros';
 import { NuevoRubro } from './rubros/components/nuevoRubro';
 import { EditarRubro } from './rubros/components/editarRubro';
+import { SubRubros } from './subRubros';
+import { NuevoSubRubro } from './subRubros/components/nuevoSubRubro';
+import { EditarSubRubro } from './subRubros/components/editarSubRubro';
 
 // noinspection TypeScriptValidateTypes
 const routes: Routes = [
@@ -26,6 +29,9 @@ const routes: Routes = [
             { path: 'rubros', component: Rubros },
             { path: 'rubros/nuevo', component: NuevoRubro },
             { path: 'rubros/editar/:idRubro', component: EditarRubro },
+            { path: 'sub-rubros', component: SubRubros },
+            { path: 'sub-rubros/nuevo', component: NuevoSubRubro },
+            { path: 'sub-rubros/editar/:idSubRubro', component: EditarSubRubro },
         ]
     }
 ];

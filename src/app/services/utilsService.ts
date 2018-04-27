@@ -4,6 +4,8 @@ import { DefaultModal } from '../pages/reusable/modals/default-modal/default-mod
 import { AuthService } from './authService';
 import { AppState } from 'app/app.service';
 import { ConfirmationModal } from 'app/pages/reusable/modals/confirmation-modal/confirmation-modal.component';
+import { isString } from 'util';
+import dynamicClass from 'app/services/dynamicClassService';
 
 @Injectable()
 export class UtilsService {
@@ -40,6 +42,79 @@ export class UtilsService {
                 }
             });
         }
-
     }
+
+    /**
+     * Retorna si un email es valido
+     */
+    validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+
+    /**
+     * Decodifica la respuesta de error y muestra el error
+     * @param ex 
+     */
+    decodeErrorResponse(ex) {
+        console.log(ex);
+        let errorBody;
+
+        if (isString(ex)) {
+            errorBody = JSON.parse(ex['_body']);
+        } else {
+            errorBody = ex['_body'];
+        }
+
+        // Mostrar mensaje de error
+        this.showModal(errorBody.control.codigo)(errorBody.control.descripcion)()();
+    }
+
+    /**
+     * Retorna una promise error con el formato de la respuesta del servicio REST
+     */
+    getPromiseErrorResponse = (titulo) => (descripcion) => {
+        return Promise.reject({
+            '_body': {
+                control: {
+                    codigo: titulo,
+                    descripcion: descripcion
+                }
+            }
+        });
+    }
+
+    /**
+     * Dado un objeto de una clase es incompleto, retorna true si algùn campo es null
+     * @param objeto El objeto
+     * @param extraConditions Condiciones extras. Por ejemplo: objeto.perfil.idPerfil === null
+     */
+    checkIfIncomplete = (objeto: any) => (extraConditions?: boolean) => {
+
+        // Obtengo la clase del objeto recibido
+        const ClassOne = dynamicClass(objeto.constructor.name);
+
+        const test = new ClassOne();
+
+        console.log(test);
+
+        return Object.keys(objeto).some((key) => {
+            if (key !== 'idUsuario') {
+                return objeto[key] === '' || objeto[key] === null
+            }
+        }) || (
+            objeto.perfil.idPerfil === null ||
+            objeto.perfil.sucursal.idSucursal === null
+        )
+    }
+
+    /**
+     * Lo que el nombre dice
+     */
+    getFirstKeyOfJson = (objetJson) => {
+        
+    }
+
+
 }

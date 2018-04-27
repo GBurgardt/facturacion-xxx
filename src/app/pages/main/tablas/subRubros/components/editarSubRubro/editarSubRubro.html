@@ -1,12 +1,6 @@
-<div class="editar-rubro">
-    <ba-card cardTitle="Editar Tipo Comprobante" baCardClass="with-scroll">
+<div class="editar-sub-rubro">
+    <ba-card cardTitle="Editar Sub Rubro" baCardClass="with-scroll">
         <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="idRubro">Id Rubro</label>
-                    <input [(ngModel)]="recurso.idRubro" type="text" class="form-control" id="idRubro" placeholder="Id del rubro">
-                </div>
-            </div>
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="descripcion">Descripcion</label>
@@ -14,6 +8,7 @@
                 </div>
             </div>
         </div>
+        
         <button (click)="onClickEditar()" type="submit" class="btn btn-primary">Confirmar</button>
     </ba-card>
 

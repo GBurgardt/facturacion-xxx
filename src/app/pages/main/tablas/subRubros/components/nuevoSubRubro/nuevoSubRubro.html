@@ -1,0 +1,34 @@
+<div class="nuevo-sub-rubro">
+    <ba-card cardTitle="Nuevo sub rubro" baCardClass="with-scroll">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="idSubRubro">ID</label>
+                    <input [(ngModel)]="recurso.idSubRubro" type="text" class="form-control" id="idSubRubro" placeholder="Id del sub rubro">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="descripcion">Descripcion</label>
+                    <input [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion" placeholder="Descripcion del rubro">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="rubro">Rubro</label>
+                    <select [(ngModel)]="recurso.rubro" class="form-control" id="rubro">
+                        <option *ngFor="let rub of rubros | async" [ngValue]="rub">
+                            {{rub.idRubro}} - {{rub.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+        <button (click)="onClickCrearRubro()" type="submit" class="btn btn-primary">Confirmar</button>
+    </ba-card>
+
+</div>

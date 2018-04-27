@@ -46,11 +46,7 @@ export class Login {
 
 
             }catch(ex) {
-                console.log(ex);
-                const errorBody = JSON.parse(ex['_body']);
-
-                console.log(errorBody);
-                this.utilsService.showModal(errorBody.control.codigo)(errorBody.control.descripcion);
+                this.utilsService.decodeErrorResponse(ex);
             }
         }
     }

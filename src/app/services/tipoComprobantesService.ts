@@ -21,7 +21,7 @@ export class TipoComprobantesService {
      * Obtiene la lista de tipos de comprobantes
      */
     getTipoComprobantesList = () => {
-        const listaTipoComprobantes: Observable<TipoComprobante[]> = this.authService.getResource(
+        const listaTipoComprobantes: Observable<TipoComprobante[]> = this.authService.getResourceList(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
             resourcesREST.cteTipo
@@ -61,6 +61,16 @@ export class TipoComprobantesService {
     registrarTipoComprobante = (tipoComprobante: TipoComprobante) => {
         return this.authService.registrarTipoComprobante(
             tipoComprobante, 
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        );
+    }
+
+    /**
+    * Borra un tipo comprobante
+    */
+    removeTipoComprobante = (tipoComprobante: TipoComprobante) => {
+        return this.authService.removeTipoComprobante(
+            tipoComprobante,
             this.localStorageService.getObject(environment.localStorage.acceso).token
         );
     }
