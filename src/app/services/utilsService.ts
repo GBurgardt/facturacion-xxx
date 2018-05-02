@@ -6,6 +6,7 @@ import { AppState } from 'app/app.service';
 import { ConfirmationModal } from 'app/pages/reusable/modals/confirmation-modal/confirmation-modal.component';
 import { isString } from 'util';
 import dynamicClass from 'app/services/dynamicClassService';
+import { resourcesREST } from 'constantes/resoursesREST';
 
 @Injectable()
 export class UtilsService {
@@ -110,10 +111,14 @@ export class UtilsService {
     }
 
     /**
-     * Lo que el nombre dice
+     * A partir de un recurso, retorna la referencia 'rest' (esto es, el endpoitn al que apuntar del services)
      */
-    getFirstKeyOfJson = (objetJson) => {
-        
+    getNameRestOfResource = (recurso) => {
+        // Obtengo la clase del objeto recibido
+        const ClaseRecurso = dynamicClass(recurso.constructor.name);
+
+        // Obtengo la referencia REST de tal clase
+        return Object.keys(resourcesREST).find(key => resourcesREST[key].Clase === ClaseRecurso);
     }
 
 

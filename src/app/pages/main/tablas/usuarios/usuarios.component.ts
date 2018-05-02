@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { UsuariosService } from '../../../../services/usuariosService';
 import { environment } from 'environments/environment';
 import { Router } from '@angular/router';
 import { Usuario } from 'app/models/usuario';
 import { UtilsService } from '../../../../services/utilsService';
+import { RecursoService } from 'app/services/recursoService';
+import { resourcesREST } from 'constantes/resoursesREST';
 
 @Component({
     selector: 'maps',
-    // template: `<router-outlet></router-outlet>`
     styleUrls: ['./usuarios.scss'],
     templateUrl: './usuarios.html'
 })
@@ -20,9 +20,9 @@ export class Usuarios {
     tableColumns;
 
     constructor(
-        private usuariosService: UsuariosService,
         private router: Router,
-        private utilsService: UtilsService
+        private utilsService: UtilsService,
+        private recursoService: RecursoService
     ) {
         // Guardo las columnas de la tabla con sus respectivas anchuras
         this.tableColumns = [
@@ -43,14 +43,13 @@ export class Usuarios {
             }
         ]
         // Obtengo la lista de usuarios
-        this.dataUsuarios = this.usuariosService.getUsuariosList();
+        this.dataUsuarios = this.recursoService.getRecursoList(resourcesREST.usuarios)();
     }
 
     /**
      * Redireciona a la pagina de editar
      */
     onClickEdit = (usuario) => {
-        console.log(usuario);
         // Redirecciono al dashboard
         this.router.navigate(['/pages/tablas/usuarios/editar', usuario.idUsuario]);
     }
@@ -68,10 +67,10 @@ export class Usuarios {
         )(
            async () => {
                 // Borro usuario
-                const respUsuarioBorrado = await this.usuariosService.removeUsuario(usuario);     
+                const resp = await this.recursoService.borrarRecurso(usuario.idUsuario)(resourcesREST.usuarios);
                 
                 // Obtengo la lista de usuarios actualizada
-                this.dataUsuarios = this.usuariosService.getUsuariosList();
+                this.dataUsuarios = this.recursoService.getRecursoList(resourcesREST.usuarios)();
             }
         )({
             tipoModal: 'confirmation'

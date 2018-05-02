@@ -24,7 +24,7 @@ export class TipoComprobantesService {
         const listaTipoComprobantes: Observable<TipoComprobante[]> = this.authService.getResourceList(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
-            resourcesREST.cteTipo
+            resourcesREST.cteTipo.nombre
         )().map(listTipoComprobantes => {
             return listTipoComprobantes.arraydatos.map(tipoComprobante => {
                 return new TipoComprobante(tipoComprobante);
@@ -48,10 +48,13 @@ export class TipoComprobantesService {
     /**
      * Edita un tipo de comprobante existente
      */
-    editarTipoComprobante = (tipoComprobanteEditado: TipoComprobante) => {
-        return this.authService.editarTipoComprobante(
-            tipoComprobanteEditado, 
+    editarTipoComprobante = (recurso: TipoComprobante) => {
+        return this.authService.editarRecurso(
+            recurso
+        )(
             this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            resourcesREST.cteTipo.nombre
         );
     }
 
@@ -61,10 +64,10 @@ export class TipoComprobantesService {
     registrarTipoComprobante = (recurso: TipoComprobante) => {
         return this.authService.registrarRecurso(
             recurso
-        )(
-            this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(
-            resourcesREST.cteTipo
+        )({
+            token: this.localStorageService.getObject(environment.localStorage.acceso).token
+        })(
+            resourcesREST.cteTipo.nombre
         );
     }
 
@@ -77,11 +80,11 @@ export class TipoComprobantesService {
         //     this.localStorageService.getObject(environment.localStorage.acceso).token
         // );
         return this.authService.removeRecurso(
-            recurso
+            recurso.idCteTipo
         )(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
-            resourcesREST.cteTipo
+            resourcesREST.cteTipo.nombre
         );
     }
 

@@ -19,7 +19,7 @@ export class SubRubrosService {
         const lista: Observable<SubRubro[]> = this.authService.getResourceList(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
-            resourcesREST.subRubros
+            resourcesREST.subRubros.nombre
         )().map(list => {
             return list.arraydatos.map(resource => {
                 return new SubRubro(resource);
@@ -37,29 +37,32 @@ export class SubRubrosService {
 
     
     editarSubRubro = (recurso: SubRubro) => {
-        return this.authService.editarSubRubro(
-            recurso, 
+        return this.authService.editarRecurso(
+            recurso
+        )(
             this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            resourcesREST.subRubros.nombre
         );
     }
 
     registrarSubRubro = (recurso: SubRubro) => {
         return this.authService.registrarRecurso(
             recurso
-        )(
-            this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(
-            resourcesREST.subRubros
+        )({
+            token: this.localStorageService.getObject(environment.localStorage.acceso).token
+        })(
+            resourcesREST.subRubros.nombre
         );
     }
 
     removeSubRubro = (recurso: SubRubro) => {
         return this.authService.removeRecurso(
-            recurso
+            recurso.idSubRubro
         )(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
-            resourcesREST.subRubros
+            resourcesREST.subRubros.nombre
         );
     }
 

@@ -9,6 +9,9 @@ import { Observable } from 'rxjs/Observable';
 import { UtilsService } from './utilsService';
 import { resourcesREST } from 'constantes/resoursesREST';
 
+// Libreria para encriptar en MD5 la clave
+import * as crypto from 'crypto-js';
+
 @Injectable()
 export class UsuariosService {
 
@@ -25,7 +28,7 @@ export class UsuariosService {
         const lista: Observable<Usuario[]> = this.authService.getResourceList(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
-            resourcesREST.usuarios
+            resourcesREST.usuarios.nombre
         )().map(list => {
             return list.arraydatos.map(resource => {
                 return new Usuario(resource);
@@ -42,9 +45,9 @@ export class UsuariosService {
         return this.authService.getResourceList(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
-            resourcesREST.perfiles
+            resourcesREST.perfiles.nombre
         )({
-            idSucursal: sucursal.idSucursal
+            sucursal: sucursal.idSucursal
         }).map(  
             perfilesResp => {
                 return perfilesResp.arraydatos.map(perfil => new Perfil(perfil));
@@ -56,9 +59,11 @@ export class UsuariosService {
      * Obtiene las sucursales disponible de la empresa
      */
     getSucursalesFromEmpresa = () => {
-        return this.authService.getSucursalesList(
+        return this.authService.getResourceList(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        ).map(sucursalesResp => 
+        )(
+            resourcesREST.sucursales.nombre
+        )().map(sucursalesResp => 
             sucursalesResp.arraydatos.map(sucursal => new Sucursal(sucursal))
         );
     }
@@ -67,24 +72,27 @@ export class UsuariosService {
      * Registra un nuevo usuario
      */
     registrarUsuario = (recurso: Usuario) => {
-
-        if (!this.utilsService.validateEmail(recurso.email)) {
-            return this.utilsService.getPromiseErrorResponse('Error')('Email invalido');
-        } else {
-            return this.authService.registrarUsuario(
-                recurso, 
-                this.localStorageService.getObject(environment.localStorage.acceso).token
-            );
-        }
+        return this.authService.registrarRecurso(
+            recurso
+        )({
+            clave: crypto.MD5(recurso.clave),
+            token: this.localStorageService.getObject(environment.localStorage.acceso).token
+        })(
+            resourcesREST.usuarios.nombre
+        );
     }
 
     /**
      * Edita un usuario existente
      */
-    editarUsuario = (usuarioEditado: Usuario) => {
-        return this.authService.editarUsuario(
-            usuarioEditado, 
-            this.localStorageService.getObject(environment.localStorage.acceso).token
+    editarUsuario = (recurso: Usuario) => {
+        return this.authService.editarRecurso(
+            recurso
+        )({
+            clave: crypto.MD5(recurso.clave),
+            token: this.localStorageService.getObject(environment.localStorage.acceso).token
+        })(
+            resourcesREST.usuarios.nombre
         );
     }
 
@@ -93,11 +101,11 @@ export class UsuariosService {
      */
     removeUsuario = (recurso: Usuario) => {
         return this.authService.removeRecurso(
-            recurso
+            recurso.idUsuario
         )(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
-            resourcesREST.usuarios
+            resourcesREST.usuarios.nombre
         );
     }
 

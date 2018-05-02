@@ -21,7 +21,7 @@ export class FormaPagoService {
         const lista: Observable<FormaPago[]> = this.authService.getResourceList(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
-            resourcesREST.formaPago
+            resourcesREST.formaPago.nombre
         )().map(list => {
             return list.arraydatos.map(resource => {
                 return new FormaPago(resource);
@@ -35,7 +35,7 @@ export class FormaPagoService {
         return this.authService.getResourceList(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
-            resourcesREST.sisFormaPago
+            resourcesREST.sisFormaPago.nombre
         )().map(list => {
             return list.arraydatos.map(resource => {
                 return new TipoFormaPago(resource);
@@ -46,10 +46,10 @@ export class FormaPagoService {
     registrarRecurso = (recurso: FormaPago) => {
         return this.authService.registrarRecurso(
             recurso
-        )(
-            this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(
-            resourcesREST.formaPago
+        )({
+            token: this.localStorageService.getObject(environment.localStorage.acceso).token
+        })(
+            resourcesREST.formaPago.nombre
         )
     }
 

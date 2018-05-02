@@ -37,6 +37,7 @@ import { FormasPago } from 'app/pages/main/tablas/formasPago';
 import { NuevaFormaPago } from './formasPago/components/nuevaFormaPago';
 import { Productos } from './productos';
 import { ProductosService } from '../../../services/productosService';
+import { RecursoService } from '../../../services/recursoService';
 
 
 
@@ -79,7 +80,8 @@ import { ProductosService } from '../../../services/productosService';
         RubrosService,
         SubRubrosService,
         FormaPagoService,
-        ProductosService
+        ProductosService,
+        RecursoService
     ]
 })
 export class TablasModule {

@@ -8,6 +8,10 @@ import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
+import { RecursoService } from '../../../../../../services/recursoService';
+import { resourcesREST } from 'constantes/resoursesREST';
+
+import * as crypto from 'crypto-js';
 
 @Component({
     selector: 'editar-usuario',
@@ -15,10 +19,8 @@ import { Observable } from 'rxjs/Observable';
     templateUrl: './editarUsuario.html',
 })
 export class EditarUsuario {
-    // TODO: Mapear bien sucursales y perfiles
-
     // Usuario que se va a editar
-    usuarioEnEdicion: Usuario = new Usuario();
+    recurso: Usuario = new Usuario();
 
     // Sucursales de la empresa
     sucursales: Observable<Sucursal[]>;
@@ -27,24 +29,33 @@ export class EditarUsuario {
     perfiles: Observable<Perfil[]>;
 
     constructor(
-        private usuariosService: UsuariosService,
         private utilsService: UtilsService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private recursoService: RecursoService,
+        private localStorageService: LocalStorageService
     ) {
         // Obtengo las sucursales disponibles de la empresa
-        this.sucursales = usuariosService.getSucursalesFromEmpresa();
+        this.sucursales = recursoService.getRecursoList(resourcesREST.sucursales)();
         
         // Busco el id del usuario a editar en la ruta
         this.route.params.subscribe(params => {
             
             // Obtengo el usuario que se va a editar
-            this.usuariosService.getUsuarioById(parseInt(params.idUsuario)).subscribe(usuario =>{
-                this.usuarioEnEdicion = usuario;
-    
-                // Obtengo los perfiles disponibles de la sucursal del usuario
-                this.perfiles = usuariosService.getPerfilesFromSucursal(this.usuarioEnEdicion.perfil.sucursal)
-            });   
+            this.recursoService.getRecursoList(resourcesREST.usuarios)()
+                .map((recursoList: Usuario[]) =>
+                    recursoList.find(usuario => usuario.idUsuario === parseInt(params.idUsuario))
+                )
+                .subscribe(usuario =>{
+                    this.recurso = usuario;
+        
+                    // Obtengo los perfiles disponibles de la sucursal del usuario
+                    this.perfiles = this.recursoService.getRecursoList(
+                        resourcesREST.perfiles
+                    )({
+                        sucursal: this.recurso.perfil.sucursal.idSucursal
+                    });
+                });   
         });
         
     }
@@ -62,18 +73,11 @@ export class EditarUsuario {
      * @param event 
      */
     changeSucursal(event) {
-        this.perfiles = this.usuariosService.getPerfilesFromSucursal(
-            this.usuarioEnEdicion.perfil.sucursal
-        );
-    }
-
-    /**
-     * Se dispara cuando se cambia el perfil en el dropdown
-     * @param event 
-     */
-    changePerfil(event) {
-        //console.log(this.usuarioEnEdicion.perfil.sucursal);
-        //console.log(this.usuarioEnEdicion);
+        this.perfiles = this.recursoService.getRecursoList(
+            resourcesREST.perfiles
+        )({
+            sucursal: this.recurso.perfil.sucursal.idSucursal
+        });
     }
 
     /**
@@ -85,15 +89,19 @@ export class EditarUsuario {
 
         try {
             // Edito el usuario seleccionado
-            const respUsuarioEditado = await this.usuariosService.editarUsuario(
-                this.usuarioEnEdicion
-            );
-    
+            const resp = await this.recursoService.editarRecurso(
+                this.recurso
+            )({
+                clave: crypto.MD5(this.recurso.clave),
+                token: this.localStorageService.getObject(environment.localStorage.acceso).token
+            });
+
+
             // Muestro mensaje de okey y redirecciono a la lista de usuarios
             this.utilsService.showModal(
-                respUsuarioEditado.control.codigo
+                resp.control.codigo
             )(
-                respUsuarioEditado.control.descripcion
+                resp.control.descripcion
             )(
                 () => this.router.navigate(['/pages/tablas/usuarios']) 
             )();

@@ -110,167 +110,6 @@ export class AuthService {
         ).toPromise();
     }
 
-    /** 
-    * @description Obtiene una lista de los perfiles disponibles de una sucursal
-    * @argument token
-    * @argument sucursal
-    */
-    getPerfilesList(token: string, sucursal: number) {
-        return this.request(
-            [],
-            RequestMethod.Post,
-            {
-                token: token
-            },
-            'perfiles',
-            {
-                idSucursal: sucursal
-            },
-            {}
-        );
-    }
-
-    /**
-     * Obtiene una lista de sucursales de la empresa
-     * @param token 
-     */
-    getSucursalesList(token: string) {
-        return this.request(
-            [],
-            RequestMethod.Get,
-            {
-                token: token
-            },
-            'sucursales',
-            {},
-            {}
-        );
-    }
-
-    /** 
-    * @description Obtiene una lista de usuarios correspondientes a una empresa
-    * @argument token
-    */
-    registrarUsuario(usuario: Usuario, token) {
-        return this.request(
-            [],
-            RequestMethod.Post,
-            {
-                clave: crypto.MD5(usuario.clave),
-                token: token
-            },
-            'usuarios',
-            {
-                nombre: usuario.nombre,
-                telefono: usuario.telefono,
-                perfil: usuario.perfil.idPerfil,
-                mail: usuario.email
-            },
-            {}
-        ).toPromise();
-    }
-
-    /** 
-    * @description Edita un usuario
-    * @argument token
-    * @argument idUsuario
-    */
-    editarUsuario(usuario: Usuario, token) {
-        return this.request(
-            [],
-            RequestMethod.Put,
-            {
-                clave: crypto.MD5(usuario.clave),
-                //clave: usuario.clave,
-                token: token
-            },
-            'usuarios',
-            {
-                idUsuario: usuario.idUsuario,
-                nombre: usuario.nombre,
-                telefono: usuario.telefono,
-                perfil: usuario.perfil.idPerfil,
-                mail: usuario.email
-            },
-            {}
-        ).toPromise();
-    }
-
-    /** 
-    * @description Edita un tipo de comprobante
-    * @argument token
-    * @argument tipoComprobante
-    */
-    editarTipoComprobante(tipoComprobante: TipoComprobante, token) {
-        console.log(tipoComprobante);
-        return this.request(
-            [],
-            RequestMethod.Put,
-            {
-                token: token
-            },
-            'cteTipo',
-            {
-                idCteTipo: tipoComprobante.idCteTipo,
-                codigoComp: tipoComprobante.codigoComp,
-                descCorta: tipoComprobante.descCorta,
-                descripcion: tipoComprobante.descripcion,
-                cursoLegal: tipoComprobante.cursoLegal,
-                codigoAfip: tipoComprobante.codigoAfip,
-                surenu: tipoComprobante.surenu,
-                observaciones: tipoComprobante.observaciones ? tipoComprobante.observaciones : ''
-            },
-            {}
-        ).toPromise();
-    }
-
-
-    /** 
-     * @description Editar un rubro
-     * @argument token
-     * @argument rubro
-     */
-    editarRubro(rubro: Rubro, token) {
-        console.log(rubro);
-        return this.request(
-            [],
-            RequestMethod.Put,
-            {
-                token: token
-            },
-            'rubros',
-            {
-                idRubro: rubro.idRubro,
-                codigo: rubro.codigoRubro,
-                descripcion: rubro.descripcion
-            },
-            {}
-        ).toPromise();
-    }
-
-    /** 
-      * @description Editar un sub rubro
-      * @argument token
-      * @argument recurso
-      */
-    editarSubRubro(recurso: SubRubro, token) {
-        console.log(recurso);
-        return this.request(
-            [],
-            RequestMethod.Put,
-            {
-                token: token
-            },
-            'subRubros',
-            {
-                idSubRubro: recurso.idSubRubro,
-                codigo: recurso.codigoSubRubro,
-                descripcion: recurso.descripcion,
-            },
-            {}
-        ).toPromise();
-    }
-
 
     ///////////////////////////////////////////////////////////////////////////////////
     ///////////////////              MÉTODOS REUTILIZABLES          ///////////////////
@@ -280,15 +119,15 @@ export class AuthService {
     * @description Obtiene una lista de un recurso especificado
     * @argument token
     * @argument resource Ejemplos: 'cteTipo', 'rubros'
-    * @argument body Un body para setearle a la consulta
+    * @argument queryParams Query params para setearle a la consulta
     */
-    getResourceList = (token: string) => (nombreRecurso: string) => (body?) => {
+    getResourceList = (token: string) => (nombreRecurso: string) => (queryParams?) => {
         // Si el resource solicitado no está incluido en la lista de recursos disponisbles, retorno un error
-        if (!Object.keys(resourcesREST)
-                .map(key => resourcesREST[key])
-                .includes(nombreRecurso)) {
-            return Observable.throw('Recurso inexistente')
-        }
+        // if (!Object.keys(resourcesREST)
+        //         .map(key => resourcesREST[key])
+        //         .includes(nombreRecurso)) {
+        //     return Observable.throw('Recurso inexistente')
+        // }
 
         return this.request(
             [],
@@ -297,26 +136,20 @@ export class AuthService {
                 token: token,
             },
             nombreRecurso,
-            body ? body : {},
-            {}
+            {},
+            queryParams ? queryParams : {}
         );
     }
 
     /** 
-    * @description Borrar un recurso
+    * @description Borrar un recurso a partir de us id
     * @argument token
-    * @argument recurso
+    * @argument idRecurso
     */
-    removeRecurso = (recurso: any) => (token) => (nombreRecurso) => {
-        // Si el resource solicitado no está incluido en la lista de recursos disponisbles, retorno un error
-        if (!Object.keys(resourcesREST)
-                .map(key => resourcesREST[key])
-                .includes(nombreRecurso)) {
-            return Observable.throw('Recurso inexistente')
-        }
+    removeRecurso = (idRecurso: any) => (token) => (nombreRecurso) => {
         
         return this.request(
-            [this.getIdRecurso(recurso)(nombreRecurso)],
+            [idRecurso.toString()],
             RequestMethod.Delete,
             {
                 token: token
@@ -330,25 +163,44 @@ export class AuthService {
 
     /** 
     * @description Registra un recurso cualquiera
-    * @argument rubro
-    * @argument token
+    * @argument recurso
+    * @argument headers Json que en general tiene el token (en usuario suele tener la clave)
+    * @argument nombreRecurso
     */
-    registrarRecurso = (recurso: any) => (token) => (nombreRecurso) => {
-        // Si el resource solicitado no está incluido en la lista de recursos disponisbles, retorno un error
-        if (!Object.keys(resourcesREST)
-                .map(key => resourcesREST[key])
-                .includes(nombreRecurso)) {
-            return Observable.throw('Recurso inexistente')
-        }
-
+    registrarRecurso = (recurso: any) => (headers) => (nombreRecurso) => {
         return this.request(
             [],
             RequestMethod.Post,
+            headers,
+            nombreRecurso,
+            this.generarBodyRegistrarRecurso(recurso)(nombreRecurso),
+            {}
+        ).toPromise();
+    }
+
+
+    /** 
+    * @description Editar un recurso cualquiera
+    * @argument recurso
+    * @argument token
+    * @argument nombreRecurso
+    */
+    editarRecurso = (recurso: any) => (token) => (nombreRecurso) => {
+        // Si el resource solicitado no está incluido en la lista de recursos disponisbles, retorno un error
+        // if (!Object.keys(resourcesREST)
+        //     .map(key => resourcesREST[key])
+        //     .includes(nombreRecurso)) {
+        //     return Observable.throw('Recurso inexistente')
+        // }
+
+        return this.request(
+            [],
+            RequestMethod.Put,
             {
                 token: token
             },
             nombreRecurso,
-            this.generarBodyRegistrarRecurso(recurso)(nombreRecurso),
+            this.generarBodyEditarRecurso(recurso)(nombreRecurso),
             {}
         ).toPromise();
     }
@@ -361,16 +213,16 @@ export class AuthService {
      * Obtengo el idRecurso a paritr del recurso y su nombre
      */
     getIdRecurso = (recurso) => (nombreRecurso) => {
-        if (nombreRecurso === resourcesREST.usuarios) {
+        if (nombreRecurso === resourcesREST.usuarios.nombre) {
             return recurso.idUsuario.toString()
         }
-        if (nombreRecurso === resourcesREST.cteTipo) {
+        if (nombreRecurso === resourcesREST.cteTipo.nombre) {
             return recurso.idCteTipo.toString()
         }
-        if (nombreRecurso === resourcesREST.rubros) {
+        if (nombreRecurso === resourcesREST.rubros.nombre) {
             return recurso.idRubro.toString()
         }
-        if (nombreRecurso === resourcesREST.subRubros) {
+        if (nombreRecurso === resourcesREST.subRubros.nombre) {
             return recurso.idSubRubro.toString()
         }
     }
@@ -379,7 +231,16 @@ export class AuthService {
      * Genero y retorno el body para enviar a una consulta POST de registrar un recurso
      */
     generarBodyRegistrarRecurso = (recurso: any) => (nombreRecurso) => {
-        if (nombreRecurso === resourcesREST.subRubros) {
+        if (nombreRecurso === resourcesREST.usuarios.nombre) {
+            return {
+                nombre: recurso.nombre,
+                telefono: recurso.telefono,
+                perfil: recurso.perfil.idPerfil,
+                mail: recurso.email
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.subRubros.nombre) {
             return {
                 idRubro: recurso.rubro.idRubro,
                 codigo: recurso.codigoSubRubro,
@@ -387,14 +248,14 @@ export class AuthService {
             }
         }
 
-        if (nombreRecurso === resourcesREST.rubros) {
+        if (nombreRecurso === resourcesREST.rubros.nombre) {
             return {
                 codigo: recurso.codigoRubro,
                 descripcion: recurso.descripcion
             }
         }
 
-        if (nombreRecurso === resourcesREST.cteTipo) {
+        if (nombreRecurso === resourcesREST.cteTipo.nombre) {
             return {
                 codigoComp: recurso.codigoComp,
                 descCorta: recurso.descCorta,
@@ -406,15 +267,57 @@ export class AuthService {
             }
         }
 
-        if (nombreRecurso === resourcesREST.formaPago) {
+        if (nombreRecurso === resourcesREST.formaPago.nombre) {
             return {
                 idFormaPago: recurso.idFormaPago,
                 tipo: recurso.tipo.idSisFormaPago,
                 descripcion: recurso.descripcion
             }
         }
-
     }
 
+    /**
+     * Genero y retorno el body para enviar a una consulta POST de editar un recurso
+     */
+    generarBodyEditarRecurso = (recurso: any) => (nombreRecurso) => {
+        if (nombreRecurso === resourcesREST.usuarios.nombre) {
+            return {
+                idUsuario: recurso.idUsuario,
+                nombre: recurso.nombre,
+                telefono: recurso.telefono,
+                perfil: recurso.perfil.idPerfil,
+                mail: recurso.email
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.subRubros.nombre) {
+            return {
+                idSubRubro: recurso.idSubRubro,
+                codigo: recurso.codigoSubRubro,
+                descripcion: recurso.descripcion
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.rubros.nombre) {
+            return {
+                idRubro: recurso.idRubro,
+                codigo: recurso.codigoRubro,
+                descripcion: recurso.descripcion
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.cteTipo.nombre) {
+            return {
+                idCteTipo: recurso.idCteTipo,
+                codigoComp: recurso.codigoComp,
+                descCorta: recurso.descCorta,
+                descripcion: recurso.descripcion,
+                cursoLegal: recurso.cursoLegal,
+                codigoAfip: recurso.codigoAfip,
+                surenu: recurso.surenu,
+                observaciones: recurso.observaciones ? recurso.observaciones : ''
+            }
+        }
+    }
 
 }

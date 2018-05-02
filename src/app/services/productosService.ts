@@ -21,7 +21,7 @@ export class ProductosService {
         const lista: Observable<Producto[]> = this.authService.getResourceList(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
-            resourcesREST.productos
+            resourcesREST.productos.nombre
         )().map(list => {
             return list.arraydatos.map(resource => {
                 return new Producto(resource);
@@ -34,10 +34,10 @@ export class ProductosService {
     setRecurso = (recurso: Producto) => {
         return this.authService.registrarRecurso(
             recurso
-        )(
-            this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(
-            resourcesREST.productos
+        )({
+            token: this.localStorageService.getObject(environment.localStorage.acceso).token
+        })(
+            resourcesREST.productos.nombre
         )
     }
 

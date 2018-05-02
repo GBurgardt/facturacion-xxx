@@ -8,7 +8,12 @@ import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
 import { Router } from '@angular/router';
 import { isString } from 'util';
+import { RecursoService } from '../../../../../../services/recursoService';
 
+// Libreria para encriptar en MD5 la clave
+import * as crypto from 'crypto-js';
+import { resourcesREST } from 'constantes/resoursesREST';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'nuevo-usuario',
@@ -17,29 +22,22 @@ import { isString } from 'util';
 })
 export class NuevoUsuario {
     // Sucursales de la empresa
-    sucursales;
+    sucursales: Observable<Sucursal[]>;
 
     // Perfiles disponible para tal sucursal
-    perfiles;
+    perfiles: Observable<Perfil[]>;
 
     // Usuario nuevo
     usuarioNuevo: Usuario = new Usuario();
 
     constructor(
-        private usuariosService: UsuariosService,
         private utilsService: UtilsService,
-        private router: Router
+        private router: Router,
+        private recursoService: RecursoService,
+        private localStorageService: LocalStorageService
     ) {
-
-        // Required del form
-        // this.form = fb.group({
-        //     'nombre': ['', Validators.compose([Validators.required])],
-        //     'email': ['', Validators.compose([Validators.required])]
-        // });
-
         // Obtengo las sucursales disponibles de la empresa
-        this.sucursales = usuariosService.getSucursalesFromEmpresa();
-
+        this.sucursales = recursoService.getRecursoList(resourcesREST.sucursales)();
     }
 
     /**
@@ -47,9 +45,11 @@ export class NuevoUsuario {
      * @param event 
      */
     changeSucursal(event) {        
-        this.perfiles = this.usuariosService.getPerfilesFromSucursal(
-            this.usuarioNuevo.perfil.sucursal
-        );
+        this.perfiles = this.recursoService.getRecursoList(
+            resourcesREST.perfiles
+        )({
+            sucursal: this.usuarioNuevo.perfil.sucursal.idSucursal
+        });
     }
 
     /**
@@ -59,15 +59,18 @@ export class NuevoUsuario {
         
         try {
             // Creo el usuario nuevo
-            const respUsuarioCreado: any = await this.usuariosService.registrarUsuario(
+            const resp: any = await this.recursoService.setRecurso(
                 this.usuarioNuevo
-            );
+            )({
+                clave: crypto.MD5(this.usuarioNuevo.clave),
+                token: this.localStorageService.getObject(environment.localStorage.acceso).token
+            });
 
             // Muestro mensaje de okey y redirecciono a la lista de usuarios
             this.utilsService.showModal(
-                respUsuarioCreado.control.codigo
+                resp.control.codigo
             )(
-                respUsuarioCreado.control.descripcion
+                resp.control.descripcion
             )(
                 () => this.router.navigate(['/pages/tablas/usuarios']) 
             )();
