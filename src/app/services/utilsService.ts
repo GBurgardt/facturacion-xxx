@@ -61,11 +61,13 @@ export class UtilsService {
         console.log(ex);
         let errorBody;
 
-        if (isString(ex)) {
+        if (isString(ex['_body'])) {
             errorBody = JSON.parse(ex['_body']);
         } else {
             errorBody = ex['_body'];
         }
+
+        
 
         // Mostrar mensaje de error
         this.showModal(errorBody.control.codigo)(errorBody.control.descripcion)()();
@@ -91,22 +93,20 @@ export class UtilsService {
      * @param extraConditions Condiciones extras. Por ejemplo: objeto.perfil.idPerfil === null
      */
     checkIfIncomplete = (objeto: any) => (extraConditions?: boolean) => {
-
         // Obtengo la clase del objeto recibido
-        const ClassOne = dynamicClass(objeto.constructor.name);
+        // const ClassOne = dynamicClass(objeto.constructor.name);
+        // const test = new ClassOne();
+        // const idRecurso = Object.keys(test)[0]
 
-        const test = new ClassOne();
-
-        console.log(test);
-
+        // Obtengo la primer key de la clase del objeto recibido
+        const idRecurso = Object.keys(objeto)[0];
+        
+        // Recorro las keys y checkeo que NO sean null (excepto el id)
         return Object.keys(objeto).some((key) => {
-            if (key !== 'idUsuario') {
+            if (key !== idRecurso && key !== 'observaciones') {
                 return objeto[key] === '' || objeto[key] === null
             }
-        }) || (
-            objeto.perfil.idPerfil === null ||
-            objeto.perfil.sucursal.idSucursal === null
-        )
+        }) || extraConditions;
     }
 
     /**

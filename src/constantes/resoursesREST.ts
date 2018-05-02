@@ -4,6 +4,11 @@
 export const resourcesREST = {
     cteTipo: 'cteTipo',
     rubros: 'rubros',
+    perfiles: 'perfiles',
     sucursales: 'sucursales',
-    subRubros: 'subRubros'
+    subRubros: 'subRubros',
+    formaPago: 'formaPago',
+    usuarios: 'usuarios',
+    sisFormaPago: 'sisFormaPago',
+    productos: 'productos'
 };

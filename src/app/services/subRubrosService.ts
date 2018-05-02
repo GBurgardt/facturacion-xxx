@@ -20,7 +20,7 @@ export class SubRubrosService {
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
             resourcesREST.subRubros
-        ).map(list => {
+        )().map(list => {
             return list.arraydatos.map(resource => {
                 return new SubRubro(resource);
             })
@@ -44,16 +44,22 @@ export class SubRubrosService {
     }
 
     registrarSubRubro = (recurso: SubRubro) => {
-        return this.authService.registrarSubRubro(
-            recurso, 
+        return this.authService.registrarRecurso(
+            recurso
+        )(
             this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            resourcesREST.subRubros
         );
     }
 
     removeSubRubro = (recurso: SubRubro) => {
-        return this.authService.removeSubRubro(
-            recurso,
+        return this.authService.removeRecurso(
+            recurso
+        )(
             this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            resourcesREST.subRubros
         );
     }
 

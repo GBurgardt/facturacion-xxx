@@ -7,6 +7,7 @@ import { LocalStorageService } from './localStorageService';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs/Observable';
 import { UtilsService } from './utilsService';
+import { resourcesREST } from 'constantes/resoursesREST';
 
 @Injectable()
 export class UsuariosService {
@@ -21,29 +22,34 @@ export class UsuariosService {
      * Obtiene la lista de usuarios correspondiente
      */
     getUsuariosList = () => {
-        const listaUsuarios: Observable<Usuario[]> = this.authService.getUsuariosList(
+        const lista: Observable<Usuario[]> = this.authService.getResourceList(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        ).map(listUsuarios => {
-            return listUsuarios.arraydatos.map(usuario => {
-                return new Usuario(usuario);
+        )(
+            resourcesREST.usuarios
+        )().map(list => {
+            return list.arraydatos.map(resource => {
+                return new Usuario(resource);
             })
         });
 
-        return listaUsuarios;
+        return lista;
     }
 
     /**
      * Obtiene los perfiles de una sucursal
      */
     getPerfilesFromSucursal = (sucursal: Sucursal) => {
-        return this.authService.getPerfilesList(
-                this.localStorageService.getObject(environment.localStorage.acceso).token, 
-                sucursal.idSucursal
-            ).map(  
-                perfilesResp => {
-                    return perfilesResp.arraydatos.map(perfil => new Perfil(perfil));
-                }
-            );
+        return this.authService.getResourceList(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            resourcesREST.perfiles
+        )({
+            idSucursal: sucursal.idSucursal
+        }).map(  
+            perfilesResp => {
+                return perfilesResp.arraydatos.map(perfil => new Perfil(perfil));
+            }
+        );
     }
 
     /**
@@ -60,13 +66,13 @@ export class UsuariosService {
     /**
      * Registra un nuevo usuario
      */
-    registrarUsuario = (usuarioNuevo: Usuario) => {
+    registrarUsuario = (recurso: Usuario) => {
 
-        if (!this.utilsService.validateEmail(usuarioNuevo.email)) {
+        if (!this.utilsService.validateEmail(recurso.email)) {
             return this.utilsService.getPromiseErrorResponse('Error')('Email invalido');
         } else {
             return this.authService.registrarUsuario(
-                usuarioNuevo, 
+                recurso, 
                 this.localStorageService.getObject(environment.localStorage.acceso).token
             );
         }
@@ -85,10 +91,13 @@ export class UsuariosService {
     /**
      * Borra un usuario
      */
-    removeUsuario = (usuarioABorrar: Usuario) => {
-        return this.authService.removeUsuario(
-            usuarioABorrar,
+    removeUsuario = (recurso: Usuario) => {
+        return this.authService.removeRecurso(
+            recurso
+        )(
             this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            resourcesREST.usuarios
         );
     }
 

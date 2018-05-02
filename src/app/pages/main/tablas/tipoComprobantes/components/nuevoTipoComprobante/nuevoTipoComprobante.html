@@ -66,10 +66,8 @@
                 </div>
             </div>
         </div>
-        <button [disabled]="utilsService.checkIfIncomplete(tipoComprobanteNuevo)(
-                    usuarioNuevo.perfil.idPerfil === null || 
-                    usuarioNuevo.perfil.sucursal.idSucursal === null
-                )"
+        
+        <button [disabled]="utilsService.checkIfIncomplete(tipoComprobanteNuevo)()"
                 (click)="onClickCrearTipoComprobante()" 
                 type="submit" 
                 class="btn btn-primary">

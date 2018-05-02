@@ -13,6 +13,9 @@ import { EditarRubro } from './rubros/components/editarRubro';
 import { SubRubros } from './subRubros';
 import { NuevoSubRubro } from './subRubros/components/nuevoSubRubro';
 import { EditarSubRubro } from './subRubros/components/editarSubRubro';
+import { FormasPago } from './formasPago';
+import { NuevaFormaPago } from 'app/pages/main/tablas/formasPago/components/nuevaFormaPago';
+import { Productos } from './productos';
 
 // noinspection TypeScriptValidateTypes
 const routes: Routes = [
@@ -32,6 +35,9 @@ const routes: Routes = [
             { path: 'sub-rubros', component: SubRubros },
             { path: 'sub-rubros/nuevo', component: NuevoSubRubro },
             { path: 'sub-rubros/editar/:idSubRubro', component: EditarSubRubro },
+            { path: 'formas-pago', component: FormasPago },
+            { path: 'formas-pago/nuevo', component: NuevaFormaPago },
+            { path: 'productos', component: Productos },
         ]
     }
 ];

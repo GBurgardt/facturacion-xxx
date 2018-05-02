@@ -39,6 +39,7 @@ export class LoginService {
      * Parsea los datos del menu que viene del backend al formato requerido por el metodo updateMenuByRoutes
      */
     generatePagesMenu = (menuSucursal) => {
+        // Por ahora dejo esto así, después reformatear un poco
         // Le doy el formato requerido a los menus
         const menuFormateado = menuSucursal.map(menuPadre => {
             if (menuPadre.menuResponse.idPadre === '/') {

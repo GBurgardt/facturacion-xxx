@@ -70,8 +70,11 @@
                                 <div *ngIf="!col.subkey">
                                     {{item[col.key]}}
                                 </div>
-                                <div *ngIf="col.subkey">
+                                <div *ngIf="col.subkey && !col.subsubkey">
                                     {{(item[col.key])[col.subkey]}}
+                                </div>
+                                <div *ngIf="col.subsubkey">
+                                    {{((item[col.key])[col.subkey])[col.subsubkey]}}
                                 </div>
                             </td>
                             

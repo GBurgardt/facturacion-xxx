@@ -25,7 +25,7 @@ export class TipoComprobantesService {
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
             resourcesREST.cteTipo
-        ).map(listTipoComprobantes => {
+        )().map(listTipoComprobantes => {
             return listTipoComprobantes.arraydatos.map(tipoComprobante => {
                 return new TipoComprobante(tipoComprobante);
             })
@@ -58,20 +58,30 @@ export class TipoComprobantesService {
     /**
      * Registra un nuevo tipo comp
      */
-    registrarTipoComprobante = (tipoComprobante: TipoComprobante) => {
-        return this.authService.registrarTipoComprobante(
-            tipoComprobante, 
+    registrarTipoComprobante = (recurso: TipoComprobante) => {
+        return this.authService.registrarRecurso(
+            recurso
+        )(
             this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            resourcesREST.cteTipo
         );
     }
 
     /**
     * Borra un tipo comprobante
     */
-    removeTipoComprobante = (tipoComprobante: TipoComprobante) => {
-        return this.authService.removeTipoComprobante(
-            tipoComprobante,
+    removeTipoComprobante = (recurso: TipoComprobante) => {
+        // return this.authService.removeTipoComprobante(
+        //     tipoComprobante,
+        //     this.localStorageService.getObject(environment.localStorage.acceso).token
+        // );
+        return this.authService.removeRecurso(
+            recurso
+        )(
             this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            resourcesREST.cteTipo
         );
     }
 

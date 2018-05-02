@@ -32,6 +32,12 @@ import { SubRubros } from './subRubros';
 import { NuevoSubRubro } from './subRubros/components/nuevoSubRubro';
 import { EditarSubRubro } from './subRubros/components/editarSubRubro';
 
+import { FormaPagoService } from 'app/services/formaPagoService';
+import { FormasPago } from 'app/pages/main/tablas/formasPago';
+import { NuevaFormaPago } from './formasPago/components/nuevaFormaPago';
+import { Productos } from './productos';
+import { ProductosService } from '../../../services/productosService';
+
 
 
 @NgModule({
@@ -58,7 +64,10 @@ import { EditarSubRubro } from './subRubros/components/editarSubRubro';
         NuevoRecurso,
         SubRubros,
         NuevoSubRubro,
-        EditarSubRubro
+        EditarSubRubro,
+        FormasPago,
+        NuevaFormaPago,
+        Productos
     ],
     providers: [
         DataTablesService,
@@ -68,7 +77,9 @@ import { EditarSubRubro } from './subRubros/components/editarSubRubro';
         UtilsService,
         TipoComprobantesService,
         RubrosService,
-        SubRubrosService
+        SubRubrosService,
+        FormaPagoService,
+        ProductosService
     ]
 })
 export class TablasModule {

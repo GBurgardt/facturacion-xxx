@@ -17,6 +17,7 @@ import { TipoComprobante } from '../models/tipoComprobante';
 import { resourcesREST } from 'constantes/resoursesREST';
 import { Rubro } from 'app/models/rubro';
 import { SubRubro } from 'app/models/subRubro';
+import { FormaPago } from '../models/formaPago';
 
 @Injectable()
 export class AuthService {
@@ -110,23 +111,6 @@ export class AuthService {
     }
 
     /** 
-    * @description Obtiene una lista de usuarios correspondientes a una empresa
-    * @argument token
-    */
-    getUsuariosList(token: string) {
-        return this.request(
-            [],
-            RequestMethod.Get,
-            {
-                token: token,
-            },
-            'usuarios',
-            {},
-            {}
-        );
-    }
-
-    /** 
     * @description Obtiene una lista de los perfiles disponibles de una sucursal
     * @argument token
     * @argument sucursal
@@ -213,24 +197,6 @@ export class AuthService {
     }
 
     /** 
-    * @description Borrar usuario de la bd
-    * @argument token
-    * @argument idUsuario
-    */
-    removeUsuario(usuario: Usuario, token) {
-        return this.request(
-            [usuario.idUsuario.toString()],
-            RequestMethod.Delete,
-            {
-                token: token
-            },
-            'usuarios',
-            {},
-            {}
-        ).toPromise();
-    }
-
-    /** 
     * @description Edita un tipo de comprobante
     * @argument token
     * @argument tipoComprobante
@@ -258,98 +224,12 @@ export class AuthService {
         ).toPromise();
     }
 
-    /** 
-    * @description Registra un tipo comprobante
-    * @argument tipoComprobante
-    * @argument token
-    */
-    registrarTipoComprobante(tipoComprobante: TipoComprobante, token) {
-        return this.request(
-            [],
-            RequestMethod.Post,
-            {
-                token: token
-            },
-            'cteTipo',
-            {
-                codigoComp: tipoComprobante.codigoComp,
-                descCorta: tipoComprobante.descCorta,
-                descripcion: tipoComprobante.descripcion,
-                cursoLegal: tipoComprobante.cursoLegal,
-                codigoAfip: tipoComprobante.codigoAfip,
-                surenu: tipoComprobante.surenu,
-                observaciones: tipoComprobante.observaciones ? tipoComprobante.observaciones : ''
-            },
-            {}
-        ).toPromise();
-    }
 
     /** 
-    * @description Borrar tipo comprobante
-    * @argument token
-    * @argument tipoComprobante
-    */
-    removeTipoComprobante(tipoComprobante: TipoComprobante, token) {
-        return this.request(
-            [tipoComprobante.idCteTipo.toString()],
-            RequestMethod.Delete,
-            {
-                token: token
-            },
-            'cteTipo',
-            {},
-            {}
-        ).toPromise();
-    }
-
-    /** 
-    * @description Registra un rubro
-    * @argument rubro
-    * @argument token
-    */
-    registrarRubro(rubro: Rubro, token) {
-        return this.request(
-            [],
-            RequestMethod.Post,
-            {
-                token: token
-            },
-            'rubros',
-            {
-                idRubro: rubro.idRubro,
-                descripcion: rubro.descripcion
-            },
-            {}
-        ).toPromise();
-    }
-
-    /** 
-    * @description Registra un subrubro
-    * @argument rubro
-    * @argument token
-    */
-    registrarSubRubro(recurso: SubRubro, token) {
-        return this.request(
-            [],
-            RequestMethod.Post,
-            {
-                token: token
-            },
-            'subRubros',
-            {
-                idSubRubro: recurso.idSubRubro,
-                descripcion: recurso.descripcion,
-                idRubro: recurso.rubro.idRubro
-            },
-            {}
-        ).toPromise();
-    }
-
-    /** 
-   * @description Editar un rubro
-   * @argument token
-   * @argument rubro
-   */
+     * @description Editar un rubro
+     * @argument token
+     * @argument rubro
+     */
     editarRubro(rubro: Rubro, token) {
         console.log(rubro);
         return this.request(
@@ -361,6 +241,7 @@ export class AuthService {
             'rubros',
             {
                 idRubro: rubro.idRubro,
+                codigo: rubro.codigoRubro,
                 descripcion: rubro.descripcion
             },
             {}
@@ -383,66 +264,29 @@ export class AuthService {
             'subRubros',
             {
                 idSubRubro: recurso.idSubRubro,
+                codigo: recurso.codigoSubRubro,
                 descripcion: recurso.descripcion,
-                idRubro: recurso.rubro.idRubro
             },
             {}
         ).toPromise();
     }
 
-
-    /** 
-    * @description Borrar rubro
-    * @argument token
-    * @argument rubro
-    */
-    removeRubro(rubro: Rubro, token) {
-        return this.request(
-            [rubro.idRubro.toString()],
-            RequestMethod.Delete,
-            {
-                token: token
-            },
-            'rubros',
-            {},
-            {}
-        ).toPromise();
-    }
-
-    /** 
-    * @description Borrar subrubro
-    * @argument token
-    * @argument recurso
-    */
-    removeSubRubro(recurso: SubRubro, token) {
-        return this.request(
-            [
-                recurso.rubro.idRubro.toString(), 
-                recurso.idSubRubro.toString()
-            ],
-            RequestMethod.Delete,
-            {
-                token: token
-            },
-            'subRubros',
-            {},
-            {}
-        ).toPromise();
-    }
 
     ///////////////////////////////////////////////////////////////////////////////////
     ///////////////////              MÉTODOS REUTILIZABLES          ///////////////////
     ///////////////////////////////////////////////////////////////////////////////////
 
-
     /** 
     * @description Obtiene una lista de un recurso especificado
     * @argument token
     * @argument resource Ejemplos: 'cteTipo', 'rubros'
+    * @argument body Un body para setearle a la consulta
     */
-    getResourceList = (token: string) => (nombreResource: string) => {
+    getResourceList = (token: string) => (nombreRecurso: string) => (body?) => {
         // Si el resource solicitado no está incluido en la lista de recursos disponisbles, retorno un error
-        if (!Object.keys(resourcesREST).includes(nombreResource)) {
+        if (!Object.keys(resourcesREST)
+                .map(key => resourcesREST[key])
+                .includes(nombreRecurso)) {
             return Observable.throw('Recurso inexistente')
         }
 
@@ -452,32 +296,125 @@ export class AuthService {
             {
                 token: token,
             },
-            nombreResource,
-            {},
+            nombreRecurso,
+            body ? body : {},
             {}
         );
     }
 
-    // postResource = (token: string) => (nombreResource: string) => {
-    //     return this.request(
-    //         [],
-    //         RequestMethod.Post,
-    //         {
-    //             token: token
-    //         },
-    //         'rubros',
-    //         {
-    //             codigoComp: tipoComprobante.codigoComp,
-    //             descCorta: tipoComprobante.descCorta,
-    //             descripcion: tipoComprobante.descripcion,
-    //             cursoLegal: tipoComprobante.cursoLegal,
-    //             codigoAfip: tipoComprobante.codigoAfip,
-    //             surenu: tipoComprobante.surenu,
-    //             observaciones: tipoComprobante.observaciones ? tipoComprobante.observaciones : ''
-    //         },
-    //         {}
-    //     ).toPromise();
-    // }
+    /** 
+    * @description Borrar un recurso
+    * @argument token
+    * @argument recurso
+    */
+    removeRecurso = (recurso: any) => (token) => (nombreRecurso) => {
+        // Si el resource solicitado no está incluido en la lista de recursos disponisbles, retorno un error
+        if (!Object.keys(resourcesREST)
+                .map(key => resourcesREST[key])
+                .includes(nombreRecurso)) {
+            return Observable.throw('Recurso inexistente')
+        }
+        
+        return this.request(
+            [this.getIdRecurso(recurso)(nombreRecurso)],
+            RequestMethod.Delete,
+            {
+                token: token
+            },
+            nombreRecurso,
+            {},
+            {}
+        ).toPromise();
+    }
+
+
+    /** 
+    * @description Registra un recurso cualquiera
+    * @argument rubro
+    * @argument token
+    */
+    registrarRecurso = (recurso: any) => (token) => (nombreRecurso) => {
+        // Si el resource solicitado no está incluido en la lista de recursos disponisbles, retorno un error
+        if (!Object.keys(resourcesREST)
+                .map(key => resourcesREST[key])
+                .includes(nombreRecurso)) {
+            return Observable.throw('Recurso inexistente')
+        }
+
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token
+            },
+            nombreRecurso,
+            this.generarBodyRegistrarRecurso(recurso)(nombreRecurso),
+            {}
+        ).toPromise();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////             MÉTODOS DE SOPORTE              ///////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Obtengo el idRecurso a paritr del recurso y su nombre
+     */
+    getIdRecurso = (recurso) => (nombreRecurso) => {
+        if (nombreRecurso === resourcesREST.usuarios) {
+            return recurso.idUsuario.toString()
+        }
+        if (nombreRecurso === resourcesREST.cteTipo) {
+            return recurso.idCteTipo.toString()
+        }
+        if (nombreRecurso === resourcesREST.rubros) {
+            return recurso.idRubro.toString()
+        }
+        if (nombreRecurso === resourcesREST.subRubros) {
+            return recurso.idSubRubro.toString()
+        }
+    }
+
+    /**
+     * Genero y retorno el body para enviar a una consulta POST de registrar un recurso
+     */
+    generarBodyRegistrarRecurso = (recurso: any) => (nombreRecurso) => {
+        if (nombreRecurso === resourcesREST.subRubros) {
+            return {
+                idRubro: recurso.rubro.idRubro,
+                codigo: recurso.codigoSubRubro,
+                descripcion: recurso.descripcion,
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.rubros) {
+            return {
+                codigo: recurso.codigoRubro,
+                descripcion: recurso.descripcion
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.cteTipo) {
+            return {
+                codigoComp: recurso.codigoComp,
+                descCorta: recurso.descCorta,
+                descripcion: recurso.descripcion,
+                cursoLegal: recurso.cursoLegal,
+                codigoAfip: recurso.codigoAfip,
+                surenu: recurso.surenu,
+                observaciones: recurso.observaciones ? recurso.observaciones : ''
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.formaPago) {
+            return {
+                idFormaPago: recurso.idFormaPago,
+                tipo: recurso.tipo.idSisFormaPago,
+                descripcion: recurso.descripcion
+            }
+        }
+
+    }
 
 
 }

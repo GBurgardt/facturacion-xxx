@@ -20,7 +20,7 @@ export class RubrosService {
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
             resourcesREST.rubros
-        ).map(listRubros => {
+        )().map(listRubros => {
             return listRubros.arraydatos.map(rubro => {
                 return new Rubro(rubro);
             })
@@ -43,17 +43,27 @@ export class RubrosService {
         );
     }
 
-    registrarRubro = (rubro: Rubro) => {
-        return this.authService.registrarRubro(
-            rubro, 
+    registrarRubro = (recurso: Rubro) => {
+        return this.authService.registrarRecurso(
+            recurso
+        )(
             this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            resourcesREST.rubros
         );
     }
 
-    removeRubro = (rubro: Rubro) => {
-        return this.authService.removeRubro(
-            rubro,
+    removeRubro = (recurso: Rubro) => {
+        // return this.authService.removeRubro(
+        //     rubro,
+        //     this.localStorageService.getObject(environment.localStorage.acceso).token
+        // );
+        return this.authService.removeRecurso(
+            recurso
+        )(
             this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            resourcesREST.rubros
         );
     }
 
