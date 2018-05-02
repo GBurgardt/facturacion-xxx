@@ -182,23 +182,15 @@ export class AuthService {
     /** 
     * @description Editar un recurso cualquiera
     * @argument recurso
-    * @argument token
+    * @argument headers
     * @argument nombreRecurso
     */
-    editarRecurso = (recurso: any) => (token) => (nombreRecurso) => {
-        // Si el resource solicitado no está incluido en la lista de recursos disponisbles, retorno un error
-        // if (!Object.keys(resourcesREST)
-        //     .map(key => resourcesREST[key])
-        //     .includes(nombreRecurso)) {
-        //     return Observable.throw('Recurso inexistente')
-        // }
+    editarRecurso = (recurso: any) => (headers) => (nombreRecurso) => {
 
         return this.request(
             [],
             RequestMethod.Put,
-            {
-                token: token
-            },
+            headers,
             nombreRecurso,
             this.generarBodyEditarRecurso(recurso)(nombreRecurso),
             {}
@@ -208,24 +200,6 @@ export class AuthService {
     ///////////////////////////////////////////////////////////////////////////////////
     ///////////////////             MÉTODOS DE SOPORTE              ///////////////////
     ///////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Obtengo el idRecurso a paritr del recurso y su nombre
-     */
-    getIdRecurso = (recurso) => (nombreRecurso) => {
-        if (nombreRecurso === resourcesREST.usuarios.nombre) {
-            return recurso.idUsuario.toString()
-        }
-        if (nombreRecurso === resourcesREST.cteTipo.nombre) {
-            return recurso.idCteTipo.toString()
-        }
-        if (nombreRecurso === resourcesREST.rubros.nombre) {
-            return recurso.idRubro.toString()
-        }
-        if (nombreRecurso === resourcesREST.subRubros.nombre) {
-            return recurso.idSubRubro.toString()
-        }
-    }
 
     /**
      * Genero y retorno el body para enviar a una consulta POST de registrar un recurso

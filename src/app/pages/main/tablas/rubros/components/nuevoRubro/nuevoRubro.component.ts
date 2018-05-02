@@ -4,7 +4,8 @@ import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
 import { Router } from '@angular/router';
 import { Rubro } from '../../../../../../models/rubro';
-import { RubrosService } from '../../../../../../services/rubrosService';
+
+import { RecursoService } from 'app/services/recursoService';
 
 @Component({
     selector: 'nuevo-rubro',
@@ -16,17 +17,14 @@ export class NuevoRubro {
     recurso: Rubro = new Rubro();
 
     constructor(
-        private rubroService: RubrosService,
+        private recursoService: RecursoService,
         private utilsService: UtilsService,
         private router: Router
     ) { }
 
     onClickCrearRubro = async () => {
         try {
-            
-            const respRubroCreado: any = await this.rubroService.registrarRubro(
-                this.recurso
-            );
+            const respRubroCreado: any = await this.recursoService.setRecurso(this.recurso);
     
             this.utilsService.showModal(
                 respRubroCreado.control.codigo

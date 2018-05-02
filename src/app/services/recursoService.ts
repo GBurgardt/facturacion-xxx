@@ -7,8 +7,6 @@ import { Observable } from 'rxjs/Observable';
 import { UtilsService } from './utilsService';
 import { resourcesREST } from 'constantes/resoursesREST';
 
-
-import { Usuario } from 'app/models/usuario';
 import dynamicClass from 'app/services/dynamicClassService';
 
 @Injectable()
@@ -83,17 +81,6 @@ export class RecursoService {
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
             recursoRest.nombre
-        );
-    }
-
-    /**
-     * Dado un id de un recurso, retorno este recurso
-     * @argument idRecurso
-     */
-    getUsuarioById = (idRecurso: number) => {
-        
-        return this.getRecursoList(resourcesREST.usuarios)().map((recursoList: Usuario[]) =>
-            recursoList.find(usuario => usuario.idUsuario === idRecurso)
         );
     }
 

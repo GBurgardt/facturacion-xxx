@@ -75,10 +75,6 @@ export class TipoComprobantesService {
     * Borra un tipo comprobante
     */
     removeTipoComprobante = (recurso: TipoComprobante) => {
-        // return this.authService.removeTipoComprobante(
-        //     tipoComprobante,
-        //     this.localStorageService.getObject(environment.localStorage.acceso).token
-        // );
         return this.authService.removeRecurso(
             recurso.idCteTipo
         )(

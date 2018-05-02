@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgaModule } from '../../../theme/nga.module';
 import { NuevoUsuario } from './usuarios/components/nuevoUsuario';
-import { UsuariosService } from '../../../services/usuariosService';
+
 import { AuthService } from '../../../services/authService';
 import { LocalStorageService } from '../../../services/localStorageService';
 import { EditarUsuario } from './usuarios/components/editarUsuario';
@@ -72,7 +72,6 @@ import { RecursoService } from '../../../services/recursoService';
     ],
     providers: [
         DataTablesService,
-        UsuariosService,
         AuthService,
         LocalStorageService,
         UtilsService,

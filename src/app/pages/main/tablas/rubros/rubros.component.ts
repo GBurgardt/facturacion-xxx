@@ -3,8 +3,10 @@ import { LocalStorageService } from '../../../../services/localStorageService';
 import { environment } from 'environments/environment';
 import { Router } from '@angular/router';
 import { UtilsService } from '../../../../services/utilsService';
-import { RubrosService } from '../../../../services/rubrosService';
+
 import { Rubro } from 'app/models/rubro';
+import { RecursoService } from '../../../../services/recursoService';
+import { resourcesREST } from 'constantes/resoursesREST';
 
 @Component({
     selector: 'rubros',
@@ -20,9 +22,9 @@ export class Rubros {
     tableColumns;
 
     constructor(
-        private rubrosService: RubrosService,
         private router: Router,
-        private utilsService: UtilsService
+        private utilsService: UtilsService,
+        private recursoService: RecursoService
     ) {
         // Guardo las columnas de la tabla con sus respectivas anchuras
         this.tableColumns = [
@@ -45,23 +47,23 @@ export class Rubros {
             }
         ]
         
-        this.tableData = this.rubrosService.getRubrosList();
+        this.tableData = this.recursoService.getRecursoList(resourcesREST.rubros)();
     }
 
     onClickEdit = (rubro: Rubro) => {   
         this.router.navigate(['/pages/tablas/rubros/editar', rubro.idRubro]);
     }
 
-    onClickRemove = async(usuario) => {
+    onClickRemove = async(recurso: Rubro) => {
         this.utilsService.showModal(
             'Borrar rubro'
         )(
             '¿Estás seguro de borrar el rubro?'
         )(
            async () => {
-                const respRubro = await this.rubrosService.removeRubro(usuario);     
-                
-                this.tableData = this.rubrosService.getRubrosList();
+                await this.recursoService.borrarRecurso(recurso.idRubro)(resourcesREST.rubros);
+
+                this.tableData = this.recursoService.getRecursoList(resourcesREST.rubros)();
             }
         )({
             tipoModal: 'confirmation'

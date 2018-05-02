@@ -5,6 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Rubro } from '../../../../../../models/rubro';
 import { RubrosService } from 'app/services/rubrosService';
+import { RecursoService } from 'app/services/recursoService';
+import { resourcesREST } from 'constantes/resoursesREST';
 
 @Component({
     selector: 'editar-rubro',
@@ -18,21 +20,26 @@ export class EditarRubro {
         private utilsService: UtilsService,
         private router: Router,
         private route: ActivatedRoute,
-        private rubrosService: RubrosService
+        private recursoService: RecursoService
     ) {
         this.route.params.subscribe(params => 
-            this.rubrosService.getRubroById(parseInt(params.idRubro)).subscribe(rubro =>{
-                this.recurso = rubro;
-                console.log(this.recurso);
-            })
+            this.recursoService.getRecursoList(resourcesREST.rubros)()
+                .map((recursoList: Rubro[]) =>
+                    recursoList.find(recurso => recurso.idRubro === parseInt(params.idRubro))
+                )
+                .subscribe(recurso =>{
+                    this.recurso = recurso;
+                })
         );
+
+        
     }
 
     onClickEditar = async() => {
         try {
-            const respuestaEdicion: any = await this.rubrosService.editarRubro(
+            const respuestaEdicion: any = await this.recursoService.editarRecurso(
                 this.recurso
-            );
+            )();
     
             this.utilsService.showModal(
                 respuestaEdicion.control.codigo
