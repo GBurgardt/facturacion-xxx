@@ -73,12 +73,12 @@ export class TipoComprobantes {
      */
     onClickEdit = (tipoComprobante) => {
         // Redirecciono al dashboard
-        this.router.navigate(['/pages/tablas/tipos-comprobantes/editar', tipoComprobante.idCteTipo]);
+        this.router.navigate(['/pages/tablas/comprobantes/editar', tipoComprobante.idCteTipo]);
     }
 
-    
+
     onClickRemove = async(recurso: TipoComprobante) => {
-        
+
         // Pregunto si está seguro
         this.utilsService.showModal(
             'Borrar tipo comprobante'
@@ -87,7 +87,7 @@ export class TipoComprobantes {
         )(
            async () => {
                 await this.recursoService.borrarRecurso(recurso.idCteTipo)(resourcesREST.cteTipo);
-                
+
                 this.dataTipoComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)();
             }
         )({

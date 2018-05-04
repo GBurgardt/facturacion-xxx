@@ -24,7 +24,7 @@ export class EditarSubRubro {
         private route: ActivatedRoute,
         private recursoService: RecursoService
     ) {
-        this.route.params.subscribe(params => 
+        this.route.params.subscribe(params =>
             this.recursoService.getRecursoList(resourcesREST.subRubros)()
                 .map((recursoList: SubRubro[]) =>
                     recursoList.find(recurso => recurso.idSubRubro === parseInt(params.idSubRubro))
@@ -38,18 +38,18 @@ export class EditarSubRubro {
     onClickEditar = async() => {
         try {
             const respuestaEdicion: any = await this.recursoService.editarRecurso(this.recurso)();
-    
+
             this.utilsService.showModal(
                 respuestaEdicion.control.codigo
             )(
                 respuestaEdicion.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/sub-rubros']) 
+                () => this.router.navigate(['/pages/tablas/subrubros'])
             )();
         }
         catch(ex) {
             this.utilsService.decodeErrorResponse(ex);
-            
+
         }
     }
 

@@ -11,7 +11,7 @@ export class LocalStorageService {
     setObject = function(key, value) {
         localStorage.setItem(key, JSON.stringify(value));
     }
-    
+
 
     /**
      * Obtener algo del localStorage
@@ -19,5 +19,12 @@ export class LocalStorageService {
     getObject = function(key) {
         var value = localStorage.getItem(key);
         return value && JSON.parse(value);
+    }
+
+    /**
+     * Limpia el local storage
+     */
+    clearLocalStorage = () => {
+        localStorage.clear();
     }
 }

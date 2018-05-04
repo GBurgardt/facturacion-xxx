@@ -7,6 +7,7 @@ import { ConfirmationModal } from 'app/pages/reusable/modals/confirmation-modal/
 import { isString } from 'util';
 import dynamicClass from 'app/services/dynamicClassService';
 import { resourcesREST } from 'constantes/resoursesREST';
+import { routing } from '../pages/main/tablas/tablas.routing';
 
 @Injectable()
 export class UtilsService {
@@ -56,7 +57,7 @@ export class UtilsService {
 
     /**
      * Decodifica la respuesta de error y muestra el error
-     * @param ex 
+     * @param ex
      */
     decodeErrorResponse(ex) {
         console.log(ex);
@@ -68,7 +69,7 @@ export class UtilsService {
             errorBody = ex['_body'];
         }
 
-        
+
 
         // Mostrar mensaje de error
         this.showModal(errorBody.control.codigo)(errorBody.control.descripcion)()();
@@ -92,7 +93,7 @@ export class UtilsService {
      * Dado un objeto de una clase es incompleto, retorna true si algùn campo es null
      * @param objeto El objeto
      * @param ignoreList Lista de keys que no se van a checkear. Formato: ['key1','key2',...,'keyn']
-     * 
+     *
      */
     checkIfIncomplete = (objeto: any) => (ignoreList?: string[])  => {
         // Obtengo la primer key de la clase del objeto recibido
@@ -102,7 +103,7 @@ export class UtilsService {
         return Object.keys(objeto).some((key) => {
             // Si la key NO está incluida en las ignoradas, la evaluo
             if (
-                key !== idRecurso && 
+                key !== idRecurso &&
                 key !== 'observaciones' &&
                 key !== 'empresa'  &&
                 (!ignoreList || !ignoreList.includes(key))
@@ -125,8 +126,8 @@ export class UtilsService {
 
     /**
      * Se usa en las listas desplegables, te agarra el item elegido cuando se edita un recurso
-     * @param item1 
-     * @param item2 
+     * @param item1
+     * @param item2
      */
     dropdownCompareWith(item1: any, item2: any) {
         // Obtengo la primer key (que siempre es la ID) de la clase del objeto recibido
@@ -134,6 +135,5 @@ export class UtilsService {
         const idRecurso2 = Object.keys(item2)[0];
         return item1[idRecurso1] === item2[idRecurso2];
     }
-
 
 }

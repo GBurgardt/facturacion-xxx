@@ -26,7 +26,7 @@ export class AuthService {
         private http: Http
     ) { }
 
-    /** 
+    /**
     * @description Método general para hacer una request
     * @argument pathParams
     * @argument method
@@ -44,7 +44,7 @@ export class AuthService {
 
         // Creo los headerss
         let auxHeaders: Headers = new Headers(headers);
-        auxHeaders.append('Content-Type', 'application/json'); 
+        auxHeaders.append('Content-Type', 'application/json');
 
         // Creo la url
         let url: string;
@@ -86,12 +86,12 @@ export class AuthService {
         var reqOptions = new RequestOptions(opciones);
         var req = new Request(reqOptions);
 
-        return this.http.request(req).timeout(environment.facturacionRest.timeoutDefault).map(res => 
+        return this.http.request(req).timeout(environment.facturacionRest.timeoutDefault).map(res =>
             res.json()
         );
     }
 
-    /** 
+    /**
     * @description Se loguea y genera un token.
     * @argument usuario
     * @argument clave
@@ -115,7 +115,7 @@ export class AuthService {
     ///////////////////              MÉTODOS REUTILIZABLES          ///////////////////
     ///////////////////////////////////////////////////////////////////////////////////
 
-    /** 
+    /**
     * @description Obtiene una lista de un recurso especificado
     * @argument token
     * @argument resource Ejemplos: 'cteTipo', 'rubros'
@@ -141,13 +141,13 @@ export class AuthService {
         );
     }
 
-    /** 
+    /**
     * @description Borrar un recurso a partir de us id
     * @argument token
     * @argument idRecurso
     */
     removeRecurso = (idRecurso: any) => (token) => (nombreRecurso) => {
-        
+
         return this.request(
             [idRecurso.toString()],
             RequestMethod.Delete,
@@ -161,7 +161,7 @@ export class AuthService {
     }
 
 
-    /** 
+    /**
     * @description Registra un recurso cualquiera
     * @argument recurso
     * @argument headers Json que en general tiene el token (en usuario suele tener la clave)
@@ -179,7 +179,7 @@ export class AuthService {
     }
 
 
-    /** 
+    /**
     * @description Editar un recurso cualquiera
     * @argument recurso
     * @argument headers
@@ -248,8 +248,8 @@ export class AuthService {
             }
         }
 
-        if (nombreRecurso === resourcesREST.productos.nombre) {   
-            return {           
+        if (nombreRecurso === resourcesREST.productos.nombre) {
+            return {
                 codProducto: recurso.codProducto,
                 codigoBarra: recurso.codigoBarra,
                 descripcionCorta: recurso.descripcionCorta,
@@ -324,9 +324,9 @@ export class AuthService {
             }
         }
 
-        if (nombreRecurso === resourcesREST.productos.nombre) {   
-            return {     
-                idProducto: recurso.idProductos,      
+        if (nombreRecurso === resourcesREST.productos.nombre) {
+            return {
+                idProducto: recurso.idProductos,
                 codProducto: recurso.codProducto,
                 codigoBarra: recurso.codigoBarra,
                 descripcionCorta: recurso.descripcionCorta,

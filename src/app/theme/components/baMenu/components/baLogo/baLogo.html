@@ -1,6 +1,17 @@
-<div class="logo-container">
-    <!-- <img src="{{srcImg}}" width="50" height="50"> -->
-    <h2>{{nombreEmpresa}}</h2>
-    <!-- TODO: Por ahora saco el logo, despues lo pongo bien -->
-    <!-- <img src="{{ ( 'kernel' | baEmpresaPicture ) }}"> -->
+<div class="ba-logo">
+    <div (click)="dropdownOpen = !dropdownOpen" class="logo-container">
+        <div class="img-container">
+            <img class="empresa-picture" src="{{ ( 'nick' | baEmpresaPicture ) }}">
+        </div>
+        <div class="datos-container">
+            <div class="nombre-empresa">
+                {{nombreEmpresa}}
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="dropdownOpen" class="btn-container">
+        <button routerLink="/login" (click)="localStorageService.clearLocalStorage()" type="submit" class="btn btn-default">Salir</button>
+    </div>
+
 </div>

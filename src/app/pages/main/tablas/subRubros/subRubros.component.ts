@@ -31,9 +31,9 @@ export class SubRubros {
         // Guardo las columnas de la tabla con sus respectivas anchuras
         this.tableColumns = [
             {
-                nombre: 'ID sub rubro',
-                key: 'idSubRubro',
-                ancho: '30%'
+                nombre: 'codigo',
+                key: 'codigoSubRubro',
+                ancho: '15%'
             },
             {
                 nombre: 'descripcion',
@@ -41,18 +41,24 @@ export class SubRubros {
                 ancho: '30%'
             },
             {
-                nombre: 'ID rubro',
+                nombre: 'codigo rubro',
                 key: 'rubro',
-                subkey: 'idRubro',
+                subkey: 'codigoRubro',
+                ancho: '15%'
+            },
+            {
+                nombre: 'descripcion rubro',
+                key: 'rubro',
+                subkey: 'descripcion',
                 ancho: '30%'
             }
         ]
-        
+
         this.tableData = this.recursoService.getRecursoList(resourcesREST.subRubros)();
     }
 
-    onClickEdit = (recurso: SubRubro) => {   
-        this.router.navigate(['/pages/tablas/sub-rubros/editar', recurso.idSubRubro]);
+    onClickEdit = (recurso: SubRubro) => {
+        this.router.navigate(['/pages/tablas/subrubros/editar', recurso.idSubRubro]);
     }
 
     onClickRemove = async(recurso: SubRubro) => {
@@ -63,7 +69,7 @@ export class SubRubros {
         )(
            async () => {
                 const resp = await this.recursoService.borrarRecurso(recurso.idSubRubro)(resourcesREST.subRubros);
-                
+
                 this.tableData = this.recursoService.getRecursoList(resourcesREST.subRubros)();
             }
         )({

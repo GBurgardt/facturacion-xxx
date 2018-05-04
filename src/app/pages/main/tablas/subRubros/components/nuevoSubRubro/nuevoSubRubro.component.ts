@@ -33,19 +33,19 @@ export class NuevoSubRubro {
 
     onClickCrearRubro = async () => {
         try {
-            
+
             const respRubroCreado: any = await this.recursoService.setRecurso(this.recurso)();
-    
+
             this.utilsService.showModal(
                 respRubroCreado.control.codigo
             )(
                 respRubroCreado.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/sub-rubros']) 
+                () => this.router.navigate(['/pages/tablas/subrubros'])
             )();
         }
         catch(ex) {
-            this.utilsService.decodeErrorResponse(ex);        
+            this.utilsService.decodeErrorResponse(ex);
         }
     }
 

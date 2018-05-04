@@ -32,44 +32,8 @@ export class LoginService {
         this.localStorageService.setObject(environment.localStorage.acceso, respLogin.datos.acceso);
         this.localStorageService.setObject(environment.localStorage.perfil, respLogin.datos.perfil);
         // Guardo los menus PARSEADOS en el localStorage
-        this.localStorageService.setObject(environment.localStorage.menu, <Routes>this.generatePagesMenu(respLogin.datos.perfil.sucursal.menuSucursal));
+        this.localStorageService.setObject(environment.localStorage.menu, <Routes>this.baMenuService.generatePagesMenu(respLogin.datos.perfil.sucursal.menuSucursal));
     }
 
-    /**
-     * Parsea los datos del menu que viene del backend al formato requerido por el metodo updateMenuByRoutes
-     */
-    generatePagesMenu = (menuSucursal) => {
-        // Por ahora dejo esto así, después reformatear un poco
-        // Le doy el formato requerido a los menus
-        const menuFormateado = menuSucursal.map(menuPadre => {
-            if (menuPadre.menuResponse.idPadre === '/') {
-                return {
-                    path: menuPadre.menuResponse.idMenu,
-                    data: {
-                        menu: {
-                            title: menuPadre.menuResponse.nombre,
-                            icon: menuPadre.menuResponse.icono,
-                            selected: false,
-                            expanded: false,
-                            order: menuPadre.menuResponse.orden * 100
-                        }
-                    },
-                    children: menuSucursal.map(menuChildren => {
-                        if (menuChildren.menuResponse.idPadre === menuPadre.menuResponse.idMenu) {
-                            return {
-                                path: menuChildren.menuResponse.idMenu,
-                                data: {
-                                    menu: {
-                                        title: menuChildren.menuResponse.nombre,
-                                    }
-                                }
-                            }
-                        }
-                    }).filter(menu => menu != undefined)
-                }
-            }
-        }).filter(menu => menu != undefined); 
 
-        return menuFormateado;
-    }
 }

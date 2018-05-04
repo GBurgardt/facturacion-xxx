@@ -11,10 +11,10 @@ import { environment } from 'environments/environment';
     selector: 'pages',
     template: `
     <ba-sidebar></ba-sidebar>
-    
+
     <div class="al-main">
       <div class="al-content">
-        
+
         <router-outlet></router-outlet>
       </div>
     </div>

@@ -25,7 +25,7 @@ export class EditarTipoComprobante {
         private route: ActivatedRoute,
         private recursoService: RecursoService
     ) {
-        this.route.params.subscribe(params => 
+        this.route.params.subscribe(params =>
             this.recursoService.getRecursoList(resourcesREST.cteTipo)()
                 .map((recursoList: TipoComprobante[]) =>
                     recursoList.find(recurso => recurso.idCteTipo === parseInt(params.idTipoComprobante))
@@ -44,19 +44,19 @@ export class EditarTipoComprobante {
         try {
             // Edito el usuario seleccionado
             const resp = await this.recursoService.editarRecurso(this.recurso)();
-    
+
             // Muestro mensaje de okey y redirecciono a la lista de tipos de comprobantes
             this.utilsService.showModal(
                 resp.control.codigo
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/tipos-comprobantes']) 
+                () => this.router.navigate(['/pages/tablas/comprobantes'])
             )();
         }
         catch(ex) {
             this.utilsService.decodeErrorResponse(ex);
-            
+
         }
     }
 

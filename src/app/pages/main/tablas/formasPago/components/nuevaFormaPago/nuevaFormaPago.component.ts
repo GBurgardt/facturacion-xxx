@@ -1,15 +1,13 @@
 import { Component, Input } from '@angular/core';
-
 import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
 import { Router } from '@angular/router';
-
 import { Observable } from 'rxjs/Observable';
 import { FormaPago } from '../../../../../../models/formaPago';
-
-import { TipoFormaPago } from '../../../../../../models/tipoFormaPago';
+import { TipoFormaPago } from 'app/models/tipoFormaPago';
 import { RecursoService } from '../../../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
+
 
 @Component({
     selector: 'nueva-forma-pago',
@@ -34,17 +32,17 @@ export class NuevaFormaPago {
     onClickCrear = async () => {
         try {
             const resp: any = await this.recursoService.setRecurso(this.recurso)();
-            
+
             this.utilsService.showModal(
                 resp.control.codigo
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/formas-pago']) 
+                () => this.router.navigate(['/pages/tablas/formas-pago'])
             )();
         }
         catch(ex) {
-            this.utilsService.decodeErrorResponse(ex);        
+            this.utilsService.decodeErrorResponse(ex);
         }
     }
 

@@ -7,7 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Producto } from '../../../../../../models/producto';
 import { IVA } from '../../../../../../models/IVA';
-import { ProductosService } from '../../../../../../services/productosService';
+
 import { RecursoService } from '../../../../../../services/recursoService';
 import { SubRubro } from '../../../../../../models/subRubro';
 import { Unidad } from '../../../../../../models/unidad';
@@ -41,39 +41,39 @@ export class EditarProducto {
         this.unidadesCompra = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.unidadesVenta = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.ivas = this.recursoService.getRecursoList(resourcesREST.sisIVA)();
-        
+
         // Busco el recurso por id
-        this.route.params.subscribe(params => 
+        this.route.params.subscribe(params =>
             this.recursoService.getRecursoList(resourcesREST.productos)()
                 .map((recursoList: Producto[]) =>
                     recursoList.find(recurso => recurso.idProductos === parseInt(params.idProductos))
                 )
                 .subscribe(recurso =>{
                     this.recurso = recurso;
-                    
+
 
                 })
         );
-        
+
     }
 
     onClickEditar = async () => {
         try {
-            
+
             const resp: any = await this.recursoService.editarRecurso(
                 this.recurso
             )();
-    
+
             this.utilsService.showModal(
                 resp.control.codigo
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/productos']) 
+                () => this.router.navigate(['/pages/tablas/productos'])
             )();
         }
         catch(ex) {
-            this.utilsService.decodeErrorResponse(ex);        
+            this.utilsService.decodeErrorResponse(ex);
         }
     }
 

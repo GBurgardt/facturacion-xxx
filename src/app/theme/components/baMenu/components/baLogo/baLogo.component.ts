@@ -9,9 +9,13 @@ import { environment } from 'environments/environment';
 })
 export class BaLogo {
 
+    dropdownOpen: boolean = false;
+
     nombreEmpresa: string;
 
-    constructor(private localStorageService: LocalStorageService) {
+    constructor(
+        private localStorageService: LocalStorageService
+    ) {
         this.nombreEmpresa = this.localStorageService.getObject(environment.localStorage.perfil).sucursal.empresa.nombre;
     }
 }

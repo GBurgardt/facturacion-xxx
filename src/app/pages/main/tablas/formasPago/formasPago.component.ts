@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { UtilsService } from '../../../../services/utilsService';
 
 import { Rubro } from 'app/models/rubro';
-import { SubRubrosService } from '../../../../services/subRubrosService';
+
 import { FormaPago } from '../../../../models/formaPago';
 
 import { Observable } from 'rxjs/Observable';
@@ -43,11 +43,11 @@ export class FormasPago {
                 ancho: '45%'
             }
         ]
-        
+
         this.tableData = this.recursoService.getRecursoList(resourcesREST.formaPago)();
     }
 
-    onClickEdit = (recurso: FormaPago) => {   
+    onClickEdit = (recurso: FormaPago) => {
         this.router.navigate(['/pages/tablas/formas-pago/editar', recurso.idFormaPago]);
     }
 
@@ -59,7 +59,7 @@ export class FormasPago {
         )(
            async () => {
                 const resp = await this.recursoService.borrarRecurso(recurso.idFormaPago)(resourcesREST.formaPago);
-                
+
                 this.tableData = this.recursoService.getRecursoList(resourcesREST.formaPago)();
             }
         )({

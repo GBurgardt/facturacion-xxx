@@ -29,6 +29,11 @@ export class Rubros {
         // Guardo las columnas de la tabla con sus respectivas anchuras
         this.tableColumns = [
             {
+                nombre: 'codigo',
+                key: 'codigoRubro',
+                ancho: '15%'
+            },
+            {
                 nombre: 'descripcion',
                 key: 'descripcion',
                 ancho: '30%'
@@ -37,20 +42,20 @@ export class Rubros {
                 nombre: 'empresa',
                 key: 'empresa',
                 subkey: 'nombre',
-                ancho: '30%'
+                ancho: '22%'
             },
             {
                 nombre: 'cuit empresa',
                 key: 'empresa',
                 subkey: 'cuit',
-                ancho: '30%'
+                ancho: '23%'
             }
         ]
-        
+
         this.tableData = this.recursoService.getRecursoList(resourcesREST.rubros)();
     }
 
-    onClickEdit = (rubro: Rubro) => {   
+    onClickEdit = (rubro: Rubro) => {
         this.router.navigate(['/pages/tablas/rubros/editar', rubro.idRubro]);
     }
 

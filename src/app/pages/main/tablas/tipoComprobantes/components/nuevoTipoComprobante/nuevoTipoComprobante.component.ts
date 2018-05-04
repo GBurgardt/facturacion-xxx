@@ -26,19 +26,19 @@ export class NuevoTipoComprobante {
     ) { }
 
     /**
-     * Crear 
+     * Crear
      */
     onClickCrearTipoComprobante = async () => {
         try {
             const resp = await this.recursoService.setRecurso(this.recurso)();
-    
+
             // Muestro mensaje de okey y redirecciono a la lista de tipos comprobantes
             this.utilsService.showModal(
                 resp.control.codigo
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/tipos-comprobantes']) 
+                () => this.router.navigate(['/pages/tablas/comprobantes'])
             )();
         }
         catch(ex) {

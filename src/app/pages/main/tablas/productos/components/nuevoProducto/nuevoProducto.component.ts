@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Producto } from '../../../../../../models/producto';
 import { IVA } from '../../../../../../models/IVA';
-import { ProductosService } from '../../../../../../services/productosService';
+
 import { RecursoService } from '../../../../../../services/recursoService';
 import { SubRubro } from '../../../../../../models/subRubro';
 import { Unidad } from '../../../../../../models/unidad';
@@ -43,21 +43,21 @@ export class NuevoProducto {
 
     onClickCrear = async () => {
         try {
-            
+
             const resp: any = await this.recursoService.setRecurso(
                 this.recurso
             )();
-    
+
             this.utilsService.showModal(
                 resp.control.codigo
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/productos']) 
+                () => this.router.navigate(['/pages/tablas/productos'])
             )();
         }
         catch(ex) {
-            this.utilsService.decodeErrorResponse(ex);        
+            this.utilsService.decodeErrorResponse(ex);
         }
     }
 
