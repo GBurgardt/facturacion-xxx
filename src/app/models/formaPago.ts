@@ -21,7 +21,7 @@ export class FormaPago {
             this.idFormaPago = null;
             this.descripcion = null;
             this.editar = null;
-            this.tipo = null;
+            this.tipo = new TipoFormaPago();
         }
     }
 

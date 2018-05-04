@@ -3,11 +3,13 @@ import { Component, Input } from '@angular/core';
 import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
 import { Router } from '@angular/router';
-import { RubrosService } from '../../../../../../services/rubrosService';
+
 import { SubRubro } from 'app/models/subRubro';
-import { SubRubrosService } from '../../../../../../services/subRubrosService';
+
 import { Rubro } from 'app/models/rubro';
 import { Observable } from 'rxjs/Observable';
+import { RecursoService } from '../../../../../../services/recursoService';
+import { resourcesREST } from 'constantes/resoursesREST';
 
 @Component({
     selector: 'nuevo-sub-rubro',
@@ -21,21 +23,18 @@ export class NuevoSubRubro {
     rubros: Observable<Rubro[]>;
 
     constructor(
-        private subRubrosService: SubRubrosService,
+        private recursoService: RecursoService,
         private utilsService: UtilsService,
-        private router: Router,
-        private rubrosService: RubrosService
+        private router: Router
     ) {
         // Cargo lo rubros disponibles
-        this.rubros = this.rubrosService.getRubrosList();
+        this.rubros = this.recursoService.getRecursoList(resourcesREST.rubros)();
     }
 
     onClickCrearRubro = async () => {
         try {
             
-            const respRubroCreado: any = await this.subRubrosService.registrarSubRubro(
-                this.recurso
-            );
+            const respRubroCreado: any = await this.recursoService.setRecurso(this.recurso)();
     
             this.utilsService.showModal(
                 respRubroCreado.control.codigo

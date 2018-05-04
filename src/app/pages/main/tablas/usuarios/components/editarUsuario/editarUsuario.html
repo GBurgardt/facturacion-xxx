@@ -24,7 +24,7 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="Sucursal">Sucursal</label>
-                    <select [compareWith]="compareWithSucursal" [(ngModel)]="recurso.perfil.sucursal" (change)="changeSucursal($event)" class="form-control" id="Sucursal">
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.perfil.sucursal" (change)="changeSucursal($event)" class="form-control" id="Sucursal">
                         <option *ngFor="let suc of sucursales | async" [ngValue]="suc">
                             {{suc.nombre}} - {{suc.domicilio}}
                         </option>
@@ -35,7 +35,7 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="Perfil">Perfil</label>
-                    <select [compareWith]="compareWithPerfil" [(ngModel)]="recurso.perfil" (change)="changePerfil($event)" class="form-control" id="Perfil" [disabled]="!recurso.perfil.sucursal">
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.perfil" class="form-control" id="Perfil" [disabled]="!recurso.perfil.sucursal">
                         <option *ngFor="let per of perfiles | async" [ngValue]="per">
                             {{per.descripcion}}
                         </option>
@@ -50,10 +50,10 @@
                 </div>
             </div>
         </div>
-        <button [disabled]="utilsService.checkIfIncomplete(recurso)(
-                    recurso.perfil.idPerfil === null || 
-                    recurso.perfil.sucursal.idSucursal === null
-                )"
+        <button [disabled]="utilsService.checkIfIncomplete(recurso)([
+                                'email',
+                                'telefono'
+                            ])"
                 (click)="onClickEditarUsuario()" 
                 type="submit" 
                 class="btn btn-primary">

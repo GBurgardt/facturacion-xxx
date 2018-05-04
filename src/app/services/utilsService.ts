@@ -91,23 +91,25 @@ export class UtilsService {
     /**
      * Dado un objeto de una clase es incompleto, retorna true si algùn campo es null
      * @param objeto El objeto
-     * @param extraConditions Condiciones extras. Por ejemplo: objeto.perfil.idPerfil === null
+     * @param ignoreList Lista de keys que no se van a checkear. Formato: ['key1','key2',...,'keyn']
+     * 
      */
-    checkIfIncomplete = (objeto: any) => (extraConditions?: boolean) => {
-        // Obtengo la clase del objeto recibido
-        // const ClassOne = dynamicClass(objeto.constructor.name);
-        // const test = new ClassOne();
-        // const idRecurso = Object.keys(test)[0]
-
+    checkIfIncomplete = (objeto: any) => (ignoreList?: string[])  => {
         // Obtengo la primer key de la clase del objeto recibido
         const idRecurso = Object.keys(objeto)[0];
-        
-        // Recorro las keys y checkeo que NO sean null (excepto el id)
+
+        // Recorro las keys y checkeo que NO sean null (excepto ignoradas)
         return Object.keys(objeto).some((key) => {
-            if (key !== idRecurso && key !== 'observaciones') {
+            // Si la key NO está incluida en las ignoradas, la evaluo
+            if (
+                key !== idRecurso && 
+                key !== 'observaciones' &&
+                key !== 'empresa'  &&
+                (!ignoreList || !ignoreList.includes(key))
+            ) {
                 return objeto[key] === '' || objeto[key] === null
             }
-        }) || extraConditions;
+        });
     }
 
     /**
@@ -119,6 +121,18 @@ export class UtilsService {
 
         // Obtengo la referencia REST de tal clase
         return Object.keys(resourcesREST).find(key => resourcesREST[key].Clase === ClaseRecurso);
+    }
+
+    /**
+     * Se usa en las listas desplegables, te agarra el item elegido cuando se edita un recurso
+     * @param item1 
+     * @param item2 
+     */
+    dropdownCompareWith(item1: any, item2: any) {
+        // Obtengo la primer key (que siempre es la ID) de la clase del objeto recibido
+        const idRecurso1 = Object.keys(item1)[0];
+        const idRecurso2 = Object.keys(item2)[0];
+        return item1[idRecurso1] === item2[idRecurso2];
     }
 
 

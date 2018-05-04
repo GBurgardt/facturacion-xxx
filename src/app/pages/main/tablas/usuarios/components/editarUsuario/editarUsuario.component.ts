@@ -60,14 +60,6 @@ export class EditarUsuario {
         
     }
 
-    compareWithSucursal(item1: Sucursal, item2: Sucursal) {
-        return item1.idSucursal === item2.idSucursal;
-    }
-
-    compareWithPerfil(item1: Perfil, item2: Perfil) {
-        return item1.idPerfil === item2.idPerfil;
-    }
-
     /**
      * Se dispara cuando se cambia la sucursal en el dropdown
      * @param event 

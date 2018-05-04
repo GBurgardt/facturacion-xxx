@@ -6,8 +6,10 @@ import { UtilsService } from '../../../../services/utilsService';
 import { Rubro } from 'app/models/rubro';
 import { SubRubrosService } from '../../../../services/subRubrosService';
 import { FormaPago } from '../../../../models/formaPago';
-import { FormaPagoService } from '../../../../services/formaPagoService';
+
 import { Observable } from 'rxjs/Observable';
+import { RecursoService } from '../../../../services/recursoService';
+import { resourcesREST } from 'constantes/resoursesREST';
 
 @Component({
     selector: 'formas-pago',
@@ -23,7 +25,7 @@ export class FormasPago {
     tableColumns;
 
     constructor(
-        private formaPagoService: FormaPagoService,
+        private recursoService: RecursoService,
         private router: Router,
         private utilsService: UtilsService
     ) {
@@ -42,23 +44,23 @@ export class FormasPago {
             }
         ]
         
-        this.tableData = this.formaPagoService.getList();
+        this.tableData = this.recursoService.getRecursoList(resourcesREST.formaPago)();
     }
 
     onClickEdit = (recurso: FormaPago) => {   
-        this.router.navigate(['/pages/tablas/forma-pago/editar', recurso.idFormaPago]);
+        this.router.navigate(['/pages/tablas/formas-pago/editar', recurso.idFormaPago]);
     }
 
-    onClickRemove = async(recurso) => {
+    onClickRemove = async(recurso: FormaPago) => {
         this.utilsService.showModal(
             'Borrar forma de pago'
         )(
             '¿Estás seguro de borrarla'
         )(
            async () => {
-                // const resp = await this.subRubrosService.removeSubRubro(recurso);     
+                const resp = await this.recursoService.borrarRecurso(recurso.idFormaPago)(resourcesREST.formaPago);
                 
-                // this.tableData = this.subRubrosService.getSubRubrosList();
+                this.tableData = this.recursoService.getRecursoList(resourcesREST.formaPago)();
             }
         )({
             tipoModal: 'confirmation'

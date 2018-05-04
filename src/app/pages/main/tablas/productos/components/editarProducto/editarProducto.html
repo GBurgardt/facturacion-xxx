@@ -1,5 +1,5 @@
-<div class="nuevo-producto">
-    <ba-card cardTitle="Nuevo producto" baCardClass="with-scroll">
+<div class="editar-producto">
+    <ba-card cardTitle="Editar producto" baCardClass="with-scroll">
         <div class="row">
             <div class="col-sm-2">
                 <div class="form-group">
@@ -34,9 +34,9 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="rubro">Rubro</label>
-                    <select [(ngModel)]="recurso.rubro" class="form-control" id="rubro">
-                        <option *ngFor="let rubro of rubros | async" [ngValue]="rubro">
-                            {{rubro.descripcion}}
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.subRubro.rubro" class="form-control" id="rubro">
+                        <option *ngFor="let rub of rubros | async" [ngValue]="rub">
+                            {{rub.descripcion}}
                         </option>
                     </select>
                 </div>
@@ -44,7 +44,7 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="subRubro">Sub Rubro</label>
-                    <select [(ngModel)]="recurso.subRubro" class="form-control" id="subRubro">
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.subRubro" class="form-control" id="subRubro">
                         <option *ngFor="let subRubro of subRubros | async" [ngValue]="subRubro">
                             {{subRubro.descripcion}}
                         </option>
@@ -54,7 +54,7 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="unidadCompra">Unidad Compra</label>
-                    <select [(ngModel)]="recurso.unidadCompra" class="form-control" id="unidadCompra">
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.unidadCompra" class="form-control" id="unidadCompra">
                         <option *ngFor="let uniCompra of unidadesCompra | async" [ngValue]="uniCompra">
                             {{uniCompra.descripcion}}
                         </option>
@@ -64,7 +64,7 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="unidadVenta">Unidad Venta</label>
-                    <select [(ngModel)]="recurso.unidadVenta" class="form-control" id="unidadVenta">
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.unidadVenta" class="form-control" id="unidadVenta">
                         <option *ngFor="let uniVenta of unidadesVenta | async" [ngValue]="uniVenta">
                             {{uniVenta.descripcion}}
                         </option>
@@ -81,7 +81,7 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="IVA">IVA</label>
-                    <select [(ngModel)]="recurso.IVA" class="form-control" id="IVA">
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.IVA" class="form-control" id="IVA">
                         <option *ngFor="let iva of ivas | async" [ngValue]="iva">
                             {{iva.porcIVA}}
                         </option>
@@ -171,7 +171,7 @@
                                 'gtin',
                                 'observaciones'
                             ])"
-                (click)="onClickCrear()" type="submit" class="btn btn-primary">Confirmar</button>
+                (click)="onClickEditar()" type="submit" class="btn btn-primary">Confirmar</button>
     </ba-card>
 
 </div>

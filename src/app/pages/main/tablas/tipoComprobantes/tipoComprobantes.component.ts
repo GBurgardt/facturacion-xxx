@@ -3,7 +3,10 @@ import { environment } from 'environments/environment';
 import { Router } from '@angular/router';
 import { Usuario } from 'app/models/usuario';
 import { UtilsService } from '../../../../services/utilsService';
-import { TipoComprobantesService } from 'app/services/tipoComprobantesService';
+
+import { RecursoService } from 'app/services/recursoService';
+import { resourcesREST } from 'constantes/resoursesREST';
+import { TipoComprobante } from '../../../../models/tipoComprobante';
 
 @Component({
     selector: 'tipo-comprobantes',
@@ -19,7 +22,7 @@ export class TipoComprobantes {
     tableColumns;
 
     constructor(
-        private tipoComprobantesService: TipoComprobantesService,
+        private recursoService: RecursoService,
         private router: Router,
         private utilsService: UtilsService
     ) {
@@ -62,7 +65,7 @@ export class TipoComprobantes {
             }
         ]
         // Obtengo la lista de usuarios
-        this.dataTipoComprobantes = this.tipoComprobantesService.getTipoComprobantesList();
+        this.dataTipoComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)();
     }
 
     /**
@@ -74,7 +77,7 @@ export class TipoComprobantes {
     }
 
     
-    onClickRemove = async(tipoComprobante) => {
+    onClickRemove = async(recurso: TipoComprobante) => {
         
         // Pregunto si está seguro
         this.utilsService.showModal(
@@ -83,9 +86,9 @@ export class TipoComprobantes {
             '¿Estás seguro de borrar el tipo de comprobante?'
         )(
            async () => {
-                const respUsuarioBorrado = await this.tipoComprobantesService.removeTipoComprobante(tipoComprobante);     
+                await this.recursoService.borrarRecurso(recurso.idCteTipo)(resourcesREST.cteTipo);
                 
-                this.dataTipoComprobantes = this.tipoComprobantesService.getTipoComprobantesList();
+                this.dataTipoComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)();
             }
         )({
             tipoModal: 'confirmation'

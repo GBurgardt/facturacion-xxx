@@ -5,18 +5,23 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 
 import { SubRubro } from '../../../../../../models/subRubro';
-
+import { SubRubrosService } from '../../../../../../services/subRubrosService';
 import { Rubro } from 'app/models/rubro';
-import { RecursoService } from '../../../../../../services/recursoService';
+import { FormaPago } from '../../../../../../models/formaPago';
 import { resourcesREST } from 'constantes/resoursesREST';
+import { RecursoService } from '../../../../../../services/recursoService';
+import { Observable } from 'rxjs/Observable';
+import { TipoFormaPago } from 'app/models/tipoFormaPago';
 
 @Component({
-    selector: 'editar-sub-rubro',
-    styleUrls: ['./editarSubRubro.scss'],
-    templateUrl: './editarSubRubro.html',
+    selector: 'editar-forma-pago',
+    styleUrls: ['./editarFormaPago.scss'],
+    templateUrl: './editarFormaPago.html',
 })
-export class EditarSubRubro {
-    recurso: SubRubro = new SubRubro();
+export class EditarFormaPago {
+    recurso: FormaPago = new FormaPago();
+    
+    tiposFormaPago: Observable<TipoFormaPago[]>;
 
     constructor(
         private utilsService: UtilsService,
@@ -25,14 +30,17 @@ export class EditarSubRubro {
         private recursoService: RecursoService
     ) {
         this.route.params.subscribe(params => 
-            this.recursoService.getRecursoList(resourcesREST.subRubros)()
-                .map((recursoList: SubRubro[]) =>
-                    recursoList.find(recurso => recurso.idSubRubro === parseInt(params.idSubRubro))
+            this.recursoService.getRecursoList(resourcesREST.formaPago)()
+                .map((recursoList: FormaPago[]) =>
+                    recursoList.find(recurso => recurso.idFormaPago === parseInt(params.idFormaPago))
                 )
                 .subscribe(recurso =>{
                     this.recurso = recurso;
                 })
         );
+
+        // Cargo lo tipos de forma pago disponibles
+        this.tiposFormaPago = this.recursoService.getRecursoList(resourcesREST.sisFormaPago)();
     }
 
     onClickEditar = async() => {
@@ -44,7 +52,7 @@ export class EditarSubRubro {
             )(
                 respuestaEdicion.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/sub-rubros']) 
+                () => this.router.navigate(['/pages/tablas/formas-pago']) 
             )();
         }
         catch(ex) {

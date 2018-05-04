@@ -4,8 +4,11 @@ import { Router } from '@angular/router';
 import { UtilsService } from '../../../../services/utilsService';
 
 import { Rubro } from 'app/models/rubro';
-import { SubRubrosService } from '../../../../services/subRubrosService';
+
 import { SubRubro } from '../../../../models/subRubro';
+import { RecursoService } from 'app/services/recursoService';
+import { resourcesREST } from 'constantes/resoursesREST';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
     selector: 'sub-rubros',
@@ -15,13 +18,13 @@ import { SubRubro } from '../../../../models/subRubro';
 export class SubRubros {
 
     // Data de la tabla
-    tableData;
+    tableData: Observable<SubRubro[]>;
 
     // Columnas de la tabla
     tableColumns;
 
     constructor(
-        private subRubrosService: SubRubrosService,
+        private recursoService: RecursoService,
         private router: Router,
         private utilsService: UtilsService
     ) {
@@ -45,23 +48,23 @@ export class SubRubros {
             }
         ]
         
-        this.tableData = this.subRubrosService.getSubRubrosList();
+        this.tableData = this.recursoService.getRecursoList(resourcesREST.subRubros)();
     }
 
     onClickEdit = (recurso: SubRubro) => {   
         this.router.navigate(['/pages/tablas/sub-rubros/editar', recurso.idSubRubro]);
     }
 
-    onClickRemove = async(recurso) => {
+    onClickRemove = async(recurso: SubRubro) => {
         this.utilsService.showModal(
             'Borrar sub rubro'
         )(
             '¿Estás seguro de borrar el sub rubro?'
         )(
            async () => {
-                const resp = await this.subRubrosService.removeSubRubro(recurso);     
+                const resp = await this.recursoService.borrarRecurso(recurso.idSubRubro)(resourcesREST.subRubros);
                 
-                this.tableData = this.subRubrosService.getSubRubrosList();
+                this.tableData = this.recursoService.getRecursoList(resourcesREST.subRubros)();
             }
         )({
             tipoModal: 'confirmation'

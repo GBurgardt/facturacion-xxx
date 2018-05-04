@@ -18,6 +18,7 @@ export class Producto {
     traInforma: boolean;
     gtin: string;
     puntoPedido: number;
+    costoReposicion: number;
     precioVentaProv: number;
     observaciones: string;
     IVA: any;
@@ -39,6 +40,7 @@ export class Producto {
         traInforma: boolean;
         gtin: string;
         puntoPedido: number;
+        costoReposicion: number;
         precioVentaProv: number;
         observaciones: string;
         IVA: any;
@@ -60,6 +62,7 @@ export class Producto {
             this.traInforma = producto.traInforma;
             this.gtin = producto.gtin;
             this.puntoPedido = producto.puntoPedido;
+            this.costoReposicion = producto.costoReposicion;
             this.precioVentaProv = producto.precioVentaProv;
             this.observaciones = producto.observaciones;
             this.IVA = new IVA(producto.IVA);
@@ -82,10 +85,10 @@ export class Producto {
             this.puntoPedido = null;       
             this.precioVentaProv = null;   
             this.observaciones = null;     
-            this.IVA = null;               
-            this.subRubro = null;          
-            this.unidadCompra = null;      
-            this.unidadVenta = null;      
+            this.IVA = new IVA();               
+            this.subRubro = new SubRubro();          
+            this.unidadCompra = new Unidad();      
+            this.unidadVenta = new Unidad();      
         }
     }
 

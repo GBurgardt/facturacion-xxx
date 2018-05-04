@@ -51,10 +51,10 @@
             </div>
         </div>
 
-        <button [disabled]="utilsService.checkIfIncomplete(usuarioNuevo)(
-                    usuarioNuevo.perfil.idPerfil === null || 
-                    usuarioNuevo.perfil.sucursal.idSucursal === null
-                )"
+        <button [disabled]="utilsService.checkIfIncomplete(usuarioNuevo)([
+                                'email',
+                                'telefono'
+                            ])"
                 (click)="onClickCrearUsuario()" 
                 type="submit" 
                 class="btn btn-primary">

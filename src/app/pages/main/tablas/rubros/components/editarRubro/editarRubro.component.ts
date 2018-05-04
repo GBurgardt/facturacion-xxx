@@ -4,7 +4,7 @@ import { UtilsService } from '../../../../../../services/utilsService';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Rubro } from '../../../../../../models/rubro';
-import { RubrosService } from 'app/services/rubrosService';
+
 import { RecursoService } from 'app/services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
 
@@ -31,8 +31,6 @@ export class EditarRubro {
                     this.recurso = recurso;
                 })
         );
-
-        
     }
 
     onClickEditar = async() => {

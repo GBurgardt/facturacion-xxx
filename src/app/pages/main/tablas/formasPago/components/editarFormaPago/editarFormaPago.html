@@ -1,5 +1,5 @@
-<div class="nueva-forma-pago">
-    <ba-card cardTitle="Nuevo forma pago" baCardClass="with-scroll">
+<div class="editar-forma-pago">
+    <ba-card cardTitle="Editar Forma pago" baCardClass="with-scroll">
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
@@ -10,7 +10,7 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="tipoFormaPago">Tipo forma pago</label>
-                    <select [(ngModel)]="recurso.tipo" class="form-control" id="rubro">
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.tipo" class="form-control" id="rubro">
                         <option *ngFor="let tipo of tiposFormaPago | async" [ngValue]="tipo">
                             {{tipo.descripcion}}
                         </option>
@@ -18,8 +18,8 @@
                 </div>
             </div>
         </div>
-
-        <button (click)="onClickCrear()" type="submit" class="btn btn-primary">Confirmar</button>
+        
+        <button (click)="onClickEditar()" type="submit" class="btn btn-primary">Confirmar</button>
     </ba-card>
 
 </div>

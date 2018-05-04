@@ -3,10 +3,9 @@ import { environment } from 'environments/environment';
 import { Router } from '@angular/router';
 import { UtilsService } from '../../../../services/utilsService';
 import { Producto } from '../../../../models/producto';
-import { ProductosService } from 'app/services/productosService';
 import { Observable } from 'rxjs/Observable';
-
-
+import { RecursoService } from '../../../../services/recursoService';
+import { resourcesREST } from 'constantes/resoursesREST';
 
 @Component({
     selector: 'productos',
@@ -22,7 +21,7 @@ export class Productos {
     tableColumns;
 
     constructor(
-        private productosService: ProductosService,
+        private recursoService: RecursoService,
         private router: Router,
         private utilsService: UtilsService
     ) {
@@ -52,23 +51,23 @@ export class Productos {
             }
         ]
         
-        this.tableData = this.productosService.getList();
+        this.tableData = this.recursoService.getRecursoList(resourcesREST.productos)();
     }
 
     onClickEdit = (recurso: Producto) => {   
         this.router.navigate(['/pages/tablas/productos/editar', recurso.idProductos]);
     }
 
-    onClickRemove = async(recurso) => {
+    onClickRemove = async(recurso: Producto) => {
         this.utilsService.showModal(
-            'Borrar sub rubro'
+            'Borrar producto'
         )(
-            '¿Estás seguro de borrar el sub rubro?'
+            '¿Estás seguro de borrar el producto?'
         )(
            async () => {
-                // const resp = await this.subRubrosService.removeSubRubro(recurso);     
+                const resp = await this.recursoService.borrarRecurso(recurso.idProductos)(resourcesREST.productos);
                 
-                // this.tableData = this.subRubrosService.getSubRubrosList();
+                this.tableData = this.recursoService.getRecursoList(resourcesREST.productos)();
             }
         )({
             tipoModal: 'confirmation'

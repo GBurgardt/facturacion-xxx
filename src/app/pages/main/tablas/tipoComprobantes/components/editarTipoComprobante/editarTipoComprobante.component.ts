@@ -5,7 +5,9 @@ import { UtilsService } from '../../../../../../services/utilsService';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { TipoComprobante } from '../../../../../../models/tipoComprobante';
-import { TipoComprobantesService } from '../../../../../../services/tipoComprobantesService';
+
+import { RecursoService } from '../../../../../../services/recursoService';
+import { resourcesREST } from 'constantes/resoursesREST';
 
 @Component({
     selector: 'editar-tipo-comprobante',
@@ -15,22 +17,22 @@ import { TipoComprobantesService } from '../../../../../../services/tipoComproba
 export class EditarTipoComprobante {
 
     // Usuario que se va a editar
-    tipoComprobanteEnEdicion: TipoComprobante = new TipoComprobante();
+    recurso: TipoComprobante = new TipoComprobante();
 
     constructor(
         private utilsService: UtilsService,
         private router: Router,
         private route: ActivatedRoute,
-        private tipoComprobantesService: TipoComprobantesService
+        private recursoService: RecursoService
     ) {
-        
-        // Busco el id del tipo de comprobante a editar
         this.route.params.subscribe(params => 
-            // Obtengo el tipo de comprobante que se va a editar
-            this.tipoComprobantesService.getTipoComprobanteById(parseInt(params.idTipoComprobante)).subscribe(tipoComprobante =>{
-                this.tipoComprobanteEnEdicion = tipoComprobante;
-                
-            })
+            this.recursoService.getRecursoList(resourcesREST.cteTipo)()
+                .map((recursoList: TipoComprobante[]) =>
+                    recursoList.find(recurso => recurso.idCteTipo === parseInt(params.idTipoComprobante))
+                )
+                .subscribe(recurso =>{
+                    this.recurso = recurso;
+                })
         );
 
     }
@@ -41,15 +43,13 @@ export class EditarTipoComprobante {
     onClickEditarTipoComprobante = async() => {
         try {
             // Edito el usuario seleccionado
-            const respUsuarioEditado = await this.tipoComprobantesService.editarTipoComprobante(
-                this.tipoComprobanteEnEdicion
-            );
+            const resp = await this.recursoService.editarRecurso(this.recurso)();
     
             // Muestro mensaje de okey y redirecciono a la lista de tipos de comprobantes
             this.utilsService.showModal(
-                respUsuarioEditado.control.codigo
+                resp.control.codigo
             )(
-                respUsuarioEditado.control.descripcion
+                resp.control.descripcion
             )(
                 () => this.router.navigate(['/pages/tablas/tipos-comprobantes']) 
             )();

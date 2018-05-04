@@ -8,7 +8,8 @@ import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
 import { Router } from '@angular/router';
 import { TipoComprobante } from '../../../../../../models/tipoComprobante';
-import { TipoComprobantesService } from '../../../../../../services/tipoComprobantesService';
+import { RecursoService } from '../../../../../../services/recursoService';
+
 
 @Component({
     selector: 'nuevo-tipo-comprobante',
@@ -16,11 +17,10 @@ import { TipoComprobantesService } from '../../../../../../services/tipoComproba
     templateUrl: './nuevoTipoComprobante.html',
 })
 export class NuevoTipoComprobante {
-    // Usuario nuevo
-    tipoComprobanteNuevo: TipoComprobante = new TipoComprobante();
+    recurso: TipoComprobante = new TipoComprobante();
 
     constructor(
-        private tipoComprobantesService: TipoComprobantesService,
+        private recursoService: RecursoService,
         private utilsService: UtilsService,
         private router: Router
     ) { }
@@ -29,25 +29,20 @@ export class NuevoTipoComprobante {
      * Crear 
      */
     onClickCrearTipoComprobante = async () => {
-        
         try {
-            
-            const respTipoComprobanteCreado = await this.tipoComprobantesService.registrarTipoComprobante(
-                this.tipoComprobanteNuevo
-            );
+            const resp = await this.recursoService.setRecurso(this.recurso)();
     
             // Muestro mensaje de okey y redirecciono a la lista de tipos comprobantes
             this.utilsService.showModal(
-                respTipoComprobanteCreado.control.codigo
+                resp.control.codigo
             )(
-                respTipoComprobanteCreado.control.descripcion
+                resp.control.descripcion
             )(
                 () => this.router.navigate(['/pages/tablas/tipos-comprobantes']) 
             )();
         }
         catch(ex) {
             this.utilsService.decodeErrorResponse(ex);
-            
         }
     }
 

@@ -243,9 +243,32 @@ export class AuthService {
 
         if (nombreRecurso === resourcesREST.formaPago.nombre) {
             return {
-                idFormaPago: recurso.idFormaPago,
                 tipo: recurso.tipo.idSisFormaPago,
                 descripcion: recurso.descripcion
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.productos.nombre) {   
+            return {           
+                codProducto: recurso.codProducto,
+                codigoBarra: recurso.codigoBarra,
+                descripcionCorta: recurso.descripcionCorta,
+                descripcion: recurso.descripcion,
+                modeloImputacion: recurso.modeloImputacion,
+                aptoCanje: recurso.aptoCanje,
+                stock:  recurso.stock,
+                trazable: recurso.trazable,
+                traReceta: recurso.traReceta,
+                traInforma: recurso.traInforma,
+                gtin: recurso.gtin,
+                puntoPedido: recurso.puntoPedido,
+                costoReposicion: recurso.costoReposicion,
+                precioVentaProv: recurso.precioVentaProv,
+                observaciones: recurso.observaciones,
+                idSubRubro: recurso.subRubro.idSubRubro,
+                idIva: recurso.IVA.idIVA,
+                idUnidadCompra: recurso.unidadCompra.idUnidad,
+                idUnidadVenta: recurso.unidadVenta.idUnidad
             }
         }
     }
@@ -290,6 +313,39 @@ export class AuthService {
                 codigoAfip: recurso.codigoAfip,
                 surenu: recurso.surenu,
                 observaciones: recurso.observaciones ? recurso.observaciones : ''
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.formaPago.nombre) {
+            return {
+                idFormaPago: recurso.idFormaPago,
+                tipo: recurso.tipo.idSisFormaPago,
+                descripcion: recurso.descripcion
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.productos.nombre) {   
+            return {     
+                idProducto: recurso.idProductos,      
+                codProducto: recurso.codProducto,
+                codigoBarra: recurso.codigoBarra,
+                descripcionCorta: recurso.descripcionCorta,
+                descripcion: recurso.descripcion,
+                modeloImputacion: recurso.modeloImputacion,
+                aptoCanje: recurso.aptoCanje,
+                stock:  recurso.stock,
+                trazable: recurso.trazable,
+                traReceta: recurso.traReceta,
+                traInforma: recurso.traInforma,
+                gtin: recurso.gtin,
+                puntoPedido: recurso.puntoPedido,
+                costoReposicion: recurso.costoReposicion,
+                precioVentaProv: recurso.precioVentaProv,
+                observaciones: recurso.observaciones,
+                idSubRubro: recurso.subRubro.idSubRubro,
+                idIva: recurso.IVA.idIVA,
+                idUnidadCompra: recurso.unidadCompra.idUnidad,
+                idUnidadVenta: recurso.unidadVenta.idUnidad
             }
         }
     }

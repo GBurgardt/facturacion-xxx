@@ -7,6 +7,8 @@ import { SubRubro } from "app/models/subRubro";
 import { FormaPago } from "app/models/formaPago";
 import { TipoFormaPago } from "app/models/tipoFormaPago";
 import { Producto } from "app/models/producto";
+import { IVA } from "app/models/IVA";
+import { Unidad } from "app/models/unidad";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -48,4 +50,12 @@ export const resourcesREST = {
         nombre: 'productos',
         Clase: Producto
     },
+    sisIVA: {
+        nombre: 'sisIVA',
+        Clase: IVA
+    },
+    sisUnidad: {
+        nombre: 'sisUnidad',
+        Clase: Unidad
+    }
 };

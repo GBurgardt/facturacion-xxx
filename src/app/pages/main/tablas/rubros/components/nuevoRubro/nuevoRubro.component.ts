@@ -22,9 +22,9 @@ export class NuevoRubro {
         private router: Router
     ) { }
 
-    onClickCrearRubro = async () => {
+    onClickCrear = async () => {
         try {
-            const respRubroCreado: any = await this.recursoService.setRecurso(this.recurso);
+            const respRubroCreado: any = await this.recursoService.setRecurso(this.recurso)();
     
             this.utilsService.showModal(
                 respRubroCreado.control.codigo

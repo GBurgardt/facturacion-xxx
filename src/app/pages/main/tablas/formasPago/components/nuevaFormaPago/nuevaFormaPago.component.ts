@@ -6,8 +6,10 @@ import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { FormaPago } from '../../../../../../models/formaPago';
-import { FormaPagoService } from '../../../../../../services/formaPagoService';
+
 import { TipoFormaPago } from '../../../../../../models/tipoFormaPago';
+import { RecursoService } from '../../../../../../services/recursoService';
+import { resourcesREST } from 'constantes/resoursesREST';
 
 @Component({
     selector: 'nueva-forma-pago',
@@ -21,21 +23,18 @@ export class NuevaFormaPago {
     tiposFormaPago: Observable<TipoFormaPago[]>;
 
     constructor(
-        private formaPagoService: FormaPagoService,
+        private recursoService: RecursoService,
         private utilsService: UtilsService,
         private router: Router
     ) {
         // Cargo lo tipos de forma pago disponibles
-        this.tiposFormaPago = this.formaPagoService.getTiposFormaPagoList();
+        this.tiposFormaPago = this.recursoService.getRecursoList(resourcesREST.sisFormaPago)();
     }
 
     onClickCrear = async () => {
         try {
-            console.log(this.recurso);
-            const resp: any = await this.formaPagoService.registrarRecurso(
-                this.recurso
-            );
-    
+            const resp: any = await this.recursoService.setRecurso(this.recurso)();
+            
             this.utilsService.showModal(
                 resp.control.codigo
             )(
