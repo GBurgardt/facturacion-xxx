@@ -47,12 +47,11 @@ export class Depositos {
                 ancho: '22%'
             }
         ]
-        
+
         this.tableData = this.recursoService.getRecursoList(resourcesREST.depositos)();
-        this.tableData.subscribe(a=>console.log(a));
     }
 
-    onClickEdit = (recurso: Deposito) => {   
+    onClickEdit = (recurso: Deposito) => {
         this.router.navigate(['/pages/tablas/depositos/editar', recurso.idDeposito]);
     }
 
@@ -64,7 +63,7 @@ export class Depositos {
         )(
            async () => {
                 const resp = await this.recursoService.borrarRecurso(recurso.idDeposito)(resourcesREST.depositos);
-                
+
                 this.tableData = this.recursoService.getRecursoList(resourcesREST.depositos)();
             }
         )({

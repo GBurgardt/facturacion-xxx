@@ -7,16 +7,17 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { RecursoService } from '../../../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
-import { Deposito } from '../../../../../../models/deposito';
+import { ListaPrecio } from 'app/models/listaPrecio';
+
 
 @Component({
-    selector: 'editar-deposito',
-    styleUrls: ['./editarDeposito.scss'],
-    templateUrl: './editarDeposito.html',
+    selector: 'editar-lista-precio',
+    styleUrls: ['./editarListaPrecio.scss'],
+    templateUrl: './editarListaPrecio.html',
 })
 
-export class EditarDeposito {
-    recurso: Deposito = new Deposito();
+export class EditarListaPrecio {
+    recurso: ListaPrecio = new ListaPrecio();
 
     constructor(
         private recursoService: RecursoService,
@@ -26,9 +27,9 @@ export class EditarDeposito {
     ) {
         // Busco el recurso por id
         this.route.params.subscribe(params =>
-            this.recursoService.getRecursoList(resourcesREST.depositos)()
-                .map((recursoList: Deposito[]) =>
-                    recursoList.find(recurso => recurso.idDeposito === parseInt(params.idDeposito))
+            this.recursoService.getRecursoList(resourcesREST.listaPrecios)()
+                .map((recursoList: ListaPrecio[]) =>
+                    recursoList.find(recurso => recurso.idListaPrecio === parseInt(params.idListaPrecio))
                 )
                 .subscribe(recurso =>{
                     this.recurso = recurso;
@@ -49,7 +50,7 @@ export class EditarDeposito {
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/depositos'])
+                () => this.router.navigate(['/pages/tablas/listaPrecios'])
             )();
         }
         catch(ex) {

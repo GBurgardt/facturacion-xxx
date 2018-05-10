@@ -10,7 +10,11 @@
 }
 
 .data-table-container {
+    .card > .card-body {
+        // TODO: Este padding probablemente lo saque después cuando ponga fltros y eso
+        padding-top: 8px;
 
+    }
     .panel {
         .table {
             .table-column {
@@ -22,7 +26,7 @@
                     text-align: center;
                 }
             }
-    
+
             tbody {
                 tr td {
                     text-align: center;
@@ -49,7 +53,8 @@
 
         .table-striped {
             // margin-top: 3%;
-            margin-top: 1.6%;
+            //margin-top: 1.6%;
+            border-top: #dadada solid 2px;
         }
     }
 
@@ -60,6 +65,6 @@
 
     }
 
-    
-    
+
+
 }

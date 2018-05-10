@@ -1,10 +1,10 @@
-<div class="nuevo-deposito">
-    <ba-card cardTitle="Nuevo deposito" baCardClass="with-scroll">
+<div class="editar-lista-precio">
+    <ba-card cardTitle="Editar lista precio" baCardClass="with-scroll">
         <div class="row">
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="codigoDep">Codigo</label>
-                    <input [(ngModel)]="recurso.codigoDep" type="text" class="form-control" id="codigoDep" placeholder="">
+                    <input disabled [(ngModel)]="recurso.codigoDep" type="text" class="form-control" id="codigoDep" placeholder="">
                 </div>
             </div>
 
@@ -31,9 +31,10 @@
                 </div>
             </div>
         </div>
-        
+
+
         <button [disabled]="utilsService.checkIfIncomplete(recurso)()"
-                (click)="onClickCrear($event)" type="submit" class="btn btn-primary">Confirmar</button>
+                (click)="onClickEditar()" type="submit" class="btn btn-primary">Confirmar</button>
     </ba-card>
 
 </div>

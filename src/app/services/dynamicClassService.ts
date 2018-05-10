@@ -12,8 +12,25 @@ import { Sucursal } from "app/models/sucursal";
 import { TipoFormaPago } from "app/models/tipoFormaPago";
 import { Unidad } from "app/models/unidad";
 import { Deposito } from "app/models/deposito";
+import { ListaPrecio } from "app/models/listaPrecio";
 
-const classes = { Usuario, TipoComprobante, Rubro, Empresa, FormaPago, IVA, MenuSucursal, Perfil, Producto, SubRubro, Sucursal, TipoFormaPago, Unidad, Deposito};
+const classes = {
+    Usuario,
+    TipoComprobante,
+    Rubro,
+    Empresa,
+    FormaPago,
+    IVA,
+    MenuSucursal,
+    Perfil,
+    Producto,
+    SubRubro,
+    Sucursal,
+    TipoFormaPago,
+    Unidad,
+    Deposito,
+    ListaPrecio
+};
 
 export default function dynamicClass (name) {
     return classes[name];

@@ -8,18 +8,16 @@ import { Observable } from 'rxjs/Observable';
 
 import { RecursoService } from '../../../../../../services/recursoService';
 
-import { resourcesREST } from 'constantes/resoursesREST';
-
-import { Deposito } from '../../../../../../models/deposito';
+import { ListaPrecio } from '../../../../../../models/listaPrecio';
 
 @Component({
-    selector: 'nuevo-deposito',
-    styleUrls: ['./nuevoDeposito.scss'],
-    templateUrl: './nuevoDeposito.html',
+    selector: 'nuevo-lista-precio',
+    styleUrls: ['./nuevoListaPrecio.scss'],
+    templateUrl: './nuevoListaPrecio.html',
 })
 
-export class NuevoDeposito {
-    recurso: Deposito = new Deposito();
+export class NuevoListaPrecio {
+    recurso: ListaPrecio = new ListaPrecio();
 
     constructor(
         private recursoService: RecursoService,
@@ -39,7 +37,7 @@ export class NuevoDeposito {
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/depositos'])
+                () => this.router.navigate(['/pages/tablas/listaPrecios'])
             )();
         }
         catch(ex) {

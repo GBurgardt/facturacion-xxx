@@ -10,6 +10,7 @@ import { Producto } from "app/models/producto";
 import { IVA } from "app/models/IVA";
 import { Unidad } from "app/models/unidad";
 import { Deposito } from "app/models/deposito";
+import { ListaPrecio } from "app/models/listaPrecio";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -62,5 +63,9 @@ export const resourcesREST = {
     depositos: {
         nombre: 'deposito',
         Clase: Deposito
+    },
+    listaPrecios: {
+        nombre: 'listaPrecios',
+        Clase: ListaPrecio
     }
 };

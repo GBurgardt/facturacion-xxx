@@ -37,13 +37,8 @@ export class NuevoRecurso {
         const keys = Object.keys(this.recurso);
 
         this.chunkKeys = _.chunk(keys, 3);
-        console.log(this.chunkKeys);
-        
-
-
-
     }
-    
+
 
 
 
@@ -67,21 +62,21 @@ export class NuevoRecurso {
 
     onClickCrear = async () => {
         try {
-            
+
             // const respRubroCreado: any = await this.authService.registrarRubro(
             //     this.recurso
             // );
-    
+
             // this.utilsService.showModal(
             //     respRubroCreado.control.codigo
             // )(
             //     respRubroCreado.control.descripcion
             // )(
-            //     () => this.router.navigate(['/pages/tablas/rubros']) 
+            //     () => this.router.navigate(['/pages/tablas/rubros'])
             // )();
         }
         catch(ex) {
-            this.utilsService.decodeErrorResponse(ex);           
+            this.utilsService.decodeErrorResponse(ex);
         }
     }
 

@@ -25,6 +25,8 @@ export class DataTables {
     @Input() edit;
     @Input() remove;
 
+    @Input() tituloTabla;
+
     filterQuery = "";
     rowsOnPage = 10;
     sortOrder = "asc";
@@ -41,7 +43,7 @@ export class DataTables {
 
     /**
      * Obtiene el style a partir de una columna
-     * @param col 
+     * @param col
      */
     getStyleFromCol(col) {
         let styles = {
@@ -52,7 +54,7 @@ export class DataTables {
 
     /**
      * Este método checkea el tipo de dato de la key y la parsea de acuerdo a el. Por ejemplo, si es boolean retrona 'si' en 'true' y 'no' en 'false'
-     * @param key 
+     * @param key
      */
     parseKey(key) {
         const tipoDato = typeof key;

@@ -5,7 +5,8 @@ import { UtilsService } from '../../../../services/utilsService';
 import { Observable } from 'rxjs/Observable';
 import { RecursoService } from '../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
-import { Deposito } from '../../../../models/deposito';
+
+import { ListaPrecio } from '../../../../models/listaPrecio';
 
 @Component({
     selector: 'lista-precios',
@@ -15,7 +16,7 @@ import { Deposito } from '../../../../models/deposito';
 export class ListaPrecios {
 
     // Data de la tabla
-    tableData: Observable<Deposito[]>;
+    tableData: Observable<ListaPrecio[]>;
 
     // Columnas de la tabla
     tableColumns;
@@ -47,25 +48,24 @@ export class ListaPrecios {
                 ancho: '22%'
             }
         ]
-        
-        this.tableData = this.recursoService.getRecursoList(resourcesREST.depositos)();
-        this.tableData.subscribe(a=>console.log(a));
+
+        this.tableData = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
     }
 
-    onClickEdit = (recurso: Deposito) => {   
-        this.router.navigate(['/pages/tablas/depositos/editar', recurso.idDeposito]);
+    onClickEdit = (recurso: ListaPrecio) => {
+        this.router.navigate(['/pages/tablas/listaPrecios/editar', recurso.idListaPrecio]);
     }
 
-    onClickRemove = async(recurso: Deposito) => {
+    onClickRemove = async(recurso: ListaPrecio) => {
         this.utilsService.showModal(
-            'Borrar deposito'
+            'Borrar lista de precio'
         )(
-            '¿Estás seguro de borrar el deposito?'
+            '¿Estás seguro de borrar la lista de precios?'
         )(
            async () => {
-                const resp = await this.recursoService.borrarRecurso(recurso.idDeposito)(resourcesREST.depositos);
-                
-                this.tableData = this.recursoService.getRecursoList(resourcesREST.depositos)();
+                const resp = await this.recursoService.borrarRecurso(recurso.idListaPrecio)(resourcesREST.listaPrecios);
+
+                this.tableData = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
             }
         )({
             tipoModal: 'confirmation'

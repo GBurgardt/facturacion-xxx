@@ -1,1 +1,0 @@
-export * from './nuevoProducto.component';

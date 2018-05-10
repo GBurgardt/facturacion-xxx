@@ -48,7 +48,6 @@ export class FormasPago {
     }
 
     onClickEdit = (recurso: FormaPago) => {
-        console.log(recurso);
         // Si se puede editar
         if (recurso.editar) {
             this.router.navigate(['/pages/tablas/formaspago/editar', recurso.idFormaPago]);
@@ -70,7 +69,7 @@ export class FormasPago {
             )(
                async () => {
                     const resp = await this.recursoService.borrarRecurso(recurso.idFormaPago)(resourcesREST.formaPago);
-    
+
                     this.tableData = this.recursoService.getRecursoList(resourcesREST.formaPago)();
                 }
             )({

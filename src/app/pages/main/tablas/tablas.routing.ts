@@ -22,6 +22,9 @@ import { EditarProducto } from './productos/components/editarProducto';
 import { Depositos } from './depositos';
 import { EditarDeposito } from './depositos/components/editarDeposito';
 import { NuevoDeposito } from './depositos/components/nuevoDeposito/nuevoDeposito.component';
+import { ListaPrecios } from './listaPrecios';
+import { NuevoListaPrecio } from './listaPrecios/components/nuevoListaPrecio';
+import { EditarListaPrecio } from './listaPrecios/components/editarListaPrecio';
 
 // noinspection TypeScriptValidateTypes
 const routes: Routes = [
@@ -50,6 +53,9 @@ const routes: Routes = [
             { path: 'depositos', component: Depositos },
             { path: 'depositos/nuevo', component: NuevoDeposito },
             { path: 'depositos/editar/:idDeposito', component: EditarDeposito },
+            { path: 'listaPrecios', component: ListaPrecios },
+            { path: 'listaPrecios/nuevo', component: NuevoListaPrecio },
+            { path: 'listaPrecios/editar/:idListaPrecio', component: EditarListaPrecio },
         ]
     }
 ];
