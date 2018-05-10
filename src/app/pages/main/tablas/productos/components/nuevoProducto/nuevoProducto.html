@@ -125,18 +125,18 @@
             </div>
             <div class="col-sm-2">
                 <div class="checkbox-traza">
-                    <ba-checkbox [(ngModel)]="recurso.traReceta" [label]="'Receta'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                    <ba-checkbox [disabled]="!recurso.trazable" [(ngModel)]="recurso.traReceta" [label]="'Receta'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
                 </div>
             </div>
             <div class="col-sm-2">
                 <div class="checkbox-traza">
-                    <ba-checkbox [(ngModel)]="recurso.traInforma" [label]="'Informa'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                    <ba-checkbox [disabled]="!recurso.trazable" [(ngModel)]="recurso.traInforma" [label]="'Informa'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="form-group gtin-group">
                     <label for="gtin">GTIN</label>
-                    <input [(ngModel)]="recurso.gtin" type="text" class="form-control" id="gtin" placeholder="">
+                    <input [disabled]="!recurso.trazable" [(ngModel)]="recurso.gtin" type="text" class="form-control" id="gtin" placeholder="">
                 </div>
             </div>
         </div>

@@ -57,5 +57,6 @@ export class BaThemeConfig {
     //     dashboardLineChart: '#6eba8c',
     //   },
     // });
+
   }
 }

@@ -3,6 +3,12 @@
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
+                    <label for="codigoSubRubro">Codigo</label>
+                    <input disabled [(ngModel)]="recurso.codigoSubRubro" type="text" class="form-control" id="codigoSubRubro" placeholder="">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
                     <label for="descripcion">Descripcion</label>
                     <input [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion" placeholder="Descripcion del rubro">
                 </div>

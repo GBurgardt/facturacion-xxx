@@ -4,7 +4,7 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="inputFirstName">Codigo</label>
-                    <input [(ngModel)]="recurso.codigoComp" type="text" class="form-control" id="codigoComp" placeholder="Codigo">
+                    <input disabled [(ngModel)]="recurso.codigoComp" type="text" class="form-control" id="codigoComp" placeholder="Codigo">
                 </div>
             </div>
             <div class="col-sm-4">
@@ -22,12 +22,7 @@
         </div>
         
         <div class="row">
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="inputFirstName">Curso Legal</label>
-                    <input [(ngModel)]="recurso.cursoLegal" type="text" class="form-control" id="cursoLegal" placeholder="Curso legal">
-                </div>
-            </div>
+            
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="inputEmail">Codigo Afip</label>
@@ -38,6 +33,11 @@
                 <div class="form-group">
                     <label for="Clave">D/H</label>
                     <input [(ngModel)]="recurso.surenu" type="text" class="form-control" id="surenu" placeholder="D/H">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="checkbox-curso-legal">
+                    <ba-checkbox [(ngModel)]="recurso.cursoLegal" [label]="'Curso Legal'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
                 </div>
             </div>
         </div>

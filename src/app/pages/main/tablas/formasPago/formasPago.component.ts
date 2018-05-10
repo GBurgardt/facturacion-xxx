@@ -48,23 +48,41 @@ export class FormasPago {
     }
 
     onClickEdit = (recurso: FormaPago) => {
-        this.router.navigate(['/pages/tablas/formas-pago/editar', recurso.idFormaPago]);
+        console.log(recurso);
+        // Si se puede editar
+        if (recurso.editar) {
+            this.router.navigate(['/pages/tablas/formaspago/editar', recurso.idFormaPago]);
+        } else {
+            this.utilsService.showModal(
+                'Aviso'
+            )(
+                'Esta forma de pago no se puede editar'
+            )()();
+        }
     }
 
     onClickRemove = async(recurso: FormaPago) => {
-        this.utilsService.showModal(
-            'Borrar forma de pago'
-        )(
-            '¿Estás seguro de borrarla'
-        )(
-           async () => {
-                const resp = await this.recursoService.borrarRecurso(recurso.idFormaPago)(resourcesREST.formaPago);
-
-                this.tableData = this.recursoService.getRecursoList(resourcesREST.formaPago)();
-            }
-        )({
-            tipoModal: 'confirmation'
-        });
+        if (recurso.editar) {
+            this.utilsService.showModal(
+                'Borrar forma de pago'
+            )(
+                '¿Estás seguro de borrarla'
+            )(
+               async () => {
+                    const resp = await this.recursoService.borrarRecurso(recurso.idFormaPago)(resourcesREST.formaPago);
+    
+                    this.tableData = this.recursoService.getRecursoList(resourcesREST.formaPago)();
+                }
+            )({
+                tipoModal: 'confirmation'
+            });
+        } else {
+            this.utilsService.showModal(
+                'Aviso'
+            )(
+                'Esta forma de pago no se puede borrar'
+            )()();
+        }
     }
 
 }

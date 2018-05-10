@@ -19,6 +19,7 @@ $hover: 24;
 @mixin styleButton($color, $borderColor) {
   background: $color;
   border-color: $borderColor;
+  color: $default;
 }
 
 @mixin buttonColor($color, $borderColor) {

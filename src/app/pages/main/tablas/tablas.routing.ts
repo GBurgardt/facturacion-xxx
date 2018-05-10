@@ -19,6 +19,9 @@ import { Productos } from './productos';
 import { EditarFormaPago } from './formasPago/components/editarFormaPago';
 import { NuevoProducto } from './productos/components/nuevoProducto';
 import { EditarProducto } from './productos/components/editarProducto';
+import { Depositos } from './depositos';
+import { EditarDeposito } from './depositos/components/editarDeposito';
+import { NuevoDeposito } from './depositos/components/nuevoDeposito/nuevoDeposito.component';
 
 // noinspection TypeScriptValidateTypes
 const routes: Routes = [
@@ -38,12 +41,15 @@ const routes: Routes = [
             { path: 'subrubros', component: SubRubros },
             { path: 'subrubros/nuevo', component: NuevoSubRubro },
             { path: 'subrubros/editar/:idSubRubro', component: EditarSubRubro },
-            { path: 'formas-pago', component: FormasPago },
-            { path: 'formas-pago/nuevo', component: NuevaFormaPago },
-            { path: 'formas-pago/editar/:idFormaPago', component: EditarFormaPago },
+            { path: 'formaspago', component: FormasPago },
+            { path: 'formaspago/nuevo', component: NuevaFormaPago },
+            { path: 'formaspago/editar/:idFormaPago', component: EditarFormaPago },
             { path: 'productos', component: Productos },
             { path: 'productos/nuevo', component: NuevoProducto },
             { path: 'productos/editar/:idProductos', component: EditarProducto },
+            { path: 'depositos', component: Depositos },
+            { path: 'depositos/nuevo', component: NuevoDeposito },
+            { path: 'depositos/editar/:idDeposito', component: EditarDeposito },
         ]
     }
 ];

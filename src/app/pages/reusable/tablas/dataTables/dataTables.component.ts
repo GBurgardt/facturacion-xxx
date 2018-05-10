@@ -50,4 +50,18 @@ export class DataTables {
         return styles;
     }
 
+    /**
+     * Este método checkea el tipo de dato de la key y la parsea de acuerdo a el. Por ejemplo, si es boolean retrona 'si' en 'true' y 'no' en 'false'
+     * @param key 
+     */
+    parseKey(key) {
+        const tipoDato = typeof key;
+
+        if (tipoDato === 'boolean') {
+            return key ? 'Si' : 'No';
+        };
+
+        return key;
+    }
+
 }

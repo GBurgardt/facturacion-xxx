@@ -122,12 +122,6 @@ export class AuthService {
     * @argument queryParams Query params para setearle a la consulta
     */
     getResourceList = (token: string) => (nombreRecurso: string) => (queryParams?) => {
-        // Si el resource solicitado no está incluido en la lista de recursos disponisbles, retorno un error
-        // if (!Object.keys(resourcesREST)
-        //         .map(key => resourcesREST[key])
-        //         .includes(nombreRecurso)) {
-        //     return Observable.throw('Recurso inexistente')
-        // }
 
         return this.request(
             [],
@@ -271,6 +265,15 @@ export class AuthService {
                 idUnidadVenta: recurso.unidadVenta.idUnidad
             }
         }
+
+        if (nombreRecurso === resourcesREST.depositos.nombre) {
+            return {
+                codigoDep: recurso.codigoDep,
+                descripcion: recurso.descripcion,
+                domicilio: recurso.domicilio,
+                codigoPostal: recurso.codigoPostal,
+            }
+        }
     }
 
     /**
@@ -346,6 +349,16 @@ export class AuthService {
                 idIva: recurso.IVA.idIVA,
                 idUnidadCompra: recurso.unidadCompra.idUnidad,
                 idUnidadVenta: recurso.unidadVenta.idUnidad
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.depositos.nombre) {
+            return {
+                idDeposito: recurso.idDeposito,
+                codigoDep: recurso.codigoDep,
+                descripcion: recurso.descripcion,
+                domicilio: recurso.domicilio,
+                codigoPostal: recurso.codigoPostal,
             }
         }
     }

@@ -49,7 +49,7 @@ export class EditarFormaPago {
             )(
                 respuestaEdicion.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/formas-pago'])
+                () => this.router.navigate(['/pages/tablas/formaspago'])
             )();
         }
         catch(ex) {

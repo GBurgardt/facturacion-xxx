@@ -2,26 +2,30 @@
 
 .ba-logo {
     margin-bottom: 9%;
-    //border-bottom: solid 1px;
+    
     box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.25);
 
     .logo-container {
-        padding: 10%;
+        padding: 1% 7% 10%;
         display: flex;
-        justify-content: space-around;
+        //justify-content: space-around;
 
         .img-container {
+            margin-left: 14%;
             .empresa-picture {
                 height: 2.5rem;
                 width: 2.5rem;
                 border-radius: 50%;
                 cursor: pointer;
+                border: 1px solid #505050;
             }
         }
 
         .datos-container {
+            margin-left: 10%;
             .nombre-empresa {
-                padding: 26% 17% 0% 0px;
+                //padding: 30% 20% 0% 0px;
+                padding-top: 31%;
                 font-size: 1.1rem;
                 cursor: pointer;
             }

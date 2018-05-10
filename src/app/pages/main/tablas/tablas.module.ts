@@ -31,6 +31,9 @@ import { RecursoService } from '../../../services/recursoService';
 import { EditarFormaPago } from './formasPago/components/editarFormaPago';
 import { NuevoProducto } from './productos/components/nuevoProducto';
 import { EditarProducto } from './productos/components/editarProducto';
+import { Depositos } from './depositos';
+import { EditarDeposito } from './depositos/components/editarDeposito';
+import { NuevoDeposito } from './depositos/components/nuevoDeposito/nuevoDeposito.component';
 
 @NgModule({
     imports: [
@@ -62,7 +65,10 @@ import { EditarProducto } from './productos/components/editarProducto';
         EditarFormaPago,
         Productos,
         NuevoProducto,
-        EditarProducto
+        EditarProducto,
+        Depositos,
+        NuevoDeposito,
+        EditarDeposito
     ],
     providers: [
         DataTablesService,

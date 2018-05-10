@@ -75,12 +75,12 @@ export class Producto {
             this.codigoBarra = null;       
             this.descripcionCorta = null;  
             this.descripcion = null;       
-            this.aptoCanje = null;         
+            this.aptoCanje = false;         
             this.modeloImputacion = null;  
-            this.stock = null;             
-            this.trazable = null;          
-            this.traReceta = null;         
-            this.traInforma = null;        
+            this.stock = false;             
+            this.trazable = false;          
+            this.traReceta = false;         
+            this.traInforma = false;        
             this.gtin = null;              
             this.puntoPedido = null;       
             this.precioVentaProv = null;   

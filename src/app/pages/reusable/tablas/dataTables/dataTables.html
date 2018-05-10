@@ -68,13 +68,13 @@
                             <!-- Si la columna tiene subkey es porque item[col.key] es un objeto, y quiero mostrar una subkey de ese objeto -->
                             <td *ngFor="let col of columns">
                                 <div *ngIf="!col.subkey">
-                                    {{item[col.key]}}
+                                    {{parseKey(item[col.key])}}
                                 </div>
                                 <div *ngIf="col.subkey && !col.subsubkey">
-                                    {{(item[col.key])[col.subkey]}}
+                                    {{(parseKey(item[col.key])[col.subkey])}}
                                 </div>
                                 <div *ngIf="col.subsubkey">
-                                    {{((item[col.key])[col.subkey])[col.subsubkey]}}
+                                    {{((parseKey(item[col.key])[col.subkey])[col.subsubkey])}}
                                 </div>
                             </td>
                             

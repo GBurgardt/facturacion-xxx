@@ -69,8 +69,6 @@ export class UtilsService {
             errorBody = ex['_body'];
         }
 
-
-
         // Mostrar mensaje de error
         this.showModal(errorBody.control.codigo)(errorBody.control.descripcion)()();
     }
@@ -119,9 +117,10 @@ export class UtilsService {
     getNameRestOfResource = (recurso) => {
         // Obtengo la clase del objeto recibido
         const ClaseRecurso = dynamicClass(recurso.constructor.name);
-
         // Obtengo la referencia REST de tal clase
-        return Object.keys(resourcesREST).find(key => resourcesREST[key].Clase === ClaseRecurso);
+        return resourcesREST[
+            Object.keys(resourcesREST).find(key => resourcesREST[key].Clase === ClaseRecurso)
+        ].nombre;
     }
 
     /**

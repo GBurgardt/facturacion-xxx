@@ -9,6 +9,7 @@ import { TipoFormaPago } from "app/models/tipoFormaPago";
 import { Producto } from "app/models/producto";
 import { IVA } from "app/models/IVA";
 import { Unidad } from "app/models/unidad";
+import { Deposito } from "app/models/deposito";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -57,5 +58,9 @@ export const resourcesREST = {
     sisUnidad: {
         nombre: 'sisUnidad',
         Clase: Unidad
+    },
+    depositos: {
+        nombre: 'deposito',
+        Clase: Deposito
     }
 };
