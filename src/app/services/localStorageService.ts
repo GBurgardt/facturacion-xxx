@@ -8,7 +8,7 @@ export class LocalStorageService {
     /**
      * Setear algo en el localStorage, puede ser un json
      */
-    setObject = function(key, value) {
+    setObject = (key) => (value) => {
         localStorage.setItem(key, JSON.stringify(value));
     }
 
@@ -16,7 +16,7 @@ export class LocalStorageService {
     /**
      * Obtener algo del localStorage
      */
-    getObject = function(key) {
+    getObject = (key) => {
         var value = localStorage.getItem(key);
         return value && JSON.parse(value);
     }

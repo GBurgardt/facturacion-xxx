@@ -96,7 +96,7 @@ export class AuthService {
     * @argument usuario
     * @argument clave
     */
-    login(usuario: string, clave: string) {
+    login = (usuario: string) => (clave: string) => {
         return this.request(
             [usuario],
             RequestMethod.Post,
@@ -180,7 +180,6 @@ export class AuthService {
     * @argument nombreRecurso
     */
     editarRecurso = (recurso: any) => (headers) => (nombreRecurso) => {
-
         return this.request(
             [],
             RequestMethod.Put,

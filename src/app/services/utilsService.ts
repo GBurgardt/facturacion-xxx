@@ -49,7 +49,7 @@ export class UtilsService {
     /**
      * Retorna si un email es valido
      */
-    validateEmail(email) {
+    validateEmail = (email) => {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
     }
@@ -59,7 +59,7 @@ export class UtilsService {
      * Decodifica la respuesta de error y muestra el error
      * @param ex
      */
-    decodeErrorResponse(ex) {
+    decodeErrorResponse = (ex) => {
         console.log(ex);
         let errorBody;
 

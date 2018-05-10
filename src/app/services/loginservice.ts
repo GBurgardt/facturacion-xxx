@@ -21,18 +21,18 @@ export class LoginService {
     /**
      * Se loguea al backend y retorna la respuesta
      */
-    login = (usuario) => (clave) => this.authService.login(usuario, clave);
+    login = (usuario) => (clave) => this.authService.login(usuario)(clave);
 
     /**
      * Guarda data importante del logueo y genera los menus, entre otras cosas
      */
     completeLogin = (respLogin) => {
         // Guardo datos importantes del login (TODO: Cambiar por LocalStorage)
-        this.localStorageService.setObject(environment.localStorage.usuario, respLogin.datos.cuenta);
-        this.localStorageService.setObject(environment.localStorage.acceso, respLogin.datos.acceso);
-        this.localStorageService.setObject(environment.localStorage.perfil, respLogin.datos.perfil);
+        this.localStorageService.setObject(environment.localStorage.usuario)(respLogin.datos.cuenta);
+        this.localStorageService.setObject(environment.localStorage.acceso)(respLogin.datos.acceso);
+        this.localStorageService.setObject(environment.localStorage.perfil)(respLogin.datos.perfil);
         // Guardo los menus PARSEADOS en el localStorage
-        this.localStorageService.setObject(environment.localStorage.menu, <Routes>this.baMenuService.generatePagesMenu(respLogin.datos.perfil.sucursal.menuSucursal));
+        this.localStorageService.setObject(environment.localStorage.menu)(<Routes>this.baMenuService.generatePagesMenu(respLogin.datos.perfil.sucursal.menuSucursal));
     }
 
 
