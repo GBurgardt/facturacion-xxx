@@ -50,7 +50,7 @@ export class FormasPago {
     onClickEdit = (recurso: FormaPago) => {
         // Si se puede editar
         if (recurso.editar) {
-            this.router.navigate(['/pages/tablas/formaspago/editar', recurso.idFormaPago]);
+            this.router.navigate(['/pages/tablas/formas-pago/editar', recurso.idFormaPago]);
         } else {
             this.utilsService.showModal(
                 'Aviso'

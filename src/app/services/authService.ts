@@ -18,6 +18,7 @@ import { resourcesREST } from 'constantes/resoursesREST';
 import { Rubro } from 'app/models/rubro';
 import { SubRubro } from 'app/models/subRubro';
 import { FormaPago } from '../models/formaPago';
+import { FiltroListaPrecios } from '../models/filtroListaPrecio';
 
 @Injectable()
 export class AuthService {
@@ -108,6 +109,34 @@ export class AuthService {
             {},
             {}
         ).toPromise();
+    }
+
+    /**
+    * @description Obtiene una lista de productos filtrados
+    * @argument token
+    * @argument filtros Lo filtro
+    */
+   getProductosByFiltro = (token: string)  => (filtros: FiltroListaPrecios) => {
+
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            resourcesREST.filtroListaPrecios.nombre,
+            {
+                codProdDesde: filtros.codProdDesde !== '' ? filtros.codProdDesde : null,
+                codProdHasta: filtros.codProdHasta !== '' ? filtros.codProdHasta : null,
+                codProvedor: filtros.codProvedor,
+                rubro: filtros.rubro.idRubro,
+                subRubro: filtros.subRubro.idSubRubro,
+                porcentajeCabecera: filtros.porcentajeCabecera,
+                porcentajeInf: filtros.porcentajeInf,
+                porcentajeSup: filtros.porcentajeSup
+            },
+            {}
+        );
     }
 
 
@@ -273,6 +302,12 @@ export class AuthService {
                 codigoPostal: recurso.codigoPostal,
             }
         }
+
+        if (nombreRecurso === resourcesREST.filtroListaPrecios.nombre) {
+            return {
+                
+            }
+        }
     }
 
     /**
@@ -358,6 +393,12 @@ export class AuthService {
                 descripcion: recurso.descripcion,
                 domicilio: recurso.domicilio,
                 codigoPostal: recurso.codigoPostal,
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.filtroListaPrecios.nombre) {
+            return {
+                
             }
         }
     }

@@ -38,7 +38,7 @@ export class NuevoTipoComprobante {
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/comprobantes'])
+                () => this.router.navigate(['/pages/tablas/tipos-comprobantes'])
             )();
         }
         catch(ex) {

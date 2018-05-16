@@ -50,7 +50,7 @@ export class EditarListaPrecio {
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/listaPrecios'])
+                () => this.router.navigate(['/pages/tablas/lista-precios'])
             )();
         }
         catch(ex) {

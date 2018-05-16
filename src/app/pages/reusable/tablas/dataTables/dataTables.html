@@ -1,6 +1,6 @@
 <div class="widgets">
     <div class="row">
-        <ba-card cardTitle="{{tituloTabla}}" baCardClass="with-scroll" class="data-table-container">
+        <ba-card cardTitle="{{tituloTabla}}" baCardClass="{{baCardClase}}" class="data-table-container">
             <!-- <div class="row">
                 <div class="col-sm-2">
                     <label class="label-control">Rows on page</label>
@@ -44,7 +44,7 @@
             <div class="panel panel-default">
                 <table class="table table-striped" [mfData]="data | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
                     <thead>
-
+                        <!-- Hay que usar el 90% en las tablas -->
                         <tr>
                             <th style="width: 10%"></th>
                             <!-- Recorro y muestro las columnas recibidas en el input -->
@@ -63,12 +63,20 @@
                                 <div (click)="remove(item)" class="btn-accion btn-remover">
                                     <i class="fa fa-trash" aria-hidden="true"></i>
                                 </div>
+                                <div *ngIf="checkIfEditOn(item)" (click)="confirmEdit(item)" class="btn-accion btn-remover">
+                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                </div>
                             </td>
 
                             <!-- Si la columna tiene subkey es porque item[col.key] es un objeto, y quiero mostrar una subkey de ese objeto -->
-                            <td *ngFor="let col of columns">
+                            <!-- <td *ngFor="let col of columns">
                                 <div *ngIf="!col.subkey">
-                                    {{parseKey(item[col.key])}}
+                                    <div *ngIf="!col.enEdicion || col.enEdicion !== item[utilsService.getNameIdKeyOfResource(item)]">
+                                        {{parseKey(item[col.key])}}
+                                    </div>
+                                    <div *ngIf="col.enEdicion && col.enEdicion === item[utilsService.getNameIdKeyOfResource(item)]">
+                                        <input [(ngModel)]="item[col.key]"  style="margin-top: 4px;" type="text" class="form-control edit-input" id="inputSubKey" placeholder="">
+                                    </div>
                                 </div>
                                 <div *ngIf="col.subkey && !col.subsubkey">
                                     {{(parseKey(item[col.key])[col.subkey])}}
@@ -76,7 +84,36 @@
                                 <div *ngIf="col.subsubkey">
                                     {{((parseKey(item[col.key])[col.subkey])[col.subsubkey])}}
                                 </div>
+                            </td> -->
+
+                            <td *ngFor="let col of columns">
+                                <div *ngIf="!col.subkey">
+                                    <div *ngIf="!col.enEdicion || col.enEdicion !== item[utilsService.getNameIdKeyOfResource(item)]">
+                                        {{parseKey(item[col.key])}}
+                                    </div>
+                                    <div *ngIf="col.enEdicion && col.enEdicion === item[utilsService.getNameIdKeyOfResource(item)]">
+                                        <input [(ngModel)]="item[col.key]"  style="margin-top: 4px;" type="text" class="form-control edit-input" id="inputSubKey" placeholder="">
+                                    </div>
+                                </div>
+
+                                <div *ngIf="col.subkey && !col.subsubkey">
+                                    <div *ngIf="!col.enEdicion || col.enEdicion !== (item[col.key])[utilsService.getNameIdKeyOfResource(item[col.key])]">
+                                        {{(parseKey(item[col.key])[col.subkey])}}
+                                    </div>
+                                    <div *ngIf="col.enEdicion && col.enEdicion === (item[col.key])[this.utilsService.getNameIdKeyOfResource(item[col.key])]">
+                                        <input [(ngModel)]="(item[col.key])[col.subkey]"  style="margin-top: 4px;" type="text" class="form-control edit-input" id="inputSubKey" placeholder="">
+                                    </div>
+                                </div>
+
+                                <!-- <div *ngIf="col.subkey && !col.subsubkey">
+                                    {{(parseKey(item[col.key])[col.subkey])}}
+                                </div> -->
+                                <div *ngIf="col.subsubkey">
+                                    {{((parseKey(item[col.key])[col.subkey])[col.subsubkey])}}
+                                </div>
                             </td>
+
+                            
 
                         </tr>
                     </tbody>

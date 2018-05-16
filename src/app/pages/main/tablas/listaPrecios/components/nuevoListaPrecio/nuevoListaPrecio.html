@@ -1,39 +1,193 @@
 <div class="nuevo-lista-precio">
     <ba-card cardTitle="Nueva lista precio" baCardClass="with-scroll">
-        <div class="row">
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label for="codigoDep">Codigo</label>
-                    <input [(ngModel)]="recurso.codigoDep" type="text" class="form-control" id="codigoDep" placeholder="">
+        <custom-card title="Lista">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">    
+                        <label for="codigoLista">Codigo</label>
+                        <input [(ngModel)]="recurso.codigoLista" type="text" class="form-control" id="codigoLista" placeholder="">
+                    </div>
+                </div>
+    
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="codigoLista">Fecha Alta</label>
+                        <div class="input-group">
+                            <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.fechaAlta" ngbDatepicker #dAlta="ngbDatepicker">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" (click)="dAlta.toggle()" type="button" style="height: 100%;">
+                                    <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                </button>
+                            </div>
+                        </div>
+                        </div>
+                </div>
+    
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="vigenciaDesde">Vigencia Desde</label>
+                        <div class="input-group">
+                            <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.vigenciaDesde" ngbDatepicker #dVigDes="ngbDatepicker">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" (click)="dVigDes.toggle()" type="button" style="height: 100%;">
+                                    <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="vigenciaHasta">Vigencia Hasta</label>
+                        <div class="input-group">
+                            <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.vigenciaHasta" ngbDatepicker #dVigHas="ngbDatepicker">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" (click)="dVigHas.toggle()" type="button" style="height: 100%;">
+                                    <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="row">
+    
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="porc1">Porcentaje precio venta</label>
+                        <input [(ngModel)]="recurso.porc1" type="text" class="form-control" id="porc1" placeholder="">
+                    </div>
+                </div>
+    
+                
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="idPadronCliente">Cliente</label>
+                        <input [(ngModel)]="recurso.idPadronCliente" type="text" class="form-control" id="idPadronCliente" placeholder="">
+                    </div>
+                </div>
+                
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="idPadronRepresentante">Representante</label>
+                        <input [(ngModel)]="recurso.idPadronRepresentante" type="text" class="form-control" id="idPadronRepresentante" placeholder="">
+                    </div>
+                </div>
+    
+                <div class="col-sm-3">
+                    <div class="checkbox-activa">
+                        <ba-checkbox [(ngModel)]="recurso.activa" [label]="'Lista Activa'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                    </div>
                 </div>
             </div>
+    
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="idMoneda">Moneda</label>
+                        <select [(ngModel)]="recurso.idMoneda" class="form-control" id="idMoneda">
+                            <option *ngFor="let moneda of monedas | async" [ngValue]="moneda">
+                                {{moneda.descripcion}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-9">
+                    <div class="form-group">
+                        <label for="condiciones">Condiciones</label>
+                        <input [(ngModel)]="recurso.condiciones" type="text" class="form-control" id="condiciones" placeholder="">
+                    </div>
+                </div>
+    
+            </div>
+        </custom-card>
 
-            <div class="col-sm-5">
-                <div class="form-group">
-                    <label for="descripcion">Descripcion</label>
-                    <input [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion" placeholder="">
+        <custom-card title="Filtros">
+            <div class="row">
+                <div class="col-sm-3    ">
+                    <div class="form-group">
+                        <label for="filtroProductoDesde">Producto desde</label>
+                        <input [(ngModel)]="filtroListaPrecios.codProdDesde" type="text" class="form-control" id="filtroProductoDesde" placeholder="">
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="filtroProductoHasta">Producto hasta</label>
+                        <input [(ngModel)]="filtroListaPrecios.codProdHasta" type="text" class="form-control" id="filtroProductoHasta" placeholder="">
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="filtroProveedor">Proveedor</label>
+                        <input [(ngModel)]="filtroListaPrecios.codProvedor" type="text" class="form-control" id="filtroProveedor" placeholder="">
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="filtroRubro">Rubro</label>
+                        <select [(ngModel)]="filtroListaPrecios.rubro" class="form-control" id="filtroRubro">
+                            <option *ngFor="let rub of rubros | async" [ngValue]="rub">
+                                {{rub.descripcion}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="filtroSubRubro">Sub Rubro</label>
+                        <select [(ngModel)]="filtroListaPrecios.subRubro" class="form-control" id="filtroSubRubro">
+                            <option *ngFor="let subrub of subRubros | async" [ngValue]="subrub">
+                                {{subrub.descripcion}}
+                            </option>
+                        </select>
+                    </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="filtroCotaInf">Cota Inferior %</label>
+                        <input [(ngModel)]="filtroListaPrecios.porcentajeInf" type="text" class="form-control" id="filtroCotaInf" placeholder="">
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="filtroCotaSup">Cota Superior %</label>
+                        <input [(ngModel)]="filtroListaPrecios.porcentajeSup" type="text" class="form-control" id="filtroCotaSup" placeholder="">
+                    </div>
+                </div>
+                <div class="col-sm-3"></div> 
+                <div class="col-sm-3 acciones-container">
+                    <div class="form-group">
+                        <label style="visibility: hidden;" for="filtroCotaSup">Acciones</label>
+                        <div class="btn-container">
+                            <button class="btn btn-default btn-accion" [disabled]="false" (click)="onClickAgregar($event)">Agregar</button>
+                            <button class="btn btn-default btn-accion" [disabled]="false" (click)="onClickEliminar($event)">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </custom-card>
 
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="domicilio">Domicilio</label>
-                    <input [(ngModel)]="recurso.domicilio" type="text" class="form-control" id="domicilio" placeholder="">
-                </div>
-            </div>
+        <!-- [data]="listaPrecio.listaPrecioDetCollection | async" -->
+        <data-tables sortBy="nombre"
+                    [data]="recurso.listaPrecioDetCollection"
+                    [columns]="columnasTabla"
+                    [edit]="onClickEdit"
+                    [remove]="onClickRemove"
+                    [confirmEdit]="onClickConfirmEdit"
+                    tituloTabla="Productos" 
+                    class="data-table-productos" 
+                    baCardClase="with-scroll with-box-shadow-custom">
+        </data-tables>
+
+        <div class="col-sm-12 btn-confirm-container">
+            <button [disabled]="utilsService.checkIfIncomplete(recurso)()"
+                    (click)="onClickConfirmar($event)" type="submit" class="btn btn-primary">Confirmar</button>
         </div>
-
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="codigoPostal">Codigo Postal</label>
-                    <input [(ngModel)]="recurso.codigoPostal" type="text" class="form-control" id="codigoPostal" placeholder="">
-                </div>
-            </div>
-        </div>
-
-        <button [disabled]="utilsService.checkIfIncomplete(recurso)()"
-                (click)="onClickCrear($event)" type="submit" class="btn btn-primary">Confirmar</button>
     </ba-card>
 
 </div>

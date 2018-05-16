@@ -38,13 +38,17 @@ import { ListaPrecios } from './listaPrecios';
 import { NuevoListaPrecio } from './listaPrecios/components/nuevoListaPrecio';
 import { EditarListaPrecio } from './listaPrecios/components/editarListaPrecio';
 
+import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { CustomCard } from '../../reusable/cards/customCard';
+
 @NgModule({
     imports: [
         routing,
         DataTableModule,
         CommonModule,
         FormsModule,
-        NgaModule
+        NgaModule,
+        NgbDatepickerModule
     ],
     declarations: [
         Tablas,
@@ -74,7 +78,8 @@ import { EditarListaPrecio } from './listaPrecios/components/editarListaPrecio';
         EditarDeposito,
         ListaPrecios,
         NuevoListaPrecio,
-        EditarListaPrecio
+        EditarListaPrecio,
+        CustomCard
     ],
     providers: [
         DataTablesService,

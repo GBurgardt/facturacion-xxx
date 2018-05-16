@@ -13,6 +13,7 @@ import { TipoFormaPago } from "app/models/tipoFormaPago";
 import { Unidad } from "app/models/unidad";
 import { Deposito } from "app/models/deposito";
 import { ListaPrecio } from "app/models/listaPrecio";
+import { Moneda } from "app/models/moneda";
 
 const classes = {
     Usuario,
@@ -29,7 +30,8 @@ const classes = {
     TipoFormaPago,
     Unidad,
     Deposito,
-    ListaPrecio
+    ListaPrecio,
+    Moneda
 };
 
 export default function dynamicClass (name) {

@@ -2,7 +2,7 @@
 :host /deep/ .widgets {
     .data-table-container {
         width: 100%;
-        padding-top: 1%;
+        //padding-top: 1%;
         .panel-heading {
             margin-top: 25px;
         }
@@ -34,7 +34,8 @@
 
                 .btn-container{
                     display: flex;
-                    justify-content: space-evenly;
+                    //justify-content: space-evenly;
+                    justify-content: flex-start;
                     .btn-accion {
                         margin: 2%;
                         font-size: 0.9rem;
@@ -47,7 +48,15 @@
                             vertical-align: middle;
                         }
                     }
+
+                    .btn-terminar-edicion {
+
+                    }
                 }
+            }
+
+            tfoot {
+                border-top: solid #dadada;
             }
         }
 

@@ -38,7 +38,7 @@ export class NuevaFormaPago {
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/formaspago'])
+                () => this.router.navigate(['/pages/tablas/formas-pago'])
             )();
         }
         catch(ex) {

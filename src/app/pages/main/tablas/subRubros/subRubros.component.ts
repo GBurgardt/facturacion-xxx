@@ -58,7 +58,7 @@ export class SubRubros {
     }
 
     onClickEdit = (recurso: SubRubro) => {
-        this.router.navigate(['/pages/tablas/subrubros/editar', recurso.idSubRubro]);
+        this.router.navigate(['/pages/tablas/sub-rubros/editar', recurso.idSubRubro]);
     }
 
     onClickRemove = async(recurso: SubRubro) => {

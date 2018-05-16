@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DataTablesService } from './dataTables.service';
+import { UtilsService } from 'app/services/utilsService';
 
 @Component({
     selector: 'data-tables',
@@ -24,14 +25,19 @@ export class DataTables {
     // Funciones que se disparan cuando se da en edit o remove
     @Input() edit;
     @Input() remove;
+    @Input() confirmEdit;
 
     @Input() tituloTabla;
+
+    @Input() baCardClase = 'with-scroll';
 
     filterQuery = "";
     rowsOnPage = 10;
     sortOrder = "asc";
 
-    constructor() { }
+    constructor(
+        private utilsService: UtilsService
+    ) { }
 
     toInt(num: string) {
         return +num;
@@ -66,4 +72,24 @@ export class DataTables {
         return key;
     }
 
+    // Checkea si pongo el 'tick' para finalizar la edicion. Osea, si está en edición.
+    checkIfEditOn(item) {
+        if (this.columns) {
+            return this.columns.some(col=>{
+
+                if (!col.subkey) {
+                    return col.enEdicion && col.enEdicion === item[this.utilsService.getNameIdKeyOfResource(item)];
+                } else if (col.subkey && !col.subsubkey) {
+                    return col.enEdicion && col.enEdicion === (item[col.key])[this.utilsService.getNameIdKeyOfResource(item[col.key])];
+                } 
+
+            });
+        };
+    }
+
+    test(col,item) {
+        console.log(item);
+        //console.log(item['producto'][this.utilsService.getNameIdKeyOfResource(item)]);
+        //col.enEdicion && col.enEdicion === item[utilsService.getNameIdKeyOfResource(item)]
+    }
 }

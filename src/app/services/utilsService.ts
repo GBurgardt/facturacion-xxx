@@ -124,6 +124,16 @@ export class UtilsService {
     }
 
     /**
+     * A partir de un recurso, retorna el nombre de la key que alberga el id de este recurso
+     * Ejemplo: recurso (instnacia de Producto) -> retorna 'idProductos'
+     */
+    getNameIdKeyOfResource = (recurso) => {
+        // Obtengo la primer key de la clase del recurso recibido
+        const idRecurso = Object.keys(recurso)[0];
+        return idRecurso;
+    }
+
+    /**
      * Se usa en las listas desplegables, te agarra el item elegido cuando se edita un recurso
      * @param item1
      * @param item2

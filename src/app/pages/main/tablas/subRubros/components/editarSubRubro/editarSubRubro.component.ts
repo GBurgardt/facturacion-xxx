@@ -44,7 +44,7 @@ export class EditarSubRubro {
             )(
                 respuestaEdicion.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/subrubros'])
+                () => this.router.navigate(['/pages/tablas/sub-rubros'])
             )();
         }
         catch(ex) {

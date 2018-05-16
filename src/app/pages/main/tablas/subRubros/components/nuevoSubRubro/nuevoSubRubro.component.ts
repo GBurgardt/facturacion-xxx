@@ -41,7 +41,7 @@ export class NuevoSubRubro {
             )(
                 respRubroCreado.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/subrubros'])
+                () => this.router.navigate(['/pages/tablas/sub-rubros'])
             )();
         }
         catch(ex) {

@@ -29,22 +29,22 @@ export class ListaPrecios {
         this.tableColumns = [
             {
                 nombre: 'codigo',
-                key: 'codigoDep',
+                key: 'codigoLista',
                 ancho: '22%'
             },
             {
-                nombre: 'descripcion',
-                key: 'descripcion',
+                nombre: 'condiciones',
+                key: 'condiciones',
                 ancho: '22%'
             },
             {
-                nombre: 'domicilio',
-                key: 'domicilio',
+                nombre: 'desde',
+                key: 'vigenciaDesde',
                 ancho: '22%'
             },
             {
-                nombre: 'codigo postal',
-                key: 'codigoPostal',
+                nombre: 'hasta',
+                key: 'vigenciaHasta',
                 ancho: '22%'
             }
         ]
@@ -53,7 +53,7 @@ export class ListaPrecios {
     }
 
     onClickEdit = (recurso: ListaPrecio) => {
-        this.router.navigate(['/pages/tablas/listaPrecios/editar', recurso.idListaPrecio]);
+        this.router.navigate(['/pages/tablas/lista-precios/editar', recurso.idListaPrecio]);
     }
 
     onClickRemove = async(recurso: ListaPrecio) => {

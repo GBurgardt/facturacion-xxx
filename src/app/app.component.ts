@@ -1,5 +1,5 @@
 import { Component, ViewContainerRef } from '@angular/core';
-import * as $ from 'jquery';
+import * as $ from 'jquery'; // TODO: WHAT?
 
 import { GlobalState } from './global.state';
 import { BaImageLoaderService, BaThemePreloader, BaThemeSpinner } from './theme/services';

@@ -1,8 +1,6 @@
-import { SubRubro } from "./subRubro";
-
 import { IVA } from "./IVA";
 import { Unidad } from "./unidad";
-
+import { SubRubro } from "./subRubro";
 
 export class Producto {
     idProductos: number;

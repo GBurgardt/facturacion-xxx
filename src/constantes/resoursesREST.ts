@@ -11,6 +11,7 @@ import { IVA } from "app/models/IVA";
 import { Unidad } from "app/models/unidad";
 import { Deposito } from "app/models/deposito";
 import { ListaPrecio } from "app/models/listaPrecio";
+import { Moneda } from "app/models/moneda";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -67,5 +68,13 @@ export const resourcesREST = {
     listaPrecios: {
         nombre: 'listaPrecios',
         Clase: ListaPrecio
+    },
+    sisMonedas: {
+        nombre: 'sisMonedas',
+        Clase: Moneda
+    },
+    filtroListaPrecios: {
+        nombre: 'filtroListaPrecios',
+        Clase: Producto
     }
 };

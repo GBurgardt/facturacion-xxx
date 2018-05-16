@@ -8,6 +8,8 @@ import { UtilsService } from './utilsService';
 import { resourcesREST } from 'constantes/resoursesREST';
 
 import dynamicClass from 'app/services/dynamicClassService';
+import { FiltroListaPrecios } from '../models/filtroListaPrecio';
+import { DetalleProducto } from '../models/detalleProducto';
 
 @Injectable()
 export class RecursoService {
@@ -83,5 +85,26 @@ export class RecursoService {
             recursoRest.nombre
         );
     }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////                CASOS PARTICULARES           ///////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Obtengo una lista de productos filtrada
+     */
+    getProductosByFiltro = (filtros: FiltroListaPrecios) => {
+        return this.authService.getProductosByFiltro(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(filtros)
+            .map(respuesta => {console.log(respuesta);return respuesta.arraydatos.map(detalleProd => new DetalleProducto(detalleProd))} )
+            .catch(err => {
+                // Si hay algun error muestro el mensaje
+                this.utilsService.decodeErrorResponse(err);
+                return Observable.throw(err)
+            });
+    }
+
 
 }

@@ -73,7 +73,7 @@ export class TipoComprobantes {
      */
     onClickEdit = (tipoComprobante) => {
         // Redirecciono al dashboard
-        this.router.navigate(['/pages/tablas/comprobantes/editar', tipoComprobante.idCteTipo]);
+        this.router.navigate(['/pages/tablas/tipos-comprobantes/editar', tipoComprobante.idCteTipo]);
     }
 
 
