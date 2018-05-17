@@ -101,8 +101,7 @@ export class NuevoListaPrecio {
             },
             {
                 nombre: 'observaciones',
-                key: 'producto',
-                subkey: 'observaciones',
+                key: 'observaciones',
                 ancho: '25%',
                 enEdicion: null
             }
@@ -203,9 +202,26 @@ export class NuevoListaPrecio {
     /**
      * Confirmar la creacion de la lista
      */
-    onClickConfirmar = (e) => {
+    onClickConfirmar = async(e) => {
+        try {
+            console.log(this.recurso);
+
+            const resp: any = await this.recursoService.setRecurso(this.recurso)();
+
+            console.log(resp);
+            
+            this.utilsService.showModal(
+                resp.control.codigo
+            )(
+                resp.control.descripcion
+            )(
+                () => this.router.navigate(['/pages/tablas/lista-precios'])
+            )();
+        }
+        catch(ex) {
+            this.utilsService.decodeErrorResponse(ex);
+        }
         
-        console.log(this.recurso);
     }
 
 

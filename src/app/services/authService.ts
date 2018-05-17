@@ -19,6 +19,7 @@ import { Rubro } from 'app/models/rubro';
 import { SubRubro } from 'app/models/subRubro';
 import { FormaPago } from '../models/formaPago';
 import { FiltroListaPrecios } from '../models/filtroListaPrecio';
+import { DetalleProducto } from '../models/detalleProducto';
 
 @Injectable()
 export class AuthService {
@@ -303,11 +304,31 @@ export class AuthService {
             }
         }
 
-        if (nombreRecurso === resourcesREST.filtroListaPrecios.nombre) {
+        if (nombreRecurso === resourcesREST.listaPrecios.nombre) {
             return {
-                
+                codLista: recurso.codigoLista,
+                fechaAlta: recurso.fechaAlta,
+                vigenciaDesde: recurso.vigenciaDesde,
+                vigenciaHasta: recurso.vigenciaHasta,
+                activa: recurso.activa,
+                idPadronCliente: recurso.idPadronCliente,
+                idPadronRepresentante: recurso.idPadronRepresentante,
+                porc1: recurso.porc1,
+                condiciones: recurso.condiciones,
+                idMoneda: recurso.idMoneda.idMoneda,
+                preciosDet: recurso.listaPrecioDetCollection.map((detalle: DetalleProducto) => {
+                    return {
+                        precio: detalle.precio,
+                        cotaInf: detalle.cotaInf,
+                        cotaSup: detalle.cotaSup,
+                        observaciones: detalle.observaciones,
+                        idProducto: detalle.producto.idProductos
+                    }
+                })
             }
         }
+
+
     }
 
     /**
@@ -396,11 +417,7 @@ export class AuthService {
             }
         }
 
-        if (nombreRecurso === resourcesREST.filtroListaPrecios.nombre) {
-            return {
-                
-            }
-        }
+        
     }
 
 }
