@@ -145,4 +145,11 @@ export class UtilsService {
         return item1[idRecurso1] === item2[idRecurso2];
     }
 
+    /**
+     * 
+     */
+    dateToString = (fechaDate) => {
+        return `${fechaDate.year}-${fechaDate.month}-${fechaDate.day}`
+    }
+
 }

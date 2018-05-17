@@ -68,24 +68,6 @@
                                 </div>
                             </td>
 
-                            <!-- Si la columna tiene subkey es porque item[col.key] es un objeto, y quiero mostrar una subkey de ese objeto -->
-                            <!-- <td *ngFor="let col of columns">
-                                <div *ngIf="!col.subkey">
-                                    <div *ngIf="!col.enEdicion || col.enEdicion !== item[utilsService.getNameIdKeyOfResource(item)]">
-                                        {{parseKey(item[col.key])}}
-                                    </div>
-                                    <div *ngIf="col.enEdicion && col.enEdicion === item[utilsService.getNameIdKeyOfResource(item)]">
-                                        <input [(ngModel)]="item[col.key]"  style="margin-top: 4px;" type="text" class="form-control edit-input" id="inputSubKey" placeholder="">
-                                    </div>
-                                </div>
-                                <div *ngIf="col.subkey && !col.subsubkey">
-                                    {{(parseKey(item[col.key])[col.subkey])}}
-                                </div>
-                                <div *ngIf="col.subsubkey">
-                                    {{((parseKey(item[col.key])[col.subkey])[col.subsubkey])}}
-                                </div>
-                            </td> -->
-
                             <td *ngFor="let col of columns">
                                 <div *ngIf="!col.subkey">
                                     <div *ngIf="!col.enEdicion || col.enEdicion !== item[utilsService.getNameIdKeyOfResource(item)]">
@@ -105,9 +87,6 @@
                                     </div>
                                 </div>
 
-                                <!-- <div *ngIf="col.subkey && !col.subsubkey">
-                                    {{(parseKey(item[col.key])[col.subkey])}}
-                                </div> -->
                                 <div *ngIf="col.subsubkey">
                                     {{((parseKey(item[col.key])[col.subkey])[col.subsubkey])}}
                                 </div>

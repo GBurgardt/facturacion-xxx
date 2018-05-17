@@ -36,10 +36,21 @@
     .btn-confirm-container {
         display: flex;
         justify-content: flex-end;
+        .btn-volver {
+            margin-right: 2%;
+        }
     }
 
     .checkbox-activa {
         margin-top: 13%;
         margin-left: 2%;
+    }
+
+    .btn-container-continuar {
+        display: flex;
+        justify-content: flex-end;
+        .btn-continuar {
+            margin: 0.6% 2.1%;
+        }
     }
 }

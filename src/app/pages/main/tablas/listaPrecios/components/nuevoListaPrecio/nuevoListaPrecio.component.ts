@@ -37,6 +37,9 @@ export class NuevoListaPrecio {
     // Columnas de la tabla
     columnasTabla;
 
+    // Bandera que habilita los detalles una vez que se completo la data de la nueva lsita
+    detallesActivos: boolean = false;
+
     constructor(
         private recursoService: RecursoService,
         private utilsService: UtilsService,
@@ -225,6 +228,11 @@ export class NuevoListaPrecio {
     }
 
 
-
+    /**
+     * Habilita el resto del menu para seguir el proceso, o vuelto atrás
+     */
+    onClickTogglePaso = (e) => {
+        this.detallesActivos = !this.detallesActivos;
+    }
 
 }

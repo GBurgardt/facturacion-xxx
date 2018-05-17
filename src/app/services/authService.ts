@@ -307,9 +307,12 @@ export class AuthService {
         if (nombreRecurso === resourcesREST.listaPrecios.nombre) {
             return {
                 codLista: recurso.codigoLista,
-                fechaAlta: recurso.fechaAlta,
-                vigenciaDesde: recurso.vigenciaDesde,
-                vigenciaHasta: recurso.vigenciaHasta,
+                // fechaAlta: this.utilsService.dateToString(recurso.fechaAlta),
+                // vigenciaDesde: this.utilsService.dateToString(recurso.vigenciaDesde),
+                // vigenciaHasta: this.utilsService.dateToString(recurso.vigenciaHasta),
+                fechaAlta: `${recurso.fechaAlta.year}-${recurso.fechaAlta.month}-${recurso.fechaAlta.day}`,
+                vigenciaDesde: `${recurso.vigenciaDesde.year}-${recurso.vigenciaDesde.month}-${recurso.vigenciaDesde.day}`,
+                vigenciaHasta: `${recurso.vigenciaHasta.year}-${recurso.vigenciaHasta.month}-${recurso.vigenciaHasta.day}`,
                 activa: recurso.activa,
                 idPadronCliente: recurso.idPadronCliente,
                 idPadronRepresentante: recurso.idPadronRepresentante,
@@ -321,7 +324,7 @@ export class AuthService {
                         precio: detalle.precio,
                         cotaInf: detalle.cotaInf,
                         cotaSup: detalle.cotaSup,
-                        observaciones: detalle.observaciones,
+                        observaciones: detalle.observaciones ? detalle.observaciones : null,
                         idProducto: detalle.producto.idProductos
                     }
                 })
@@ -414,6 +417,25 @@ export class AuthService {
                 descripcion: recurso.descripcion,
                 domicilio: recurso.domicilio,
                 codigoPostal: recurso.codigoPostal,
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.listaPrecios.nombre) {
+            return {
+                idLista: recurso.idListaPrecio,
+                fechaAlta: `${recurso.fechaAlta.year}-${recurso.fechaAlta.month}-${recurso.fechaAlta.day}`,
+                vigenciaDesde: `${recurso.vigenciaDesde.year}-${recurso.vigenciaDesde.month}-${recurso.vigenciaDesde.day}`,
+                vigenciaHasta: `${recurso.vigenciaHasta.year}-${recurso.vigenciaHasta.month}-${recurso.vigenciaHasta.day}`,
+                condiciones: recurso.condiciones,
+                preciosDet: recurso.listaPrecioDetCollection.map((detalle: DetalleProducto) => {
+                    return {
+                        precio: detalle.precio,
+                        cotaInf: detalle.cotaInf,
+                        cotaSup: detalle.cotaSup,
+                        observaciones: detalle.observaciones ? detalle.observaciones : null,
+                        idProducto: detalle.producto.idProductos
+                    }
+                })
             }
         }
 

@@ -1,6 +1,6 @@
 <div class="nuevo-lista-precio">
     <ba-card cardTitle="Nueva lista precio" baCardClass="with-scroll">
-        <custom-card title="Lista">
+        <custom-card *ngIf="!detallesActivos" title="Lista">
             <div class="row">
                 <div class="col-sm-3">
                     <div class="form-group">    
@@ -103,9 +103,13 @@
                 </div>
     
             </div>
+            <div class="row btn-container-continuar">
+                <button [disabled]="utilsService.checkIfIncomplete(recurso)(['listaPrecioDetCollection'])"
+                 class="btn btn-default btn-continuar" (click)="onClickTogglePaso($event)">Continuar</button>
+            </div>
         </custom-card>
 
-        <custom-card title="Filtros">
+        <custom-card *ngIf="detallesActivos" title="Filtros">
             <div class="row">
                 <div class="col-sm-3    ">
                     <div class="form-group">
@@ -173,7 +177,7 @@
         </custom-card>
 
         <!-- [data]="listaPrecio.listaPrecioDetCollection | async" -->
-        <data-tables sortBy="nombre"
+        <data-tables *ngIf="detallesActivos" sortBy="nombre"
                     [data]="recurso.listaPrecioDetCollection"
                     [columns]="columnasTabla"
                     [edit]="onClickEdit"
@@ -184,7 +188,8 @@
                     baCardClase="with-scroll with-box-shadow-custom">
         </data-tables>
 
-        <div class="col-sm-12 btn-confirm-container">
+        <div *ngIf="detallesActivos" class="col-sm-12 btn-confirm-container">
+            <button (click)="onClickTogglePaso($event)" type="submit" class="btn btn-primary btn-volver">Volver</button>
             <button [disabled]="utilsService.checkIfIncomplete(recurso)()"
                     (click)="onClickConfirmar($event)" type="submit" class="btn btn-primary">Confirmar</button>
         </div>
