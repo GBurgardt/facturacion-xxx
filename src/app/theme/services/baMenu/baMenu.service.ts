@@ -138,7 +138,7 @@ export class BaMenuService {
         const menusFormateados = menuSucursal.map(menuPadre => {
             if (menuPadre.menuResponse.idPadre === '/') {
                 return {
-                    path: menuPadre.menuResponse.idMenu,
+                    path: menuPadre.menuResponse.nombreForm,
                     data: {
                         menu: {
                             title: menuPadre.menuResponse.nombre,
@@ -151,7 +151,7 @@ export class BaMenuService {
                     children: menuSucursal.map(menuChildren => {
                         if (menuChildren.menuResponse.idPadre === menuPadre.menuResponse.idMenu) {
                             return {
-                                path: menuChildren.menuResponse.idMenu,
+                                path: menuChildren.menuResponse.nombreForm,
                                 //path: this._convertIdMenuToPath(menuChildren.menuResponse),
                                 data: {
                                     menu: {

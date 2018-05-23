@@ -59,7 +59,17 @@
         </div>
         
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="listaPrecio">SisComprobante</label>
+                    <select [(ngModel)]="recurso.listaPrecio" class="form-control" id="listaPrecio">
+                        <option *ngFor="let lista of listasPrecios | async" [ngValue]="lista">
+                            {{lista.condiciones}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-8">
                 <div class="form-group">
                     <label for="inputFirstName">Observaciones</label>
                     <input [(ngModel)]="recurso.observaciones" type="text" class="form-control" id="observaciones" placeholder="Observaciones">

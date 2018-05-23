@@ -12,6 +12,7 @@ import { Unidad } from "app/models/unidad";
 import { Deposito } from "app/models/deposito";
 import { ListaPrecio } from "app/models/listaPrecio";
 import { Moneda } from "app/models/moneda";
+import { SisComprobante } from "app/models/sisComprobante";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -76,5 +77,9 @@ export const resourcesREST = {
     filtroListaPrecios: {
         nombre: 'filtroListaPrecios',
         Clase: Producto
+    },
+    sisComprobantes: {
+        nombre: 'sisComprobantes',
+        Clase: SisComprobante
     }
 };

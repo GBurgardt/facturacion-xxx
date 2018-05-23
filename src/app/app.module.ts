@@ -19,10 +19,6 @@ import { AppState, InternalStateType } from './app.service';
 import { GlobalState } from './global.state';
 import { NgaModule } from './theme/nga.module';
 import { PagesModule } from './pages/pages.module';
-// PRIME NG //////////////////////////////////////////////
-//import {TooltipModule} from 'primeng/tooltip';
-//import {DialogModule} from 'primeng/dialog';
-/////////////////////////////////////////////////////////////
 
 
 // Application wide providers

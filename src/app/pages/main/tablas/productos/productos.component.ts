@@ -6,9 +6,6 @@ import { Producto } from '../../../../models/producto';
 import { Observable } from 'rxjs/Observable';
 import { RecursoService } from '../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
-// PRIME NG //////////////////////////////////////////////
-import {TooltipModule} from 'primeng/primeng';
-/////////////////////////////////////////////////////////////
 
 @Component({
 

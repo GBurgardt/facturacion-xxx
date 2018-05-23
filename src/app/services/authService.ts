@@ -267,7 +267,8 @@ export class AuthService {
         if (nombreRecurso === resourcesREST.formaPago.nombre) {
             return {
                 tipo: recurso.tipo.idSisFormaPago,
-                descripcion: recurso.descripcion
+                descripcion: recurso.descripcion,
+                idListaPrecio: recurso.listaPrecio.idListaPrecio
             }
         }
 
@@ -381,7 +382,8 @@ export class AuthService {
             return {
                 idFormaPago: recurso.idFormaPago,
                 tipo: recurso.tipo.idSisFormaPago,
-                descripcion: recurso.descripcion
+                descripcion: recurso.descripcion,
+                idListaPrecio: recurso.listaPrecio.idListaPrecio
             }
         }
 

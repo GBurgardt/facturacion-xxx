@@ -9,6 +9,9 @@ import { UtilsService } from '../../../../../../services/utilsService';
 import { Router } from '@angular/router';
 import { TipoComprobante } from '../../../../../../models/tipoComprobante';
 import { RecursoService } from '../../../../../../services/recursoService';
+import { Observable } from 'rxjs/Observable';
+import { SisComprobante } from '../../../../../../models/sisComprobante';
+import { resourcesREST } from 'constantes/resoursesREST';
 
 
 @Component({
@@ -18,6 +21,8 @@ import { RecursoService } from '../../../../../../services/recursoService';
 })
 export class NuevoTipoComprobante {
     recurso: TipoComprobante = new TipoComprobante();
+
+    sisComprobantes: Observable<SisComprobante[]>;
 
     constructor(
         private recursoService: RecursoService,
@@ -40,6 +45,9 @@ export class NuevoTipoComprobante {
             )(
                 () => this.router.navigate(['/pages/tablas/tipos-comprobantes'])
             )();
+
+            this.sisComprobantes = this.recursoService.getRecursoList(resourcesREST.sisComprobantes)();
+            this.sisComprobantes.subscribe(a=>console.log(a));
         }
         catch(ex) {
             this.utilsService.decodeErrorResponse(ex);

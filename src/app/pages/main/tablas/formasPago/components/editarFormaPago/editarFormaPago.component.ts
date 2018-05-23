@@ -7,6 +7,7 @@ import { FormaPago } from '../../../../../../models/formaPago';
 import { TipoFormaPago } from 'app/models/tipoFormaPago';
 import { RecursoService } from '../../../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
+import { ListaPrecio } from '../../../../../../models/listaPrecio';
 
 
 @Component({
@@ -19,6 +20,7 @@ export class EditarFormaPago {
     recurso: FormaPago = new FormaPago();
 
     tiposFormaPago: Observable<TipoFormaPago[]>;
+    listasPrecios: Observable<ListaPrecio[]>;
 
     constructor(
         private utilsService: UtilsService,
@@ -36,8 +38,8 @@ export class EditarFormaPago {
                 })
         );
 
-        // Cargo lo tipos de forma pago disponibles
         this.tiposFormaPago = this.recursoService.getRecursoList(resourcesREST.sisFormaPago)();
+        this.listasPrecios = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
     }
 
     onClickEditar = async() => {

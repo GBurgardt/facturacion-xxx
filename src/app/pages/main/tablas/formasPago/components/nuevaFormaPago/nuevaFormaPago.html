@@ -18,6 +18,18 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="listaPrecio">Lista precio</label>
+                    <select [(ngModel)]="recurso.listaPrecio" class="form-control" id="listaPrecio">
+                        <option *ngFor="let lista of listasPrecios | async" [ngValue]="lista">
+                            {{lista.condiciones}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
 
         <button (click)="onClickCrear()" type="submit" class="btn btn-primary">Confirmar</button>
     </ba-card>
