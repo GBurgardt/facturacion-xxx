@@ -18,7 +18,7 @@ html, body {
 main {
   min-height: 100%;
   position: relative;
-  font: 14px/16px $font-family;
+  font: 13px/15px $font-family;
   color: $default-text;
 
   @include body-bg();
@@ -138,7 +138,8 @@ a {
 }
 
 .al-content {
-  padding: 8px 32px 8px 40px;
+ 
+    padding: 10px 10px 10px 12px;
 }
 
 @media screen and (max-width: $resXS) {

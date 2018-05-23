@@ -11,22 +11,14 @@ import { environment } from 'environments/environment';
     selector: 'pages',
     template: `
     <ba-sidebar></ba-sidebar>
-
+    <ba-page-top></ba-page-top>
     <div class="al-main">
       <div class="al-content">
-
+        <ba-content-top></ba-content-top>
         <router-outlet></router-outlet>
       </div>
     </div>
-    <footer class="al-footer clearfix">
-      
-      <div class="al-footer-main clearfix">
-        <div class="al-copy">&copy; <a href="http://www.kernelinformatica.com.ar" translate>{{'general.akveo'}}</a> 2018</div>
-        
-      </div>
-    </footer>
-    <ba-back-top position="200"></ba-back-top>
-    `
+ <ba-back-top position="100"></ba-back-top>`
 })
 // <ul class="al-share clearfix">
 //           <li><i class="socicon socicon-facebook"></i></li>
@@ -80,4 +72,26 @@ template: `
     <ba-back-top position="200"></ba-back-top>
     `
 
-*/
+
+
+    /*Sin <ba-page-top> y el sin el <ba-content-top>
+     template: `
+    <ba-sidebar></ba-sidebar>
+
+    <div class="al-main">
+      <div class="al-content">
+
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+    <footer class="al-footer clearfix">
+
+      <div class="al-footer-main clearfix">
+        <div class="al-copy">&copy; <a href="http://www.kernelinformatica.com.ar" translate>{{'general.akveo'}}</a> 2018</div>
+
+      </div>
+    </footer>
+    <ba-back-top position="200"></ba-back-top>
+    */
+
+

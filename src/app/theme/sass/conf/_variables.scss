@@ -7,12 +7,12 @@ $resM: 768px;
 $resS: 660px;
 $resXS: 500px;
 $resXXS: 435px;
-$resMin: 320px;
+$resMin: 220px;
 
 //$top-height: 66px;
 // Se cambió el valor de esta variable porque se borró la barra de arriba, y se subió el menu lateral
 $top-height: 0px; 
-$sidebar-width: 180px;
+$sidebar-width: 220px;
 
 $small-card-height: 114px;
 $xsmall-card-height: 187px;
@@ -41,3 +41,7 @@ $github-color: #6b6b6b;
 $stackoverflow-color: #2F96E8;
 $dribble-color: #F26798;
 $behace-color: #0093FA;
+
+
+/*Modificacion Dario*/
+$forms-font-size-general: 11px;

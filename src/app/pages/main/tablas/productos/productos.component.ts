@@ -6,20 +6,26 @@ import { Producto } from '../../../../models/producto';
 import { Observable } from 'rxjs/Observable';
 import { RecursoService } from '../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
+// PRIME NG //////////////////////////////////////////////
+import {TooltipModule} from 'primeng/primeng';
+/////////////////////////////////////////////////////////////
 
 @Component({
+
     selector: 'productos',
     styleUrls: ['./productos.scss'],
     templateUrl: './productos.html'
 })
+
+
+
+
 export class Productos {
 
     // Data de la tabla
     tableData: Observable<Producto[]>;
-
     // Columnas de la tabla
     tableColumns;
-
     constructor(
         private recursoService: RecursoService,
         private router: Router,
@@ -73,5 +79,8 @@ export class Productos {
             tipoModal: 'confirmation'
         });
     }
-
 }
+
+
+
+

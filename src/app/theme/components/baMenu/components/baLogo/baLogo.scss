@@ -1,32 +1,33 @@
 @import '../../../../sass/conf/conf';
-
 .ba-logo {
     margin-bottom: 9%;
-    
-    box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.25);
+   // box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
 
-    .logo-container {
-        padding: 1% 7% 10%;
+  .logo-container {
+        //padding: 1% 7% 10%;
         display: flex;
         //justify-content: space-around;
+   .img-container {
+            margin-left: 10%;
 
-        .img-container {
-            margin-left: 14%;
             .empresa-picture {
-                height: 2.5rem;
-                width: 2.5rem;
-                border-radius: 50%;
+                height: 2.9rem;
+                width: 2.9rem;
+                //border-radius: 50%;
                 cursor: pointer;
-                border: 1px solid #505050;
+                //border: 1px solid #505050;
             }
         }
-
         .datos-container {
-            margin-left: 10%;
+            margin-left: 5%;
             .nombre-empresa {
-                //padding: 30% 20% 0% 0px;
-                padding-top: 31%;
-                font-size: 1.1rem;
+                padding: 10% 0% 0% 0px;
+                font-size: 0.9rem;
+                cursor: pointer;
+            }
+            .descripcion-empresa {
+                padding: 10% 0% 0% 0px;
+
                 cursor: pointer;
             }
         }

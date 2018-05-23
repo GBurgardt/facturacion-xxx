@@ -1,10 +1,12 @@
 import { NgModule, ApplicationRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
+
 
 /*
  * Platform and Environment providers/directives/pipes
@@ -17,6 +19,10 @@ import { AppState, InternalStateType } from './app.service';
 import { GlobalState } from './global.state';
 import { NgaModule } from './theme/nga.module';
 import { PagesModule } from './pages/pages.module';
+// PRIME NG //////////////////////////////////////////////
+//import {TooltipModule} from 'primeng/tooltip';
+//import {DialogModule} from 'primeng/dialog';
+/////////////////////////////////////////////////////////////
 
 
 // Application wide providers
@@ -41,6 +47,7 @@ export type StoreType = {
     App
   ],
   imports: [ // import Angular's modules
+   // TooltipModule, DialogModule,
     BrowserModule,
     HttpModule,
     RouterModule,

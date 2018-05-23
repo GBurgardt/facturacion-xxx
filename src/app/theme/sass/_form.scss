@@ -32,21 +32,24 @@
 
 .form-group {
   label {
-    margin-bottom: 5px;
+    margin-bottom: 1px;
     color: $content-text;
     font-weight: $font-normal;
-    font-size: 12px;
+    font-size: 11px;
   }
+ 
 }
+
 
 .form-control {
   color: $content-text;
   @include placeholderStyle($content-text, 0.7);
   border: 1px solid $input-border;
-  border-radius: 5px;
+  border-radius: 7px;
   background-color: $input-background;
   box-shadow: none;
-  font-size: 14px;
+  padding: 0.2rem 0.45rem;
+  font-size: 11px;
   &:focus {
     color: $content-text;
     box-shadow: none;
@@ -56,11 +59,15 @@
 }
 
 select.form-control {
-  padding-left: 8px;
+  padding: 5px;
 }
 
 select.form-control:not([multiple]) option {
   color: $dropdown-text;
+}
+
+select.form-control:not([size]):not([multiple]) {
+	height: 25px;
 }
 
 select.form-control[multiple] option {
@@ -70,6 +77,7 @@ select.form-control[multiple] option {
 textarea.form-control {
   height: 96px;
 }
+
 
 .form-inline {
   .form-group {
@@ -106,7 +114,10 @@ textarea.form-control {
   &.danger {
     @include setSwitchBorder($danger);
   }
-  &.info {
+
+	
+	
+	&.info {
     @include setSwitchBorder($primary-light);
   }
 }
@@ -179,7 +190,7 @@ textarea.form-control {
 
 .input-group {
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   & > span {
     border-radius: 0;
   }
@@ -313,12 +324,16 @@ label.custom-input-danger {
 }
 
 .input-demo {
-  line-height: 25px;
+  line-height: 0px;
 
   ba-multi-checkbox {
     width: 100%;
+     
   }
 }
+
+
+
 
 @mixin validationState($color, $focusColor) {
   .control-label {
@@ -332,6 +347,7 @@ label.custom-input-danger {
     }
   }
   label.custom-checkbox {
+	 
     color: $color;
     & > span {
       &:before {
@@ -404,6 +420,9 @@ label.custom-input-danger {
   vertical-align: sub;
 }
 
+
+
+
 .raiting-box {
   display: flex;
 }
@@ -438,11 +457,12 @@ label.custom-input-danger {
 }
 
 .checkbox-demo-row {
-  margin-bottom: 12px;
+  margin-bottom: 11px;
 }
 
 .dropdown-menu {
   border-radius: 5px;
+	
 }
 
 .dropdown button.btn.btn-default.dropdown-toggle {
@@ -508,6 +528,7 @@ label.custom-input-danger {
 }
 
 .bootstrap-tagsinput {
+	
   color: $content-text;
   background-color: $input-background;
   border: 1px solid $input-border;
@@ -531,7 +552,8 @@ label.custom-input-danger {
     }
   }
   input {
-    background-color: $input-background;
+	
+	background-color: $input-background;
     border: 1px solid $input-border;
     border-radius: 5px;
     @include placeholderStyle($default-text, 0.8);
@@ -620,6 +642,7 @@ label.custom-checkbox {
   padding-right: 0;
   padding-left: 0;
   margin-bottom: 0;
+  
   & > input {
     height: 0;
     z-index: -100 !important;
@@ -628,7 +651,7 @@ label.custom-checkbox {
     &:checked {
       & + span {
         &:before {
-          content: "\f00c";
+		  content: "\f00c";
           font-weight: $font-light;
         }
       }
@@ -649,6 +672,7 @@ label.custom-checkbox {
     display: inline-block;
     margin: 0;
     line-height: 16px;
+    font-size: $forms-font-size-general;
     font-weight: $font-light;
     cursor: pointer;
     padding-left: 22px;
@@ -681,3 +705,8 @@ label.custom-checkbox {
     }
   }
 }
+
+/* ajusto padding de inputs*/
+
+
+

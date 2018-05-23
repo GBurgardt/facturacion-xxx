@@ -8,8 +8,8 @@ $hover: 24;
   cursor: pointer;
   border-radius: 5px;
   transition: all 0.1s ease;
-  padding: 0.344rem 1rem;
-  font-size: 0.9rem;
+  padding: 0.244rem 0.9rem;
+  font-size: 0.8rem;
 }
 
 .btn:hover {
@@ -66,6 +66,7 @@ $hover: 24;
 }
 
 button.btn.btn-primary {
+    float: right;
   @include buttonColor($primary, $primary);
   &:active, &:target {
     background-color: $primary-dark;
@@ -95,6 +96,10 @@ button.btn.btn-info {
     background-color: $info-dark;
   }
 }
+
+
+
+
 
 button.btn.btn-warning {
   @include buttonColor($warning, $warning);

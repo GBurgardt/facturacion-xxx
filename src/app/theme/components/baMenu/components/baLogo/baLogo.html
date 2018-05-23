@@ -3,15 +3,18 @@
         <div class="img-container">
             <img class="empresa-picture" src="{{ ( 'kernel' | baEmpresaPicture ) }}">
         </div>
-        <div class="datos-container">
+       <div class="datos-container">
             <div class="nombre-empresa">
                 {{nombreEmpresa}}
             </div>
+            <div class="descri-empresa">
+                {{descripcionEmpresa}}
+            </div>
         </div>
     </div>
-
+<!--
     <div *ngIf="dropdownOpen" class="btn-container">
         <button routerLink="/login" (click)="localStorageService.clearLocalStorage()" type="submit" class="btn btn-default">Salir</button>
     </div>
-
+-->
 </div>
