@@ -253,6 +253,7 @@ export class AuthService {
         }
 
         if (nombreRecurso === resourcesREST.cteTipo.nombre) {
+            console.log(recurso);
             return {
                 codigoComp: recurso.codigoComp,
                 descCorta: recurso.descCorta,
@@ -260,7 +261,8 @@ export class AuthService {
                 cursoLegal: recurso.cursoLegal,
                 codigoAfip: recurso.codigoAfip,
                 surenu: recurso.surenu,
-                observaciones: recurso.observaciones ? recurso.observaciones : ''
+                observaciones: recurso.observaciones ? recurso.observaciones : '',
+                idSisComprobante: recurso.comprobante.idSisComprobantes
             }
         }
 
@@ -374,7 +376,8 @@ export class AuthService {
                 cursoLegal: recurso.cursoLegal,
                 codigoAfip: recurso.codigoAfip,
                 surenu: recurso.surenu,
-                observaciones: recurso.observaciones ? recurso.observaciones : ''
+                observaciones: recurso.observaciones ? recurso.observaciones : '',
+                idSisComprobante: recurso.comprobante.idSisComprobantes
             }
         }
 

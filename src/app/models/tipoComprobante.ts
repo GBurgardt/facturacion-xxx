@@ -1,3 +1,5 @@
+import { SisComprobante } from "./sisComprobante";
+
 export class TipoComprobante {
     idCteTipo: number;
     codigoComp: number;
@@ -7,6 +9,7 @@ export class TipoComprobante {
     codigoAfip: number;
     surenu: string;
     observaciones: string;
+    comprobante: SisComprobante;
 
     constructor (tipoComprobante?: {
         idCteTipo: number;
@@ -17,6 +20,7 @@ export class TipoComprobante {
         codigoAfip: number;
         surenu: string;
         observaciones: string;
+        comprobante: any;
     }) {
         if (tipoComprobante) {
             this.idCteTipo = tipoComprobante.idCteTipo;
@@ -27,6 +31,7 @@ export class TipoComprobante {
             this.codigoAfip = tipoComprobante.codigoAfip;
             this.surenu = tipoComprobante.surenu;
             this.observaciones = tipoComprobante.observaciones;
+            this.comprobante = new SisComprobante(tipoComprobante.comprobante);
         } else {
             this.idCteTipo = null;
             this.codigoComp = null;
@@ -36,6 +41,7 @@ export class TipoComprobante {
             this.codigoAfip = null;
             this.surenu = null;
             this.observaciones = null;
+            this.comprobante = new SisComprobante();
         }
     }
 

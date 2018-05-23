@@ -1,0 +1,123 @@
+<ba-card cardTitle="{{titulo}}" class="ingreso-form">
+    <div class="row">
+        <div class="col-sm-2">
+            <div class="form-group inline-group">
+                <label for="proveedor">Proveedor</label>
+                <input [(ngModel)]="recurso.proveedor" type="text" class="form-control" id="proveedor" placeholder="">
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <input [(ngModel)]="recurso.nombreProveedor" type="text" class="form-control" id="nombreProveedor" placeholder="">
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group inline-group">
+                <label for="cuit">CUIT</label>
+                <input [(ngModel)]="recurso.cuit" type="text" class="form-control" id="cuit" placeholder="">
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group inline-group">
+                <label for="iva">IVA</label>
+                <input [(ngModel)]="recurso.iva" type="text" class="form-control" id="iva" placeholder="">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <custom-card class="col-sm-6" title="Comprobante">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group inline-group">
+                        <label for="cte">Cte:</label>
+                        <select [(ngModel)]="recurso.cte" class="form-control" id="cte">
+                            <option>Test1</option>
+                            <option>Test2</option>
+                            <option>Test3</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="form-group inline-group">
+                        <label for="nro">Nro:</label>
+                        <input [(ngModel)]="recurso.nro" type="text" class="form-control" id="nro" placeholder="">
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group inline-group">
+                        <label for="moneda">Moneda:</label>
+                        <select [(ngModel)]="recurso.moneda" class="form-control" id="moneda">
+                            <option>Test1</option>
+                            <option>Test2</option>
+                            <option>Test3</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group inline-group last-child-custom-card">
+                        <label for="fechaCompra">Fecha Compra</label>
+                        <div class="input-group">
+                            <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.fechaCompra" ngbDatepicker #dComp="ngbDatepicker">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button" style="height: 100%;">
+                                    <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group inline-group last-child-custom-card">
+                        <label for="fechaVto">Fecha Vto</label>
+                        <div class="input-group">
+                            <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.fechaVto" ngbDatepicker #dVto="ngbDatepicker">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" (click)="dVto.toggle()" type="button" style="height: 100%;">
+                                    <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </custom-card>
+
+        <custom-card class="col-sm-6" title="Comprobante Relacionado">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group inline-group">
+                        <label for="cte">Cte:</label>
+                        <select [(ngModel)]="recurso.cte" class="form-control" id="cte">
+                            <option>Test1</option>
+                            <option>Test2</option>
+                            <option>Test3</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="form-group inline-group">
+                        <label for="nro">Nro:</label>
+                        <input [(ngModel)]="recurso.nro" type="text" class="form-control" id="nro" placeholder="">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="checkbox-todoPendiente">
+                        <ba-checkbox    [(ngModel)]="recurso.todoPendiente" 
+                                        [label]="'Todos los pendientes'" 
+                                        [ngModelOptions]="{standalone: true}">
+                        </ba-checkbox>
+                    </div>
+                </div>
+            </div>
+        </custom-card>
+    </div>
+
+    <div class="row">
+
+    </div>
+</ba-card>

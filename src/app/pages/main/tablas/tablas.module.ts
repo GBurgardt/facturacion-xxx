@@ -1,14 +1,20 @@
 import { NgModule } from '@angular/core';
 import { routing } from './tablas.routing';
-import { DataTableModule } from "angular2-datatable";
-import { DataTables } from '../../reusable/tablas/dataTables';
-import { DataFilterPipe } from '../../reusable/tablas/dataTables/data-filter.pipe';
-import { DataTablesService } from '../../reusable/tablas/dataTables/dataTables.service';
 import { Tablas } from 'app/pages/main/tablas';
-import { Usuarios } from './usuarios';
+
+import { DataTableModule } from "angular2-datatable";
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgaModule } from '../../../theme/nga.module';
+import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+
+import { DataTables } from '../../reusable/tablas/dataTables';
+import { DataFilterPipe } from '../../reusable/tablas/dataTables/data-filter.pipe';
+import { DataTablesService } from '../../reusable/tablas/dataTables/dataTables.service';
+import { CustomCard } from '../../reusable/cards/customCard';
+import { IngresoForm } from '../../reusable/formularios/ingresoForm';
+
+import { Usuarios } from './usuarios';
 import { NuevoUsuario } from './usuarios/components/nuevoUsuario';
 import { AuthService } from '../../../services/authService';
 import { LocalStorageService } from '../../../services/localStorageService';
@@ -37,9 +43,6 @@ import { NuevoDeposito } from './depositos/components/nuevoDeposito/nuevoDeposit
 import { ListaPrecios } from './listaPrecios';
 import { NuevoListaPrecio } from './listaPrecios/components/nuevoListaPrecio';
 import { EditarListaPrecio } from './listaPrecios/components/editarListaPrecio';
-
-import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
-import { CustomCard } from '../../reusable/cards/customCard';
 
 @NgModule({
     imports: [
@@ -79,7 +82,8 @@ import { CustomCard } from '../../reusable/cards/customCard';
         ListaPrecios,
         NuevoListaPrecio,
         EditarListaPrecio,
-        CustomCard
+        CustomCard,
+        IngresoForm
     ],
     providers: [
         DataTablesService,

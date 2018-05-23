@@ -8,6 +8,7 @@ import { TipoComprobante } from '../../../../../../models/tipoComprobante';
 
 import { RecursoService } from '../../../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
+import { SisComprobante } from 'app/models/sisComprobante';
 
 @Component({
     selector: 'editar-tipo-comprobante',
@@ -18,6 +19,8 @@ export class EditarTipoComprobante {
 
     // Usuario que se va a editar
     recurso: TipoComprobante = new TipoComprobante();
+
+    sisComprobantes: Observable<SisComprobante[]>;
 
     constructor(
         private utilsService: UtilsService,
@@ -34,6 +37,8 @@ export class EditarTipoComprobante {
                     this.recurso = recurso;
                 })
         );
+
+        this.sisComprobantes = this.recursoService.getRecursoList(resourcesREST.sisComprobantes)();
 
     }
 

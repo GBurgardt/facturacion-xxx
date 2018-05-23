@@ -104,7 +104,7 @@
     
             </div>
             <div class="row btn-container-continuar">
-                <button [disabled]="utilsService.checkIfIncomplete(recurso)(['listaPrecioDetCollection', 'activa'])"
+                <button [disabled]="utilsService.checkIfIncomplete(recurso)(['listaPrecioDetCollection', 'activa'])()"
                  class="btn btn-default btn-continuar" (click)="onClickTogglePaso($event)">Continuar</button>
             </div>
         </custom-card>
@@ -190,7 +190,7 @@
 
         <div *ngIf="detallesActivos" class="col-sm-12 btn-confirm-container">
             <button (click)="onClickTogglePaso($event)" type="submit" class="btn btn-primary btn-volver">Volver</button>
-            <button [disabled]="utilsService.checkIfIncomplete(recurso)()"
+            <button [disabled]="utilsService.checkIfIncomplete(recurso)()()"
                     (click)="onClickConfirmar($event)" type="submit" class="btn btn-primary">Confirmar</button>
         </div>
     </ba-card>

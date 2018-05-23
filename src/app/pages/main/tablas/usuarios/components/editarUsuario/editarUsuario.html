@@ -53,7 +53,7 @@
         <button [disabled]="utilsService.checkIfIncomplete(recurso)([
                                 'email',
                                 'telefono'
-                            ])"
+                            ])()"
                 (click)="onClickEditarUsuario()" 
                 type="submit" 
                 class="btn btn-primary">

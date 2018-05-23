@@ -32,7 +32,7 @@
             </div>
         </div>
         
-        <button [disabled]="utilsService.checkIfIncomplete(recurso)()"
+        <button [disabled]="utilsService.checkIfIncomplete(recurso)()()"
                 (click)="onClickCrear($event)" type="submit" class="btn btn-primary">Confirmar</button>
     </ba-card>
 

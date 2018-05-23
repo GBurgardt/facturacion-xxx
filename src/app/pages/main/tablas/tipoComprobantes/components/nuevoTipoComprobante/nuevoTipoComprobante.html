@@ -22,38 +22,24 @@
         </div>
         
         <div class="row">
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="inputFirstName">Curso Legal</label>
 
-                    <div class="radio-curso-legal">
-                        <div class="col-md-4">
-                            <label class="radio-inline custom-radio nowrap">
-                                <input type="radio" name="inlineRadioOptions" id="inlineRadio1" [value]="true" [(ngModel)]="recurso.cursoLegal">
-                                <span>Si</span>
-                            </label>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="radio-inline custom-radio nowrap">
-                                <input type="radio" name="inlineRadioOptions" id="inlineRadio2" [value]="false" [(ngModel)]="recurso.cursoLegal">
-                                <span>No</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- <input [(ngModel)]="recurso.cursoLegal" type="text" class="form-control" id="cursoLegal" placeholder="Curso legal"> -->
-                </div>
-            </div>
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="inputEmail">Codigo Afip</label>
                     <input [(ngModel)]="recurso.codigoAfip" type="text" class="form-control" id="codigoAfip" placeholder="Codigo Afip">
                 </div>
             </div>
+            
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="Clave">D/H</label>
                     <input [(ngModel)]="recurso.surenu" type="text" class="form-control" id="surenu" placeholder="D/H">
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="checkbox-curso-legal">
+                    <ba-checkbox [(ngModel)]="recurso.cursoLegal" [label]="'Curso Legal'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
                 </div>
             </div>
         </div>
@@ -61,10 +47,10 @@
         <div class="row">
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label for="listaPrecio">SisComprobante</label>
-                    <select [(ngModel)]="recurso.listaPrecio" class="form-control" id="listaPrecio">
-                        <option *ngFor="let lista of listasPrecios | async" [ngValue]="lista">
-                            {{lista.condiciones}}
+                    <label for="comprobante">Tipo</label>
+                    <select [(ngModel)]="recurso.comprobante" class="form-control" id="comprobante">
+                        <option *ngFor="let comp of sisComprobantes | async" [ngValue]="comp">
+                            {{comp.descripcion}}
                         </option>
                     </select>
                 </div>
@@ -77,7 +63,7 @@
             </div>
         </div>
         
-        <button [disabled]="utilsService.checkIfIncomplete(recurso)()"
+        <button [disabled]="utilsService.checkIfIncomplete(recurso)()(checkSurEnu)"
                 (click)="onClickCrearTipoComprobante()" 
                 type="submit" 
                 class="btn btn-primary">

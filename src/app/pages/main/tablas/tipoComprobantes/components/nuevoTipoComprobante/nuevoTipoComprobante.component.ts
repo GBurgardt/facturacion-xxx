@@ -28,7 +28,9 @@ export class NuevoTipoComprobante {
         private recursoService: RecursoService,
         private utilsService: UtilsService,
         private router: Router
-    ) { }
+    ) {
+        this.sisComprobantes = this.recursoService.getRecursoList(resourcesREST.sisComprobantes)();
+    }
 
     /**
      * Crear
@@ -46,12 +48,17 @@ export class NuevoTipoComprobante {
                 () => this.router.navigate(['/pages/tablas/tipos-comprobantes'])
             )();
 
-            this.sisComprobantes = this.recursoService.getRecursoList(resourcesREST.sisComprobantes)();
-            this.sisComprobantes.subscribe(a=>console.log(a));
+            
         }
         catch(ex) {
             this.utilsService.decodeErrorResponse(ex);
         }
     }
+
+    /**
+     * Checkea que surEnu sea D o H
+     * Callback de checkIfIncomplete
+     */
+    checkSurEnu = (recur) => (recur.surenu !== 'D' && recur.surenu !== 'H' && recur.surenu !== 'd' && recur.surenu !== 'h');
 
 }

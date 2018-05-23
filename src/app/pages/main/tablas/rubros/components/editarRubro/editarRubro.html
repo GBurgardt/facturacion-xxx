@@ -14,7 +14,7 @@
                 </div>
             </div>
         </div>
-        <button [disabled]="utilsService.checkIfIncomplete(recurso)()"
+        <button [disabled]="utilsService.checkIfIncomplete(recurso)()()"
                 (click)="onClickEditar()" type="submit" class="btn btn-primary">Confirmar</button>
     </ba-card>
 

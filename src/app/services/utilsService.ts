@@ -91,14 +91,14 @@ export class UtilsService {
      * Dado un objeto de una clase es incompleto, retorna true si algùn campo es null
      * @param objeto El objeto
      * @param ignoreList Lista de keys que no se van a checkear. Formato: ['key1','key2',...,'keyn']
-     *
+     * @param extraCondition Funcion con condiciones extras particulares de cada formulario
      */
-    checkIfIncomplete = (objeto: any) => (ignoreList?: string[])  => {
+    checkIfIncomplete = (objeto: any) => (ignoreList?: string[])  => (extraCondition?) => {
         // Obtengo la primer key de la clase del objeto recibido
         const idRecurso = Object.keys(objeto)[0];
 
         // Recorro las keys y checkeo que NO sean null (excepto ignoradas)
-        return Object.keys(objeto).some((key) => {
+        const someKeyIsNull = Object.keys(objeto).some((key) => {
             // Si la key NO está incluida en las ignoradas, la evaluo
             if (
                 key !== idRecurso &&
@@ -106,9 +106,19 @@ export class UtilsService {
                 key !== 'empresa'  &&
                 (!ignoreList || !ignoreList.includes(key))
             ) {
-                return objeto[key] === '' || objeto[key] === null
+                // Si es un json..
+                if (objeto[key] && typeof objeto[key] === 'object') {
+                    const idObjecto = Object.keys(objeto[key])[0];
+                    return objeto[key][idObjecto] === null || objeto[key][idObjecto] === '';
+                } else {
+                    return objeto[key] === '' || objeto[key] === null
+                }
             }
         });
+        // Evaluo condicion extra
+        const resultExtraCondition = extraCondition ? extraCondition(objeto) : false;
+        // Si alguna key es null o si se cumple la condicion extra (si esta existe), entonces retorno true (lo uqe significa que deshabilita el button de confirmar)
+        return  someKeyIsNull || resultExtraCondition;
     }
 
     /**
