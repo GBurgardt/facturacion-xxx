@@ -36,8 +36,10 @@ export class NuevoUsuario {
         private recursoService: RecursoService,
         private localStorageService: LocalStorageService
     ) {
-        // Obtengo las sucursales disponibles de la empresa
         this.sucursales = recursoService.getRecursoList(resourcesREST.sucursales)();
+        // this.perfiles = recursoService.getRecursoList(resourcesREST.perfiles)({
+        //     sucursal: this.usuarioNuevo.perfil.sucursal.idSucursal
+        // });
     }
 
     /**

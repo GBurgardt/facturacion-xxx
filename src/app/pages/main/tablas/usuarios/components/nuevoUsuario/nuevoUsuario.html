@@ -25,7 +25,8 @@
                 <div class="form-group">
                     <label for="Sucursal">Sucursal</label>
                     <select [compareWith]="compareWithSucursal" [(ngModel)]="usuarioNuevo.perfil.sucursal" (change)="changeSucursal($event)" class="form-control" id="Sucursal">
-                        <option *ngFor="let suc of sucursales | async" [ngValue]="suc" [selected]="suc.idSucursal === 1">
+                        <!-- <option *ngFor="let suc of sucursales | async" [ngValue]="suc" [selected]="suc.idSucursal === 1"> -->
+                        <option *ngFor="let suc of sucursales | async" [ngValue]="suc">
                             {{suc.nombre}} - {{suc.domicilio}}
                         </option>
                     </select>
@@ -54,7 +55,7 @@
         <button [disabled]="utilsService.checkIfIncomplete(usuarioNuevo)([
                                 'email',
                                 'telefono'
-                            ])"
+                            ])()"
                 (click)="onClickCrearUsuario()" 
                 type="submit" 
                 class="btn btn-primary">

@@ -308,6 +308,8 @@ export class AuthService {
         }
 
         if (nombreRecurso === resourcesREST.listaPrecios.nombre) {
+            console.log(recurso.codigoLista);
+            console.log(typeof recurso.codigoLista);
             return {
                 codLista: recurso.codigoLista,
                 // fechaAlta: this.utilsService.dateToString(recurso.fechaAlta),

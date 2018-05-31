@@ -207,12 +207,8 @@ export class NuevoListaPrecio {
      */
     onClickConfirmar = async(e) => {
         try {
-            console.log(this.recurso);
-
             const resp: any = await this.recursoService.setRecurso(this.recurso)();
 
-            console.log(resp);
-            
             this.utilsService.showModal(
                 resp.control.codigo
             )(
