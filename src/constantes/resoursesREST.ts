@@ -13,6 +13,7 @@ import { Deposito } from "app/models/deposito";
 import { ListaPrecio } from "app/models/listaPrecio";
 import { Moneda } from "app/models/moneda";
 import { SisComprobante } from "app/models/sisComprobante";
+import { Padron } from "app/models/padron";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -81,5 +82,9 @@ export const resourcesREST = {
     sisComprobantes: {
         nombre: 'sisComprobantes',
         Clase: SisComprobante
+    },
+    proveedores: {
+        nombre: 'proveedores',
+        Clase: Padron
     }
 };

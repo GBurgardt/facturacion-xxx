@@ -3,7 +3,7 @@
         <div class="col-sm-2">
             <div class="form-group inline-group">
                 <label for="proveedor">Proveedor</label>
-                <input [(ngModel)]="recurso.proveedor" type="text" class="form-control" id="proveedor" placeholder="">
+                <input [(ngModel)]="padron.padronCodigo" type="text" class="form-control" id="proveedor" placeholder="">
             </div>
         </div>
         <div class="col-sm-4">
@@ -115,6 +115,32 @@
                 </div>
             </div>
         </custom-card>
+    </div>
+
+    <div class="row">
+        <ngb-tabset class="tabs-ingreso">
+            <ngb-tab title="Articulos">
+                <ng-template ngbTabContent>
+                    <!-- <data-tables sortBy="nombre"
+                        [data]="tableData | async"
+                        [columns]="tableColumns"
+                        [edit]="onClickEdit"
+                        [remove]="onClickRemove"
+                        tituloTabla="Articulos" > -->
+       
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Trazabilidad">
+                <ng-template ngbTabContent>
+                <p>adasdasddsa.</p>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Factura">
+                <ng-template ngbTabContent>
+                <p>fasdqawd.</p>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
     </div>
 
     <div class="row">

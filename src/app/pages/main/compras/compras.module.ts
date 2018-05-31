@@ -7,7 +7,7 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { NgaModule } from "app/theme/nga.module";
 //import { CustomCard } from "../../reusable/cards/customCard";
-import { NgbDatepickerModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbDatepickerModule, NgbTabsetModule } from "@ng-bootstrap/ng-bootstrap";
 import { SharedModule } from "../SharedModule";
 
 @NgModule({
@@ -17,7 +17,8 @@ import { SharedModule } from "../SharedModule";
         NgaModule,
         FormsModule,
         NgbDatepickerModule,
-        SharedModule
+        SharedModule,
+        NgbTabsetModule
     ],
     declarations: [
         Compras,

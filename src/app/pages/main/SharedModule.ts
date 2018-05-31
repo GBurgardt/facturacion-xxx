@@ -22,8 +22,7 @@ import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
     declarations: [
         CustomCard,
         DataTables,
-        DataFilterPipe,
-        //IngresoForm
+        DataFilterPipe
     ],
     providers: [
     ],
