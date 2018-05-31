@@ -1,5 +1,5 @@
 import { Routes, RouterModule } from '@angular/router';
-import { Formularios } from '.';
+import { Compras } from '.';
 import { ComprobanteCompra } from './comprobanteCompra';
 
 
@@ -7,7 +7,7 @@ import { ComprobanteCompra } from './comprobanteCompra';
 const routes: Routes = [
     {
         path: '',
-        component: Formularios,
+        component: Compras,
         children: [
             { path: 'comprobante-compra', component: ComprobanteCompra },
         ]

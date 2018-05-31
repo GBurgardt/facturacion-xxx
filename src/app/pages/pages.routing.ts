@@ -22,7 +22,8 @@ export const routes: Routes = [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'dashboard', loadChildren: './main/dashboard/dashboard.module#DashboardModule' },
             { path: 'tablas', loadChildren: './main/tablas/tablas.module#TablasModule' },
-            { path: 'formularios', loadChildren: './main/formularios/formularios.module#FormulariosModule' },
+            { path: 'compras', loadChildren: './main/compras/compras.module#ComprasModule' },
+            { path: 'stock', loadChildren: './main/stock/stock.module#StockModule' },
 
             // Paginas de ejemplos para desarrollo
             { path: 'editors', loadChildren: './examples/editors/editors.module#EditorsModule' },

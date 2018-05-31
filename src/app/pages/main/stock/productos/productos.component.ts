@@ -58,7 +58,7 @@ export class Productos {
     }
 
     onClickEdit = (recurso: Producto) => {   
-        this.router.navigate(['/pages/tablas/productos/editar', recurso.idProductos]);
+        this.router.navigate(['/pages/stock/productos/editar', recurso.idProductos]);
     }
 
     onClickRemove = async(recurso: Producto) => {

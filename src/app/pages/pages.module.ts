@@ -9,6 +9,7 @@ import { Pages } from './pages.component';
 import { DefaultModal } from './reusable/modals/default-modal/default-modal.component';
 import { LocalStorageService } from 'app/services/localStorageService';
 import { ConfirmationModal } from './reusable/modals/confirmation-modal/confirmation-modal.component';
+import { CustomCard } from 'app/pages/reusable/cards/customCard';
 
 // import { DataTableModule } from "angular2-datatable";
 // import { DataTables } from './reusable/tablas/dataTables';
@@ -26,9 +27,11 @@ import { ConfirmationModal } from './reusable/modals/confirmation-modal/confirma
     declarations: [
         Pages,
         DefaultModal,
-        ConfirmationModal
+        ConfirmationModal,
+        //CustomCard
         // DataTables,
-        // DataFilterPipe
+        // DataFilterPipe,
+        
     ],
     entryComponents: [
         DefaultModal,
@@ -38,6 +41,9 @@ import { ConfirmationModal } from './reusable/modals/confirmation-modal/confirma
     providers: [
         LocalStorageService,
         // DataTablesService
+    ],
+    exports: [
+        //CustomCard
     ]
 })
 export class PagesModule { }

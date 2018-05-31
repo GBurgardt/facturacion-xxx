@@ -6,7 +6,7 @@
 export const environment = {
     production: false,
     facturacionRest: {
-        urlBase: 'http://10.0.0.35:8080/FacturacionRest/ws',
+        urlBase: 'http://10.0.0.30:8080/FacturacionRest/ws',
         //urlBase: 'http://localhost:8080/facturacionRest/ws',
         timeoutDefault: 60000  //60 seg
     },

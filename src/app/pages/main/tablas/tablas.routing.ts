@@ -15,16 +15,18 @@ import { NuevoSubRubro } from './subRubros/components/nuevoSubRubro';
 import { EditarSubRubro } from './subRubros/components/editarSubRubro';
 import { FormasPago } from './formasPago';
 import { NuevaFormaPago } from 'app/pages/main/tablas/formasPago/components/nuevaFormaPago';
-import { Productos } from './productos';
+
 import { EditarFormaPago } from './formasPago/components/editarFormaPago';
-import { NuevoProducto } from './productos/components/nuevoProducto';
-import { EditarProducto } from './productos/components/editarProducto';
+
 import { Depositos } from './depositos';
 import { EditarDeposito } from './depositos/components/editarDeposito';
 import { NuevoDeposito } from './depositos/components/nuevoDeposito/nuevoDeposito.component';
 import { ListaPrecios } from './listaPrecios';
 import { NuevoListaPrecio } from './listaPrecios/components/nuevoListaPrecio';
 import { EditarListaPrecio } from './listaPrecios/components/editarListaPrecio';
+import { Productos } from 'app/pages/main/stock/productos';
+import { NuevoProducto } from '../stock/productos/components/nuevoProducto';
+import { EditarProducto } from 'app/pages/main/stock/productos/components/editarProducto';
 
 // noinspection TypeScriptValidateTypes
 const routes: Routes = [
@@ -47,9 +49,9 @@ const routes: Routes = [
             { path: 'formas-pago', component: FormasPago },
             { path: 'formas-pago/nuevo', component: NuevaFormaPago },
             { path: 'formas-pago/editar/:idFormaPago', component: EditarFormaPago },
-            { path: 'productos', component: Productos },
-            { path: 'productos/nuevo', component: NuevoProducto },
-            { path: 'productos/editar/:idProductos', component: EditarProducto },
+            // { path: 'productos', component: Productos },
+            // { path: 'productos/nuevo', component: NuevoProducto },
+            // { path: 'productos/editar/:idProductos', component: EditarProducto },
             { path: 'depositos', component: Depositos },
             { path: 'depositos/nuevo', component: NuevoDeposito },
             { path: 'depositos/editar/:idDeposito', component: EditarDeposito },

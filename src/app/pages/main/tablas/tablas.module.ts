@@ -32,31 +32,32 @@ import { NuevoSubRubro } from './subRubros/components/nuevoSubRubro';
 import { EditarSubRubro } from './subRubros/components/editarSubRubro';
 import { FormasPago } from 'app/pages/main/tablas/formasPago';
 import { NuevaFormaPago } from './formasPago/components/nuevaFormaPago';
-import { Productos } from './productos';
+
 import { RecursoService } from '../../../services/recursoService';
 import { EditarFormaPago } from './formasPago/components/editarFormaPago';
-import { NuevoProducto } from './productos/components/nuevoProducto';
-import { EditarProducto } from './productos/components/editarProducto';
+
 import { Depositos } from './depositos';
 import { EditarDeposito } from './depositos/components/editarDeposito';
 import { NuevoDeposito } from './depositos/components/nuevoDeposito/nuevoDeposito.component';
 import { ListaPrecios } from './listaPrecios';
 import { NuevoListaPrecio } from './listaPrecios/components/nuevoListaPrecio';
 import { EditarListaPrecio } from './listaPrecios/components/editarListaPrecio';
+import { SharedModule } from '../SharedModule';
 
 @NgModule({
     imports: [
         routing,
-        DataTableModule,
-        CommonModule,
-        FormsModule,
-        NgaModule,
-        NgbDatepickerModule
+        // DataTableModule,
+        // CommonModule,
+        // FormsModule,
+        // NgaModule,
+        // NgbDatepickerModule,
+        SharedModule
     ],
     declarations: [
         Tablas,
-        DataTables,
-        DataFilterPipe,
+        // DataTables,
+        // DataFilterPipe,
         Usuarios,
         NuevoUsuario,
         EditarUsuario,
@@ -73,17 +74,15 @@ import { EditarListaPrecio } from './listaPrecios/components/editarListaPrecio';
         FormasPago,
         NuevaFormaPago,
         EditarFormaPago,
-        Productos,
-        NuevoProducto,
-        EditarProducto,
+       
         Depositos,
         NuevoDeposito,
         EditarDeposito,
         ListaPrecios,
         NuevoListaPrecio,
         EditarListaPrecio,
-        CustomCard,
-        IngresoForm
+        //CustomCard,
+        //IngresoForm
     ],
     providers: [
         DataTablesService,
