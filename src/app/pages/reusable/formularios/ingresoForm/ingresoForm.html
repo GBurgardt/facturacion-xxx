@@ -2,55 +2,64 @@
     <div class="row">
         <div class="col-sm-2">
             <div class="form-group inline-group">
-                <label for="proveedor">Proveedor</label>
-                <input [(ngModel)]="padron.padronCodigo" type="text" class="form-control" id="proveedor" placeholder="">
+                <label for="proveedorSeleccionado">Proveedor</label>
+                <input (keyup.enter)="onEnterInputProv($event)" (ngModelChange)="onChangeInputProveedor($event)" [(ngModel)]="proveedorSeleccionado.padronCodigo" type="text" class="form-control" id="proveedorSeleccionado" placeholder="">
             </div>
         </div>
+
+        <div *ngIf="proveedorSeleccionado.padronCodigo && proveedorSeleccionado.padronCodigo.length > 0" class="lista-filtrada-proveedores">
+            <ul class="list-group">
+                <li *ngFor="let prove of proveedores.filtrados" (click)="onClickListProv(prove)" class="list-group-item">
+                    {{ingresoFormService.getProveFormated(prove)}}
+                </li>
+            </ul>
+        </div>
+
         <div class="col-sm-4">
             <div class="form-group">
-                <input [(ngModel)]="recurso.nombreProveedor" type="text" class="form-control" id="nombreProveedor" placeholder="">
+                <input [disabled]="true" [(ngModel)]="proveedorSeleccionado.padronNombre" type="text" class="form-control" id="nombreProveedor" placeholder="">
             </div>
         </div>
         <div class="col-sm-3">
             <div class="form-group inline-group">
                 <label for="cuit">CUIT</label>
-                <input [(ngModel)]="recurso.cuit" type="text" class="form-control" id="cuit" placeholder="">
+                <input [disabled]="true" [(ngModel)]="proveedorSeleccionado.cuit" type="text" class="form-control" id="cuit" placeholder="">
             </div>
         </div>
         <div class="col-sm-3">
             <div class="form-group inline-group">
                 <label for="iva">IVA</label>
-                <input [(ngModel)]="recurso.iva" type="text" class="form-control" id="iva" placeholder="">
+                <input [disabled]="true" [(ngModel)]="proveedorSeleccionado.condIva.descCorta" type="text" class="form-control" id="iva" placeholder="">
             </div>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row custom-card-container">
         <custom-card class="col-sm-6" title="Comprobante">
             <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group inline-group">
-                        <label for="cte">Cte:</label>
-                        <select [(ngModel)]="recurso.cte" class="form-control" id="cte">
-                            <option>Test1</option>
-                            <option>Test2</option>
-                            <option>Test3</option>
+                        <label for="cteTipo">Cte:</label>
+                        <select [(ngModel)]="comprobante.tipo" class="form-control" id="cteTipo">
+                            <option *ngFor="let tipoComp of tiposComprobantes | async">
+                                {{tipoComp.descripcion}}
+                            </option>
                         </select>
                     </div>
                 </div>
                 <div class="col-sm-5">
                     <div class="form-group inline-group">
-                        <label for="nro">Nro:</label>
-                        <input [(ngModel)]="recurso.nro" type="text" class="form-control" id="nro" placeholder="">
+                        <label for="cteNro">Nro:</label>
+                        <input [(ngModel)]="comprobante.numero" type="text" class="form-control" id="cteNro" placeholder="">
                     </div>
                 </div>
                 <div class="col-sm-3">
                     <div class="form-group inline-group">
-                        <label for="moneda">Moneda:</label>
-                        <select [(ngModel)]="recurso.moneda" class="form-control" id="moneda">
-                            <option>Test1</option>
-                            <option>Test2</option>
-                            <option>Test3</option>
+                        <label for="cteMoneda">Moneda:</label>
+                        <select [(ngModel)]="comprobante.moneda" class="form-control" id="cteMoneda">
+                            <option *ngFor="let mon of monedas | async">
+                                {{mon.descripcion}}
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -60,7 +69,7 @@
                     <div class="form-group inline-group last-child-custom-card">
                         <label for="fechaCompra">Fecha Compra</label>
                         <div class="input-group">
-                            <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.fechaCompra" ngbDatepicker #dComp="ngbDatepicker">
+                            <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="comprobante.fechaCompra" ngbDatepicker #dComp="ngbDatepicker">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button" style="height: 100%;">
                                     <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -73,7 +82,7 @@
                     <div class="form-group inline-group last-child-custom-card">
                         <label for="fechaVto">Fecha Vto</label>
                         <div class="input-group">
-                            <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.fechaVto" ngbDatepicker #dVto="ngbDatepicker">
+                            <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="comprobante.fechaVto" ngbDatepicker #dVto="ngbDatepicker">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" (click)="dVto.toggle()" type="button" style="height: 100%;">
                                     <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -85,49 +94,67 @@
             </div>
         </custom-card>
 
-        <custom-card class="col-sm-6" title="Comprobante Relacionado">
+        <custom-card class="col-sm-6 comp-rel-card" title="Comprobante Relacionado">
             <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group inline-group">
-                        <label for="cte">Cte:</label>
-                        <select [(ngModel)]="recurso.cte" class="form-control" id="cte">
-                            <option>Test1</option>
-                            <option>Test2</option>
-                            <option>Test3</option>
+                        <label for="cteRelTipo">Cte:</label>
+
+                        <select [(ngModel)]="comprobanteRelacionado.tipo" class="form-control" id="cteRelTipo">
+                            <option *ngFor="let tipoComp of tiposComprobantes | async" [ngValue]="tipoComp">
+                                {{tipoComp.descripcion}}
+                            </option>
                         </select>
                     </div>
                 </div>
                 <div class="col-sm-5">
                     <div class="form-group inline-group">
-                        <label for="nro">Nro:</label>
-                        <input [(ngModel)]="recurso.nro" type="text" class="form-control" id="nro" placeholder="">
+                        <label for="cteRelNro">Nro:</label>
+                        <input [disabled]="comprobanteRelacionado.todosLosPendientes" [(ngModel)]="comprobanteRelacionado.numero" type="text" class="form-control" id="cteRelNro" placeholder="">
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="checkbox-todoPendiente">
-                        <ba-checkbox    [(ngModel)]="recurso.todoPendiente" 
+                        <ba-checkbox    [(ngModel)]="comprobanteRelacionado.todosLosPendientes" 
                                         [label]="'Todos los pendientes'" 
                                         [ngModelOptions]="{standalone: true}">
                         </ba-checkbox>
                     </div>
                 </div>
+
+                <div class="col-sm-3 btn-container">
+                    <!-- <button [disabled]="utilsService.checkIfIncomplete(comprobanteRelacionado)([])()" -->
+                    <button 
+                        (click)="onClickBuscarPendientes()" type="submit" class="btn btn-primary">Confirmar</button>
+                </div>
             </div>
+
+            
         </custom-card>
+
+        <div class="col-sm-4 offset-6 form-group inline-group tipo-compra-dropdown">
+            <label for="tipoCompra">Tipo Compra:</label>
+            <select class="form-control" id="tipoCompra">
+                <option *ngFor="let tipoOp of tiposOperacion | async">
+                    {{tipoOp.descripcion}}
+                </option>
+            </select>
+        </div>
     </div>
 
     <div class="row">
-        <ngb-tabset class="tabs-ingreso">
+        <ngb-tabset class="col-sm-12 tabs-ingreso">
             <ngb-tab title="Articulos">
                 <ng-template ngbTabContent>
-                    <!-- <data-tables sortBy="nombre"
-                        [data]="tableData | async"
-                        [columns]="tableColumns"
-                        [edit]="onClickEdit"
-                        [remove]="onClickRemove"
-                        tituloTabla="Articulos" > -->
-       
+                    <data-tables 
+                        [data]="tablas.datos.datosProductos | async"
+                        [columns]="tablas.columnas.columnasProductos"
+                        [enableEditDelete]="false" 
+                        [enableAdd]="true" 
+                        [itemsBusqueda]="ingresoFormService.getAllProductos()">
+                    </data-tables>
                 </ng-template>
             </ngb-tab>
             <ngb-tab title="Trazabilidad">
@@ -146,4 +173,6 @@
     <div class="row">
 
     </div>
+
+    
 </ba-card>

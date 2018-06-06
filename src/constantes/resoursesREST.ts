@@ -14,6 +14,8 @@ import { ListaPrecio } from "app/models/listaPrecio";
 import { Moneda } from "app/models/moneda";
 import { SisComprobante } from "app/models/sisComprobante";
 import { Padron } from "app/models/padron";
+import { SisTipoOperacion } from "app/models/sisTipoOperacion";
+import { ProductoPendiente } from "app/models/productoPendiente";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -86,5 +88,13 @@ export const resourcesREST = {
     proveedores: {
         nombre: 'proveedores',
         Clase: Padron
-    }
+    },
+    sisTipoOperacion: {
+        nombre: 'sisTipoOperacion',
+        Clase: SisTipoOperacion
+    },
+    buscarPendientes: {
+        nombre: 'buscarPendientes',
+        Clase: ProductoPendiente
+    },
 };

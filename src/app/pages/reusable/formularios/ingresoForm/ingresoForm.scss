@@ -15,4 +15,16 @@
         padding: 1.5%;
     }
 
+    .lista-filtrada-proveedores {
+        position: absolute;
+        z-index: 9999999;
+        /* opacity: 0; */
+        top: 81px;
+        left: 77px;
+    }
+
+    .tipo-compra-dropdown {
+        padding: 0 2%;
+    }
+
 }

@@ -31,13 +31,9 @@ export class ListaPrecio {
         listaPrecioDetCollection: any[];
     }) {
         if (listaPrecio) {
-            // var b = listaPrecio.fechaAlta.split(/\D+/);
-            // console.log(listaPrecio.fechaAlta);
-            // console.log(new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6])));
             this.idListaPrecio = listaPrecio.idListaPrecio;
             this.codigoLista = listaPrecio.codigoLista;
 
-            
             this.fechaAlta = new DateLikePicker(new Date(listaPrecio.fechaAlta));
             this.vigenciaDesde = new DateLikePicker(new Date(listaPrecio.vigenciaDesde));
             this.vigenciaHasta = new DateLikePicker(new Date(listaPrecio.vigenciaHasta));

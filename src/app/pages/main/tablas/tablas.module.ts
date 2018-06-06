@@ -56,8 +56,6 @@ import { SharedModule } from '../SharedModule';
     ],
     declarations: [
         Tablas,
-        // DataTables,
-        // DataFilterPipe,
         Usuarios,
         NuevoUsuario,
         EditarUsuario,
@@ -74,15 +72,12 @@ import { SharedModule } from '../SharedModule';
         FormasPago,
         NuevaFormaPago,
         EditarFormaPago,
-       
         Depositos,
         NuevoDeposito,
         EditarDeposito,
         ListaPrecios,
         NuevoListaPrecio,
-        EditarListaPrecio,
-        //CustomCard,
-        //IngresoForm
+        EditarListaPrecio
     ],
     providers: [
         DataTablesService,

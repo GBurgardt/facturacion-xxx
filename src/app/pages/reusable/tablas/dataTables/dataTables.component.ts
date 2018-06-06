@@ -12,28 +12,27 @@ import { UtilsService } from 'app/services/utilsService';
  * Tabla reutilizable
  */
 export class DataTables {
-    /**
-     * Inputs de entrada para hacer la tabla reutilizable
-     * columns: array de jsons({nombre: 'telefono', ancho: 20%}) con las columnas de la tabla
-     * data: array de jsons con toda la data de la tabla
-     * sortBy: Orden por defecto
-     */
     @Input() columns;
     @Input() data;
-    @Input() sortBy: string;
-
-    // Funciones que se disparan cuando se da en edit o remove
     @Input() edit;
     @Input() remove;
     @Input() confirmEdit;
 
-    @Input() tituloTabla;
+    // Opciones custom
+    @Input() enableEditDelete = true;
+    @Input() enableAdd = false;
 
-    @Input() baCardClase = 'with-scroll';
+    /////////// BUSQUEDA ///////////
+    // Array con items de los cuales se busca si enableAdd esta habilitado
+    @Input() itemsBusqueda;
+    textoBuscado;
 
+    
+    sortBy = 'nombre';
     filterQuery = "";
     rowsOnPage = 10;
     sortOrder = "asc";
+
 
     constructor(
         private utilsService: UtilsService
@@ -91,4 +90,20 @@ export class DataTables {
             });
         };
     }
+
+    /**
+     * 
+     */
+    onClickSelectItemBusqueda = (item) => {
+        console.log('onClickSelectItemBusqueda');
+    }
+
+    /**
+     * 
+     */
+    onChangeInputItemAdd = (e) => {
+        // console.log('da');
+        this.itemsBusqueda.subscribe(a=>console.log(a));
+    }
+
 }

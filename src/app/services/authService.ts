@@ -20,6 +20,7 @@ import { SubRubro } from 'app/models/subRubro';
 import { FormaPago } from '../models/formaPago';
 import { FiltroListaPrecios } from '../models/filtroListaPrecio';
 import { DetalleProducto } from '../models/detalleProducto';
+import { Padron } from '../models/padron';
 
 @Injectable()
 export class AuthService {
@@ -117,7 +118,7 @@ export class AuthService {
     * @argument token
     * @argument filtros Lo filtro
     */
-   getProductosByFiltro = (token: string)  => (filtros: FiltroListaPrecios) => {
+    getProductosByFiltro = (token: string)  => (filtros: FiltroListaPrecios) => {
 
         return this.request(
             [],
@@ -135,6 +136,36 @@ export class AuthService {
                 porcentajeCabecera: filtros.porcentajeCabecera,
                 porcentajeInf: filtros.porcentajeInf,
                 porcentajeSup: filtros.porcentajeSup
+            },
+            {}
+        );
+    }
+
+    /**
+    * @description Obtiene productos pendientes
+    * @argument token
+    * @argument filtros Lo filtro
+    */
+    getProductosPendientes = (token: string) => (proveedor: Padron) => (comprobanteRelacionado: {
+        tipo: TipoComprobante,
+        numero: number,
+        todosLosPendientes: boolean
+    }) => {
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            resourcesREST.buscarPendientes.nombre,
+            {
+                cteTipo : comprobanteRelacionado.tipo.idCteTipo,
+                facNumero : comprobanteRelacionado.todosLosPendientes ? 0 : comprobanteRelacionado.numero,
+                codigoProv : Number(proveedor.padronCodigo),
+                pendiente : comprobanteRelacionado.todosLosPendientes ? 1 : 0,
+                idProducto : 0,
+                idDeposito : 0,
+                despacho : ""
             },
             {}
         );
@@ -253,7 +284,6 @@ export class AuthService {
         }
 
         if (nombreRecurso === resourcesREST.cteTipo.nombre) {
-            console.log(recurso);
             return {
                 codigoComp: recurso.codigoComp,
                 descCorta: recurso.descCorta,
@@ -308,8 +338,6 @@ export class AuthService {
         }
 
         if (nombreRecurso === resourcesREST.listaPrecios.nombre) {
-            console.log(recurso.codigoLista);
-            console.log(typeof recurso.codigoLista);
             return {
                 codLista: recurso.codigoLista,
                 // fechaAlta: this.utilsService.dateToString(recurso.fechaAlta),

@@ -1,112 +1,83 @@
-<div class="widgets">
-    <div class="row">
-        <ba-card cardTitle="{{tituloTabla}}" baCardClass="{{baCardClase}}" class="data-table-container">
-            <!-- <div class="row">
-                <div class="col-sm-2">
-                    <label class="label-control">Rows on page</label>
-                    <select class="form-control input-sm" [(ngModel)]="rowsOnPage">
-                        <option [ngValue]="5">5</option>
-                        <option [ngValue]="10">10</option>
-                        <option [ngValue]="15">15</option>
-                    </select>
-                </div>
 
-                <div class="col-sm-4">
-                    <div class="row">
-                        <label class="col-sm-12 label-control" style="padding-left: 9%;">Sort by</label>
+<div class="panel panel-default">
+    <table class="table table-striped" [mfData]="data | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+        <thead>
+            <!-- Hay que usar el 90% en las tablas (si enableEditDelete es true) -->
+            <tr>
+                <th *ngIf="enableEditDelete" style="width: 10%"></th>
+                <!-- Recorro y muestro las columnas recibidas en el input -->
+                <th class="table-column" *ngFor="let col of columns" [ngStyle]="getStyleFromCol(col)">
+                    <mfDefaultSorter by="name">{{col.nombre}}</mfDefaultSorter>
+                </th>
+            </tr>
+
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of mf.data">
+                <td *ngIf="enableEditDelete" class="btn-container">
+                    <div (click)="edit(item)" class="btn-accion btn-editar">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </div>
+                    <div (click)="remove(item)" class="btn-accion btn-remover">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </div>
+                    <div *ngIf="checkIfEditOn(item)" (click)="confirmEdit(item)" class="btn-accion btn-remover">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                    </div>
+                </td>
 
-                    <div class="row">
-                        <div class="offset-sm-1 col-sm-5">
-                            <div class="row">
-                                <select class="form-control input-sm" [(ngModel)]="sortBy">
-                                    <option class="sort-option" *ngFor="let col of columns" ngValue="name">
-                                        {{col.nombre}}
-                                    </option>
-                                </select>
-                            </div>
+                <td *ngFor="let col of columns">
+                    <div *ngIf="!col.subkey">
+                        <div *ngIf="!col.enEdicion || col.enEdicion !== item[utilsService.getNameIdKeyOfResource(item)]">
+                            {{parseKey(item[col.key])}}
                         </div>
-
-                        <div class="offset-sm-1 col-sm-5">
-                            <div class="row">
-                                <select class="form-control input-sm" [(ngModel)]="sortOrder">
-                                    <option ngValue="asc">Ascending</option>
-                                    <option ngValue="desc">Descending</option>
-                                    <option ngValue="badValue">Bad value</option>
-                                </select>
-                            </div>
+                        <div *ngIf="col.enEdicion && col.enEdicion === item[utilsService.getNameIdKeyOfResource(item)]">
+                            <input [(ngModel)]="item[col.key]"  style="margin-top: 4px;" type="text" class="form-control edit-input" id="inputSubKey" placeholder="">
                         </div>
                     </div>
 
-                </div>
+                    <div *ngIf="col.subkey && !col.subsubkey">
+                        <div *ngIf="!col.enEdicion || col.enEdicion !== (item[col.key])[utilsService.getNameIdKeyOfResource(item[col.key])]">
+                            {{(parseKey(item[col.key])[col.subkey])}}
+                        </div>
+                        <div *ngIf="col.enEdicion && col.enEdicion === (item[col.key])[this.utilsService.getNameIdKeyOfResource(item[col.key])]">
+                            <input [(ngModel)]="(item[col.key])[col.subkey]"  style="margin-top: 4px;" type="text" class="form-control edit-input" id="inputSubKey" placeholder="">
+                        </div>
+                    </div>
 
-            </div> -->
-            <div class="panel panel-default">
-                <table class="table table-striped" [mfData]="data | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
-                    <thead>
-                        <!-- Hay que usar el 90% en las tablas -->
-                        <tr>
-                            <th style="width: 10%"></th>
-                            <!-- Recorro y muestro las columnas recibidas en el input -->
-                            <th class="table-column" *ngFor="let col of columns" [ngStyle]="getStyleFromCol(col)">
-                                <mfDefaultSorter by="name">{{col.nombre}}</mfDefaultSorter>
-                            </th>
-                        </tr>
+                    <div *ngIf="col.subsubkey">
+                        <input [(ngModel)]="(item[col.key])[col.subkey]" style="margin-top: 4px;" type="text" class="form-control edit-input" id="inputSubKey" placeholder="">
+                    </div>
+                </td>
+            </tr>
 
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of mf.data">
-                            <td class="btn-container">
-                                <div (click)="edit(item)" class="btn-accion btn-editar">
-                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                </div>
-                                <div (click)="remove(item)" class="btn-accion btn-remover">
-                                    <i class="fa fa-trash" aria-hidden="true"></i>
-                                </div>
-                                <div *ngIf="checkIfEditOn(item)" (click)="confirmEdit(item)" class="btn-accion btn-remover">
-                                    <i class="fa fa-check" aria-hidden="true"></i>
-                                </div>
-                            </td>
+            <!-- Fila para agregar elemento -->
+            <tr *ngIf="enableAdd" class="add-tr">
+                <td class="add-td" *ngFor="let col of columns">
+                    <input [(ngModel)]="textoBuscado" (ngModelChange)="onChangeInputItemAdd($event)" style="margin-top: 4px;" type="text" class="form-control add-input" id="addInput" placeholder="">
+                    
+                    
+                </td>
+            </tr>
 
-                            <td *ngFor="let col of columns">
-                                <div *ngIf="!col.subkey">
-                                    <div *ngIf="!col.enEdicion || col.enEdicion !== item[utilsService.getNameIdKeyOfResource(item)]">
-                                        {{parseKey(item[col.key])}}
-                                    </div>
-                                    <div *ngIf="col.enEdicion && col.enEdicion === item[utilsService.getNameIdKeyOfResource(item)]">
-                                        <input [(ngModel)]="item[col.key]"  style="margin-top: 4px;" type="text" class="form-control edit-input" id="inputSubKey" placeholder="">
-                                    </div>
-                                </div>
-
-                                <div *ngIf="col.subkey && !col.subsubkey">
-                                    <div *ngIf="!col.enEdicion || col.enEdicion !== (item[col.key])[utilsService.getNameIdKeyOfResource(item[col.key])]">
-                                        {{(parseKey(item[col.key])[col.subkey])}}
-                                    </div>
-                                    <div *ngIf="col.enEdicion && col.enEdicion === (item[col.key])[this.utilsService.getNameIdKeyOfResource(item[col.key])]">
-                                        <input [(ngModel)]="(item[col.key])[col.subkey]"  style="margin-top: 4px;" type="text" class="form-control edit-input" id="inputSubKey" placeholder="">
-                                    </div>
-                                </div>
-
-                                <div *ngIf="col.subsubkey">
-                                    {{((parseKey(item[col.key])[col.subkey])[col.subsubkey])}}
-                                </div>
-                            </td>
-
-                            
-
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <!-- TODO: Aca cambié de 5 a 12, ver si no tiene consecuencias -->
-                            <!-- <td colspan="5"> -->
-                            <td colspan="12">
-                                <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
+            <div class="lista-filtrada-items">
+                <ul class="list-group">
+                    <li *ngFor="let item of itemsBusqueda | async" (click)="onClickSelectItemBusqueda(item)" class="list-group-item">
+                        <!-- {{item[busqueda.keyMostrar]}} -->
+                        {{item.descripcion}}
+                    </li>
+                    <li>sdaasdas</li>
+                </ul>
             </div>
-        </ba-card>
-    </div>
+        </tbody>
+        <tfoot>
+            <tr>
+                <!-- TODO: Aca cambié de 5 a 12, ver si no tiene consecuencias -->
+                <!-- <td colspan="5"> -->
+                <td colspan="12">
+                    <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
 </div>

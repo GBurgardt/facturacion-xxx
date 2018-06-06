@@ -9,14 +9,18 @@ import { NgaModule } from "app/theme/nga.module";
 //import { CustomCard } from "../../reusable/cards/customCard";
 import { NgbDatepickerModule, NgbTabsetModule } from "@ng-bootstrap/ng-bootstrap";
 import { SharedModule } from "../SharedModule";
+import { RecursoService } from "app/services/recursoService";
+import { AuthService } from "../../../services/authService";
+import { UtilsService } from "../../../services/utilsService";
+import { IngresoFormService } from "app/pages/reusable/formularios/ingresoForm/ingresoFormService";
 
 @NgModule({
     imports: [
         routing,
-        CommonModule,
-        NgaModule,
-        FormsModule,
-        NgbDatepickerModule,
+        //CommonModule,
+        //NgaModule,
+        //FormsModule,
+        //NgbDatepickerModule,
         SharedModule,
         NgbTabsetModule
     ],
@@ -26,7 +30,12 @@ import { SharedModule } from "../SharedModule";
         IngresoForm,
         //CustomCard
     ],
-    providers: []
+    providers: [
+        RecursoService,
+        AuthService,
+        UtilsService,
+        IngresoFormService
+    ]
 })
 export class ComprasModule {
 }

@@ -177,7 +177,7 @@
         </custom-card>
 
         <!-- [data]="listaPrecio.listaPrecioDetCollection | async" -->
-        <data-tables *ngIf="detallesActivos" sortBy="nombre"
+        <data-tables *ngIf="detallesActivos" 
                     [data]="recurso.listaPrecioDetCollection"
                     [columns]="columnasTabla"
                     [edit]="onClickEdit"
