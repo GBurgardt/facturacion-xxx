@@ -8,6 +8,8 @@ import { DataTables } from 'app/pages/reusable/tablas/dataTables';
 import { DataTableModule } from 'angular2-datatable';
 import { NgaModule } from 'app/theme/nga.module';
 import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { PopupLista } from 'app/pages/reusable/otros/popup-lista/popup-lista.component';
+
 
 
 @NgModule({
@@ -22,7 +24,8 @@ import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
     declarations: [
         CustomCard,
         DataTables,
-        DataFilterPipe
+        DataFilterPipe,
+        PopupLista
     ],
     providers: [
     ],
@@ -34,7 +37,8 @@ import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
         FormsModule,
         DataTableModule,
         NgaModule,
-        NgbDatepickerModule
+        NgbDatepickerModule,
+        PopupLista
     ]
 })
 export class SharedModule {}

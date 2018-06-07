@@ -140,7 +140,24 @@ export class UtilsService {
     getNameIdKeyOfResource = (recurso) => {
         // Obtengo la primer key de la clase del recurso recibido
         const idRecurso = Object.keys(recurso)[0];
-        return idRecurso;
+        const id = `${idRecurso[0]}${idRecurso[1]}`;
+        const cod = `${idRecurso[0]}${idRecurso[1]}${idRecurso[2]}`;
+        // Checkeo si NO es un id o un codigo
+        if (id !== 'id' && cod !== 'cod' && !idRecurso.toLowerCase().includes('codigo')) {
+            const realIdOrCod = Object.keys(recurso).find(key => {
+                const id = `${key[0]}${key[1]}`;
+                const tercerCaracter = key[2]
+                const cod = `${key[0]}${key[1]}${key[2]}`;
+                const cuartoCaracter = key[3]
+
+                return  (id === 'id' && tercerCaracter === tercerCaracter.toUpperCase()) ||
+                        (cod === 'cod' && cuartoCaracter === cuartoCaracter.toUpperCase())
+            });
+            return realIdOrCod;
+        } else {
+            return idRecurso;
+        }
+
     }
 
     /**
@@ -160,6 +177,25 @@ export class UtilsService {
      */
     dateToString = (fechaDate) => {
         return `${fechaDate.year}-${fechaDate.month}-${fechaDate.day}`
+    }
+
+    /**
+     * Retorna la posicion de un elemento dom dado
+     * @param el 
+     */
+    getOffset( el ) {
+        var _x = 0;
+        var _y = 0;
+        while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+            _x += el.offsetLeft - el.scrollLeft;
+            _y += el.offsetTop - el.scrollTop;
+            el = el.offsetParent;
+        }
+        
+        // Le resto el scrolltop de la ventana completa
+        _y -= document.documentElement.scrollTop;
+
+        return { top: _y, left: _x };
     }
 
 }

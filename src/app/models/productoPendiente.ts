@@ -1,7 +1,9 @@
+import { Producto } from "./producto";
+
 export class ProductoPendiente {
+    codProducto: string;
     comprobante: string;
     numero: string;
-    codProducto: string;
     original: number;
     pendiente: number;
     articulo: string;
@@ -31,7 +33,7 @@ export class ProductoPendiente {
         trazable: boolean;
         rubro: string;
         subRubro: string;
-    }) {
+    }, productoComun?: Producto) {
         if (productoPendiente) {
             this.comprobante = productoPendiente.comprobante
             this.numero = productoPendiente.numero
@@ -48,6 +50,14 @@ export class ProductoPendiente {
             this.trazable = productoPendiente.trazable
             this.rubro = productoPendiente.rubro
             this.subRubro = productoPendiente.subRubro
+        } else if (productoComun) {
+            this.codProducto = productoComun.codProducto;
+            this.articulo = productoComun.descripcion;
+            this.precio = 0;
+            this.ivaPorc = productoComun.IVA.porcIVA;
+            this.pendiente = 0;
+            this.deposito = 0;
+            this.trazable = productoComun.trazable;
         } else {
             this.comprobante = null
             this.numero = null

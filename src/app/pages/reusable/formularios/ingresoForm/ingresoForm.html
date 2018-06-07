@@ -3,17 +3,17 @@
         <div class="col-sm-2">
             <div class="form-group inline-group">
                 <label for="proveedorSeleccionado">Proveedor</label>
-                <input (keyup.enter)="onEnterInputProv($event)" (ngModelChange)="onChangeInputProveedor($event)" [(ngModel)]="proveedorSeleccionado.padronCodigo" type="text" class="form-control" id="proveedorSeleccionado" placeholder="">
+                <!-- (blur)="onBlurInputProv($event)" -->
+                <input id="proveedorSeleccionado" (blur)="onBlurInputProv($event)" (keyup.enter)="onEnterInputProv($event)"  (ngModelChange)="onChangeInputProveedor($event)" [(ngModel)]="proveedorSeleccionado.padronCodigo" type="text" class="form-control" placeholder="">
             </div>
         </div>
 
-        <div *ngIf="proveedorSeleccionado.padronCodigo && proveedorSeleccionado.padronCodigo.length > 0" class="lista-filtrada-proveedores">
-            <ul class="list-group">
-                <li *ngFor="let prove of proveedores.filtrados" (click)="onClickListProv(prove)" class="list-group-item">
-                    {{ingresoFormService.getProveFormated(prove)}}
-                </li>
-            </ul>
-        </div>
+        <popup-lista    *ngIf="proveedorSeleccionado.padronCodigo && proveedorSeleccionado.padronCodigo.length > 0"
+                        [items]="proveedores.filtrados.asObservable().distinctUntilChanged()" 
+                        [keysToShow]="['padronNombre', 'padronCodigo']" 
+                        [onClickItem]="onClickListProv"
+                        [fatherPosition]="getOffsetOfInputProveedor()">
+        </popup-lista>
 
         <div class="col-sm-4">
             <div class="form-group">
@@ -148,13 +148,15 @@
         <ngb-tabset class="col-sm-12 tabs-ingreso">
             <ngb-tab title="Articulos">
                 <ng-template ngbTabContent>
-                    <data-tables 
-                        [data]="tablas.datos.datosProductos | async"
-                        [columns]="tablas.columnas.columnasProductos"
-                        [enableEditDelete]="false" 
-                        [enableAdd]="true" 
-                        [itemsBusqueda]="ingresoFormService.getAllProductos()">
-                    </data-tables>
+                    
+                    <tabla-articulos    [data]="tablas.datos.datosProductos" 
+                                        [columns]="tablas.columnas.columnasProductos" 
+                                        [remove]="tablas.funciones.onClickRemove" 
+                                        [edit]="tablas.funciones.onClickEdit" 
+                                        [confirmEdit]="tablas.funciones.onClickConfirmEdit" 
+                                        [onClickProductoLista]="onClickProductoLista">
+                    </tabla-articulos>
+
                 </ng-template>
             </ngb-tab>
             <ngb-tab title="Trazabilidad">

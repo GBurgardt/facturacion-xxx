@@ -10,6 +10,7 @@ import { DefaultModal } from './reusable/modals/default-modal/default-modal.comp
 import { LocalStorageService } from 'app/services/localStorageService';
 import { ConfirmationModal } from './reusable/modals/confirmation-modal/confirmation-modal.component';
 import { CustomCard } from 'app/pages/reusable/cards/customCard';
+import { PopupLista } from './reusable/otros/popup-lista/popup-lista.component';
 
 // import { DataTableModule } from "angular2-datatable";
 // import { DataTables } from './reusable/tablas/dataTables';
@@ -28,14 +29,13 @@ import { CustomCard } from 'app/pages/reusable/cards/customCard';
         Pages,
         DefaultModal,
         ConfirmationModal,
-        //CustomCard
-        // DataTables,
-        // DataFilterPipe,
+        // PopupLista
         
     ],
     entryComponents: [
         DefaultModal,
-        ConfirmationModal
+        ConfirmationModal,
+        // PopupLista
         // DataTables
     ],
     providers: [

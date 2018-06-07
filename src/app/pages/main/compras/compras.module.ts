@@ -13,6 +13,7 @@ import { RecursoService } from "app/services/recursoService";
 import { AuthService } from "../../../services/authService";
 import { UtilsService } from "../../../services/utilsService";
 import { IngresoFormService } from "app/pages/reusable/formularios/ingresoForm/ingresoFormService";
+import { TablaArticulos } from "app/pages/reusable/formularios/ingresoForm/components";
 
 @NgModule({
     imports: [
@@ -28,6 +29,7 @@ import { IngresoFormService } from "app/pages/reusable/formularios/ingresoForm/i
         Compras,
         ComprobanteCompra,
         IngresoForm,
+        TablaArticulos
         //CustomCard
     ],
     providers: [
@@ -35,6 +37,9 @@ import { IngresoFormService } from "app/pages/reusable/formularios/ingresoForm/i
         AuthService,
         UtilsService,
         IngresoFormService
+    ],
+    exports: [
+        TablaArticulos
     ]
 })
 export class ComprasModule {

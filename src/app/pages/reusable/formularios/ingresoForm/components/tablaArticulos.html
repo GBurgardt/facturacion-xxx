@@ -1,10 +1,8 @@
-
-<div class="panel panel-default">
+<div class="panel panel-default tabla-articulos">
     <table class="table table-striped" [mfData]="data | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
         <thead>
-            <!-- Hay que usar el 90% en las tablas (si enableEditDelete es true) -->
             <tr>
-                <th *ngIf="enableEditDelete" style="width: 10%"></th>
+                <th  style="width: 10%"></th>
                 <!-- Recorro y muestro las columnas recibidas en el input -->
                 <th class="table-column" *ngFor="let col of columns" [ngStyle]="getStyleFromCol(col)">
                     <mfDefaultSorter by="name">{{col.nombre}}</mfDefaultSorter>
@@ -14,7 +12,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let item of mf.data">
-                <td *ngIf="enableEditDelete" class="btn-container">
+                <td  class="btn-container">
                     <div (click)="edit(item)" class="btn-accion btn-editar">
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </div>
@@ -27,7 +25,7 @@
                 </td>
 
                 <td *ngFor="let col of columns">
-                    <div *ngIf="!col.subkey">
+                    <div *ngIf="!col.subkey && col.key !== 'trazable'">
                         <div *ngIf="!col.enEdicion || col.enEdicion !== item[utilsService.getNameIdKeyOfResource(item)]">
                             {{parseKey(item[col.key])}}
                         </div>
@@ -48,22 +46,42 @@
                     <div *ngIf="col.subsubkey">
                         <input [(ngModel)]="(item[col.key])[col.subkey]" style="margin-top: 4px;" type="text" class="form-control edit-input" id="inputSubKey" placeholder="">
                     </div>
+
+                    <div class="checkbox-traza" *ngIf="col.key === 'trazable'">
+                        <input type="checkbox" [(ngModel)]="item[col.key]" [value]="value">
+                    </div>
                 </td>
             </tr>
 
             <!-- Fila para agregar elemento -->
-            <!-- <tr *ngIf="enableAdd" class="add-tr">
+            <tr class="add-tr">
                 <td class="add-td" *ngFor="let col of columns">
-                    <input [(ngModel)]="textoBuscado" (ngModelChange)="onChangeInputItemAdd($event)" style="margin-top: 4px;" type="text" class="form-control add-input" id="addInput" placeholder="">
-                    
-                    
+                    <!-- <div *ngIf="col.nombre !== 'articulo' && col.nombre !== 'precio' && col.nombre !== 'cantidad' && col.nombre !== 'deposito' && col.nombre !== 'trazable'">
+                        {{productoBuscado[col.key]}}
+                    </div>
+                    <div *ngIf="!(col.nombre !== 'articulo' && col.nombre !== 'precio' && col.nombre !== 'cantidad' && col.nombre !== 'deposito')">
+                        <input *ngIf="col.key !== 'codProducto'" [(ngModel)]="productoBuscado[col.key]" style="margin: 5px 0;" type="text" class="form-control add-input" id="addInput" placeholder=""> -->
+
+                        <input id="addInput" *ngIf="col.key === 'codProducto'" (blur)="onBlurInputItemAdd()" (ngModelChange)="onChangeInputItemAdd($event)" [(ngModel)]="productoBuscado[col.key]" style="margin: 5px 0;" type="text" class="form-control add-input" placeholder="">
+
+                    <!-- </div>
+
+                    <div *ngIf="col.nombre === 'trazable'" class="checkbox-traza">
+                        <input type="checkbox" [(ngModel)]="productoBuscado[col.key]" [value]="value">
+                    </div> -->
                 </td>
-            </tr> -->
+
+                <popup-lista    *ngIf="productoBuscado.codProducto && productoBuscado.codProducto.length > 0"
+                                [items]="productosBusqueda.filtrados" 
+                                [keysToShow]="['descripcion', 'codProducto']" 
+                                [onClickItem]="onClickProductoLista" 
+                                [fatherPosition]="getOffsetOfAddInput()">
+                </popup-lista>
+
+            </tr>
         </tbody>
         <tfoot>
             <tr>
-                <!-- TODO: Aca cambié de 5 a 12, ver si no tiene consecuencias -->
-                <!-- <td colspan="5"> -->
                 <td colspan="12">
                     <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
                 </td>

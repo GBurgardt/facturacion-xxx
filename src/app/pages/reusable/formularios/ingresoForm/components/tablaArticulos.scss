@@ -1,4 +1,5 @@
-@import '../../../../theme/sass/conf/conf';
+@import '../../../../../theme/sass/conf/conf';
+
 :host /deep/ .widgets {
     .data-table-container {
         width: 100%;
@@ -49,16 +50,15 @@
                             vertical-align: middle;
                         }
                     }
-
-                    .btn-terminar-edicion {
-
-                    }
                 }
 
                 .add-tr {
                     .add-td {
                         padding: 0 4px;
 
+                        .checkbox-traza {
+                            margin-top: 6px;
+                        }
                         
 
                     }
@@ -69,6 +69,9 @@
                     top: 0;
                     left: 0;
                 }
+
+                
+                
             }
 
             tfoot {
@@ -89,7 +92,6 @@
         }
 
     }
-
 
 
 // }

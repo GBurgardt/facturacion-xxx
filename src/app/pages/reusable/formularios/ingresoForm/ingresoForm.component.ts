@@ -12,6 +12,7 @@ import { TipoComprobante } from 'app/models/tipoComprobante';
 import { Moneda } from '../../../../models/moneda';
 import { ProductoPendiente } from 'app/models/productoPendiente';
 import { DateLikePicker } from '../../../../models/dateLikePicker';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'ingreso-form',
@@ -55,8 +56,8 @@ export class IngresoForm {
     // Lista de proveedores completa (necesaria para filtrar) y filtrada
     proveedores: {
         todos: Padron[];
-        filtrados: Padron[];
-    } = {todos:[], filtrados:[]};
+        filtrados: BehaviorSubject<Padron[]>;
+    } = {todos: [], filtrados: new BehaviorSubject([])}
 
     /////////////////////////////////////////////
     ////////////////// Tablas ///////////////////
@@ -66,9 +67,45 @@ export class IngresoForm {
             columnasProductos: any[];
         },
         datos: {
-            datosProductos: Observable<ProductoPendiente[]>;
+            datosProductos: ProductoPendiente[];
+        },
+        funciones: {
+            onClickRemove: any;
+            onClickEdit: any;
+            onClickConfirmEdit: any;
         }
-    } = { columnas: { columnasProductos: [] }, datos: { datosProductos: null } };
+    } = { 
+        columnas: { 
+            columnasProductos: [] 
+        }, 
+        datos: { 
+            datosProductos: [] 
+        },
+        funciones: {
+            onClickRemove: (prodSelect) => this.tablas.datos.datosProductos = this.tablas.datos.datosProductos.filter(prod => prod.codProducto === prodSelect.codProducto),
+            onClickEdit: (prodSelect: ProductoPendiente) => { 
+                this.tablas.columnas.columnasProductos = this.tablas.columnas.columnasProductos.map(tabla => {
+                    let newTabla = tabla;
+                    if (newTabla.enEdicion !== undefined) {
+                        newTabla.enEdicion = prodSelect.codProducto
+                    }
+                    return newTabla;
+                });
+
+                console.log(this.tablas.columnas.columnasProductos);
+            },
+            onClickConfirmEdit: (prodSelect: ProductoPendiente) => { 
+               // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
+               this.tablas.columnas.columnasProductos = this.tablas.columnas.columnasProductos.map(tabla => {
+                   let newTabla = tabla;
+                   if (newTabla.enEdicion !== undefined && newTabla.enEdicion) {
+                       newTabla.enEdicion = false;
+                   }
+                   return newTabla;
+               })
+           }
+        }
+    };
     
 
 
@@ -86,7 +123,10 @@ export class IngresoForm {
         this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
 
         ////////// Proveedores  //////////
-        this.recursoService.getRecursoList(resourcesREST.proveedores)().subscribe(proveedores => this.proveedores.todos = proveedores);
+        this.recursoService.getRecursoList(resourcesREST.proveedores)().subscribe(proveedores => {
+            this.proveedores.todos = proveedores;
+            this.proveedores.filtrados.next(proveedores);
+        });
 
         ////////// Tablas //////////
         this.tablas.columnas.columnasProductos = ingresoFormService.getColumnsProductos();
@@ -96,11 +136,13 @@ export class IngresoForm {
      * Evento change del input del proovedor
      */
     onChangeInputProveedor = (codigo) => {
-        this.proveedores.filtrados = this.ingresoFormService.filtrarProveedores(this.proveedores.todos, codigo);
+        this.proveedores.filtrados.next(
+            this.ingresoFormService.filtrarProveedores(this.proveedores.todos, codigo)
+        );
     }
 
     /**
-     * Click en la lista de proveedores
+     * Click en la lista de proveedores (se pasa como callback de popup-lista)
      */
     onClickListProv = (prove: Padron) => {
         this.proveedorSeleccionado = prove;
@@ -128,16 +170,33 @@ export class IngresoForm {
      * Busca los productos pendientes de acuerdo al comprobante relacionado
      */
     onClickBuscarPendientes = () => {
-        this.tablas.datos.datosProductos = this.ingresoFormService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado);
+        this.ingresoFormService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado).subscribe(prodsPend=>
+            this.tablas.datos.datosProductos = prodsPend
+        )
     }
 
-
-    onClickEdit = () => {
-
+    /**
+     * El blur es cuando se hace un leave del input (caundo se apreta click afuera por ejemplo).
+     * Acá lo que hago es poner un array vacio como próx valor de los filtrados, cosa que la lista desaparezca porque no hay nada
+     */
+    onBlurInputProv = (e) => {
+        // Agrego el settimeout para que se ejecute antes el evento click de la lista, sino se ejecuta antes este y nunca se ejecuta el click de la lista
+        setTimeout(()=>this.proveedores.filtrados.next([]), 100)
     }
 
-    onClickRemove = () => {
-        
+    /**
+     * Agrega el producto seleccionado a la lista de productosPendientes
+     */
+    onClickProductoLista = (producto: Producto) => {
+        const productoBuscado = new ProductoPendiente(null, producto);
+        this.tablas.datos.datosProductos.push(productoBuscado);
+    }
+
+    /**
+     * Retorna el offset del input del proveedor
+     */
+    getOffsetOfInputProveedor = () => {
+        return this.utilsService.getOffset(document.getElementById('proveedorSeleccionado')); 
     }
 
 }

@@ -16,8 +16,11 @@ export class IngresoFormService {
         private recursoService: RecursoService
     ) { }
 
-    filtrarProveedores = (listaProveedores, padronCodigo) => {
-        return listaProveedores.filter((prov: Padron) => prov.padronCodigo.toString().includes(padronCodigo));
+    filtrarProveedores = (listaProveedores, textoBuscado) => {
+        return listaProveedores.filter(
+            (prov: Padron) =>   prov.padronCodigo.toString().includes(textoBuscado) ||
+                                prov.padronNombre.toString().toLowerCase().includes(textoBuscado)
+        );              
     }
 
     getProveFormated = (prove) => `${prove.padronNombre} (${prove.padronCodigo})`;
@@ -36,7 +39,8 @@ export class IngresoFormService {
         {
             nombre: 'precio',
             key: 'precio',
-            ancho: '10%'
+            ancho: '10%',
+            enEdicion: null
         },
         {
             nombre: 'ivaPorc',
@@ -46,16 +50,18 @@ export class IngresoFormService {
         {
             nombre: 'cantidad',
             key: 'pendiente',
-            ancho: '20%'
+            ancho: '20%',
+            enEdicion: null
         },
         {
             nombre: 'deposito',
             key: 'deposito',
-            ancho: '15%'
+            ancho: '15%',
+            enEdicion: null
         },
         {
             nombre: 'trazable',
-            key: 'deposito',
+            key: 'trazable',
             ancho: '5%'
         }
     ];
