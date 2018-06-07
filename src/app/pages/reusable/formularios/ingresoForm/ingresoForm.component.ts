@@ -46,6 +46,16 @@ export class IngresoForm {
         todosLosPendientes: boolean
     } = {tipo: new TipoComprobante(), numero: null, todosLosPendientes: null};
 
+    totalDatos: {
+        cotizaDolar: number,
+        fecha: DateLikePicker,
+        totalComprobante: number
+    } = {
+        cotizaDolar: null,
+        fecha: null,
+        totalComprobante: null
+    };
+
     /////////////////////////////////////////////
     //////////// Listas desplegables ////////////
     /////////////////////////////////////////////

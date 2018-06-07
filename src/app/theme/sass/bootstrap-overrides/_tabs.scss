@@ -116,8 +116,11 @@
 
 .tab-content {
   padding: 15px 15px 5px 15px;
-  background: transparent;
+  //background: transparent;
+  background: #c1c1d038;
   color: $default-text;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
   .tab-pane p {
     color: $default-text;
   }

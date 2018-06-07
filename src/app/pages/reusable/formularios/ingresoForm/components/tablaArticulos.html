@@ -34,7 +34,11 @@
                         </div>
                     </div>
 
-                    <div *ngIf="col.subkey && !col.subsubkey">
+                    <div class="checkbox-traza" *ngIf="col.key === 'trazable'">
+                        <input type="checkbox" [(ngModel)]="item[col.key]" [value]="value">
+                    </div>
+                        <!-- Al no haber subkey ni subsubkey dejo esto comentado. Lo dejo así por si las dudas fusciono datatbale con esta alguna vez -->
+                    <!-- <div *ngIf="col.subkey && !col.subsubkey">
                         <div *ngIf="!col.enEdicion || col.enEdicion !== (item[col.key])[utilsService.getNameIdKeyOfResource(item[col.key])]">
                             {{(parseKey(item[col.key])[col.subkey])}}
                         </div>
@@ -45,33 +49,18 @@
 
                     <div *ngIf="col.subsubkey">
                         <input [(ngModel)]="(item[col.key])[col.subkey]" style="margin-top: 4px;" type="text" class="form-control edit-input" id="inputSubKey" placeholder="">
-                    </div>
+                    </div> -->
 
-                    <div class="checkbox-traza" *ngIf="col.key === 'trazable'">
-                        <input type="checkbox" [(ngModel)]="item[col.key]" [value]="value">
-                    </div>
                 </td>
             </tr>
 
             <!-- Fila para agregar elemento -->
             <tr class="add-tr">
                 <td class="add-td" *ngFor="let col of columns">
-                    <!-- <div *ngIf="col.nombre !== 'articulo' && col.nombre !== 'precio' && col.nombre !== 'cantidad' && col.nombre !== 'deposito' && col.nombre !== 'trazable'">
-                        {{productoBuscado[col.key]}}
-                    </div>
-                    <div *ngIf="!(col.nombre !== 'articulo' && col.nombre !== 'precio' && col.nombre !== 'cantidad' && col.nombre !== 'deposito')">
-                        <input *ngIf="col.key !== 'codProducto'" [(ngModel)]="productoBuscado[col.key]" style="margin: 5px 0;" type="text" class="form-control add-input" id="addInput" placeholder=""> -->
-
-                        <input id="addInput" *ngIf="col.key === 'codProducto'" (blur)="onBlurInputItemAdd()" (ngModelChange)="onChangeInputItemAdd($event)" [(ngModel)]="productoBuscado[col.key]" style="margin: 5px 0;" type="text" class="form-control add-input" placeholder="">
-
-                    <!-- </div>
-
-                    <div *ngIf="col.nombre === 'trazable'" class="checkbox-traza">
-                        <input type="checkbox" [(ngModel)]="productoBuscado[col.key]" [value]="value">
-                    </div> -->
+                    <input id="addInput" *ngIf="col.key === 'codProducto'" (blur)="onBlurInputItemAdd()" (ngModelChange)="onChangeInputItemAdd($event)" [(ngModel)]="textoBusqueda" style="margin: 5px 0;" type="text" class="form-control add-input" placeholder="">
                 </td>
 
-                <popup-lista    *ngIf="productoBuscado.codProducto && productoBuscado.codProducto.length > 0"
+                <popup-lista    *ngIf="textoBusqueda && textoBusqueda.length > 0"
                                 [items]="productosBusqueda.filtrados" 
                                 [keysToShow]="['descripcion', 'codProducto']" 
                                 [onClickItem]="onClickProductoLista" 

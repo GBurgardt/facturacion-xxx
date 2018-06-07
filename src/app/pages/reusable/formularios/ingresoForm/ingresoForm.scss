@@ -25,6 +25,32 @@
 
     .tipo-compra-dropdown {
         padding: 0 2%;
+        margin-bottom: 1px;
+    }
+
+    .custom-card {
+        .custom-card-content {
+            .inline-group {
+                .without-padding {
+                    padding: 2px 8px 0px 8px !important;
+                }
+            }
+        }
+        
+    }
+
+    .custom-card-container {
+        .card-observaciones {
+            .observaciones {
+                padding: 1%;
+            }
+        }
+
+        .card-total {
+            .card-total-content {
+                padding: 1.7%;
+            }
+        }
     }
 
 }

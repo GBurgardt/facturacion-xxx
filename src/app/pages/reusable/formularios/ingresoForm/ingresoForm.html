@@ -15,7 +15,7 @@
                         [fatherPosition]="getOffsetOfInputProveedor()">
         </popup-lista>
 
-        <div class="col-sm-4">
+        <div class="col-sm-3">
             <div class="form-group">
                 <input [disabled]="true" [(ngModel)]="proveedorSeleccionado.padronNombre" type="text" class="form-control" id="nombreProveedor" placeholder="">
             </div>
@@ -26,21 +26,29 @@
                 <input [disabled]="true" [(ngModel)]="proveedorSeleccionado.cuit" type="text" class="form-control" id="cuit" placeholder="">
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-1">
             <div class="form-group inline-group">
                 <label for="iva">IVA</label>
                 <input [disabled]="true" [(ngModel)]="proveedorSeleccionado.condIva.descCorta" type="text" class="form-control" id="iva" placeholder="">
             </div>
         </div>
+        <div class="col-sm-3 form-group inline-group tipo-compra-dropdown">
+            <label for="tipoCompra">Tipo Compra:</label>
+            <select class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="tipoCompra">
+                <option *ngFor="let tipoOp of tiposOperacion | async">
+                    {{tipoOp.descripcion}}
+                </option>
+            </select>
+        </div>
     </div>
 
     <div class="row custom-card-container">
-        <custom-card class="col-sm-6" title="Comprobante">
+        <custom-card class="col-sm-7" title="Comprobante">
             <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group inline-group">
                         <label for="cteTipo">Cte:</label>
-                        <select [(ngModel)]="comprobante.tipo" class="form-control" id="cteTipo">
+                        <select [(ngModel)]="comprobante.tipo" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteTipo">
                             <option *ngFor="let tipoComp of tiposComprobantes | async">
                                 {{tipoComp.descripcion}}
                             </option>
@@ -56,7 +64,7 @@
                 <div class="col-sm-3">
                     <div class="form-group inline-group">
                         <label for="cteMoneda">Moneda:</label>
-                        <select [(ngModel)]="comprobante.moneda" class="form-control" id="cteMoneda">
+                        <select [(ngModel)]="comprobante.moneda" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteMoneda">
                             <option *ngFor="let mon of monedas | async">
                                 {{mon.descripcion}}
                             </option>
@@ -94,20 +102,20 @@
             </div>
         </custom-card>
 
-        <custom-card class="col-sm-6 comp-rel-card" title="Comprobante Relacionado">
+        <custom-card class="col-sm-5 comp-rel-card" title="Comprobante Relacionado">
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-5">
                     <div class="form-group inline-group">
                         <label for="cteRelTipo">Cte:</label>
 
-                        <select [(ngModel)]="comprobanteRelacionado.tipo" class="form-control" id="cteRelTipo">
+                        <select [(ngModel)]="comprobanteRelacionado.tipo" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteRelTipo">
                             <option *ngFor="let tipoComp of tiposComprobantes | async" [ngValue]="tipoComp">
                                 {{tipoComp.descripcion}}
                             </option>
                         </select>
                     </div>
                 </div>
-                <div class="col-sm-5">
+                <div class="col-sm-7">
                     <div class="form-group inline-group">
                         <label for="cteRelNro">Nro:</label>
                         <input [disabled]="comprobanteRelacionado.todosLosPendientes" [(ngModel)]="comprobanteRelacionado.numero" type="text" class="form-control" id="cteRelNro" placeholder="">
@@ -115,7 +123,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-9">
                     <div class="checkbox-todoPendiente">
                         <ba-checkbox    [(ngModel)]="comprobanteRelacionado.todosLosPendientes" 
                                         [label]="'Todos los pendientes'" 
@@ -134,14 +142,7 @@
             
         </custom-card>
 
-        <div class="col-sm-4 offset-6 form-group inline-group tipo-compra-dropdown">
-            <label for="tipoCompra">Tipo Compra:</label>
-            <select class="form-control" id="tipoCompra">
-                <option *ngFor="let tipoOp of tiposOperacion | async">
-                    {{tipoOp.descripcion}}
-                </option>
-            </select>
-        </div>
+        
     </div>
 
     <div class="row">
@@ -172,8 +173,52 @@
         </ngb-tabset>
     </div>
 
-    <div class="row">
+    <div class="row custom-card-container">
+        <custom-card class="col-sm-5 card-observaciones" title="Observaciones">
+            <p class="observaciones">
+                Se selecciona el Tipo de Comprobante de entre los permitidos para este tipo de operatoria, que sería los del tipo “Remito de Ingreso”. Se ingresa el punto de venta y número de comprobante y se selecciona la moneda
+            </p>
+        </custom-card>
 
+        <custom-card class="col-sm-5 card-total" title="">
+            <div class="card-total-content">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="form-group inline-group">
+                            <label for="cotizDolar">Cotizacion Dolar</label>
+                            <input [(ngModel)]="totalDatos.cotizaDolar" type="text" class="form-control" id="cotizDolar" placeholder="">
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-4">
+                        <div class="form-group inline-group last-child-custom-card">
+                            <!-- <label for="fechaCompra">Fecha Compra</label> -->
+                            <div class="input-group">
+                                <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="totalDatos.fecha" ngbDatepicker #dTot="ngbDatepicker">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" (click)="dTot.toggle()" type="button" style="height: 100%;">
+                                        <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="row">
+                    <div class="col-sm-9">
+                        <div class="form-group inline-group">
+                            <label for="totalComp">Total Comprobante</label>
+                            <input [(ngModel)]="totalDatos.totalComprobante" type="text" class="form-control" id="totalComp" placeholder="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </custom-card>
+
+        <custom-card class="col-sm-2" title="">
+            da
+        </custom-card>
     </div>
 
     

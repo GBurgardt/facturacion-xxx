@@ -29,7 +29,7 @@ export class TablaArticulos {
     @Input() confirmEdit;
 
     /////////// BUSQUEDA ///////////
-    productoBuscado: ProductoPendiente = new ProductoPendiente();
+    textoBusqueda: string;
     productosBusqueda: {
         todos: Producto[];
         filtrados: BehaviorSubject<Producto[]>;
