@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { Component, Input } from '@angular/core';
 
 import { UtilsService } from 'app/services/utilsService';
@@ -75,9 +76,10 @@ export class IngresoForm {
     tablas: {
         columnas: {
             columnasProductos: any[];
+            columnasTrazabilidad: any[];
         },
         datos: {
-            datosProductos: ProductoPendiente[];
+            productosPend: ProductoPendiente[];
         },
         funciones: {
             onClickRemove: any;
@@ -86,15 +88,20 @@ export class IngresoForm {
         }
     } = { 
         columnas: { 
-            columnasProductos: [] 
+            columnasProductos: [],
+            columnasTrazabilidad: []
         }, 
         datos: { 
-            datosProductos: [] 
+            productosPend: [] 
         },
         funciones: {
-            onClickRemove: (prodSelect) => this.tablas.datos.datosProductos = this.tablas.datos.datosProductos.filter(prod => prod.codProducto === prodSelect.codProducto),
-            onClickEdit: (prodSelect: ProductoPendiente) => { 
-                this.tablas.columnas.columnasProductos = this.tablas.columnas.columnasProductos.map(tabla => {
+            onClickRemove: (prodSelect) => {
+                _.remove(this.tablas.datos.productosPend, (prod: ProductoPendiente) => {
+                    return prod.codProducto === prodSelect.codProducto;
+                });
+            },
+            onClickEdit: (tipoColumnas) => (prodSelect: ProductoPendiente) => { 
+                this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
                     let newTabla = tabla;
                     if (newTabla.enEdicion !== undefined) {
                         newTabla.enEdicion = prodSelect.codProducto
@@ -102,11 +109,10 @@ export class IngresoForm {
                     return newTabla;
                 });
 
-                console.log(this.tablas.columnas.columnasProductos);
             },
-            onClickConfirmEdit: (prodSelect: ProductoPendiente) => { 
+            onClickConfirmEdit: (tipoColumnas) => (prodSelect: ProductoPendiente) => { 
                // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
-               this.tablas.columnas.columnasProductos = this.tablas.columnas.columnasProductos.map(tabla => {
+               this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
                    let newTabla = tabla;
                    if (newTabla.enEdicion !== undefined && newTabla.enEdicion) {
                        newTabla.enEdicion = false;
@@ -118,6 +124,16 @@ export class IngresoForm {
     };
     
 
+    /////////////////////////////////////////////
+    //////////////// PopupLista /////////////////
+    /////////////////////////////////////////////
+
+    popupLista: any = {
+        onClickListProv: (prove: Padron) => {
+            this.proveedorSeleccionado = prove;
+        },
+        getOffsetOfInputProveedor: () => this.utilsService.getOffset(document.getElementById('proveedorSeleccionado'))
+    }
 
     /**
      * Toda la carga de data se hace en el mismo orden en el que está declarado arriba
@@ -140,8 +156,45 @@ export class IngresoForm {
 
         ////////// Tablas //////////
         this.tablas.columnas.columnasProductos = ingresoFormService.getColumnsProductos();
+        this.tablas.columnas.columnasTrazabilidad = ingresoFormService.getColumnsTrazabilidad();
     }
 
+    ///////////////////////////////// Eventos OnClick /////////////////////////////////
+
+    /**
+     * Busca los productos pendientes de acuerdo al comprobante relacionado
+     */
+    onClickBuscarPendientes = () => {
+        this.ingresoFormService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado).subscribe(prodsPend=>
+            this.tablas.datos.productosPend = _.uniqWith(
+                this.tablas.datos.productosPend.concat(prodsPend),
+                (a:ProductoPendiente,b:ProductoPendiente) => a.codProducto === b.codProducto
+            )
+        );
+    }
+
+    /**
+     * Agrega el producto seleccionado a la lista de productosPendientes
+     */
+    onClickProductoLista = (producto: Producto) => {
+        const productoBuscado = new ProductoPendiente(null, producto);
+
+        this.tablas.datos.productosPend = _.unionBy(
+            this.tablas.datos.productosPend, 
+            [productoBuscado], 
+            'codProducto'
+        );
+    }
+
+    /**
+     * 
+     */
+    onClickConfirmar = () => {
+        
+    }
+
+    ///////////////////////////////// Eventos (Distintos de onclick) /////////////////////////////////
+    
     /**
      * Evento change del input del proovedor
      */
@@ -150,14 +203,7 @@ export class IngresoForm {
             this.ingresoFormService.filtrarProveedores(this.proveedores.todos, codigo)
         );
     }
-
-    /**
-     * Click en la lista de proveedores (se pasa como callback de popup-lista)
-     */
-    onClickListProv = (prove: Padron) => {
-        this.proveedorSeleccionado = prove;
-    }
-
+    
     /**
      * On enter en inputprov
      */
@@ -175,16 +221,7 @@ export class IngresoForm {
             this.utilsService.showModal('Codigo incorrecto')('El codigo no existe')()();
         }
     }
-
-    /**
-     * Busca los productos pendientes de acuerdo al comprobante relacionado
-     */
-    onClickBuscarPendientes = () => {
-        this.ingresoFormService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado).subscribe(prodsPend=>
-            this.tablas.datos.datosProductos = prodsPend
-        )
-    }
-
+    
     /**
      * El blur es cuando se hace un leave del input (caundo se apreta click afuera por ejemplo).
      * Acá lo que hago es poner un array vacio como próx valor de los filtrados, cosa que la lista desaparezca porque no hay nada
@@ -194,19 +231,5 @@ export class IngresoForm {
         setTimeout(()=>this.proveedores.filtrados.next([]), 100)
     }
 
-    /**
-     * Agrega el producto seleccionado a la lista de productosPendientes
-     */
-    onClickProductoLista = (producto: Producto) => {
-        const productoBuscado = new ProductoPendiente(null, producto);
-        this.tablas.datos.datosProductos.push(productoBuscado);
-    }
-
-    /**
-     * Retorna el offset del input del proveedor
-     */
-    getOffsetOfInputProveedor = () => {
-        return this.utilsService.getOffset(document.getElementById('proveedorSeleccionado')); 
-    }
 
 }

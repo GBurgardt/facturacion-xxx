@@ -34,7 +34,6 @@ export class PopupLista {
     }
 
     getPosicionLista = () => {
-        console.log(this.fatherPosition);
         return {top: (this.fatherPosition.top + 22) + 'px', left: this.fatherPosition.left + 'px'}
     }
 }

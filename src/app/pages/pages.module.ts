@@ -17,6 +17,8 @@ import { PopupLista } from './reusable/otros/popup-lista/popup-lista.component';
 // import { DataFilterPipe } from './reusable/tablas/dataTables/data-filter.pipe';
 // import { DataTablesService } from './reusable/tablas/dataTables/dataTables.service';
 
+import {NgbDateAdapter, NgbDateStruct, NgbDateNativeAdapter} from '@ng-bootstrap/ng-bootstrap';
+
 @NgModule({
     imports: [
         CommonModule, 
@@ -40,7 +42,7 @@ import { PopupLista } from './reusable/otros/popup-lista/popup-lista.component';
     ],
     providers: [
         LocalStorageService,
-        // DataTablesService
+        {provide: NgbDateAdapter, useClass: NgbDateNativeAdapter}
     ],
     exports: [
         //CustomCard

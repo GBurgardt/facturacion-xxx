@@ -53,4 +53,13 @@
         }
     }
 
+    .btn-container {
+        display: flex;
+        flex-direction: column;
+        .btn-ingreso-from {
+            float: none;
+            margin: 7% 0;
+        }
+    }
+
 }

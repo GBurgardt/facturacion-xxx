@@ -11,8 +11,8 @@
         <popup-lista    *ngIf="proveedorSeleccionado.padronCodigo && proveedorSeleccionado.padronCodigo.length > 0"
                         [items]="proveedores.filtrados.asObservable().distinctUntilChanged()" 
                         [keysToShow]="['padronNombre', 'padronCodigo']" 
-                        [onClickItem]="onClickListProv"
-                        [fatherPosition]="getOffsetOfInputProveedor()">
+                        [onClickItem]="popupLista.onClickListProv"
+                        [fatherPosition]="popupLista.getOffsetOfInputProveedor()">
         </popup-lista>
 
         <div class="col-sm-3">
@@ -134,8 +134,7 @@
 
                 <div class="col-sm-3 btn-container">
                     <!-- <button [disabled]="utilsService.checkIfIncomplete(comprobanteRelacionado)([])()" -->
-                    <button 
-                        (click)="onClickBuscarPendientes()" type="submit" class="btn btn-primary">Confirmar</button>
+                    <button (click)="onClickBuscarPendientes()" type="submit" class="btn btn-primary">Confirmar</button>
                 </div>
             </div>
 
@@ -150,19 +149,28 @@
             <ngb-tab title="Articulos">
                 <ng-template ngbTabContent>
                     
-                    <tabla-articulos    [data]="tablas.datos.datosProductos" 
-                                        [columns]="tablas.columnas.columnasProductos" 
-                                        [remove]="tablas.funciones.onClickRemove" 
-                                        [edit]="tablas.funciones.onClickEdit" 
-                                        [confirmEdit]="tablas.funciones.onClickConfirmEdit" 
-                                        [onClickProductoLista]="onClickProductoLista">
-                    </tabla-articulos>
+                    <tabla-ingreso  [data]="tablas.datos.productosPend" 
+                                    [columns]="tablas.columnas.columnasProductos" 
+                                    [remove]="tablas.funciones.onClickRemove" 
+                                    [edit]="tablas.funciones.onClickEdit('columnasProductos')" 
+                                    [confirmEdit]="tablas.funciones.onClickConfirmEdit('columnasProductos')" 
+                                    [onClickProductoLista]="onClickProductoLista" 
+                                    [enableAddItem]="true">
+                    </tabla-ingreso>
 
                 </ng-template>
             </ngb-tab>
             <ngb-tab title="Trazabilidad">
                 <ng-template ngbTabContent>
-                <p>adasdasddsa.</p>
+                
+                    <tabla-ingreso  [data]="ingresoFormService.getOnlyTrazables(tablas.datos.productosPend)" 
+                                    [columns]="tablas.columnas.columnasTrazabilidad" 
+                                    [remove]="tablas.funciones.onClickRemove" 
+                                    [edit]="tablas.funciones.onClickEdit('columnasTrazabilidad')" 
+                                    [confirmEdit]="tablas.funciones.onClickConfirmEdit('columnasTrazabilidad')" 
+                                    [onClickProductoLista]="onClickProductoLista">
+                    </tabla-ingreso>
+
                 </ng-template>
             </ngb-tab>
             <ngb-tab title="Factura">
@@ -183,14 +191,14 @@
         <custom-card class="col-sm-5 card-total" title="">
             <div class="card-total-content">
                 <div class="row">
-                    <div class="col-sm-8">
+                    <div class="col-sm-6">
                         <div class="form-group inline-group">
                             <label for="cotizDolar">Cotizacion Dolar</label>
                             <input [(ngModel)]="totalDatos.cotizaDolar" type="text" class="form-control" id="cotizDolar" placeholder="">
                         </div>
                     </div>
     
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="form-group inline-group last-child-custom-card">
                             <!-- <label for="fechaCompra">Fecha Compra</label> -->
                             <div class="input-group">
@@ -217,7 +225,15 @@
         </custom-card>
 
         <custom-card class="col-sm-2" title="">
-            da
+            <div class="col-sm-12 btn-container">
+                <button (click)="onClickConfirmar()" class="btn btn-primary btn-ingreso-from">
+                    Confirmar
+                </button>
+
+                <button (click)="onClickCancelar()" class="btn btn-primary btn-ingreso-from">
+                    Cancelar
+                </button>
+            </div>
         </custom-card>
     </div>
 

@@ -179,7 +179,7 @@ export class NuevoListaPrecio {
     }
 
     /**
-     * Limpia la lista
+     * Eliminar productos de la lista
      */
     onClickEliminar = (e) => {
         // El porcentajeCabecera está en la nueva lista creada, tengo que agregarlo a los filtros

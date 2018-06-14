@@ -198,4 +198,9 @@ export class UtilsService {
         return { top: _y, left: _x };
     }
 
+    /**
+     * Retorna el tipo de datos
+     */
+    getTipoDato = (dato) => (dato && dato.constructor && dato.constructor.name) ? dato.constructor.name : null;
+
 }

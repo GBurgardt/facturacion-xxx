@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { Component, Input } from '@angular/core';
 import { UtilsService } from 'app/services/utilsService';
 import { IngresoFormService } from '../ingresoFormService';
@@ -5,21 +6,25 @@ import { ProductoPendiente } from '../../../../../models/productoPendiente';
 import { Producto } from '../../../../../models/producto';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs';
+import { DateLikePicker } from '../../../../../models/dateLikePicker';
 
 
 @Component({
-    selector: 'tabla-articulos',
-    templateUrl: './tablaArticulos.html',
-    styleUrls: ['./tablaArticulos.scss']
+    selector: 'tabla-ingreso',
+    templateUrl: './tablaIngreso.html',
+    styleUrls: ['./tablaIngreso.scss']
 })
 
-export class TablaArticulos {
+export class TablaIngreso {
     // Datos de mierda que me da paja sacar por miedo a romper todo
     sortBy = 'nombre';
     filterQuery = "";
     rowsOnPage = 10;
     sortOrder = "asc";
     // Fin datos de mierda
+
+    // Reusabilidad tabla
+    @Input() enableAddItem = false;
 
     // Inputs
     @Input() columns;
@@ -127,6 +132,19 @@ export class TablaArticulos {
      */
     getOffsetOfAddInput = () => {
         return this.utilsService.getOffset(document.getElementById('addInput')); 
+    }
+
+    onChangeNgModelDateLikePicker = (nuevoValor) => (item) => (key) => {
+        this.data = this.data.map((prod: ProductoPendiente)=>{
+            let cloneProd = prod;
+            if (cloneProd.codProducto === item.codProducto) {
+                cloneProd[key] = new DateLikePicker(null,nuevoValor);
+                console.log(cloneProd[key]);
+            };
+            return cloneProd
+        });
+
+        console.log(this.data);
     }
 
 }

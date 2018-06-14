@@ -1,4 +1,5 @@
 import { Producto } from "./producto";
+import { DateLikePicker } from "./dateLikePicker";
 
 export class ProductoPendiente {
     codProducto: string;
@@ -16,6 +17,15 @@ export class ProductoPendiente {
     trazable: boolean;
     rubro: string;
     subRubro: string;
+
+    // Trazabilidad
+    lote: string;
+    serie: string;
+    fechaElab: Date;
+    fechaVto: Date;
+
+    // imputacion: string;
+
 
     constructor(productoPendiente?: {
         comprobante: string;
@@ -53,27 +63,39 @@ export class ProductoPendiente {
         } else if (productoComun) {
             this.codProducto = productoComun.codProducto;
             this.articulo = productoComun.descripcion;
-            this.precio = 0;
+            this.precio = productoComun.precioVentaProv;
             this.ivaPorc = productoComun.IVA.porcIVA;
             this.pendiente = 0;
             this.deposito = 0;
             this.trazable = productoComun.trazable;
+
+            this.lote = 'dada';
+            this.serie = 'dada';
+            this.fechaElab = new Date();
+            this.fechaVto = new Date();
         } else {
-            this.comprobante = null
-            this.numero = null
-            this.codProducto = null
-            this.original = null
-            this.pendiente = null
-            this.articulo = null
-            this.precio = null
-            this.dolar = null
-            this.moneda = null
-            this.porCalc = null
-            this.ivaPorc = null
-            this.deposito = null
-            this.trazable = null
-            this.rubro = null
-            this.subRubro = null
+            this.comprobante = null;
+            this.numero = null;
+            this.codProducto = null;
+            this.original = null;
+            this.pendiente = null;
+            this.articulo = null;
+            this.precio = null;
+            this.dolar = null;
+            this.moneda = null;
+            this.porCalc = null;
+            this.ivaPorc = null;
+            this.deposito = null;
+            this.trazable = null;
+            this.rubro = null;
+            this.subRubro = null;
+            
+            this.lote = null;
+            this.serie = null;
+            this.fechaElab = null;
+            this.fechaVto = null;
+
+            // this.imputacion = null;
         }
     }
 

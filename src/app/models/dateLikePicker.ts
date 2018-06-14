@@ -3,9 +3,15 @@ export class DateLikePicker {
     month: number; 
     year: number;
 
-    constructor (fechaDate: Date) {
-        this.day = fechaDate.getDay();
-        this.month = fechaDate.getMonth();
-        this.year = fechaDate.getFullYear();
+    constructor (fechaDate?: Date, dataLikePicker?: any) {
+        if (fechaDate) {
+            this.day = fechaDate.getDay();
+            this.month = fechaDate.getMonth();
+            this.year = fechaDate.getFullYear();
+        } else if (dataLikePicker) {
+            this.day = dataLikePicker.day;
+            this.month = dataLikePicker.month;
+            this.year = dataLikePicker.year;
+        }
     }
 }

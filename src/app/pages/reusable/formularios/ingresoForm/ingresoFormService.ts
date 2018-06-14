@@ -29,12 +29,18 @@ export class IngresoFormService {
         {
             nombre: 'articulo',
             key: 'codProducto',
-            ancho: '10%'
+            ancho: '15%'
         },
         {
             nombre: 'descripcion',
             key: 'articulo',
-            ancho: '30%'
+            ancho: '20%'
+        },
+        {
+            nombre: 'imputacion',
+            key: 'imputacion',
+            ancho: '15%',
+            enEdicion: null
         },
         {
             nombre: 'precio',
@@ -45,24 +51,68 @@ export class IngresoFormService {
         {
             nombre: 'ivaPorc',
             key: 'ivaPorc',
-            ancho: '10%'
+            ancho: '5%'
         },
         {
             nombre: 'cantidad',
             key: 'pendiente',
-            ancho: '20%',
+            ancho: '10%',
             enEdicion: null
         },
         {
             nombre: 'deposito',
             key: 'deposito',
-            ancho: '15%',
+            ancho: '10%',
             enEdicion: null
         },
         {
             nombre: 'trazable',
             key: 'trazable',
-            ancho: '5%'
+            ancho: '5%',
+            enEdicion: null
+        }
+    ];
+
+    getColumnsTrazabilidad = () => [
+        {
+            nombre: 'articulo',
+            key: 'codProducto',
+            ancho: '15%'
+        },
+        {
+            nombre: 'descripcion',
+            key: 'articulo',
+            ancho: '20%'
+        },
+        {
+            nombre: 'GLN',
+            key: 'gln',
+            ancho: '5%',
+            enEdicion: null
+        },
+        {
+            nombre: 'lote',
+            key: 'lote',
+            ancho: '5%',
+            enEdicion: null
+        },
+        {
+            nombre: 'serie',
+            key: 'serie',
+            ancho: '5%',
+            enEdicion: null
+        },
+        {
+            nombre: 'fecha elab',
+            key: 'fechaElab',
+            ancho: '20%',
+            enEdicion: null
+        },
+        {
+            nombre: 'fecha vto',
+            key: 'fechaVto',
+            ancho: '20%',
+            enEdicion: null
         }
     ];
 
@@ -82,6 +132,13 @@ export class IngresoFormService {
     getAllProductos = () => {
         //this.recursoService.getRecursoList(resourcesREST.productos)().subscribe(a=>console.log(a));
         return this.recursoService.getRecursoList(resourcesREST.productos)();
+    }
+
+    /**
+     * Retorna un array de solo los prodPendientes que son trazables
+     */
+    getOnlyTrazables = (prodsPend: ProductoPendiente[]) => {
+        return prodsPend.filter(prod => prod.trazable);
     }
 
 }

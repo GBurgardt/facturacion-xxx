@@ -1,0 +1,100 @@
+<div class="panel panel-default tabla-ingreso">
+    <table class="table table-striped" [mfData]="data | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+        <thead>
+            <tr>
+                <th  style="width: 10%"></th>
+                <!-- Recorro y muestro las columnas recibidas en el input -->
+                <th class="table-column" *ngFor="let col of columns" [ngStyle]="getStyleFromCol(col)">
+                    <mfDefaultSorter by="name">{{col.nombre}}</mfDefaultSorter>
+                </th>
+            </tr>
+
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of mf.data">
+                <td  class="btn-container">
+                    <div (click)="edit(item)" class="btn-accion btn-editar">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </div>
+                    <div (click)="remove(item)" class="btn-accion btn-remover">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </div>
+                    <div *ngIf="checkIfEditOn(item)" (click)="confirmEdit(item)" class="btn-accion btn-remover">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                    </div>
+                </td>
+
+                <td *ngFor="let col of columns">
+                    <div *ngIf="!col.subkey">
+                        <div *ngIf="!col.enEdicion || col.enEdicion !== item[utilsService.getNameIdKeyOfResource(item)]">
+                            {{parseKey(item[col.key])}}
+
+                        </div>
+                        <div *ngIf="col.enEdicion && col.enEdicion === item[utilsService.getNameIdKeyOfResource(item)]">
+                            <!-- CASOS POR TIPO DATO -->
+                            <!-- *ngIf="col.key !== 'trazable' && col.key !== 'imputacion'"  -->
+                            <input  *ngIf=" (
+                                                utilsService.getTipoDato(item[col.key]) === 'String' || 
+                                                utilsService.getTipoDato(item[col.key]) === 'Number' ||
+                                                utilsService.getTipoDato(item[col.key]) === null
+                                            ) && (
+                                                col.key !== 'imputacion'
+                                            )"
+                                    [(ngModel)]="item[col.key]"  style="margin: 4px 6px;" type="text" 
+                                    class="form-control edit-input" id="inputSubKey" placeholder="">
+
+                            <!-- *ngIf="col.key === 'trazable'" -->
+                            <div class="checkbox-traza" *ngIf="utilsService.getTipoDato(item[col.key]) === 'Boolean'">
+                                <input type="checkbox" [(ngModel)]="item[col.key]" [value]="value">
+                            </div>
+
+                            <!-- Si el tipo de dato es Date, pongo un datepicker -->
+                            <div class="datepicker-item" *ngIf="utilsService.getTipoDato(item[col.key]) === 'DateLikePicker' ||
+                                                                (item[col.key] && item[col.key].year && item[col.key].month && item[col.key].day)">
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="item[col.key]" ngbDatepicker #dComp="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button" style="height: 100%;">
+                                            <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CASOS PARTICULARES -->
+                            <select *ngIf="col.key === 'imputacion'" [(ngModel)]="item[col.key]" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteMoneda">
+                                <option *ngFor="let mon of monedas | async">
+                                    {{mon.descripcion}}
+                                </option>
+                            </select>
+
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="12">
+                    <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div *ngIf="enableAddItem" class="add-item-container">
+        <div class="col-sm-4 form-group inline-group">
+            <label class="add-item-label" for="addInput">Buscar producto: </label>
+            <input  [(ngModel)]="textoBusqueda" type="text" class="form-control" id="addInput" placeholder="" 
+                    (blur)="onBlurInputItemAdd()" (ngModelChange)="onChangeInputItemAdd($event)">
+        </div>
+
+        <popup-lista    *ngIf="textoBusqueda && textoBusqueda.length > 0"
+                        [items]="productosBusqueda.filtrados" 
+                        [keysToShow]="['descripcion', 'codProducto']" 
+                        [onClickItem]="onClickProductoLista" 
+                        [fatherPosition]="getOffsetOfAddInput()">
+        </popup-lista>
+    </div>
+</div>
