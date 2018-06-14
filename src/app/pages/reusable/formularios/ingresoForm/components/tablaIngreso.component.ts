@@ -1,10 +1,10 @@
-import * as _ from 'lodash';
+//import * as _ from 'lodash';
 import { Component, Input } from '@angular/core';
 import { UtilsService } from 'app/services/utilsService';
 import { IngresoFormService } from '../ingresoFormService';
 import { ProductoPendiente } from '../../../../../models/productoPendiente';
 import { Producto } from '../../../../../models/producto';
-import { Observable } from 'rxjs/Observable';
+//import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs';
 import { DateLikePicker } from '../../../../../models/dateLikePicker';
 
@@ -14,7 +14,7 @@ import { DateLikePicker } from '../../../../../models/dateLikePicker';
     templateUrl: './tablaIngreso.html',
     styleUrls: ['./tablaIngreso.scss']
 })
-
+    
 export class TablaIngreso {
     // Datos de mierda que me da paja sacar por miedo a romper todo
     sortBy = 'nombre';
@@ -137,7 +137,7 @@ export class TablaIngreso {
     onChangeNgModelDateLikePicker = (nuevoValor) => (item) => (key) => {
         this.data = this.data.map((prod: ProductoPendiente)=>{
             let cloneProd = prod;
-            if (cloneProd.codProducto === item.codProducto) {
+            if (cloneProd.idProductos === item.idProductos) {
                 cloneProd[key] = new DateLikePicker(null,nuevoValor);
                 console.log(cloneProd[key]);
             };

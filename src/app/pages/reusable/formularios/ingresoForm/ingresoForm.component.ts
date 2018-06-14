@@ -14,6 +14,7 @@ import { Moneda } from '../../../../models/moneda';
 import { ProductoPendiente } from 'app/models/productoPendiente';
 import { DateLikePicker } from '../../../../models/dateLikePicker';
 import { BehaviorSubject } from 'rxjs';
+import { Parametro } from '../../../../models/parametro';
 
 @Component({
     selector: 'ingreso-form',
@@ -47,15 +48,22 @@ export class IngresoForm {
         todosLosPendientes: boolean
     } = {tipo: new TipoComprobante(), numero: null, todosLosPendientes: null};
 
-    totalDatos: {
-        cotizaDolar: number,
-        fecha: DateLikePicker,
+    cotizacionDatos: {
+        dolar: Parametro,
+        fecha: Parametro,
         totalComprobante: number
     } = {
-        cotizaDolar: null,
-        fecha: null,
-        totalComprobante: null
+        dolar: new Parametro(),
+        fecha: new Parametro(),
+        totalComprobante: 0
     };
+
+    factura: {
+        tipo: TipoComprobante,
+        numero: number,
+        fechaContable: DateLikePicker,
+        fechaVto: DateLikePicker
+    } = { tipo: new TipoComprobante(), numero: null, fechaContable: null, fechaVto: null }
 
     /////////////////////////////////////////////
     //////////// Listas desplegables ////////////
@@ -97,14 +105,14 @@ export class IngresoForm {
         funciones: {
             onClickRemove: (prodSelect) => {
                 _.remove(this.tablas.datos.productosPend, (prod: ProductoPendiente) => {
-                    return prod.codProducto === prodSelect.codProducto;
+                    return prod.idProductos === prodSelect.idProducto;
                 });
             },
             onClickEdit: (tipoColumnas) => (prodSelect: ProductoPendiente) => { 
                 this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
                     let newTabla = tabla;
                     if (newTabla.enEdicion !== undefined) {
-                        newTabla.enEdicion = prodSelect.codProducto
+                        newTabla.enEdicion = prodSelect.idProductos
                     }
                     return newTabla;
                 });
@@ -157,6 +165,9 @@ export class IngresoForm {
         ////////// Tablas //////////
         this.tablas.columnas.columnasProductos = ingresoFormService.getColumnsProductos();
         this.tablas.columnas.columnasTrazabilidad = ingresoFormService.getColumnsTrazabilidad();
+
+        ////////// Otros //////////
+        this.ingresoFormService.getCotizacionDatos().subscribe(cotizDatos => this.cotizacionDatos = cotizDatos);
     }
 
     ///////////////////////////////// Eventos OnClick /////////////////////////////////
@@ -168,21 +179,22 @@ export class IngresoForm {
         this.ingresoFormService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado).subscribe(prodsPend=>
             this.tablas.datos.productosPend = _.uniqWith(
                 this.tablas.datos.productosPend.concat(prodsPend),
-                (a:ProductoPendiente,b:ProductoPendiente) => a.codProducto === b.codProducto
+                (a:ProductoPendiente,b:ProductoPendiente) => a.producto.codProducto === b.producto.codProducto
             )
         );
+        this.ingresoFormService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado).subscribe(prodsPend=>console.log(prodsPend));
     }
 
     /**
      * Agrega el producto seleccionado a la lista de productosPendientes
      */
     onClickProductoLista = (producto: Producto) => {
-        const productoBuscado = new ProductoPendiente(null, producto);
+        const productoBuscado = new ProductoPendiente(producto);
 
         this.tablas.datos.productosPend = _.unionBy(
             this.tablas.datos.productosPend, 
             [productoBuscado], 
-            'codProducto'
+            'idProductos'
         );
     }
 

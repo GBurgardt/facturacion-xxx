@@ -16,7 +16,7 @@
                     <div (click)="edit(item)" class="btn-accion btn-editar">
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </div>
-                    <div (click)="remove(item)" class="btn-accion btn-remover">
+                    <div *ngIf="remove" (click)="remove(item)" class="btn-accion btn-remover">
                         <i class="fa fa-trash" aria-hidden="true"></i>
                     </div>
                     <div *ngIf="checkIfEditOn(item)" (click)="confirmEdit(item)" class="btn-accion btn-remover">
@@ -25,28 +25,49 @@
                 </td>
 
                 <td *ngFor="let col of columns">
+                    <div *ngIf="col.subkey">
+                        <div *ngIf="!col.enEdicion || col.enEdicion !== item[utilsService.getNameIdKeyOfResource(item)]">
+                            {{parseKey(item[col.key][col.subkey])}}
+                        </div>
+
+                        <div *ngIf="col.enEdicion && col.enEdicion === item[utilsService.getNameIdKeyOfResource(item)]">
+                            <input *ngIf="col.nombre !== 'trazable'"
+                                [(ngModel)]="item[col.key][col.subkey]"  style="margin: 4px 6px;" type="text" 
+                                class="form-control edit-input" id="inputSubKey" placeholder="">
+
+                            <div *ngIf="col.nombre === 'trazable'" class="checkbox-traza">
+                                <input type="checkbox" [(ngModel)]="item[col.key][col.subkey]" [value]="value">
+                            </div>
+                        </div>
+                        
+                    </div>
+
                     <div *ngIf="!col.subkey">
                         <div *ngIf="!col.enEdicion || col.enEdicion !== item[utilsService.getNameIdKeyOfResource(item)]">
-                            {{parseKey(item[col.key])}}
+                            <div *ngIf="col.nombre !== 'imputacion'">
+                                {{parseKey(item[col.key])}}
+                            </div>
+
+                            <!-- CASOS PARTICULARES -->
+                            <div *ngIf="col.nombre === 'imputacion'">
+                                {{item[col.key].seleccionada.descripcion}}
+                            </div>
 
                         </div>
                         <div *ngIf="col.enEdicion && col.enEdicion === item[utilsService.getNameIdKeyOfResource(item)]">
+
                             <!-- CASOS POR TIPO DATO -->
-                            <!-- *ngIf="col.key !== 'trazable' && col.key !== 'imputacion'"  -->
                             <input  *ngIf=" (
                                                 utilsService.getTipoDato(item[col.key]) === 'String' || 
                                                 utilsService.getTipoDato(item[col.key]) === 'Number' ||
                                                 utilsService.getTipoDato(item[col.key]) === null
                                             ) && (
-                                                col.key !== 'imputacion'
+                                                col.nombre !== 'imputacion'
                                             )"
                                     [(ngModel)]="item[col.key]"  style="margin: 4px 6px;" type="text" 
                                     class="form-control edit-input" id="inputSubKey" placeholder="">
 
-                            <!-- *ngIf="col.key === 'trazable'" -->
-                            <div class="checkbox-traza" *ngIf="utilsService.getTipoDato(item[col.key]) === 'Boolean'">
-                                <input type="checkbox" [(ngModel)]="item[col.key]" [value]="value">
-                            </div>
+                            
 
                             <!-- Si el tipo de dato es Date, pongo un datepicker -->
                             <div class="datepicker-item" *ngIf="utilsService.getTipoDato(item[col.key]) === 'DateLikePicker' ||
@@ -62,9 +83,9 @@
                             </div>
 
                             <!-- CASOS PARTICULARES -->
-                            <select *ngIf="col.key === 'imputacion'" [(ngModel)]="item[col.key]" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteMoneda">
-                                <option *ngFor="let mon of monedas | async">
-                                    {{mon.descripcion}}
+                            <select *ngIf="col.nombre === 'imputacion'" [(ngModel)]="item[col.key].seleccionada" class="form-control without-padding" >
+                                <option *ngFor="let impu of item[col.key].todas" [ngValue]="impu">
+                                    {{impu.descripcion}}
                                 </option>
                             </select>
 

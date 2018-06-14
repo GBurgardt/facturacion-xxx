@@ -35,6 +35,10 @@
                     padding: 2px 8px 0px 8px !important;
                 }
             }
+
+            .observaciones {
+                margin-bottom: 2px;
+            }
         }
         
     }
@@ -62,4 +66,16 @@
         }
     }
 
+    .total-comprobante {
+        padding-top: 2%;
+    }
+
+    .titulo-cotizacion {
+        font-weight: bold;
+    }
+
+    .card-flex-column-reverse {
+        display: flex;
+        flex-direction: column-reverse;
+    }
 }

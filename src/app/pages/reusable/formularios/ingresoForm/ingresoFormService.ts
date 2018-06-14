@@ -7,6 +7,8 @@ import { environment } from "environments/environment";
 import { ProductoPendiente } from "../../../../models/productoPendiente";
 import { RecursoService } from "app/services/recursoService";
 import { resourcesREST } from "constantes/resoursesREST";
+import { Producto } from "app/models/producto";
+import { Parametro } from "../../../../models/parametro";
 
 @Injectable()
 export class IngresoFormService {
@@ -19,7 +21,7 @@ export class IngresoFormService {
     filtrarProveedores = (listaProveedores, textoBuscado) => {
         return listaProveedores.filter(
             (prov: Padron) =>   prov.padronCodigo.toString().includes(textoBuscado) ||
-                                prov.padronNombre.toString().toLowerCase().includes(textoBuscado)
+                                prov.padronApelli.toString().toLowerCase().includes(textoBuscado)
         );              
     }
 
@@ -28,12 +30,14 @@ export class IngresoFormService {
     getColumnsProductos = () => [
         {
             nombre: 'articulo',
-            key: 'codProducto',
+            key: 'producto',
+            subkey: 'codProducto',
             ancho: '15%'
         },
         {
             nombre: 'descripcion',
-            key: 'articulo',
+            key: 'producto',
+            subkey: 'descripcion',
             ancho: '20%'
         },
         {
@@ -67,7 +71,8 @@ export class IngresoFormService {
         },
         {
             nombre: 'trazable',
-            key: 'trazable',
+            key: 'producto',
+            subkey: 'trazable',
             ancho: '5%',
             enEdicion: null
         }
@@ -76,12 +81,14 @@ export class IngresoFormService {
     getColumnsTrazabilidad = () => [
         {
             nombre: 'articulo',
-            key: 'codProducto',
+            key: 'producto',
+            subkey: 'codProducto',
             ancho: '15%'
         },
         {
             nombre: 'descripcion',
-            key: 'articulo',
+            key: 'producto',
+            subkey: 'descripcion',
             ancho: '20%'
         },
         {
@@ -138,7 +145,22 @@ export class IngresoFormService {
      * Retorna un array de solo los prodPendientes que son trazables
      */
     getOnlyTrazables = (prodsPend: ProductoPendiente[]) => {
-        return prodsPend.filter(prod => prod.trazable);
+        return prodsPend.filter(prod => prod.producto.trazable);
+    }
+
+    /**
+     * Retorna los datos de cotizacion
+     */
+    getCotizacionDatos = () => {
+        return this.recursoService.getRecursoList(resourcesREST.buscaCotizacion)().map(cotizData => {
+            const parametros = cotizData.map(cotiz => new Parametro(cotiz));
+
+            return {
+                dolar: parametros.find(p=>p.tipoValor==='d'),
+                fecha: parametros.find(p=>p.tipoValor==='f'),
+                totalComprobante: 0
+            }
+        });
     }
 
 }

@@ -1,6 +1,7 @@
 import { IVA } from "./IVA";
 import { Unidad } from "./unidad";
 import { SubRubro } from "./subRubro";
+import { ModeloCab } from "app/models/modeloCab";
 
 export class Producto {
     idProductos: number;
@@ -19,10 +20,13 @@ export class Producto {
     costoReposicion: number;
     precioVentaProv: number;
     observaciones: string;
-    IVA: any;
-    subRubro: any;
-    unidadCompra: any;
-    unidadVenta: any; 
+    IVA: IVA;
+    subRubro: SubRubro;
+    unidadCompra: Unidad;
+    unidadVenta: Unidad; 
+
+    editar: boolean;
+    modeloCab: ModeloCab;
 
     constructor (producto?: {
         idProductos: number;
@@ -45,6 +49,9 @@ export class Producto {
         subRubro: any;
         unidadCompra: any;
         unidadVenta: any; 
+
+        editar: boolean;
+        modeloCab: any;
     }) {
         if (producto) {
             this.idProductos = producto.idProductos;
@@ -67,6 +74,9 @@ export class Producto {
             this.subRubro = new SubRubro(producto.subRubro);
             this.unidadCompra = new Unidad(producto.unidadCompra);
             this.unidadVenta = new Unidad(producto.unidadVenta);
+
+            this.editar = producto.editar;
+            this.modeloCab = new ModeloCab(producto.modeloCab);
         } else {
             this.idProductos = null;       
             this.codProducto = null;       
@@ -87,6 +97,9 @@ export class Producto {
             this.subRubro = new SubRubro();          
             this.unidadCompra = new Unidad();      
             this.unidadVenta = new Unidad();      
+
+            this.editar = null;
+            this.modeloCab = new ModeloCab();
         }
     }
 

@@ -16,6 +16,7 @@ import { SisComprobante } from "app/models/sisComprobante";
 import { Padron } from "app/models/padron";
 import { SisTipoOperacion } from "app/models/sisTipoOperacion";
 import { ProductoPendiente } from "app/models/productoPendiente";
+import { Parametro } from "app/models/parametro";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -96,5 +97,9 @@ export const resourcesREST = {
     buscarPendientes: {
         nombre: 'buscarPendientes',
         Clase: ProductoPendiente
+    },
+    buscaCotizacion: {
+        nombre: 'buscaCotizacion',
+        Clase: Parametro
     },
 };

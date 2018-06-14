@@ -1,102 +1,95 @@
 import { Producto } from "./producto";
-import { DateLikePicker } from "./dateLikePicker";
+import { ModeloDetalle } from "app/models/modeloDetalle";
 
 export class ProductoPendiente {
-    codProducto: string;
     comprobante: string;
     numero: string;
     original: number;
     pendiente: number;
-    articulo: string;
     precio: number;
     dolar: number;
     moneda: string;
     porCalc: number;
     ivaPorc: number;
     deposito: number;
-    trazable: boolean;
-    rubro: string;
-    subRubro: string;
+    producto: Producto;
 
-    // Trazabilidad
-    lote: string;
-    serie: string;
-    fechaElab: Date;
-    fechaVto: Date;
+    // Imputacion
+    imputacion: {
+        todas: ModeloDetalle[],
+        seleccionada: ModeloDetalle;    
+    } = {
+        todas:[],
+        seleccionada:null
+    };
 
-    // imputacion: string;
+    // Datos extras necesarios
+    idProductos: number;
 
+    constructor(prod?: any) {
+        if (prod) {
+            this.comprobante = prod.comprobante;
+            this.numero = prod.numero;
+            this.original = prod.original;
+            this.pendiente = prod.pendiente;
+            this.precio = prod.precio;
+            this.dolar = prod.dolar;
+            this.moneda = prod.moneda;
+            this.porCalc = prod.porCalc;
+            this.ivaPorc = prod.ivaPorc;
+            this.deposito = prod.deposito;
 
-    constructor(productoPendiente?: {
-        comprobante: string;
-        numero: string;
-        codProducto: string;
-        original: number;
-        pendiente: number;
-        articulo: string;
-        precio: number;
-        dolar: number;
-        moneda: string;
-        porCalc: number;
-        ivaPorc: number;
-        deposito: number;
-        trazable: boolean;
-        rubro: string;
-        subRubro: string;
-    }, productoComun?: Producto) {
-        if (productoPendiente) {
-            this.comprobante = productoPendiente.comprobante
-            this.numero = productoPendiente.numero
-            this.codProducto = productoPendiente.codProducto
-            this.original = productoPendiente.original
-            this.pendiente = productoPendiente.pendiente
-            this.articulo = productoPendiente.articulo
-            this.precio = productoPendiente.precio
-            this.dolar = productoPendiente.dolar
-            this.moneda = productoPendiente.moneda
-            this.porCalc = productoPendiente.porCalc
-            this.ivaPorc = productoPendiente.ivaPorc
-            this.deposito = productoPendiente.deposito
-            this.trazable = productoPendiente.trazable
-            this.rubro = productoPendiente.rubro
-            this.subRubro = productoPendiente.subRubro
-        } else if (productoComun) {
-            this.codProducto = productoComun.codProducto;
-            this.articulo = productoComun.descripcion;
-            this.precio = productoComun.precioVentaProv;
-            this.ivaPorc = productoComun.IVA.porcIVA;
-            this.pendiente = 0;
-            this.deposito = 0;
-            this.trazable = productoComun.trazable;
+            // Si es un prodPendiente y tiene el prducto adentro, entonces lo creo. Sino, lo guardo directamente
+            this.producto = prod.producto ? 
+                new Producto(prod.producto) :
+                prod;
 
-            this.lote = 'dada';
-            this.serie = 'dada';
-            this.fechaElab = new Date();
-            this.fechaVto = new Date();
+            // Imputacion
+            this.imputacion.todas = this.producto.modeloCab.modeloDetalle;
+            // Busco el seleccionado por defecto
+            if (this.imputacion.todas.length > 0) {
+                const impuSelect = this.imputacion.todas.find(modelD => modelD.prioritario);
+                this.imputacion.seleccionada = impuSelect ? impuSelect : new ModeloDetalle();
+            }
+
+            // Datos extras necesarios
+            this.idProductos = this.producto.idProductos;
         } else {
             this.comprobante = null;
             this.numero = null;
-            this.codProducto = null;
             this.original = null;
             this.pendiente = null;
-            this.articulo = null;
             this.precio = null;
             this.dolar = null;
             this.moneda = null;
             this.porCalc = null;
             this.ivaPorc = null;
             this.deposito = null;
-            this.trazable = null;
-            this.rubro = null;
-            this.subRubro = null;
-            
-            this.lote = null;
-            this.serie = null;
-            this.fechaElab = null;
-            this.fechaVto = null;
+            this.producto = new Producto();
 
-            // this.imputacion = null;
+            this.imputacion.todas = [];
+            this.imputacion.seleccionada = new ModeloDetalle();
+
+            this.idProductos = null;
         }
     }
 
 }
+
+
+/*
+
+constructor(prod?: {
+        comprobante: string;
+        numero: string;
+        original: number;
+        pendiente: number;
+        precio: number;
+        dolar: number;
+        moneda: string;
+        porCalc: number;
+        ivaPorc: number;
+        deposito: number;
+        producto: any;
+    }) {
+ */
