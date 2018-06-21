@@ -9,6 +9,9 @@ import { RecursoService } from "app/services/recursoService";
 import { resourcesREST } from "constantes/resoursesREST";
 import { Producto } from "app/models/producto";
 import { Parametro } from "../../../../models/parametro";
+import { Cotizacion } from "app/models/cotizacion";
+import { ProductoBuscaModelo } from "../../../../models/productoBuscaModelo";
+import { ModeloFactura } from "../../../../models/modeloFactura";
 
 @Injectable()
 export class IngresoFormService {
@@ -123,6 +126,24 @@ export class IngresoFormService {
         }
     ];
 
+    getColumnsFactura = () => [
+        {
+            nombre: 'cuenta',
+            key: 'cuentaContable',
+            ancho: '30%'
+        },
+        {
+            nombre: 'descripcion',
+            key: 'descripcion',
+            ancho: '30%'
+        },
+        {
+            nombre: 'importe',
+            key: 'importeTotal',
+            ancho: '30%'
+        }
+    ]
+
     /**
      * Buscar los productos pendientes
      */
@@ -151,16 +172,30 @@ export class IngresoFormService {
     /**
      * Retorna los datos de cotizacion
      */
-    getCotizacionDatos = () => {
-        return this.recursoService.getRecursoList(resourcesREST.buscaCotizacion)().map(cotizData => {
-            const parametros = cotizData.map(cotiz => new Parametro(cotiz));
+    getCotizacionDatos = () => this.authService.getCotizacion(
+        this.localStorageService.getObject(environment.localStorage.acceso).token
+    ).map(responseCotiz => new Cotizacion(responseCotiz.datos));
 
-            return {
-                dolar: parametros.find(p=>p.tipoValor==='d'),
-                fecha: parametros.find(p=>p.tipoValor==='f'),
-                totalComprobante: 0
+    /**
+     * Retorna un array de todas las letras
+     */
+    getArrayLetras = () => 'A,B,C,D,E,F,G,H,I,J,K,M,L,N,Ñ,O,P,Q,R,S,T,U,V,W,X,Y,Z'.split(',');
+
+    /**
+     * Busca modelos para tab facturacion
+     */
+    buscaModelos = (prodsPend: ProductoPendiente[]) => {
+        const prodsModel = prodsPend.map(prodP => new ProductoBuscaModelo(
+            {
+                idProducto: prodP.idProductos,
+                precio: prodP.precio,
+                cantidad: prodP.pendiente
             }
-        });
+        ));
+
+        return this.authService.buscaModelos(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(prodsModel).map(responBuscMod => responBuscMod.arraydatos.map(respModFact => new ModeloFactura(respModFact)));
     }
 
 }

@@ -5,6 +5,8 @@ import { GlobalState } from './global.state';
 import { BaImageLoaderService, BaThemePreloader, BaThemeSpinner } from './theme/services';
 import { BaThemeConfig } from './theme/theme.config';
 import { layoutPaths } from './theme/theme.constants';
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateFRParserFormatter } from 'app/pages/reusable/otros/ngb-date-fr-parser-formatter';
 
 
 /*
@@ -19,7 +21,8 @@ import { layoutPaths } from './theme/theme.constants';
       <div class="additional-bg"></div>
       <router-outlet></router-outlet>
     </main>
-  `
+  `,
+  providers: [{provide: NgbDateParserFormatter, useClass: NgbDateFRParserFormatter}]
 })
 export class App {
 

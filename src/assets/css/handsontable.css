@@ -115,6 +115,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     white-space: pre-line;
     /* preserve new line character in cell */
     background-clip: padding-box;
+    border-top: none !important;
 }
 
 .handsontable td.htInvalid {

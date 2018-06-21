@@ -2,7 +2,7 @@
     <table class="table table-striped" [mfData]="data | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
         <thead>
             <tr>
-                <th  style="width: 10%"></th>
+                <th *ngIf="edit || remove" style="width: 10%; border-top: none;"></th>
                 <!-- Recorro y muestro las columnas recibidas en el input -->
                 <th class="table-column" *ngFor="let col of columns" [ngStyle]="getStyleFromCol(col)">
                     <mfDefaultSorter by="name">{{col.nombre}}</mfDefaultSorter>
@@ -12,8 +12,8 @@
         </thead>
         <tbody>
             <tr *ngFor="let item of mf.data">
-                <td  class="btn-container">
-                    <div (click)="edit(item)" class="btn-accion btn-editar">
+                <td *ngIf="edit || remove" class="btn-container">
+                    <div *ngIf="edit" (click)="edit(item)" class="btn-accion btn-editar">
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </div>
                     <div *ngIf="remove" (click)="remove(item)" class="btn-accion btn-remover">
@@ -97,7 +97,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="12">
+                <td colspan="12" style="border-top: none">
                     <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
                 </td>
             </tr>

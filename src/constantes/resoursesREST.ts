@@ -17,6 +17,8 @@ import { Padron } from "app/models/padron";
 import { SisTipoOperacion } from "app/models/sisTipoOperacion";
 import { ProductoPendiente } from "app/models/productoPendiente";
 import { Parametro } from "app/models/parametro";
+import { Cotizacion } from "app/models/cotizacion";
+import { ProductoBuscaModelo } from "app/models/productoBuscaModelo";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -100,6 +102,10 @@ export const resourcesREST = {
     },
     buscaCotizacion: {
         nombre: 'buscaCotizacion',
-        Clase: Parametro
+        Clase: Cotizacion
     },
+    buscaModelo: {
+        nombre: 'buscaModelo',
+        Clase: ProductoBuscaModelo
+    }
 };

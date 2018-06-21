@@ -13,6 +13,22 @@
 
     .tabs-ingreso {
         padding: 1.5%;
+
+        .subtotales-container {
+            padding: 0 5% 1%;
+            .subtotales-titulo {
+                font-size: 1rem;
+            }
+
+            .subtotales-content {
+                border-radius: 7px;
+                background: #d4d4de;
+
+                td {
+                    border-top: 0px !important;
+                }
+            }
+        }
     }
 
     .lista-filtrada-proveedores {
@@ -39,6 +55,10 @@
             .observaciones {
                 margin-bottom: 2px;
             }
+
+            .text-area-observaciones {
+                
+            }
         }
         
     }
@@ -55,6 +75,8 @@
                 padding: 1.7%;
             }
         }
+
+        
     }
 
     .btn-container {
@@ -78,4 +100,19 @@
         display: flex;
         flex-direction: column-reverse;
     }
+
+    .pre-numero-input {
+        width: 20%;
+        margin-right: 3px;
+    }
+}
+
+
+
+.without-padding {
+    padding: 0;
+}
+
+.inline-flex {
+    display: inline-flex
 }

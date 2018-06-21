@@ -68,7 +68,8 @@ export class TablaIngreso {
      */
     getStyleFromCol(col) {
         let styles = {
-            'width': col.ancho
+            'width': col.ancho,
+            'border-top': 'none'
         };
         return styles;
     }

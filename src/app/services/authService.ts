@@ -21,6 +21,7 @@ import { FormaPago } from '../models/formaPago';
 import { FiltroListaPrecios } from '../models/filtroListaPrecio';
 import { DetalleProducto } from '../models/detalleProducto';
 import { Padron } from '../models/padron';
+import { ProductoBuscaModelo } from 'app/models/productoBuscaModelo';
 
 @Injectable()
 export class AuthService {
@@ -170,6 +171,131 @@ export class AuthService {
             {}
         );
     }
+
+    /**
+     * Devulete la cotizacion
+     */
+    getCotizacion = (token) => {
+        return this.request(
+            [],
+            RequestMethod.Get,
+            {
+                token: token,
+            },
+            resourcesREST.buscaCotizacion.nombre,
+            {},
+            {}
+        );
+    }
+
+    /**
+     * Busca los modelos de la tab facutracion
+     */
+    buscaModelos = (token) => (productos: ProductoBuscaModelo[] ) => {
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            resourcesREST.buscaModelo.nombre,
+            {
+                productos: productos
+            },
+            {}
+        );
+    }
+
+    /**
+     * 
+     */
+    grabaComprobante =  (token) => 
+                        (productos: ProductoBuscaModelo[] ) => {
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            'grabaComprobante',
+            {
+                idCteTipo: 34,
+                letra: "D",
+                numero: 457896541236,
+                fechaEmision: "2018-06-21",
+                fechaVencimiento: "2018-08-21",
+                fechaConta: "2018-06-21",
+                cai: "789RS789",
+                caiVto: "2018-08-21",
+                codBarra: "123456789456",
+                idPadron: 12345,
+                idFormaPago: 5,
+                productoCanje: " ",
+                precioReferenciaCanje: 0,
+                interesCanje: 0,
+                idMoneda: 1,
+                nombre: "FabricaTest",
+                cuit: "20-38571446-8",
+                sisSitIva: "RI",
+                codigoPostal: "2000",
+                listaPrecio: " ",
+                cotDolar: 28.1,
+                fechaDolar: "2018-04-18",
+                observaciones: "test",
+                idModeloCab: null,
+                relComprobante: null,
+                relPuntoVenta: null,
+                relNumero: null,
+                idFactCab: 1,
+                factCabecera: true,
+                factDet: true,
+                factFormaPago: true,
+                factImputa: true,
+                factPie: true,
+                produmo: true,
+                grillaArticulos: [
+                    {
+                        idProducto: 3,
+                        articulo: "LecheLS",
+                        pendiente: 482.6,
+                        precio: 900,
+                        porCalc: 1.3,
+                        descuento: "Test",
+                        ivaPorc: 0.25,
+                        cantidadBulto: 15,
+                        despacho: "despacho",
+                        trazable: true,
+                        idDeposito: 3,
+                        observacionDetalle: "obs",
+                        imputacion: "Imputa",
+                        idFactCabImputa: 1,
+                        itemImputada: 1
+                    },
+                    {
+                        idProducto: 4,
+                        articulo: "Lavand-A",
+                        pendiente: 555.6,
+                        precio: 900987,
+                        porCalc: 1.36,
+                        descuento: "Test2",
+                        ivaPorc: 0.26,
+                        cantidadBulto: 15,
+                        despacho: "despacho",
+                        trazable: true,
+                        idDeposito: 3,
+                        observacionDetalle: "obs",
+                        imputacion: "Imputa",
+                        idFactCabImputa: 1,
+                        itemImputada: 1
+                    }
+                ]
+            },
+            {}
+        );
+    }
+
+
+
 
 
     ///////////////////////////////////////////////////////////////////////////////////

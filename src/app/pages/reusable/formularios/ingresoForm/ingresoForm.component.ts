@@ -15,6 +15,8 @@ import { ProductoPendiente } from 'app/models/productoPendiente';
 import { DateLikePicker } from '../../../../models/dateLikePicker';
 import { BehaviorSubject } from 'rxjs';
 import { Parametro } from '../../../../models/parametro';
+import { Cotizacion } from '../../../../models/cotizacion';
+import { ModeloFactura } from '../../../../models/modeloFactura';
 
 @Component({
     selector: 'ingreso-form',
@@ -27,7 +29,6 @@ import { Parametro } from '../../../../models/parametro';
  */
 export class IngresoForm {
     @Input() titulo = 'test';
-    @Input() recurso;
 
     /////////////////////////////////////////////
     /////////// Modelos Comprobante /////////////
@@ -36,34 +37,34 @@ export class IngresoForm {
 
     comprobante: {
         tipo: TipoComprobante,
+        preNumero: number,
         numero: number,
+        letra: string,
         moneda: Moneda,
         fechaCompra: DateLikePicker,
-        fechaVto: DateLikePicker
-    } = {tipo: new TipoComprobante(), numero: null, moneda: new Moneda(), fechaCompra: null, fechaVto: null};
+        fechaVto: DateLikePicker,
+        observaciones: string
+    } = { tipo: new TipoComprobante(), preNumero: null, numero: null, letra: null, moneda: new Moneda(), fechaCompra: null, fechaVto: null, observaciones: null };
 
     comprobanteRelacionado: {
         tipo: TipoComprobante,
+        preNumero: number,
         numero: number,
         todosLosPendientes: boolean
-    } = {tipo: new TipoComprobante(), numero: null, todosLosPendientes: null};
+    } = {tipo: new TipoComprobante(), preNumero: null, numero: null, todosLosPendientes: null};
 
     cotizacionDatos: {
-        dolar: Parametro,
-        fecha: Parametro,
-        totalComprobante: number
-    } = {
-        dolar: new Parametro(),
-        fecha: new Parametro(),
-        totalComprobante: 0
-    };
+        cotizacion: Cotizacion,
+        total: number
+    } = { cotizacion: new Cotizacion(), total: 0};
 
     factura: {
         tipo: TipoComprobante,
+        preNumero: number,
         numero: number,
         fechaContable: DateLikePicker,
         fechaVto: DateLikePicker
-    } = { tipo: new TipoComprobante(), numero: null, fechaContable: null, fechaVto: null }
+    } = { tipo: new TipoComprobante(), preNumero: null, numero: null, fechaContable: null, fechaVto: null }
 
     /////////////////////////////////////////////
     //////////// Listas desplegables ////////////
@@ -78,6 +79,8 @@ export class IngresoForm {
         filtrados: BehaviorSubject<Padron[]>;
     } = {todos: [], filtrados: new BehaviorSubject([])}
 
+    letras: string[] = [];
+
     /////////////////////////////////////////////
     ////////////////// Tablas ///////////////////
     /////////////////////////////////////////////
@@ -85,9 +88,11 @@ export class IngresoForm {
         columnas: {
             columnasProductos: any[];
             columnasTrazabilidad: any[];
+            columnasFactura: any[];
         },
         datos: {
             productosPend: ProductoPendiente[];
+            modelosFactura: ModeloFactura[];
         },
         funciones: {
             onClickRemove: any;
@@ -97,10 +102,12 @@ export class IngresoForm {
     } = { 
         columnas: { 
             columnasProductos: [],
-            columnasTrazabilidad: []
+            columnasTrazabilidad: [],
+            columnasFactura: []
         }, 
         datos: { 
-            productosPend: [] 
+            productosPend: [],
+            modelosFactura: []
         },
         funciones: {
             onClickRemove: (prodSelect) => {
@@ -155,6 +162,7 @@ export class IngresoForm {
         this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)();
         this.tiposOperacion = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)();
         this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
+        this.letras = this.ingresoFormService.getArrayLetras();
 
         ////////// Proveedores  //////////
         this.recursoService.getRecursoList(resourcesREST.proveedores)().subscribe(proveedores => {
@@ -165,9 +173,10 @@ export class IngresoForm {
         ////////// Tablas //////////
         this.tablas.columnas.columnasProductos = ingresoFormService.getColumnsProductos();
         this.tablas.columnas.columnasTrazabilidad = ingresoFormService.getColumnsTrazabilidad();
+        this.tablas.columnas.columnasFactura = ingresoFormService.getColumnsFactura();
 
         ////////// Otros //////////
-        this.ingresoFormService.getCotizacionDatos().subscribe(cotizDatos => this.cotizacionDatos = cotizDatos);
+        this.ingresoFormService.getCotizacionDatos().subscribe(cotizDatos => this.cotizacionDatos.cotizacion = cotizDatos);
     }
 
     ///////////////////////////////// Eventos OnClick /////////////////////////////////
@@ -244,4 +253,23 @@ export class IngresoForm {
     }
 
 
+    /**
+     * Evento click de la pesñta factura. Recarga los modelos de la factura
+     */
+    onClickFacturaTab = () => {
+        // Checkeo si existe algun producto sin precio o sin cantidad asignado
+        const existeProdSinPrecioOCantidad = this.tablas.datos.productosPend.some(
+            prodPend => !prodPend.precio || !prodPend.pendiente
+        );
+
+        // Si existe, entonces NO hago la consulta y aviso al usuario tal sitaucion
+        if (existeProdSinPrecioOCantidad) {
+            this.utilsService.showModal('Aviso')('Algunos productos no tienen precio o cantidad definida')()();
+        } else {
+            // Caso contrario puedo proseguir y hacer la consulta libremente
+            this.ingresoFormService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
+                this.tablas.datos.modelosFactura = modelProds
+            });
+        }
+    }
 }
