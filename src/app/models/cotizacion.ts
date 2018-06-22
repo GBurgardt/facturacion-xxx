@@ -1,3 +1,5 @@
+import { DateLikePicker } from "./dateLikePicker";
+
 export class Cotizacion {
     idSisCotDolar: number;
     fechaCotizacion: Date;
@@ -5,7 +7,7 @@ export class Cotizacion {
 
     constructor(cotizacion?: {
         idSisCotDolar: number;
-        fechaCotizacion: Date;
+        fechaCotizacion: any;
         cotizacion: number;
     }) {
         if (cotizacion) {

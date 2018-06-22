@@ -22,6 +22,12 @@ import { FiltroListaPrecios } from '../models/filtroListaPrecio';
 import { DetalleProducto } from '../models/detalleProducto';
 import { Padron } from '../models/padron';
 import { ProductoBuscaModelo } from 'app/models/productoBuscaModelo';
+import { Comprobante } from 'app/models/comprobante';
+import { ComprobanteRelacionado } from '../models/comprobanteRelacionado';
+import { Factura } from '../models/factura';
+import { Cotizacion } from 'app/models/cotizacion';
+import { ProductoPendiente } from 'app/models/productoPendiente';
+import { ModeloFactura } from 'app/models/modeloFactura';
 
 @Injectable()
 export class AuthService {
@@ -207,10 +213,17 @@ export class AuthService {
     }
 
     /**
-     * 
+     * Graba un comprobante de ingresoForm
      */
     grabaComprobante =  (token) => 
-                        (productos: ProductoBuscaModelo[] ) => {
+                        (comprobante: Comprobante) => 
+                        (comproRelac: ComprobanteRelacionado) =>
+                        (provSelec: Padron) => 
+                        (productosPend: ProductoPendiente[]) => 
+                        (modelosFactura: ModeloFactura[]) =>
+                        (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => {
+
+        debugger;
         return this.request(
             [],
             RequestMethod.Post,
@@ -219,82 +232,92 @@ export class AuthService {
             },
             'grabaComprobante',
             {
-                idCteTipo: 34,
-                letra: "D",
-                numero: 457896541236,
-                fechaEmision: "2018-06-21",
-                fechaVencimiento: "2018-08-21",
-                fechaConta: "2018-06-21",
-                cai: "789RS789",
-                caiVto: "2018-08-21",
-                codBarra: "123456789456",
-                idPadron: 12345,
+                idCteTipo: comprobante.tipo.idCteTipo,
+                letra: comprobante.letra,
+                numero: Number(comprobante.puntoVenta + comprobante.numero),
+                // fechaEmision: `${comprobante.fechaComprobante.year}-${comprobante.fechaComprobante.month}-${comprobante.fechaComprobante.day}`,
+                // fechaVencimiento: `${comprobante.fechaComprobante.year}-${comprobante.fechaComprobante.month}-${comprobante.fechaComprobante.day}`,
+                // fechaConta: `${comprobante.fechaComprobante.year}-${comprobante.fechaComprobante.month}-${comprobante.fechaComprobante.day}`,
+                fechaEmision: '2018-01-01',
+                fechaVencimiento: '2018-01-01',
+                fechaConta: '2018-01-01',
+                cai: ' ',
+                caiVto: '2018-01-01',
+                //caiVto: `${comprobante.fechaComprobante.year}-${comprobante.fechaComprobante.month}-${comprobante.fechaComprobante.day}`,
+                codBarra: ' ',
+                idPadron: provSelec.padronCodigo,
                 idFormaPago: 5,
-                productoCanje: " ",
+                productoCanje: ' ',
                 precioReferenciaCanje: 0,
                 interesCanje: 0,
-                idMoneda: 1,
-                nombre: "FabricaTest",
-                cuit: "20-38571446-8",
-                sisSitIva: "RI",
-                codigoPostal: "2000",
-                listaPrecio: " ",
-                cotDolar: 28.1,
-                fechaDolar: "2018-04-18",
-                observaciones: "test",
+                idMoneda: comprobante.moneda.idMoneda,
+                //nombre: provSelec.padronApelli,
+                nombre: 'testest',
+                cuit: provSelec.cuit.toString(),
+                sisSitIva: provSelec.condIva.descCorta,
+                codigoPostal: ' ',
+                listaPrecio: ' ',
+                cotDolar: cotizacionDatos.cotizacion.cotizacion,
+                fechaDolar: `2018-01-01`,
+                observaciones: comprobante.observaciones,
                 idModeloCab: null,
-                relComprobante: null,
-                relPuntoVenta: null,
-                relNumero: null,
-                idFactCab: 1,
+                relComprobante: comproRelac.tipo.idCteTipo,
+                relPuntoVenta: comproRelac.puntoVenta,
+                relNumero: comproRelac.numero,
+                idFactCab: null,
                 factCabecera: true,
                 factDet: true,
-                factFormaPago: true,
+                factFormaPago: false,
                 factImputa: true,
                 factPie: true,
                 produmo: true,
-                grillaArticulos: [
-                    {
-                        idProducto: 3,
-                        articulo: "LecheLS",
-                        pendiente: 482.6,
-                        precio: 900,
-                        porCalc: 1.3,
-                        descuento: "Test",
-                        ivaPorc: 0.25,
-                        cantidadBulto: 15,
-                        despacho: "despacho",
-                        trazable: true,
-                        idDeposito: 3,
-                        observacionDetalle: "obs",
-                        imputacion: "Imputa",
-                        idFactCabImputa: 1,
-                        itemImputada: 1
-                    },
-                    {
-                        idProducto: 4,
-                        articulo: "Lavand-A",
-                        pendiente: 555.6,
-                        precio: 900987,
-                        porCalc: 1.36,
-                        descuento: "Test2",
-                        ivaPorc: 0.26,
-                        cantidadBulto: 15,
-                        despacho: "despacho",
-                        trazable: true,
-                        idDeposito: 3,
-                        observacionDetalle: "obs",
-                        imputacion: "Imputa",
-                        idFactCabImputa: 1,
-                        itemImputada: 1
+                grillaArticulos: productosPend.map(prod => {
+                    return {
+                        idProducto: prod.producto.idProductos,
+                        articulo: prod.producto.descripcion ? prod.producto.descripcion : '',
+                        pendiente: prod.pendiente,
+                        precio: prod.precio,
+                        porCalc: prod.porCalc ? prod.porCalc : null,
+                        descuento: prod.descuento,
+                        ivaPorc: prod.ivaPorc,
+                        cantidadBulto: prod.cantBultos,
+                        despacho: prod.despacho ? prod.despacho : ' ',
+                        trazable: prod.producto.trazable,
+                        idDeposito: prod.deposito ? prod.deposito : null,
+                        observacionDetalle: prod.producto.observaciones ? prod.producto.observaciones : ' ',
+                        imputacion: prod.imputacion.seleccionada.ctaContable,
+                        idFactCabImputa: prod.idFactCabImputada,
+                        itemImputada: prod.itemImputada
                     }
-                ]
+                }),
+                grillaSubTotales: modelosFactura.map(mod => {
+                    return {
+                        cuenta: mod.cuentaContable,
+                        descripcionPie: mod.descripcion,
+                        importe: mod.importeTotal,
+                        totalComprobante: cotizacionDatos.total,
+                        porcentaje: 0
+                    }
+                })
             },
             {}
         );
     }
 
 
+    /** */
+    getSisSitIva = (token) => (provSelec: Padron) => {
+        return this.request(
+            [],
+            RequestMethod.Get,
+            {
+                token: token,
+            },
+            `sisSitIva/${provSelec.condIva.descCorta}`,
+            { },
+            { }
+        );
+    }
 
 
 

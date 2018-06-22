@@ -17,6 +17,9 @@ import { BehaviorSubject } from 'rxjs';
 import { Parametro } from '../../../../models/parametro';
 import { Cotizacion } from '../../../../models/cotizacion';
 import { ModeloFactura } from '../../../../models/modeloFactura';
+import { Comprobante } from 'app/models/comprobante';
+import { ComprobanteRelacionado } from 'app/models/comprobanteRelacionado';
+import { Factura } from '../../../../models/factura';
 
 @Component({
     selector: 'ingreso-form',
@@ -28,43 +31,20 @@ import { ModeloFactura } from '../../../../models/modeloFactura';
  * Form reutilizable
  */
 export class IngresoForm {
-    @Input() titulo = 'test';
+    @Input() titulo = '';
 
     /////////////////////////////////////////////
     /////////// Modelos Comprobante /////////////
     /////////////////////////////////////////////
     proveedorSeleccionado: Padron = new Padron();
-
-    comprobante: {
-        tipo: TipoComprobante,
-        preNumero: number,
-        numero: number,
-        letra: string,
-        moneda: Moneda,
-        fechaCompra: DateLikePicker,
-        fechaVto: DateLikePicker,
-        observaciones: string
-    } = { tipo: new TipoComprobante(), preNumero: null, numero: null, letra: null, moneda: new Moneda(), fechaCompra: null, fechaVto: null, observaciones: null };
-
-    comprobanteRelacionado: {
-        tipo: TipoComprobante,
-        preNumero: number,
-        numero: number,
-        todosLosPendientes: boolean
-    } = {tipo: new TipoComprobante(), preNumero: null, numero: null, todosLosPendientes: null};
-
+    comprobante: Comprobante = new Comprobante();
+    comprobanteRelacionado: ComprobanteRelacionado = new ComprobanteRelacionado()
+    factura: Factura = new Factura();
     cotizacionDatos: {
         cotizacion: Cotizacion,
         total: number
     } = { cotizacion: new Cotizacion(), total: 0};
 
-    factura: {
-        tipo: TipoComprobante,
-        preNumero: number,
-        numero: number,
-        fechaContable: DateLikePicker,
-        fechaVto: DateLikePicker
-    } = { tipo: new TipoComprobante(), preNumero: null, numero: null, fechaContable: null, fechaVto: null }
 
     /////////////////////////////////////////////
     //////////// Listas desplegables ////////////
@@ -123,17 +103,27 @@ export class IngresoForm {
                     }
                     return newTabla;
                 });
+                console.log(this.tablas.columnas)
 
             },
             onClickConfirmEdit: (tipoColumnas) => (prodSelect: ProductoPendiente) => { 
-               // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
-               this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
-                   let newTabla = tabla;
-                   if (newTabla.enEdicion !== undefined && newTabla.enEdicion) {
-                       newTabla.enEdicion = false;
-                   }
-                   return newTabla;
-               })
+                // Actualizo el Total Comprobante sumando todos los precios nuevamente (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
+                this.cotizacionDatos.total = Math.round(
+                    _.sumBy(
+                        this.tablas.datos.productosPend,
+                        (prod) => Number(prod.precio) ? Number(prod.precio) * Number(prod.pendiente) : 0
+                    )
+                );
+
+                // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
+                this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
+                    let newTabla = tabla;
+                    if (newTabla.enEdicion !== undefined && newTabla.enEdicion) {
+                        // Seteo en false asi sale de edicion
+                        newTabla.enEdicion = false;
+                    }
+                    return newTabla;
+                })
            }
         }
     };
@@ -145,7 +135,8 @@ export class IngresoForm {
 
     popupLista: any = {
         onClickListProv: (prove: Padron) => {
-            this.proveedorSeleccionado = prove;
+            this.proveedorSeleccionado = _.clone(prove);
+            this.ingresoFormService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
         },
         getOffsetOfInputProveedor: () => this.utilsService.getOffset(document.getElementById('proveedorSeleccionado'))
     }
@@ -162,7 +153,6 @@ export class IngresoForm {
         this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)();
         this.tiposOperacion = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)();
         this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
-        this.letras = this.ingresoFormService.getArrayLetras();
 
         ////////// Proveedores  //////////
         this.recursoService.getRecursoList(resourcesREST.proveedores)().subscribe(proveedores => {
@@ -191,7 +181,7 @@ export class IngresoForm {
                 (a:ProductoPendiente,b:ProductoPendiente) => a.producto.codProducto === b.producto.codProducto
             )
         );
-        this.ingresoFormService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado).subscribe(prodsPend=>console.log(prodsPend));
+        //this.ingresoFormService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado).subscribe(prodsPend=>console.log(prodsPend));
     }
 
     /**
@@ -208,10 +198,15 @@ export class IngresoForm {
     }
 
     /**
-     * 
+     * Valida y graba el comprobante
      */
     onClickConfirmar = () => {
-        
+        this.ingresoFormService.confirmarYGrabarComprobante(this.comprobante)
+                                                (this.comprobanteRelacionado)
+                                                (this.proveedorSeleccionado)
+                                                (this.tablas.datos.productosPend)
+                                                (this.tablas.datos.modelosFactura)
+                                                (this.cotizacionDatos).subscribe(a=>console.log(a))
     }
 
     ///////////////////////////////// Eventos (Distintos de onclick) /////////////////////////////////
@@ -231,7 +226,7 @@ export class IngresoForm {
     onEnterInputProv = (e) => {
         try {
             const codProv = e.target.value;
-            const provSeleccionado = this.proveedores.todos.find((prove) => prove.padronCodigo.toString() === codProv);
+            const provSeleccionado = _.clone(this.proveedores.todos.find((prove) => prove.padronCodigo.toString() === codProv));
             if (provSeleccionado) {
                 this.proveedorSeleccionado = provSeleccionado;
             } else {
@@ -246,10 +241,27 @@ export class IngresoForm {
     /**
      * El blur es cuando se hace un leave del input (caundo se apreta click afuera por ejemplo).
      * Acá lo que hago es poner un array vacio como próx valor de los filtrados, cosa que la lista desaparezca porque no hay nada
+     * También retorno el proveedor seleccionado en el input
      */
     onBlurInputProv = (e) => {
         // Agrego el settimeout para que se ejecute antes el evento click de la lista, sino se ejecuta antes este y nunca se ejecuta el click de la lista
-        setTimeout(()=>this.proveedores.filtrados.next([]), 100)
+        setTimeout(() => {
+            // Vacio filtrados
+            this.proveedores.filtrados.next([]);
+
+            // Actualizo proveedor seleccionado
+            try {
+                this.proveedorSeleccionado = this.ingresoFormService.seleccionarProveedor(this.proveedores.todos)(this.proveedorSeleccionado);
+            }
+            catch(err) {
+                // Muestro error
+                if (err && err.nombre && err.descripcion) {
+                    this.utilsService.showModal(err.nombre)(err.descripcion)()();
+                }
+                // Vacio proveedor seleccionado
+                this.proveedorSeleccionado = new Padron();
+            }
+        }, 100)
     }
 
 
@@ -270,6 +282,44 @@ export class IngresoForm {
             this.ingresoFormService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
                 this.tablas.datos.modelosFactura = modelProds
             });
+        }
+    }
+
+    /**
+     * Setea la fecha de compra calculandola dado un string en formato 'ddmm', parseando a 'dd/mm/aaaa'
+     */
+    onCalculateFecha = (e) => (keyFecha) => {
+        if (!this.comprobante[keyFecha] || typeof this.comprobante[keyFecha] !== 'string') {
+            return;
+        }
+
+        const value: string = this.comprobante[keyFecha];
+
+        if (value.length === 4) {
+            const fechaHoy: Date = new Date();
+            this.comprobante[keyFecha] = new DateLikePicker(null, {
+                day: Number(value.substring(0, 2)),
+                month: Number(value.substring(2)),
+                year: fechaHoy.getFullYear()
+            });
+        }
+
+    }
+
+    /**
+     * Evento blur de pto venta y numero en comprobante
+     * tipo: puntoVenta o numero
+     * keyTipoe: comprobante, comprobanteRelacionado
+     */
+    onBlurNumeroAutocomp = (e) => (tipo: string) => (keyTipo: string) => {
+        try {
+            this[keyTipo][tipo] = this.ingresoFormService.autocompNroComp(tipo)(this[keyTipo]);
+        }
+        catch (err) {
+            (err && err.nombreError) ? 
+                this.utilsService.showModal(err.nombreError)(err.descripcionError)()() : null;
+            // Limpio el campo
+            this[keyTipo][tipo] = '';
         }
     }
 }

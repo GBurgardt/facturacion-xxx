@@ -145,6 +145,11 @@ export class UtilsService {
         // Checkeo si NO es un id o un codigo
         if (id !== 'id' && cod !== 'cod' && !idRecurso.toLowerCase().includes('codigo')) {
             const realIdOrCod = Object.keys(recurso).find(key => {
+                // descarto casos particulares
+                if (key === 'idFactCabImputada' || key === 'idFactDetalleImputada') {
+                    return false;
+                }
+
                 const id = `${key[0]}${key[1]}`;
                 const tercerCaracter = key[2]
                 const cod = `${key[0]}${key[1]}${key[2]}`;
@@ -153,8 +158,10 @@ export class UtilsService {
                 return  (id === 'id' && tercerCaracter === tercerCaracter.toUpperCase()) ||
                         (cod === 'cod' && cuartoCaracter === cuartoCaracter.toUpperCase())
             });
+            // debugger;
             return realIdOrCod;
         } else {
+            // debugger;
             return idRecurso;
         }
 

@@ -3,8 +3,7 @@
         <div class="col-sm-2">
             <div class="form-group inline-group">
                 <label for="proveedorSeleccionado">Proveedor</label>
-                <!-- (blur)="onBlurInputProv($event)" -->
-                <input id="proveedorSeleccionado" (blur)="onBlurInputProv($event)" (keyup.enter)="onEnterInputProv($event)"  (ngModelChange)="onChangeInputProveedor($event)" [(ngModel)]="proveedorSeleccionado.padronCodigo" type="text" class="form-control" placeholder="">
+                <input id="proveedorSeleccionado" (blur)="onBlurInputProv($event)" (keyup.enter)="onEnterInputProv($event)" (ngModelChange)="onChangeInputProveedor($event)" [(ngModel)]="proveedorSeleccionado.padronCodigo" type="text" class="form-control" placeholder="">
             </div>
         </div>
 
@@ -35,7 +34,7 @@
         <div class="col-sm-3 form-group inline-group tipo-compra-dropdown">
             <label for="tipoCompra">Tipo Compra:</label>
             <select class="form-control without-padding" [ngStyle]="{padding: '0px 8px 0px 8px'}" id="tipoCompra">
-                <option *ngFor="let tipoOp of tiposOperacion | async">
+                <option *ngFor="let tipoOp of tiposOperacion | async" [ngValue]="tipoOp">
                     {{tipoOp.descripcion}}
                 </option>
             </select>
@@ -50,7 +49,7 @@
                         <div class="form-group inline-group">
                             <label for="cteTipo">Cte:</label>
                             <select [(ngModel)]="comprobante.tipo" class="form-control without-padding" [ngStyle]="{padding: '1px 8px 0px 8px'}" id="cteTipo">
-                                <option *ngFor="let tipoComp of tiposComprobantes | async">
+                                <option *ngFor="let tipoComp of tiposComprobantes | async" [ngValue]="tipoComp">
                                     {{tipoComp.descCorta}}
                                 </option>
                             </select>
@@ -59,7 +58,7 @@
                     <div class="col-sm-4 inline-flex without-padding">
                         <div class="form-group inline-group">
                             <select [(ngModel)]="comprobante.letra" class="form-control without-padding" [ngStyle]="{padding: '1px 8px 0px 8px'}" id="cteTipo">
-                                <option *ngFor="let letra of letras">
+                                <option *ngFor="let letra of letras" [ngValue]="letra">
                                     {{letra}}
                                 </option>
                             </select>
@@ -69,15 +68,15 @@
                 <div class="col-sm-5">
                     <div class="form-group inline-group">
                         <label for="cteNro">Nro:</label>
-                        <input [(ngModel)]="comprobante.preNumero" type="text" class="form-control pre-numero-input" id="preNumero" placeholder="">
-                        <input [(ngModel)]="comprobante.numero" type="text" class="form-control" id="numero" placeholder="">
+                        <input (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('comprobante')" [(ngModel)]="comprobante.puntoVenta" type="text" class="form-control pre-numero-input" id="puntoVenta" placeholder="">
+                        <input (blur)="onBlurNumeroAutocomp($event)('numero')('comprobante')" [(ngModel)]="comprobante.numero" type="text" class="form-control" id="numero" placeholder="">
                     </div>
                 </div>
                 <div class="col-sm-3">
                     <div class="form-group inline-group">
                         <label for="cteMoneda">Moneda:</label>
                         <select [(ngModel)]="comprobante.moneda" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteMoneda">
-                            <option *ngFor="let mon of monedas | async">
+                            <option *ngFor="let mon of monedas | async" [ngValue]="mon">
                                 {{mon.descripcion}}
                             </option>
                         </select>
@@ -87,9 +86,9 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group inline-group last-child-custom-card">
-                        <label for="fechaCompra">Fecha: </label>
+                        <label for="fechaComprobante">Fecha: </label>
                         <div class="input-group">
-                            <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="comprobante.fechaCompra" ngbDatepicker #dComp="ngbDatepicker">
+                            <input (blur)="onCalculateFecha($event)('fechaComprobante')" (keyup.enter)="onCalculateFecha($event)('fechaComprobante')" class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="comprobante.fechaComprobante" ngbDatepicker #dComp="ngbDatepicker">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button" style="height: 100%;">
                                     <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -102,7 +101,7 @@
                     <div class="form-group inline-group last-child-custom-card">
                         <label for="fechaVto">Vto: </label>
                         <div class="input-group">
-                            <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="comprobante.fechaVto" ngbDatepicker #dVto="ngbDatepicker">
+                            <input (blur)="onCalculateFecha($event)('fechaVto')" (keyup.enter)="onCalculateFecha($event)('fechaVto')" class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="comprobante.fechaVto" ngbDatepicker #dVto="ngbDatepicker">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" (click)="dVto.toggle()" type="button" style="height: 100%;">
                                     <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -130,8 +129,8 @@
                 <div class="col-sm-7">
                     <div class="form-group inline-group">
                         <label for="cteNro">Nro:</label>
-                        <input [(ngModel)]="comprobanteRelacionado.preNumero" type="text" class="form-control pre-numero-input" id="preNumero" placeholder="">
-                        <input [(ngModel)]="comprobanteRelacionado.numero" type="text" class="form-control" id="numero" placeholder="">
+                        <input (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('comprobanteRelacionado')" [(ngModel)]="comprobanteRelacionado.puntoVenta" type="text" class="form-control pre-numero-input" id="puntoVenta" placeholder="">
+                        <input (blur)="onBlurNumeroAutocomp($event)('numero')('comprobanteRelacionado')" [(ngModel)]="comprobanteRelacionado.numero" type="text" class="form-control" id="numero" placeholder="">
                     </div>
                 </div>
             </div>
@@ -212,7 +211,7 @@
 
                         <div class="col-sm-3">
                             <div class="form-group inline-group last-child-custom-card">
-                                <label for="fechaCompra">Fecha Contable</label>
+                                <label for="fechaComprobante">Fecha Contable</label>
                                 <div class="input-group">
                                     <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="factura.fechaContable" ngbDatepicker #dComp="ngbDatepicker">
                                     <div class="input-group-append">
@@ -276,7 +275,7 @@
                     </div>
     
                     <div class="col-sm-6">
-                        <div id="fechaCompra">
+                        <div id="fechaComprobante">
                             <label class="titulo-cotizacion">Fecha: </label>
                             <label>{{cotizacionDatos.cotizacion.fechaCotizacion | date:'dd/MM/yyyy'}}</label>
                         </div>

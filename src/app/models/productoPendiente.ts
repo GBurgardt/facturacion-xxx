@@ -14,6 +14,14 @@ export class ProductoPendiente {
     deposito: number;
     producto: Producto;
 
+    idFactDetalleImputada: number;
+    idFactCabImputada: number;
+    descuento: number;
+    cantBultos: number;
+    despacho: string;
+    observaciones: string;
+    itemImputada: number;
+
     // Imputacion
     imputacion: {
         todas: ModeloDetalle[],
@@ -30,19 +38,30 @@ export class ProductoPendiente {
         if (prod) {
             this.comprobante = prod.comprobante;
             this.numero = prod.numero;
-            this.original = prod.original;
-            this.pendiente = prod.pendiente;
-            this.precio = prod.precio;
-            this.dolar = prod.dolar;
+            this.original = prod.original ? prod.original : 0;
+            this.pendiente = prod.pendiente ? prod.pendiente : 0;
+            this.precio = prod.precio ? prod.precio : 0;
+            this.dolar = prod.dolar ? prod.dolar : 0;
             this.moneda = prod.moneda;
-            this.porCalc = prod.porCalc;
-            this.ivaPorc = prod.ivaPorc;
-            this.deposito = prod.deposito;
+            this.porCalc = prod.porCalc ? prod.porCalc : 0;
+            // Si NO tiene ivaPorc, entonces es un Producto
+            this.ivaPorc = prod.ivaPorc ?   prod.ivaPorc : 
+                                            prod.IVA.porcIVA ? prod.IVA.porcIVA : 0;
+            this.deposito = prod.deposito ? prod.deposito : 0;
 
             // Si es un prodPendiente y tiene el prducto adentro, entonces lo creo. Sino, lo guardo directamente
             this.producto = prod.producto ? 
                 new Producto(prod.producto) :
                 prod;
+
+            this.idFactDetalleImputada = prod.idFactDetalleImputada ? prod.idFactDetalleImputada : 0
+            this.idFactCabImputada = prod.idFactCabImputada ? prod.idFactCabImputada : 0
+            this.descuento = prod.descuento ? prod.descuento : 0
+            this.cantBultos = prod.cantBultos ? prod.cantBultos : 0
+            this.despacho = prod.despacho
+            this.observaciones = prod.observaciones
+            this.itemImputada = prod.itemImputada
+                
 
             // Imputacion
             this.imputacion.todas = this.producto.modeloCab.modeloDetalle;
@@ -63,9 +82,16 @@ export class ProductoPendiente {
             this.dolar = null;
             this.moneda = null;
             this.porCalc = null;
-            this.ivaPorc = null;
             this.deposito = null;
             this.producto = new Producto();
+
+            this.idFactDetalleImputada = null
+            this.idFactCabImputada = null
+            this.descuento = null
+            this.cantBultos = null
+            this.despacho = null
+            this.observaciones = null
+            this.itemImputada = null
 
             this.imputacion.todas = [];
             this.imputacion.seleccionada = new ModeloDetalle();
