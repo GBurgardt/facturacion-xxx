@@ -1,4 +1,4 @@
-//import * as _ from 'lodash';
+import * as _ from 'lodash';
 import { Component, Input } from '@angular/core';
 import { UtilsService } from 'app/services/utilsService';
 import { IngresoFormService } from '../ingresoFormService';
@@ -7,6 +7,10 @@ import { Producto } from '../../../../../models/producto';
 //import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs';
 import { DateLikePicker } from '../../../../../models/dateLikePicker';
+import { RecursoService } from '../../../../../services/recursoService';
+import { resourcesREST } from 'constantes/resoursesREST';
+import { ModeloDetalle } from '../../../../../models/modeloDetalle';
+import { Deposito } from '../../../../../models/deposito';
 
 
 @Component({
@@ -33,24 +37,37 @@ export class TablaIngreso {
     @Input() remove;
     @Input() confirmEdit;
 
+    
+
     /////////// BUSQUEDA ///////////
     textoBusqueda: string;
     productosBusqueda: {
-        todos: Producto[];
-        filtrados: BehaviorSubject<Producto[]>;
+        todos: ProductoPendiente[];
+        filtrados: BehaviorSubject<ProductoPendiente[]>;
     } = {todos: [], filtrados: new BehaviorSubject([])}
 
     @Input() onClickProductoLista;
 
-    
+    ///////// OTROS ///////////
+    depositos: Deposito[] = [];
+    // Evento select en depositos, acutaliza el deposito seleccionado en ingresoForm.component
+    @Input() onSelectDeposito;
+    auxDepositoSelect: Deposito;
+
     constructor(
         private utilsService: UtilsService,
-        private ingresoFormService: IngresoFormService
+        private recursoService: RecursoService
     ) {
-        ingresoFormService.getAllProductos().subscribe(todos=>{
-            this.productosBusqueda.todos = todos;
-            this.productosBusqueda.filtrados.next(todos);
+        // Cargo todos los productos pendientes posibles
+        recursoService.getRecursoList(resourcesREST.buscarPendientes)().subscribe(prodsPendPosibles => {
+            this.productosBusqueda.todos = prodsPendPosibles;
+            this.productosBusqueda.filtrados.next(prodsPendPosibles);
         });
+
+        // Obtengo depositos
+        recursoService.getRecursoList(resourcesREST.depositos)().subscribe(
+            depositos => this.depositos = depositos
+        )
     }
 
     
@@ -85,8 +102,16 @@ export class TablaIngreso {
             return key ? 'Si' : 'No';
         } else if (tipoDato === 'object'){
             // Me fijo el nombre de la clase del objeto
-            if (key.constructor.name === 'DateLikePicker') {
-                return `${key.year}/${key.month<10 ? '0' : ''}${key.month}/${key.day<10 ? '0' : ''}${key.day}`
+            key ? console.log(key) : null;
+            key && key.constructor  ? console.log(key.constructor.name) : null;
+            if (
+                key && 
+                (
+                    key.constructor.name === 'DateLikePicker' ||
+                    key.year && key.month && key.day
+                )
+            ) {
+                return `${key.day<10 ? '0' : ''}${key.day}/${key.month<10 ? '0' : ''}${key.month}/${key.year}`
             }
         };
         
@@ -97,12 +122,13 @@ export class TablaIngreso {
     checkIfEditOn(item) {
         if (this.columns) {
             return this.columns.some(col=>{
-
-                if (!col.subkey) {
-                    return col.enEdicion && col.enEdicion === item[this.utilsService.getNameIdKeyOfResource(item)];
-                } else if (col.subkey && !col.subsubkey) {
-                    return col.enEdicion && col.enEdicion === (item[col.key])[this.utilsService.getNameIdKeyOfResource(item[col.key])];
-                } 
+                // Lo hago específico porque esta talba es específica, casi que no la reutilizo
+                return col.enEdicion && col.enEdicion === item.producto.idProductos
+                // if (!col.subkey) {
+                //     return col.enEdicion && col.enEdicion === item[this.utilsService.getNameIdKeyOfResource(item)];
+                // } else if (col.subkey && !col.subsubkey) {
+                //     return col.enEdicion && col.enEdicion === (item[col.key])[this.utilsService.getNameIdKeyOfResource(item[col.key])];
+                // } 
 
             });
         };
@@ -114,8 +140,8 @@ export class TablaIngreso {
     onChangeInputItemAdd = (textoBuscado) => {
         this.productosBusqueda.filtrados.next(
             this.productosBusqueda.todos.filter(
-                producto => producto.codProducto.toString().includes(textoBuscado) || 
-                            producto.descripcion.toString().toLowerCase().includes(textoBuscado)
+                prodPend => prodPend.producto.codProducto.toString().includes(textoBuscado) || 
+                            prodPend.producto.descripcion.toString().toLowerCase().includes(textoBuscado)
             )
         );
     }
@@ -135,17 +161,17 @@ export class TablaIngreso {
         return this.utilsService.getOffset(document.getElementById('addInput')); 
     }
 
-    onChangeNgModelDateLikePicker = (nuevoValor) => (item) => (key) => {
-        this.data = this.data.map((prod: ProductoPendiente)=>{
-            let cloneProd = prod;
-            if (cloneProd.idProductos === item.idProductos) {
-                cloneProd[key] = new DateLikePicker(null,nuevoValor);
-                console.log(cloneProd[key]);
-            };
-            return cloneProd
-        });
 
-        console.log(this.data);
+    /**
+     * Setea la fecha de compra calculandola dado un string en formato 'ddmm', parseando a 'dd/mm/aaaa'
+     */
+    onCalculateFecha = (e) => (key) => (subkey) => (item) => {
+        if (!item[key][subkey] || typeof item[key][subkey] !== 'string') return;
+        
+        item[key][subkey] = this.utilsService.stringToDateLikePicker(item[key][subkey]);
+
+        // Hago focus en el prox input
+        (subkey==='fechaElab') ? document.getElementById("fecha-fechaVto").focus() : null;
     }
 
 }

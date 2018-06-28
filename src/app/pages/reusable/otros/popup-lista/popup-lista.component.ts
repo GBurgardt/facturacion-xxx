@@ -29,7 +29,13 @@ export class PopupLista {
      */
     parseItem = (item) => {
         return this.keysToShow
-                    .map(key => item[key])
+                    .map(key => {
+                        const deepKey = key.includes('.') ? key.split('.') : null;
+
+                        // Si tiene deepKey entonces voy profundo en el json (ejemplo: producto.descripcion)
+                        return deepKey ? item[deepKey[0]][deepKey[1]] : item[key];
+                        //return item[key];
+                    })
                     .join(', ');
     }
 

@@ -101,7 +101,7 @@
                     <div class="form-group inline-group last-child-custom-card">
                         <label for="fechaVto">Vto: </label>
                         <div class="input-group">
-                            <input (blur)="onCalculateFecha($event)('fechaVto')" (keyup.enter)="onCalculateFecha($event)('fechaVto')" class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="comprobante.fechaVto" ngbDatepicker #dVto="ngbDatepicker">
+                            <input id="fechaVto" (blur)="onCalculateFecha($event)('fechaVto')" (keyup.enter)="onCalculateFecha($event)('fechaVto')" class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="comprobante.fechaVto" ngbDatepicker #dVto="ngbDatepicker">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" (click)="dVto.toggle()" type="button" style="height: 100%;">
                                     <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -119,7 +119,7 @@
                     <div class="form-group inline-group">
                         <label for="cteRelTipo">Cte:</label>
 
-                        <select [(ngModel)]="comprobanteRelacionado.tipo" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteRelTipo">
+                        <select id="cteRelSelect" [(ngModel)]="comprobanteRelacionado.tipo" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteRelTipo">
                             <option *ngFor="let tipoComp of tiposComprobantes | async" [ngValue]="tipoComp">
                                 {{tipoComp.descCorta}}
                             </option>
@@ -167,7 +167,8 @@
                                     [edit]="tablas.funciones.onClickEdit('columnasProductos')" 
                                     [confirmEdit]="tablas.funciones.onClickConfirmEdit('columnasProductos')" 
                                     [onClickProductoLista]="onClickProductoLista" 
-                                    [enableAddItem]="true">
+                                    [enableAddItem]="true" 
+                                    [onSelectDeposito]="onSelectDeposito">
                     </tabla-ingreso>
 
                 </ng-template>
@@ -186,7 +187,8 @@
             </ngb-tab>
             <ngb-tab title="">
                 <ng-template ngbTabTitle>
-                    <div (click)="onClickFacturaTab()">Factura</div>
+                    <!-- <div (click)="onClickFacturaTab()">Factura</div> -->
+                    <div>Factura</div>
                 </ng-template>
                 <ng-template ngbTabContent>
                 
@@ -293,7 +295,10 @@
 
         <custom-card class="col-sm-2 card-flex-column-reverse" title="">
             <div class="col-sm-12 btn-container">
-                <button (click)="onClickConfirmar()" class="btn btn-primary btn-ingreso-from">
+                <button [disabled]="!ingresoFormService.checkIfDatosValidosComprobante(comprobante)
+                    (proveedorSeleccionado)(tablas.datos.productosPend)(tablas.datos.modelosFactura)"
+                
+                        (click)="onClickConfirmar()" class="btn btn-primary btn-ingreso-from">
                     Confirmar
                 </button>
 

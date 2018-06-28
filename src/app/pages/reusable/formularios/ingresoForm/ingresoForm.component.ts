@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef } from '@angular/core';
 
 import { UtilsService } from 'app/services/utilsService';
 import { Observable } from 'rxjs/Observable';
@@ -20,6 +20,7 @@ import { ModeloFactura } from '../../../../models/modeloFactura';
 import { Comprobante } from 'app/models/comprobante';
 import { ComprobanteRelacionado } from 'app/models/comprobanteRelacionado';
 import { Factura } from '../../../../models/factura';
+import { Deposito } from 'app/models/deposito';
 
 @Component({
     selector: 'ingreso-form',
@@ -32,6 +33,7 @@ import { Factura } from '../../../../models/factura';
  */
 export class IngresoForm {
     @Input() titulo = '';
+    
 
     /////////////////////////////////////////////
     /////////// Modelos Comprobante /////////////
@@ -45,6 +47,7 @@ export class IngresoForm {
         total: number
     } = { cotizacion: new Cotizacion(), total: 0};
 
+    depositoSelec: Deposito;
 
     /////////////////////////////////////////////
     //////////// Listas desplegables ////////////
@@ -90,21 +93,19 @@ export class IngresoForm {
             modelosFactura: []
         },
         funciones: {
-            onClickRemove: (prodSelect) => {
+            onClickRemove: (prodSelect: ProductoPendiente) => {
                 _.remove(this.tablas.datos.productosPend, (prod: ProductoPendiente) => {
-                    return prod.idProductos === prodSelect.idProducto;
+                    return prod.producto.idProductos === prodSelect.producto.idProductos;
                 });
             },
             onClickEdit: (tipoColumnas) => (prodSelect: ProductoPendiente) => { 
                 this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
                     let newTabla = tabla;
                     if (newTabla.enEdicion !== undefined) {
-                        newTabla.enEdicion = prodSelect.idProductos
+                        newTabla.enEdicion = prodSelect.producto.idProductos
                     }
                     return newTabla;
                 });
-                console.log(this.tablas.columnas)
-
             },
             onClickConfirmEdit: (tipoColumnas) => (prodSelect: ProductoPendiente) => { 
                 // Actualizo el Total Comprobante sumando todos los precios nuevamente (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
@@ -114,6 +115,12 @@ export class IngresoForm {
                         (prod) => Number(prod.precio) ? Number(prod.precio) * Number(prod.pendiente) : 0
                     )
                 );
+
+                // Actualizo los modelos factura (si se ingresó precio y pendiente)
+                (prodSelect && prodSelect.precio > 0 && prodSelect.pendiente > 0) ? 
+                    this.ingresoFormService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
+                        this.tablas.datos.modelosFactura = modelProds
+                    }) : null;
 
                 // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
                 this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
@@ -187,26 +194,32 @@ export class IngresoForm {
     /**
      * Agrega el producto seleccionado a la lista de productosPendientes
      */
-    onClickProductoLista = (producto: Producto) => {
-        const productoBuscado = new ProductoPendiente(producto);
+    onClickProductoLista = (prodSelec: ProductoPendiente) => {
+        
+        
+        const existeProd = this.tablas.datos.productosPend.find(prod=>prod.producto.idProductos === prodSelec.producto.idProductos)
 
-        this.tablas.datos.productosPend = _.unionBy(
-            this.tablas.datos.productosPend, 
-            [productoBuscado], 
-            'idProductos'
-        );
+        !existeProd ? this.tablas.datos.productosPend.push(prodSelec) : null;
+
     }
 
     /**
      * Valida y graba el comprobante
      */
     onClickConfirmar = () => {
-        this.ingresoFormService.confirmarYGrabarComprobante(this.comprobante)
-                                                (this.comprobanteRelacionado)
-                                                (this.proveedorSeleccionado)
-                                                (this.tablas.datos.productosPend)
-                                                (this.tablas.datos.modelosFactura)
-                                                (this.cotizacionDatos).subscribe(a=>console.log(a))
+
+        console.log(this.comprobante)
+        
+
+        // this.ingresoFormService.confirmarYGrabarComprobante(this.comprobante)
+        //     (this.comprobanteRelacionado)
+        //     (this.proveedorSeleccionado)
+        //     (this.tablas.datos.productosPend)
+        //     (this.tablas.datos.modelosFactura)
+        //     (this.cotizacionDatos)
+        //     (this.depositoSelec).subscribe(
+        //         a=>console.log(a)
+        //     )
     }
 
     ///////////////////////////////// Eventos (Distintos de onclick) /////////////////////////////////
@@ -224,6 +237,7 @@ export class IngresoForm {
      * On enter en inputprov
      */
     onEnterInputProv = (e) => {
+        
         try {
             const codProv = e.target.value;
             const provSeleccionado = _.clone(this.proveedores.todos.find((prove) => prove.padronCodigo.toString() === codProv));
@@ -266,43 +280,16 @@ export class IngresoForm {
 
 
     /**
-     * Evento click de la pesñta factura. Recarga los modelos de la factura
-     */
-    onClickFacturaTab = () => {
-        // Checkeo si existe algun producto sin precio o sin cantidad asignado
-        const existeProdSinPrecioOCantidad = this.tablas.datos.productosPend.some(
-            prodPend => !prodPend.precio || !prodPend.pendiente
-        );
-
-        // Si existe, entonces NO hago la consulta y aviso al usuario tal sitaucion
-        if (existeProdSinPrecioOCantidad) {
-            this.utilsService.showModal('Aviso')('Algunos productos no tienen precio o cantidad definida')()();
-        } else {
-            // Caso contrario puedo proseguir y hacer la consulta libremente
-            this.ingresoFormService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
-                this.tablas.datos.modelosFactura = modelProds
-            });
-        }
-    }
-
-    /**
      * Setea la fecha de compra calculandola dado un string en formato 'ddmm', parseando a 'dd/mm/aaaa'
      */
     onCalculateFecha = (e) => (keyFecha) => {
-        if (!this.comprobante[keyFecha] || typeof this.comprobante[keyFecha] !== 'string') {
-            return;
-        }
+        if (!this.comprobante[keyFecha] || typeof this.comprobante[keyFecha] !== 'string') return;
+        
+        this.comprobante[keyFecha] = this.utilsService.stringToDateLikePicker(this.comprobante[keyFecha]);
 
-        const value: string = this.comprobante[keyFecha];
-
-        if (value.length === 4) {
-            const fechaHoy: Date = new Date();
-            this.comprobante[keyFecha] = new DateLikePicker(null, {
-                day: Number(value.substring(0, 2)),
-                month: Number(value.substring(2)),
-                year: fechaHoy.getFullYear()
-            });
-        }
+        // Hago focus en el prox input
+        (keyFecha==='fechaComprobante') ? document.getElementById("fechaVto").focus() : null;
+        (keyFecha==='fechaVto') ? document.getElementById("cteRelSelect").focus() : null;
 
     }
 
@@ -322,4 +309,47 @@ export class IngresoForm {
             this[keyTipo][tipo] = '';
         }
     }
+
+    /**
+     * Actualizo el deposito seleccionado que me viene de tablaIngreso
+     */
+    onSelectDeposito = (depSelect: Deposito) => {
+        this.depositoSelec = depSelect;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// /**
+//      * Evento click de la pesñta factura. Recarga los modelos de la factura
+//      */
+//     onClickFacturaTab = () => {
+//         // Checkeo si existe algun producto sin precio o sin cantidad asignado
+//         const existeProdSinPrecioOCantidad = this.tablas.datos.productosPend.some(
+//             prodPend => !prodPend.precio || !prodPend.pendiente
+//         );
+
+//         // Si existe, entonces NO hago la consulta y aviso al usuario tal sitaucion
+//         if (existeProdSinPrecioOCantidad) {
+//             this.utilsService.showModal('Aviso')('Algunos productos no tienen precio o cantidad definida')()();
+//         } else {
+//             // Caso contrario puedo proseguir y hacer la consulta libremente
+//             this.ingresoFormService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
+//                 this.tablas.datos.modelosFactura = modelProds
+//             });
+//         }
+//     }

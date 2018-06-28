@@ -14,4 +14,6 @@ export class DateLikePicker {
             this.year = dataLikePicker.year;
         }
     }
+
+    getFechaFormateada = () => `${this.year}-${this.month}-${this.day}`
 }

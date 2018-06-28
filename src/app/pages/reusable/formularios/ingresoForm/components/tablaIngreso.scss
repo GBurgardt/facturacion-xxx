@@ -32,6 +32,13 @@
         tbody {
             tr td {
                 text-align: center;
+
+                .datepicker-datelikepicker {
+                    display: flex;
+                    width: 90%;
+                    margin-left: 9%;
+                }
+
             }
 
             .btn-container{
@@ -113,9 +120,22 @@
         }
     }
     
-    .add-item-container {
+    .footer-table {
+        display: flex;
+        justify-content: space-between;
+
         .add-item-label {
             font-size: 0.9rem;
         }
+
+        .deposito {
+            margin-right: 2%;
+        }
+
     }
+}
+
+
+.without-padding {
+    padding: 0;
 }

@@ -14,6 +14,8 @@ import { ProductoBuscaModelo } from "../../../../models/productoBuscaModelo";
 import { ModeloFactura } from "../../../../models/modeloFactura";
 import { Comprobante } from "app/models/comprobante";
 import { ComprobanteRelacionado } from "app/models/comprobanteRelacionado";
+import { Observable } from 'rxjs/Observable';
+import { Deposito } from '../../../../models/deposito';
 
 @Injectable()
 export class IngresoFormService {
@@ -60,7 +62,7 @@ export class IngresoFormService {
         {
             nombre: 'ivaPorc',
             key: 'ivaPorc',
-            ancho: '5%'
+            ancho: '10%'
         },
         {
             nombre: 'cantidad',
@@ -68,18 +70,17 @@ export class IngresoFormService {
             ancho: '10%',
             enEdicion: null
         },
-        {
-            nombre: 'deposito',
-            key: 'deposito',
-            ancho: '10%',
-            enEdicion: null
-        },
+        // {
+        //     nombre: 'deposito',
+        //     key: 'deposito',
+        //     ancho: '10%',
+        //     enEdicion: null
+        // },
         {
             nombre: 'trazable',
             key: 'producto',
             subkey: 'trazable',
-            ancho: '5%',
-            enEdicion: null
+            ancho: '10%'
         }
     ];
 
@@ -99,30 +100,33 @@ export class IngresoFormService {
         {
             nombre: 'GLN',
             key: 'gln',
-            ancho: '5%',
-            enEdicion: null
+            ancho: '5%'
         },
         {
             nombre: 'lote',
-            key: 'lote',
+            key: 'trazabilidad',
+            subkey: 'lote',
             ancho: '5%',
             enEdicion: null
         },
         {
             nombre: 'serie',
-            key: 'serie',
+            key: 'trazabilidad',
+            subkey: 'serie',
             ancho: '5%',
             enEdicion: null
         },
         {
             nombre: 'fecha elab',
-            key: 'fechaElab',
+            key: 'trazabilidad',
+            subkey: 'fechaElab',
             ancho: '20%',
             enEdicion: null
         },
         {
             nombre: 'fecha vto',
-            key: 'fechaVto',
+            key: 'trazabilidad',
+            subkey: 'fechaVto',
             ancho: '20%',
             enEdicion: null
         }
@@ -159,10 +163,8 @@ export class IngresoFormService {
     /**
      * Retorna todos los productos de la empresa actual
      */
-    getAllProductos = () => {
-        //this.recursoService.getRecursoList(resourcesREST.productos)().subscribe(a=>console.log(a));
-        return this.recursoService.getRecursoList(resourcesREST.productos)();
-    }
+    getAllProductos = () => this.recursoService.getRecursoList(resourcesREST.productos)();
+    
 
     /**
      * Retorna un array de solo los prodPendientes que son trazables
@@ -193,7 +195,7 @@ export class IngresoFormService {
     buscaModelos = (prodsPend: ProductoPendiente[]) => {
         const prodsModel = prodsPend.map(prodP => new ProductoBuscaModelo(
             {
-                idProducto: prodP.idProductos,
+                idProducto: prodP.producto.idProductos,
                 precio: prodP.precio,
                 cantidad: prodP.pendiente
             }
@@ -208,56 +210,62 @@ export class IngresoFormService {
      * 
      */
     confirmarYGrabarComprobante = (comprobante: Comprobante) => 
-    (comproRelac: ComprobanteRelacionado) =>
-    (provSelec: Padron) => 
-    (productosPend: ProductoPendiente[]) => 
-    (modelosFactura: ModeloFactura[]) =>
-    (cotizacionDatos: { cotizacion: Cotizacion, total: number }) =>  {
-        
-        // Valido los datos
-        this.validarDatosComprobante(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos);
-
-        return this.authService.grabaComprobante(
+        (comproRelac: ComprobanteRelacionado) =>
+        (provSelec: Padron) => 
+        (productosPend: ProductoPendiente[]) => 
+        (modelosFactura: ModeloFactura[]) =>
+        (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
+        (depositoSelec: Deposito) => this.authService.grabaComprobante(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos).map(
+        )(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec).map(
             respGraba => console.log(respGraba)
-        );
-
-    }
+        )
 
     /**
      * Valida que los datos estén correctos
      */
-    validarDatosComprobante =  (comprobante: Comprobante) => 
-    (comproRelac: ComprobanteRelacionado) =>
-    (provSelec: Padron) => 
-    (productosPend: ProductoPendiente[]) => 
-    (modelosFactura: ModeloFactura[]) =>
-    (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => {
+    checkIfDatosValidosComprobante =   (comprobante: Comprobante) => 
+                                (provSelec: Padron) => 
+                                (productosPend: ProductoPendiente[]) => 
+                                (modelosFactura: ModeloFactura[]) => {
         // Primero checkeo nulos
-        this.checkNulosDatosComprobantes(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)
+        const noExistenNulos = this.checkIfNulosDatosComprobantes(comprobante)(provSelec)(productosPend)(modelosFactura);
 
+        // Checkeo que haya productos agregados
+        const existenProductos = this.checkIfExistenProductos(productosPend)(modelosFactura);
+
+        // Si no existen nulos y si existen productos, los datos son validos
+        return noExistenNulos && existenProductos
 
     }
 
     /**
-     * Checkea nulos
+     * Me fijo si hay productos agregados
      */
-    checkNulosDatosComprobantes = (comprobante: Comprobante) => (comproRelac: ComprobanteRelacionado) =>(provSelec: Padron) => (productosPend: ProductoPendiente[]) => (modelosFactura: ModeloFactura[]) =>(cotizacionDatos: { cotizacion: Cotizacion, total: number }) => {
-        if (
-            provSelec.padronCodigo &&
-            comprobante.tipo.idCteTipo && 
-            comprobante.letra && 
-            comprobante.puntoVenta &&
-            comprobante.numero &&
-            comprobante.moneda.idMoneda && 
-            comprobante.fechaComprobante &&
-            comprobante.fechaVto
+    checkIfExistenProductos = (productosPend: ProductoPendiente[]) => (modelosFactura: ModeloFactura[]) => (
+        productosPend.length > 0 && 
+        modelosFactura.length > 0
+    )
 
-        ) {
-
-        }
-    }
+    /**
+     * Checkea si existen nulos
+     * @return TRUE si NO hay nulos
+     */
+    checkIfNulosDatosComprobantes =   (comprobante: Comprobante) => 
+                                    (provSelec: Padron) => 
+                                    (productosPend: ProductoPendiente[]) => 
+                                    (modelosFactura: ModeloFactura[]) => (
+        provSelec.padronCodigo &&
+        comprobante.tipo.idCteTipo && 
+        comprobante.letra && 
+        comprobante.puntoVenta &&
+        comprobante.numero &&
+        comprobante.moneda.idMoneda && 
+        comprobante.fechaComprobante &&
+        comprobante.fechaVto && 
+        productosPend && 
+        modelosFactura
+    )
 
     /**
      * Autocompleta con ceros

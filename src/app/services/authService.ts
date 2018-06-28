@@ -28,6 +28,7 @@ import { Factura } from '../models/factura';
 import { Cotizacion } from 'app/models/cotizacion';
 import { ProductoPendiente } from 'app/models/productoPendiente';
 import { ModeloFactura } from 'app/models/modeloFactura';
+import { Deposito } from '../models/deposito';
 
 @Injectable()
 export class AuthService {
@@ -221,7 +222,8 @@ export class AuthService {
                         (provSelec: Padron) => 
                         (productosPend: ProductoPendiente[]) => 
                         (modelosFactura: ModeloFactura[]) =>
-                        (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => {
+                        (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
+                        (depositoSelec: Deposito) => {
 
         debugger;
         return this.request(
@@ -235,15 +237,11 @@ export class AuthService {
                 idCteTipo: comprobante.tipo.idCteTipo,
                 letra: comprobante.letra,
                 numero: Number(comprobante.puntoVenta + comprobante.numero),
-                // fechaEmision: `${comprobante.fechaComprobante.year}-${comprobante.fechaComprobante.month}-${comprobante.fechaComprobante.day}`,
-                // fechaVencimiento: `${comprobante.fechaComprobante.year}-${comprobante.fechaComprobante.month}-${comprobante.fechaComprobante.day}`,
-                // fechaConta: `${comprobante.fechaComprobante.year}-${comprobante.fechaComprobante.month}-${comprobante.fechaComprobante.day}`,
-                fechaEmision: '2018-01-01',
-                fechaVencimiento: '2018-01-01',
-                fechaConta: '2018-01-01',
+                fechaEmision: comprobante.fechaComprobante.getFechaFormateada(),
+                fechaVencimiento: comprobante.fechaComprobante.getFechaFormateada(),
+                fechaConta: comprobante.fechaComprobante.getFechaFormateada(),
                 cai: ' ',
-                caiVto: '2018-01-01',
-                //caiVto: `${comprobante.fechaComprobante.year}-${comprobante.fechaComprobante.month}-${comprobante.fechaComprobante.day}`,
+                caiVto:  comprobante.fechaComprobante.getFechaFormateada(),
                 codBarra: ' ',
                 idPadron: provSelec.padronCodigo,
                 idFormaPago: 5,
@@ -283,7 +281,7 @@ export class AuthService {
                         cantidadBulto: prod.cantBultos,
                         despacho: prod.despacho ? prod.despacho : ' ',
                         trazable: prod.producto.trazable,
-                        idDeposito: prod.deposito ? prod.deposito : null,
+                        idDeposito: depositoSelec.idDeposito,
                         observacionDetalle: prod.producto.observaciones ? prod.producto.observaciones : ' ',
                         imputacion: prod.imputacion.seleccionada.ctaContable,
                         idFactCabImputa: prod.idFactCabImputada,
@@ -298,7 +296,21 @@ export class AuthService {
                         totalComprobante: cotizacionDatos.total,
                         porcentaje: 0
                     }
-                })
+                }),
+                grillaTrazabilidad: productosPend
+                    .filter(prodPend => prodPend.producto.trazable)
+                    .map(prodTraza => {
+                        return {
+                            nroLote: prodTraza.trazabilidad.lote,
+                            serie: prodTraza.trazabilidad.serie,
+                            fechaElab: prodTraza.trazabilidad.fechaElab.getFechaFormateada(),
+                            fechaVto: prodTraza.trazabilidad.fechaVto.getFechaFormateada(),
+                            vigencia: true,
+                            idProducto: prodTraza.producto.idProductos
+                        }
+                    })
+
+                
             },
             {}
         );

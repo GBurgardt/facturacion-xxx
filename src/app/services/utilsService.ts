@@ -8,6 +8,7 @@ import { isString } from 'util';
 import dynamicClass from 'app/services/dynamicClassService';
 import { resourcesREST } from 'constantes/resoursesREST';
 import { routing } from '../pages/main/tablas/tablas.routing';
+import { DateLikePicker } from 'app/models/dateLikePicker';
 
 @Injectable()
 export class UtilsService {
@@ -208,6 +209,22 @@ export class UtilsService {
     /**
      * Retorna el tipo de datos
      */
-    getTipoDato = (dato) => (dato && dato.constructor && dato.constructor.name) ? dato.constructor.name : null;
+    getTipoDato = (dato) => {
+        console.log(dato);
+        dato && dato.constructor ? console.log(dato.constructor): null;
+        dato && dato.constructor ? console.log(dato.constructor.name): null;
+        return (dato && dato.constructor && dato.constructor.name) ? dato.constructor.name : null
+    };
+
+    /**
+     * Dado un string en formato ddmm retorna dd/mm/aaaa en typeData DateLikePicker, o null en caso de formato incorrecto
+     */
+    stringToDateLikePicker = (valueString) => valueString.length === 4 ?
+        new DateLikePicker(null, {
+            day: Number(valueString.substring(0, 2)),
+            month: Number(valueString.substring(2)),
+            year: (new Date()).getFullYear()
+        }) : null
+    
 
 }
