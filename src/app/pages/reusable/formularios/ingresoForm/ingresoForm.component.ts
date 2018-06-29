@@ -273,25 +273,22 @@ export class IngresoForm {
      * También retorno el proveedor seleccionado en el input
      */
     onBlurInputProv = (e) => {
-        // Agrego el settimeout para que se ejecute antes el evento click de la lista, sino se ejecuta antes este y nunca se ejecuta el click de la lista
-        setTimeout(() => {
-            // Vacio filtrados
-            this.proveedores.filtrados.next([]);
+        // Vacio filtrados
+        this.proveedores.filtrados.next([]);
 
-            // Actualizo proveedor seleccionado
-            try {
-                this.proveedorSeleccionado = this.ingresoFormService.seleccionarProveedor(this.proveedores.todos)(this.proveedorSeleccionado);
-                this.ingresoFormService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
+        // Actualizo proveedor seleccionado
+        try {
+            this.proveedorSeleccionado = this.ingresoFormService.seleccionarProveedor(this.proveedores.todos)(this.proveedorSeleccionado);
+            this.ingresoFormService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
+        }
+        catch(err) {
+            // Muestro error
+            if (err && err.nombre && err.descripcion) {
+                this.utilsService.showModal(err.nombre)(err.descripcion)()();
             }
-            catch(err) {
-                // Muestro error
-                if (err && err.nombre && err.descripcion) {
-                    this.utilsService.showModal(err.nombre)(err.descripcion)()();
-                }
-                // Vacio proveedor seleccionado
-                this.proveedorSeleccionado = new Padron();
-            }
-        }, 100)
+            // Vacio proveedor seleccionado
+            this.proveedorSeleccionado = new Padron();
+        }
     }
 
 

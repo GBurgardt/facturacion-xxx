@@ -3,7 +3,7 @@
         <div class="col-sm-2">
             <div class="form-group inline-group">
                 <label for="proveedorSeleccionado">Proveedor</label>
-                <input (keyup.arrowdown)="onFocusPopupLista($event)" id="proveedorSeleccionado" (blur)="onBlurInputProv($event)" (keyup.enter)="onEnterInputProv($event)" (ngModelChange)="onChangeInputProveedor($event)" [(ngModel)]="proveedorSeleccionado.padronCodigo" type="text" class="form-control" placeholder="">
+                <input id="proveedorSeleccionado" (blur)="onBlurInputProv($event)" (keyup.enter)="onEnterInputProv($event)" (ngModelChange)="onChangeInputProveedor($event)" [(ngModel)]="proveedorSeleccionado.padronCodigo" type="text" class="form-control" placeholder="">
             </div>
         </div>
 

@@ -31,8 +31,7 @@
         "../node_modules/ng2-slim-loading-bar/style.css",
         "app/theme/theme.scss",
         "styles.scss"
-
-        ],
+      ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.js",
         "../node_modules/easy-pie-chart/dist/jquery.easypiechart.js",
@@ -72,7 +71,6 @@
   },
   "defaults": {
     "styleExt": "scss",
-    "component": {
-    }
+    "component": {}
   }
 }
