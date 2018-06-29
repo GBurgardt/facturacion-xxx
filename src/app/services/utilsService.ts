@@ -174,10 +174,11 @@ export class UtilsService {
      * @param item2
      */
     dropdownCompareWith(item1: any, item2: any) {
+        // debugger;
         // Obtengo la primer key (que siempre es la ID) de la clase del objeto recibido
-        const idRecurso1 = Object.keys(item1)[0];
-        const idRecurso2 = Object.keys(item2)[0];
-        return item1[idRecurso1] === item2[idRecurso2];
+        const idRecurso1 = item1 ? Object.keys(item1)[0] : null;
+        const idRecurso2 = item2 ? Object.keys(item2)[0] : null;
+        return idRecurso1 && idRecurso2 ? item1[idRecurso1] === item2[idRecurso2] : null;
     }
 
     /**

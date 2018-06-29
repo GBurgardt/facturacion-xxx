@@ -3,11 +3,11 @@
         <div class="col-sm-2">
             <div class="form-group inline-group">
                 <label for="proveedorSeleccionado">Proveedor</label>
-                <input id="proveedorSeleccionado" (blur)="onBlurInputProv($event)" (keyup.enter)="onEnterInputProv($event)" (ngModelChange)="onChangeInputProveedor($event)" [(ngModel)]="proveedorSeleccionado.padronCodigo" type="text" class="form-control" placeholder="">
+                <input (keyup.arrowdown)="onFocusPopupLista($event)" id="proveedorSeleccionado" (blur)="onBlurInputProv($event)" (keyup.enter)="onEnterInputProv($event)" (ngModelChange)="onChangeInputProveedor($event)" [(ngModel)]="proveedorSeleccionado.padronCodigo" type="text" class="form-control" placeholder="">
             </div>
         </div>
 
-        <popup-lista    *ngIf="proveedorSeleccionado.padronCodigo && proveedorSeleccionado.padronCodigo.length > 0"
+        <popup-lista    *ngIf="proveedorSeleccionado.padronCodigo && proveedorSeleccionado.padronCodigo.length > 0" 
                         [items]="proveedores.filtrados.asObservable().distinctUntilChanged()" 
                         [keysToShow]="['padronApelli', 'padronCodigo']" 
                         [onClickItem]="popupLista.onClickListProv"
@@ -129,8 +129,8 @@
                 <div class="col-sm-7">
                     <div class="form-group inline-group">
                         <label for="cteNro">Nro:</label>
-                        <input (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('comprobanteRelacionado')" [(ngModel)]="comprobanteRelacionado.puntoVenta" type="text" class="form-control pre-numero-input" id="puntoVenta" placeholder="">
-                        <input (blur)="onBlurNumeroAutocomp($event)('numero')('comprobanteRelacionado')" [(ngModel)]="comprobanteRelacionado.numero" type="text" class="form-control" id="numero" placeholder="">
+                        <input [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null" (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('comprobanteRelacionado')" [(ngModel)]="comprobanteRelacionado.puntoVenta" type="text" class="form-control pre-numero-input" id="puntoVenta" placeholder="">
+                        <input [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null" (blur)="onBlurNumeroAutocomp($event)('numero')('comprobanteRelacionado')" [(ngModel)]="comprobanteRelacionado.numero" type="text" class="form-control" id="numero" placeholder="">
                     </div>
                 </div>
             </div>
@@ -168,7 +168,8 @@
                                     [confirmEdit]="tablas.funciones.onClickConfirmEdit('columnasProductos')" 
                                     [onClickProductoLista]="onClickProductoLista" 
                                     [enableAddItem]="true" 
-                                    [onSelectDeposito]="onSelectDeposito">
+                                    [onSelectDeposito]="onSelectDeposito" 
+                                    [auxDepositoSelect]="depositoSelec">
                     </tabla-ingreso>
 
                 </ng-template>
@@ -296,7 +297,7 @@
         <custom-card class="col-sm-2 card-flex-column-reverse" title="">
             <div class="col-sm-12 btn-container">
                 <button [disabled]="!ingresoFormService.checkIfDatosValidosComprobante(comprobante)
-                    (proveedorSeleccionado)(tablas.datos.productosPend)(tablas.datos.modelosFactura)"
+                    (proveedorSeleccionado)(tablas.datos.productosPend)(tablas.datos.modelosFactura)(depositoSelec)"
                 
                         (click)="onClickConfirmar()" class="btn btn-primary btn-ingreso-from">
                     Confirmar

@@ -108,19 +108,8 @@ export class IngresoForm {
                 });
             },
             onClickConfirmEdit: (tipoColumnas) => (prodSelect: ProductoPendiente) => { 
-                // Actualizo el Total Comprobante sumando todos los precios nuevamente (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
-                this.cotizacionDatos.total = Math.round(
-                    _.sumBy(
-                        this.tablas.datos.productosPend,
-                        (prod) => Number(prod.precio) ? Number(prod.precio) * Number(prod.pendiente) : 0
-                    )
-                );
-
-                // Actualizo los modelos factura (si se ingresó precio y pendiente)
-                (prodSelect && prodSelect.precio > 0 && prodSelect.pendiente > 0) ? 
-                    this.ingresoFormService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
-                        this.tablas.datos.modelosFactura = modelProds
-                    }) : null;
+                // Actualizo datos dle producto
+                this.actualizarDatosProductos();
 
                 // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
                 this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
@@ -181,15 +170,18 @@ export class IngresoForm {
     /**
      * Busca los productos pendientes de acuerdo al comprobante relacionado
      */
-    onClickBuscarPendientes = () => {
-        this.ingresoFormService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado).subscribe(prodsPend=>
+    onClickBuscarPendientes = () => 
+        this.ingresoFormService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado).subscribe(prodsPend=>{
+            // Agrego los productos
             this.tablas.datos.productosPend = _.uniqWith(
                 this.tablas.datos.productosPend.concat(prodsPend),
                 (a:ProductoPendiente,b:ProductoPendiente) => a.producto.codProducto === b.producto.codProducto
-            )
-        );
-        //this.ingresoFormService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado).subscribe(prodsPend=>console.log(prodsPend));
-    }
+            );
+
+            // Actualizo datos de los productos
+            this.actualizarDatosProductos();
+        });
+    
 
     /**
      * Agrega el producto seleccionado a la lista de productosPendientes
@@ -199,7 +191,11 @@ export class IngresoForm {
         
         const existeProd = this.tablas.datos.productosPend.find(prod=>prod.producto.idProductos === prodSelec.producto.idProductos)
 
-        !existeProd ? this.tablas.datos.productosPend.push(prodSelec) : null;
+        if (!existeProd) {
+            this.tablas.datos.productosPend.push(prodSelec);
+            this.actualizarDatosProductos();
+        }
+        // !existeProd ? this.tablas.datos.productosPend.push(prodSelec) : null;
 
     }
 
@@ -207,23 +203,41 @@ export class IngresoForm {
      * Valida y graba el comprobante
      */
     onClickConfirmar = () => {
-
-        console.log(this.comprobante)
-        
-
-        // this.ingresoFormService.confirmarYGrabarComprobante(this.comprobante)
-        //     (this.comprobanteRelacionado)
-        //     (this.proveedorSeleccionado)
-        //     (this.tablas.datos.productosPend)
-        //     (this.tablas.datos.modelosFactura)
-        //     (this.cotizacionDatos)
-        //     (this.depositoSelec).subscribe(
-        //         a=>console.log(a)
-        //     )
+        this.ingresoFormService.confirmarYGrabarComprobante(this.comprobante)
+            (this.comprobanteRelacionado)
+            (this.proveedorSeleccionado)
+            (this.tablas.datos.productosPend)
+            (this.tablas.datos.modelosFactura)
+            (this.cotizacionDatos)
+            (this.depositoSelec).subscribe((respuesta: any) => {
+                console.log(respuesta);
+                // Muestro mensaje
+                this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
+            })
     }
 
     ///////////////////////////////// Eventos (Distintos de onclick) /////////////////////////////////
     
+    /**
+     * Actualiza el total en cotizacion y los modelosFactura
+     */
+    actualizarDatosProductos = () => {
+        // Actualizo el Total Comprobante sumando todos los precios nuevamente (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
+        this.cotizacionDatos.total = Math.round(
+            _.sumBy(
+                this.tablas.datos.productosPend,
+                (prod) => Number(prod.precio) ? Number(prod.precio) * Number(prod.pendiente) : 0
+            )
+        );
+
+        // Actualizo los modelos factura (si se ingresó precio y pendiente)
+        // (prodSelect && prodSelect.precio > 0 && prodSelect.pendiente > 0) ? 
+            this.ingresoFormService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
+                this.tablas.datos.modelosFactura = modelProds
+            }) 
+            // : null;
+    }
+
     /**
      * Evento change del input del proovedor
      */
@@ -241,6 +255,7 @@ export class IngresoForm {
         try {
             const codProv = e.target.value;
             const provSeleccionado = _.clone(this.proveedores.todos.find((prove) => prove.padronCodigo.toString() === codProv));
+            this.ingresoFormService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
             if (provSeleccionado) {
                 this.proveedorSeleccionado = provSeleccionado;
             } else {
@@ -266,6 +281,7 @@ export class IngresoForm {
             // Actualizo proveedor seleccionado
             try {
                 this.proveedorSeleccionado = this.ingresoFormService.seleccionarProveedor(this.proveedores.todos)(this.proveedorSeleccionado);
+                this.ingresoFormService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
             }
             catch(err) {
                 // Muestro error
@@ -289,7 +305,7 @@ export class IngresoForm {
 
         // Hago focus en el prox input
         (keyFecha==='fechaComprobante') ? document.getElementById("fechaVto").focus() : null;
-        (keyFecha==='fechaVto') ? document.getElementById("cteRelSelect").focus() : null;
+        // (keyFecha==='fechaVto') ? document.getElementById("cteRelSelect").focus() : null;
 
     }
 

@@ -154,11 +154,7 @@ export class AuthService {
     * @argument token
     * @argument filtros Lo filtro
     */
-    getProductosPendientes = (token: string) => (proveedor: Padron) => (comprobanteRelacionado: {
-        tipo: TipoComprobante,
-        numero: number,
-        todosLosPendientes: boolean
-    }) => {
+    getProductosPendientes = (token: string) => (proveedor: Padron) => (comproRel: ComprobanteRelacionado) => {
         return this.request(
             [],
             RequestMethod.Post,
@@ -167,10 +163,10 @@ export class AuthService {
             },
             resourcesREST.buscarPendientes.nombre,
             {
-                cteTipo : comprobanteRelacionado.tipo.idCteTipo,
-                facNumero : comprobanteRelacionado.todosLosPendientes ? 0 : comprobanteRelacionado.numero,
+                cteTipo : comproRel.tipo.idCteTipo,
+                facNumero : comproRel.todosLosPendientes ? 0 : Number(comproRel.puntoVenta + comproRel.numero),
                 codigoProv : Number(proveedor.padronCodigo),
-                pendiente : comprobanteRelacionado.todosLosPendientes ? 1 : 0,
+                pendiente : comproRel.todosLosPendientes ? 1 : 0,
                 idProducto : 0,
                 idDeposito : 0,
                 despacho : ""
@@ -225,7 +221,7 @@ export class AuthService {
                         (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
                         (depositoSelec: Deposito) => {
 
-        debugger;
+        
         return this.request(
             [],
             RequestMethod.Post,
@@ -249,12 +245,12 @@ export class AuthService {
                 precioReferenciaCanje: 0,
                 interesCanje: 0,
                 idMoneda: comprobante.moneda.idMoneda,
-                //nombre: provSelec.padronApelli,
-                nombre: 'testest',
+                nombre: provSelec.padronApelli,
+                // nombre: 'testest',
                 cuit: provSelec.cuit.toString(),
                 sisSitIva: provSelec.condIva.descCorta,
                 codigoPostal: ' ',
-                listaPrecio: ' ',
+                listaPrecio: ' ',   
                 cotDolar: cotizacionDatos.cotizacion.cotizacion,
                 fechaDolar: `2018-01-01`,
                 observaciones: comprobante.observaciones,
@@ -267,15 +263,16 @@ export class AuthService {
                 factDet: true,
                 factFormaPago: false,
                 factImputa: true,
-                factPie: true,
+                factPie: modelosFactura.length > 0,
                 produmo: true,
+                lote: productosPend.every(prodPend => prodPend.producto.trazable),
                 grillaArticulos: productosPend.map(prod => {
                     return {
                         idProducto: prod.producto.idProductos,
                         articulo: prod.producto.descripcion ? prod.producto.descripcion : '',
                         pendiente: prod.pendiente,
                         precio: prod.precio,
-                        porCalc: prod.porCalc ? prod.porCalc : null,
+                        porCalc: prod.porCalc ? prod.porCalc : 0,
                         descuento: prod.descuento,
                         ivaPorc: prod.ivaPorc,
                         cantidadBulto: prod.cantBultos,
@@ -284,7 +281,7 @@ export class AuthService {
                         idDeposito: depositoSelec.idDeposito,
                         observacionDetalle: prod.producto.observaciones ? prod.producto.observaciones : ' ',
                         imputacion: prod.imputacion.seleccionada.ctaContable,
-                        idFactCabImputa: prod.idFactCabImputada,
+                        idFactCabImputa: prod.idFactCabImputada ? prod.idFactCabImputada : null,
                         itemImputada: prod.itemImputada
                     }
                 }),

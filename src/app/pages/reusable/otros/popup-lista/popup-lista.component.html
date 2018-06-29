@@ -1,6 +1,6 @@
 <div class="popup-lista" [ngStyle]="getPosicionLista()">
-    <ul class="list-group">
-        <li *ngFor="let item of items | async" class="list-group-item" (click)="onClickItem(item)" >
+    <ul id="list" class="list-group">
+        <li *ngFor="let item of items | async" class="list-group-item listElement" (click)="onClickItem(item)" >
             {{parseItem(item)}}
         </li>
     </ul>

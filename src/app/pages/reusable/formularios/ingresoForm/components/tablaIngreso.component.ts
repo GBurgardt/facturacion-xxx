@@ -52,7 +52,7 @@ export class TablaIngreso {
     depositos: Deposito[] = [];
     // Evento select en depositos, acutaliza el deposito seleccionado en ingresoForm.component
     @Input() onSelectDeposito;
-    auxDepositoSelect: Deposito;
+    @Input() auxDepositoSelect: Deposito;
 
     constructor(
         private utilsService: UtilsService,

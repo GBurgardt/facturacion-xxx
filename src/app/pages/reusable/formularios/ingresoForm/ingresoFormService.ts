@@ -153,7 +153,7 @@ export class IngresoFormService {
     /**
      * Buscar los productos pendientes
      */
-    buscarPendientes = (proveedor: Padron) => (comprobanteRel: any) => {
+    buscarPendientes = (proveedor: Padron) => (comprobanteRel: ComprobanteRelacionado) => {
         return this.authService.getProductosPendientes(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(proveedor)(comprobanteRel)
@@ -217,9 +217,7 @@ export class IngresoFormService {
         (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
         (depositoSelec: Deposito) => this.authService.grabaComprobante(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec).map(
-            respGraba => console.log(respGraba)
-        )
+        )(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec);
 
     /**
      * Valida que los datos estén correctos
@@ -227,17 +225,31 @@ export class IngresoFormService {
     checkIfDatosValidosComprobante =   (comprobante: Comprobante) => 
                                 (provSelec: Padron) => 
                                 (productosPend: ProductoPendiente[]) => 
-                                (modelosFactura: ModeloFactura[]) => {
+                                (modelosFactura: ModeloFactura[]) =>
+                                (depositoSelec: Deposito) => {
         // Primero checkeo nulos
-        const noExistenNulos = this.checkIfNulosDatosComprobantes(comprobante)(provSelec)(productosPend)(modelosFactura);
+        const noExistenNulos = this.checkIfNulosDatosComprobantes(comprobante)(provSelec)(productosPend)(modelosFactura)(depositoSelec);
 
         // Checkeo que haya productos agregados
         const existenProductos = this.checkIfExistenProductos(productosPend)(modelosFactura);
 
+        /// Checkeo que hayan cargado los datos de la trazabilidad
+        const trazabilidadCargada = this.checkIfTrazabilidadCargada(productosPend);
+
         // Si no existen nulos y si existen productos, los datos son validos
-        return noExistenNulos && existenProductos
+        return noExistenNulos && existenProductos && trazabilidadCargada
 
     }
+
+    /**
+     * Checkeo que lso datos de trazabilidad esten cargados en los productos trazables
+     */
+    checkIfTrazabilidadCargada = (productosPend: ProductoPendiente[]) => productosPend
+        .filter(prodPend => prodPend.producto.trazable)
+        .every(
+            prod => (prod.trazabilidad && prod.trazabilidad.lote && prod.trazabilidad.serie && prod.trazabilidad.fechaVto && prod.trazabilidad.fechaElab) 
+                ? true: false
+        )
 
     /**
      * Me fijo si hay productos agregados
@@ -254,7 +266,8 @@ export class IngresoFormService {
     checkIfNulosDatosComprobantes =   (comprobante: Comprobante) => 
                                     (provSelec: Padron) => 
                                     (productosPend: ProductoPendiente[]) => 
-                                    (modelosFactura: ModeloFactura[]) => (
+                                    (modelosFactura: ModeloFactura[]) => 
+                                    (depositoSelec: Deposito) => (
         provSelec.padronCodigo &&
         comprobante.tipo.idCteTipo && 
         comprobante.letra && 
@@ -264,7 +277,8 @@ export class IngresoFormService {
         comprobante.fechaComprobante &&
         comprobante.fechaVto && 
         productosPend && 
-        modelosFactura
+        modelosFactura && 
+        depositoSelec
     )
 
     /**

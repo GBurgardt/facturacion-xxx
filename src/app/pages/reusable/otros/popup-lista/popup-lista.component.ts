@@ -1,6 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'popup-lista',
@@ -42,4 +40,5 @@ export class PopupLista {
     getPosicionLista = () => {
         return {top: (this.fatherPosition.top + 22) + 'px', left: this.fatherPosition.left + 'px'}
     }
+
 }

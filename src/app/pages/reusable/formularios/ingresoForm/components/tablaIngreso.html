@@ -119,7 +119,7 @@
         <div class="deposito">
             <div class="form-group inline-group">
                 <label class="add-item-label" for="depositoInput">Deposito: </label>
-                <select [(ngModel)]="auxDepositoSelect" (ngModelChange)="onSelectDeposito($event)"  class="form-control without-padding">
+                <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="auxDepositoSelect" (ngModelChange)="onSelectDeposito($event)"  class="form-control without-padding">
                     <option *ngFor="let dep of depositos" [ngValue]="dep">
                         {{dep.descripcion}}
                     </option>
