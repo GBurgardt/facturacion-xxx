@@ -215,9 +215,10 @@ export class IngresoFormService {
         (productosPend: ProductoPendiente[]) => 
         (modelosFactura: ModeloFactura[]) =>
         (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
-        (depositoSelec: Deposito) => this.authService.grabaComprobante(
+        (depositoSelec: Deposito) => 
+        this.authService.grabaComprobante(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec);
+        )(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec)
 
     /**
      * Valida que los datos estén correctos
@@ -349,5 +350,45 @@ export class IngresoFormService {
             }
         }
     }
+
+
+    // keyPressInputForPopup = (upOrDown) => (prodsFiltrados) => (productoEnfocadoIndex) => 
+    //     // Busco el producto enfocado
+    //     prodsFiltrados.map(prodsLista => {
+    //         // Primero checkeo que el indice no se paseo
+    //         if (
+    //             prodsLista.length > 0 &&
+    //             !(upOrDown === 'down' && productoEnfocadoIndex === prodsLista.length - 1) &&
+    //             !(upOrDown === 'up' && productoEnfocadoIndex === 0)
+    //         ) {
+    //             // Primero actualizo el indice
+    //             const newIndex = productoEnfocadoIndex + (upOrDown === 'down' ? 1 : -1);
+
+    //             // Dsps les saco el enfoque a todos los elementos d ela lista
+    //             prodsLista.forEach(prodLista => {
+    //                 const aux = document.getElementsByClassName('li-popup-'+prodLista.producto.idProductos);
+    //                 // Le saco la clase que lo tiene seleccionado
+    //                 aux[0] && aux[0].className ? 
+    //                     aux[0].className = 'list-group-item listElement li-popup-'+prodLista.producto.idProductos : null;
+    //             });
+    
+    //             // Agarro el producto seleccenfocadoionado
+    //             const prodEnfocado = _.clone(prodsLista[newIndex])
+    //             // Agarro el elemento dom de la lista
+    //             const liPopup: any = prodEnfocado && prodEnfocado.producto ?
+    //                 document.getElementsByClassName('li-popup-'+prodEnfocado.producto.idProductos) :
+    //                 null;
+    //             // Lo selecciono y enfoco (si agarró algo)
+    //             liPopup && liPopup[0] && liPopup[0].className ? 
+    //                 liPopup[0].className += ' active-pop-elem' : null;
+    //             liPopup && liPopup[0] ? liPopup[0].focus() : null;
+                
+    //             return newIndex;
+    //         } else {
+    //             return productoEnfocadoIndex;
+    //         }
+
+    //     });
+    
 
 }

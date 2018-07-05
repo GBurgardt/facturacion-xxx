@@ -74,6 +74,15 @@
             .card-total-content {
                 padding: 1.7%;
             }
+
+            .deposito {
+                display: flex;
+                justify-content: flex-end;
+                div {
+                    margin-bottom: 5px;
+                    width: 50%;
+                }
+            }
         }
 
         

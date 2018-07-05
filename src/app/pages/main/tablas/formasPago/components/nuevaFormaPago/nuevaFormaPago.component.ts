@@ -29,7 +29,7 @@ export class NuevaFormaPago {
     ) {
         this.tiposFormaPago = this.recursoService.getRecursoList(resourcesREST.sisFormaPago)();
         this.listasPrecios = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
-        this.listasPrecios.subscribe(a=>console.log(a));
+        
     }
 
     onClickCrear = async () => {

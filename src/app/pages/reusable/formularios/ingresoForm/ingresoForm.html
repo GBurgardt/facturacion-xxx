@@ -3,7 +3,17 @@
         <div class="col-sm-2">
             <div class="form-group inline-group">
                 <label for="proveedorSeleccionado">Proveedor</label>
-                <input id="proveedorSeleccionado" (blur)="onBlurInputProv($event)" (keyup.enter)="onEnterInputProv($event)" (ngModelChange)="onChangeInputProveedor($event)" [(ngModel)]="proveedorSeleccionado.padronCodigo" type="text" class="form-control" placeholder="">
+                <input  id="proveedorSeleccionado" 
+                        (blur)="onBlurInputProv($event)" 
+                        (ngModelChange)="onChangeInputProveedor($event)" 
+                        [(ngModel)]="proveedorSeleccionado.padronCodigo" 
+                        type="text" 
+                        class="form-control" 
+                        placeholder=""
+                        (keyup.enter)="onEnterInputProv($event)" 
+                        (keydown.arrowdown)="keyPressInputTexto($event)('down')" 
+                        (keydown.arrowup)="keyPressInputTexto($event)('up')"
+                        >
             </div>
         </div>
 
@@ -167,9 +177,7 @@
                                     [edit]="tablas.funciones.onClickEdit('columnasProductos')" 
                                     [confirmEdit]="tablas.funciones.onClickConfirmEdit('columnasProductos')" 
                                     [onClickProductoLista]="onClickProductoLista" 
-                                    [enableAddItem]="true" 
-                                    [onSelectDeposito]="onSelectDeposito" 
-                                    [auxDepositoSelect]="depositoSelec">
+                                    [enableAddItem]="true">
                     </tabla-ingreso>
 
                 </ng-template>
@@ -267,32 +275,46 @@
             <textarea [(ngModel)]="comprobante.observaciones" class="form-control text-area-observaciones" id="observaciones"></textarea>
         </custom-card>
 
-        <custom-card class="col-sm-5 card-total card-flex-column-reverse" title="Totales">
-            <div class="card-total-content">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div>
-                            <label class="titulo-cotizacion">Cotizacion Dolar: </label>
-                            <label>{{cotizacionDatos.cotizacion.cotizacion}}</label>
+        <div class="col-sm-5 card-total card-flex-column-reverse">
+            
+            <custom-card class=" " title="Totales">
+            <!-- <custom-card class="col-sm-5 card-total card-flex-column-reverse" title="Totales"> -->
+                <div class="card-total-content">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div>
+                                <label class="titulo-cotizacion">Cotizacion Dolar: </label>
+                                <label>{{cotizacionDatos.cotizacion.cotizacion}}</label>
+                            </div>
+                        </div>
+        
+                        <div class="col-sm-6">
+                            <div id="fechaComprobante">
+                                <label class="titulo-cotizacion">Fecha: </label>
+                                <label>{{cotizacionDatos.cotizacion.fechaCotizacion | date:'dd/MM/yyyy'}}</label>
+                            </div>
                         </div>
                     </div>
-    
-                    <div class="col-sm-6">
-                        <div id="fechaComprobante">
-                            <label class="titulo-cotizacion">Fecha: </label>
-                            <label>{{cotizacionDatos.cotizacion.fechaCotizacion | date:'dd/MM/yyyy'}}</label>
+        
+                    <div class="row">
+                        <div class="total-comprobante col-sm-6">
+                            <label class="titulo-cotizacion">Total Comprobante: </label>
+                            <label>{{cotizacionDatos.total}}</label>
                         </div>
                     </div>
                 </div>
-    
-                <div class="row">
-                    <div class="total-comprobante col-sm-6">
-                        <label class="titulo-cotizacion">Total Comprobante: </label>
-                        <label>{{cotizacionDatos.total}}</label>
-                    </div>
+            </custom-card>
+            <div class="deposito">
+                <div class="form-group inline-group">
+                    <label class="add-item-label" for="depositoInput">Deposito: </label>
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="depositoSelec" class="form-control without-padding">
+                        <option *ngFor="let dep of depositos | async" [ngValue]="dep">
+                            {{dep.descripcion}}
+                        </option>
+                    </select>
                 </div>
             </div>
-        </custom-card>
+        </div>
 
         <custom-card class="col-sm-2 card-flex-column-reverse" title="">
             <div class="col-sm-12 btn-container">

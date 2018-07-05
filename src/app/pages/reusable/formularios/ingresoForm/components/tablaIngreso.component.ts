@@ -1,16 +1,12 @@
 import * as _ from 'lodash';
 import { Component, Input } from '@angular/core';
 import { UtilsService } from 'app/services/utilsService';
-import { IngresoFormService } from '../ingresoFormService';
 import { ProductoPendiente } from '../../../../../models/productoPendiente';
-import { Producto } from '../../../../../models/producto';
-//import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs';
-import { DateLikePicker } from '../../../../../models/dateLikePicker';
 import { RecursoService } from '../../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
-import { ModeloDetalle } from '../../../../../models/modeloDetalle';
-import { Deposito } from '../../../../../models/deposito';
+import { IngresoFormService } from 'app/pages/reusable/formularios/ingresoForm/ingresoFormService';
+import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
 
 
 @Component({
@@ -46,17 +42,16 @@ export class TablaIngreso {
         filtrados: BehaviorSubject<ProductoPendiente[]>;
     } = {todos: [], filtrados: new BehaviorSubject([])}
 
-    @Input() onClickProductoLista;
+    productoSeleccionado: ProductoPendiente = new ProductoPendiente();
+    // Inhdice del producto enfocado del popup
+    productoEnfocadoIndex: number = -1;
 
-    ///////// OTROS ///////////
-    depositos: Deposito[] = [];
-    // Evento select en depositos, acutaliza el deposito seleccionado en ingresoForm.component
-    @Input() onSelectDeposito;
-    @Input() auxDepositoSelect: Deposito;
+    @Input() onClickProductoLista;
 
     constructor(
         private utilsService: UtilsService,
-        private recursoService: RecursoService
+        private recursoService: RecursoService,
+        private popupListaService: PopupListaService
     ) {
         // Cargo todos los productos pendientes posibles
         recursoService.getRecursoList(resourcesREST.buscarPendientes)().subscribe(prodsPendPosibles => {
@@ -65,9 +60,9 @@ export class TablaIngreso {
         });
 
         // Obtengo depositos
-        recursoService.getRecursoList(resourcesREST.depositos)().subscribe(
-            depositos => this.depositos = depositos
-        )
+        // recursoService.getRecursoList(resourcesREST.depositos)().subscribe(
+        //     depositos => this.depositos = depositos
+        // )
     }
 
     
@@ -102,8 +97,6 @@ export class TablaIngreso {
             return key ? 'Si' : 'No';
         } else if (tipoDato === 'object'){
             // Me fijo el nombre de la clase del objeto
-            key ? console.log(key) : null;
-            key && key.constructor  ? console.log(key.constructor.name) : null;
             if (
                 key && 
                 (
@@ -152,6 +145,8 @@ export class TablaIngreso {
      */
     onBlurInputItemAdd = () => {
         setTimeout(()=>this.productosBusqueda.filtrados.next([]), 100);
+        // También reseteo el indice de busqueda
+        this.productoEnfocadoIndex = -1;
     }
 
     /**
@@ -172,6 +167,53 @@ export class TablaIngreso {
 
         // Hago focus en el prox input
         (subkey==='fechaElab') ? document.getElementById("fecha-fechaVto").focus() : null;
+
+        // Confirmo edicion despues de hacer blur en el último campo
+        (subkey === 'fechaVto') ? this.confirmEdit(item) : null;
+    }
+
+
+    /**
+     * Evento de cuando se apreta felcha arriba o feclah abajo en input de busca producto
+     */
+    keyPressInputTexto = (e: any) => (upOrDown) => {
+        e.preventDefault();
+        // Hace todo el laburo de la lista popup y retorna el nuevo indice seleccionado
+        this.popupListaService.keyPressInputForPopup(upOrDown)(this.productosBusqueda.filtrados)(this.productoEnfocadoIndex)
+            .subscribe(newIndex => this.productoEnfocadoIndex = newIndex)
+            .unsubscribe()
+    }
+
+    /**
+     * Evento on enter en el input de buscar productos
+     */
+    onEnterInputBuscProd = (e: any) => {
+        e.preventDefault();
+        this.productosBusqueda.filtrados.subscribe(prodsLista => {
+            // Busco el producto
+            const prodSelect = prodsLista && prodsLista.length ? prodsLista[this.productoEnfocadoIndex] : null;
+            // Lo selecciono
+            prodSelect ? this.onClickProductoListaLocal(prodSelect) : null;
+            // Reseteo el indice del prod buscado
+            this.productoEnfocadoIndex = -1;
+        })
+    }
+
+    /**
+     * Funcionalidad extra en onclickproductolsita
+     */
+    onClickProductoListaLocal = (prodSelect) => {
+        this.textoBusqueda = '';
+        this.onClickProductoLista(prodSelect)
     }
 
 }
+
+
+/**
+ * (
+                    this.productoEnfocadoIndex >=0 && this.productoEnfocadoIndex < prodsLista.length-1 ||
+                    this.productoEnfocadoIndex === -1 && upOrDown === 'down' ||
+                    this.productoEnfocadoIndex === (prodsLista.length - 2) && upOrDown === 'up'
+                )
+ */

@@ -94,13 +94,6 @@ export class DataTables {
     /**
      * 
      */
-    onClickSelectItemBusqueda = (item) => {
-        console.log('onClickSelectItemBusqueda');
-    }
-
-    /**
-     * 
-     */
     onChangeInputItemAdd = (e) => {
         // console.log('da');
         this.itemsBusqueda.subscribe(a=>console.log(a));

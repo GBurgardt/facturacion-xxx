@@ -10,8 +10,10 @@
             </tr>
 
         </thead>
-        <tbody>
+
+        <tbody #tbodyref>
             <tr *ngFor="let item of mf.data">
+                <!-- BOTONES EDITAR Y BORRAR -->
                 <td *ngIf="edit || remove" class="btn-container">
                     <div *ngIf="edit" (click)="edit(item)" class="btn-accion btn-editar">
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
@@ -23,7 +25,9 @@
                         <i class="fa fa-check" aria-hidden="true"></i>
                     </div>
                 </td>
+                <!-- FIN BOTONES EDITAR Y BORRAR -->
 
+                <!-- ACA MUESTRA LA DATA -->
                 <td *ngFor="let col of columns">
                     <div *ngIf="col.subkey">
                         <div *ngIf="!col.enEdicion || col.enEdicion !== item.producto.idProductos">
@@ -33,8 +37,12 @@
                         <div *ngIf="col.enEdicion && col.enEdicion === item.producto.idProductos">
                             <input *ngIf=" (col.nombre !== 'trazable' && col.key !== 'trazabilidad') ||
                                             (col.key === 'trazabilidad' && col.subkey !== 'fechaElab' && col.subkey !== 'fechaVto')"
-                                [(ngModel)]="item[col.key][col.subkey]" style="margin: 4px 6px;" type="text" 
-                                class="form-control edit-input" id="inputSubKey" placeholder="">
+                                    [(ngModel)]="item[col.key][col.subkey]" 
+                                    style="margin: 4px 6px;" 
+                                    type="text" 
+                                    [ngClass]="'form-control edit-input input-edit-' + item.producto.idProductos" 
+                                    id="inputSubKey" 
+                                    placeholder="">
 
                             <div *ngIf="col.key === 'trazabilidad' && (col.subkey === 'fechaElab' || col.subkey === 'fechaVto')" class="datepicker-datelikepicker">
                                 <input [attr.id]="'fecha-' + col.subkey" (blur)="onCalculateFecha($event)(col.key)(col.subkey)(item)" (keyup.enter)="onCalculateFecha($event)(col.key)(col.subkey)(item)" class="form-control" placeholder="dd-mm-yyyy" name="dp" [(ngModel)]="item[col.key][col.subkey]" ngbDatepicker #dComp="ngbDatepicker">
@@ -60,37 +68,85 @@
                                 {{ item[col.key] && item[col.key].seleccionada ? item[col.key].seleccionada.descripcion : ''}}
                             </div>
 
+                            
+
                         </div>
                         <div *ngIf="col.enEdicion && col.enEdicion === item.producto.idProductos">
 
                             
-                            <input  *ngIf=" (col.nombre !== 'imputacion' && col.key !== 'trazabilidad')"
-                                    [(ngModel)]="item[col.key]"  style="margin: 4px 6px;" type="text" 
-                                    class="form-control edit-input" id="inputSubKey" placeholder="">
+                            <input  *ngIf=" (col.nombre !== 'imputacion' && col.key !== 'trazabilidad' && col.nombre !== 'cantidad')"
+                                [(ngModel)]="item[col.key]"  style="margin: 4px 6px; text-align: end;" type="text" 
+                                class="form-control edit-input" id="inputSubKey" placeholder="">
                             
-                            <select *ngIf="col.nombre === 'imputacion'" [(ngModel)]="item[col.key].seleccionada" class="form-control without-padding" >
+                            <!-- CASOS PARTICULARES -->
+                            <select *ngIf="col.nombre === 'imputacion'" 
+                                    [(ngModel)]="item[col.key].seleccionada"
+                                    [ngClass]="'form-control without-padding select-impu-' + item.producto.idProductos" 
+                                    >
                                 <option *ngFor="let impu of item[col.key].todas" [ngValue]="impu">
                                     {{impu.descripcion}}
                                 </option>
                             </select>
-<!-- 
-                            <div *ngIf="col.key === 'trazabilidad' && (col.subkey === 'fechaElab' || col.subkey === 'fechaVto')" class="datepicker-item">
-                                <div class="input-group">
-                                    <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="item[col.key]" ngbDatepicker #dComp="ngbDatepicker">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button" style="height: 100%;">
-                                            <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div> -->
 
+                            <input  *ngIf="col.nombre === 'cantidad'"
+                                [(ngModel)]="item[col.key]"  style="margin: 4px 6px; text-align: end;" type="text" 
+                                class="form-control edit-input" id="inputSubKey" placeholder="" 
+                                (blur)="confirmEdit(item)">
+                            <!-- FIN CASOS PARTICULARES -->
                         </div>
                     </div>
                 </td>
+                <!-- FIN DE MUESTREO DE DATA -->
+
             </tr>
 
+            <!-- ROW PARA AGREGAR UN PRODUCTO -->
+            <tr *ngIf="enableAddItem">
+                <td></td>
+                <td>
+                    <input  [(ngModel)]="textoBusqueda" type="text" class="form-control input-new-prod" id="addInput" placeholder="" 
+                            (blur)="onBlurInputItemAdd()" 
+                            (ngModelChange)="onChangeInputItemAdd($event)" 
+                            (keydown.arrowdown)="keyPressInputTexto($event)('down')" 
+                            (keydown.arrowup)="keyPressInputTexto($event)('up')" 
+                            (keydown.enter)="onEnterInputBuscProd($event)">
+
+                    <popup-lista *ngIf="textoBusqueda && textoBusqueda.length > 0"
+                                    [items]="productosBusqueda.filtrados" 
+                                    [keysToShow]="['producto.descripcion', 'producto.codProducto']" 
+                                    [onClickItem]="onClickProductoListaLocal" 
+                                    [fatherPosition]="getOffsetOfAddInput()">
+                    </popup-lista>
+                </td>
+                <td>
+                    {{parseKey(productoSeleccionado.producto.descripcion)}}
+                </td>
+                <td>
+                    <select id="select-new-prod-impu" [(ngModel)]="productoSeleccionado.imputacion.seleccionada" class="form-control without-padding" >
+                        <option *ngFor="let impu of productoSeleccionado.imputacion.todas" [ngValue]="impu">
+                            {{impu.descripcion}}
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <input [(ngModel)]="productoSeleccionado.precio"  style="margin: 4px 6px;" type="text" 
+                            class="form-control edit-input" id="inputSubKeyPrecio" placeholder="">
+                </td>
+                <td>
+                    {{parseKey(productoSeleccionado.ivaPorc)}}
+                </td>
+                <td>
+                    <input [(ngModel)]="productoSeleccionado.pendiente"  style="margin: 4px 6px;" type="text" 
+                            class="form-control edit-input" id="inputSubKeyPendiente" placeholder="">
+                </td>
+                <td>
+                    {{parseKey(productoSeleccionado.producto.trazable)}}
+                </td>
+            </tr>
+            <!-- FIN ROW PARA AGREGAR UN PRODUCTO -->
+
         </tbody>
+
         <tfoot>
             <tr>
                 <td colspan="12" style="border-top: none">
@@ -99,32 +155,4 @@
             </tr>
         </tfoot>
     </table>
-
-    <div *ngIf="enableAddItem" class="footer-table">
-        <div class="buscar-producto">
-            <div class="form-group inline-group">
-                <label class="add-item-label" for="addInput">Buscar producto: </label>
-                <input  [(ngModel)]="textoBusqueda" type="text" class="form-control" id="addInput" placeholder="" 
-                        (blur)="onBlurInputItemAdd()" (ngModelChange)="onChangeInputItemAdd($event)">
-            </div>
-    
-            <popup-lista    *ngIf="textoBusqueda && textoBusqueda.length > 0"
-                            [items]="productosBusqueda.filtrados" 
-                            [keysToShow]="['producto.descripcion', 'producto.codProducto']" 
-                            [onClickItem]="onClickProductoLista" 
-                            [fatherPosition]="getOffsetOfAddInput()">
-            </popup-lista>
-        </div>
-
-        <div class="deposito">
-            <div class="form-group inline-group">
-                <label class="add-item-label" for="depositoInput">Deposito: </label>
-                <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="auxDepositoSelect" (ngModelChange)="onSelectDeposito($event)"  class="form-control without-padding">
-                    <option *ngFor="let dep of depositos" [ngValue]="dep">
-                        {{dep.descripcion}}
-                    </option>
-                </select>
-            </div>
-        </div>
-    </div>
 </div>

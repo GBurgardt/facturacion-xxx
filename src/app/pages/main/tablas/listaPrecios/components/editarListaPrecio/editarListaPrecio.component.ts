@@ -57,10 +57,7 @@ export class EditarListaPrecio {
                 .map((recursoList: ListaPrecio[]) =>
                     recursoList.find(recurso => recurso.idListaPrecio === parseInt(params.idListaPrecio))
                 )
-                .subscribe(recurso => {
-                    this.recurso = recurso;
-                    console.log(this.recurso);
-                })
+                .subscribe(recurso => this.recurso = recurso)
         );
 
         // 'enEdicion' alverga el id del recurso actualmente en edicion
@@ -221,11 +218,7 @@ export class EditarListaPrecio {
      */
     onClickConfirmar = async(e) => {
         try {
-            console.log(this.recurso);
-
             const resp: any = await this.recursoService.editarRecurso(this.recurso)();
-
-            console.log(resp);
             
             this.utilsService.showModal(
                 resp.control.codigo

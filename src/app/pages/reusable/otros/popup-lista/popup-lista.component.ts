@@ -41,4 +41,7 @@ export class PopupLista {
         return {top: (this.fatherPosition.top + 22) + 'px', left: this.fatherPosition.left + 'px'}
     }
 
+
+
+
 }

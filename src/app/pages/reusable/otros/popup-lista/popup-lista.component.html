@@ -1,7 +1,25 @@
 <div class="popup-lista" [ngStyle]="getPosicionLista()">
-    <ul id="list" class="list-group">
-        <li *ngFor="let item of items | async" class="list-group-item listElement" (mousedown)="onClickItem(item)" >
+    <ul id="list" class="list-group ul-lista-popup">
+        <li *ngFor="let item of items | async" 
+            (mousedown)="onClickItem(item)" 
+            [ngClass]="'list-group-item listElement li-popup-' + (!item ? 'none' :
+                item.producto ? item.producto.idProductos : 
+                item.padronCodigo ? item.padronCodigo : 
+                'raro')" 
+            >
             {{parseItem(item)}}
         </li>
     </ul>
 </div>
+
+<!-- 
+
+    
+                +   !item ? 'none' :
+                        item.producto ? item.producto.idProductos : 
+                            item.padronCodigo ? item.padronCodigo : 'raro'" 
+
+ -->
+
+<!-- class="list-group-item listElement"  -->
+<!-- (keyup.enter)="onClickItem(item)" -->

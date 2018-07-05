@@ -219,10 +219,8 @@ export class AuthService {
                         (productosPend: ProductoPendiente[]) => 
                         (modelosFactura: ModeloFactura[]) =>
                         (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
-                        (depositoSelec: Deposito) => {
-
-        
-        return this.request(
+                        (depositoSelec: Deposito) => 
+        this.request(
             [],
             RequestMethod.Post,
             {
@@ -311,7 +309,6 @@ export class AuthService {
             },
             {}
         );
-    }
 
 
     /** */

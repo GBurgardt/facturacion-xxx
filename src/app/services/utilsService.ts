@@ -210,12 +210,9 @@ export class UtilsService {
     /**
      * Retorna el tipo de datos
      */
-    getTipoDato = (dato) => {
-        console.log(dato);
-        dato && dato.constructor ? console.log(dato.constructor): null;
-        dato && dato.constructor ? console.log(dato.constructor.name): null;
-        return (dato && dato.constructor && dato.constructor.name) ? dato.constructor.name : null
-    };
+    getTipoDato = (dato) => (dato && dato.constructor && dato.constructor.name) ? 
+        dato.constructor.name : null;
+    
 
     /**
      * Dado un string en formato ddmm retorna dd/mm/aaaa en typeData DateLikePicker, o null en caso de formato incorrecto

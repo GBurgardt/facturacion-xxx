@@ -21,6 +21,7 @@ import { Comprobante } from 'app/models/comprobante';
 import { ComprobanteRelacionado } from 'app/models/comprobanteRelacionado';
 import { Factura } from '../../../../models/factura';
 import { Deposito } from 'app/models/deposito';
+import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
 
 @Component({
     selector: 'ingreso-form',
@@ -49,12 +50,17 @@ export class IngresoForm {
 
     depositoSelec: Deposito;
 
+    // Inhdice del producto enfocado del popup
+    proveedorEnfocadoIndex: number = -1;
+
     /////////////////////////////////////////////
     //////////// Listas desplegables ////////////
     /////////////////////////////////////////////
     tiposComprobantes: Observable<TipoComprobante[]>;
     tiposOperacion: Observable<SisTipoOperacion[]>;
     monedas: Observable<Moneda[]>;
+    depositos: Observable<Deposito[]>;
+    // depositos: Deposito[] = [];
 
     // Lista de proveedores completa (necesaria para filtrar) y filtrada
     proveedores: {
@@ -106,6 +112,19 @@ export class IngresoForm {
                     }
                     return newTabla;
                 });
+
+                var focused: any = document.activeElement;
+
+                // Hago focus en el select de imputacion
+                setTimeout(()=>{
+                    const selectImpu: any = document.getElementsByClassName('select-impu-'+prodSelect.producto.idProductos);
+                    if(selectImpu && selectImpu[0]) {
+                        selectImpu[0].focus();
+                    } else {
+                        const inputFocus: any = document.getElementsByClassName('input-edit-'+prodSelect.producto.idProductos);
+                        inputFocus && inputFocus[0] ? inputFocus[0].focus() : null
+                    }
+                });
             },
             onClickConfirmEdit: (tipoColumnas) => (prodSelect: ProductoPendiente) => { 
                 // Actualizo datos dle producto
@@ -143,12 +162,15 @@ export class IngresoForm {
     constructor(
         private recursoService: RecursoService,
         private ingresoFormService: IngresoFormService,
-        private utilsService: UtilsService
+        private utilsService: UtilsService,
+        private popupListaService: PopupListaService
     ) {
         ////////// Listas desplegables  //////////
         this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)();
         this.tiposOperacion = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)();
         this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
+        this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
+
 
         ////////// Proveedores  //////////
         this.recursoService.getRecursoList(resourcesREST.proveedores)().subscribe(proveedores => {
@@ -187,14 +209,17 @@ export class IngresoForm {
      * Agrega el producto seleccionado a la lista de productosPendientes
      */
     onClickProductoLista = (prodSelec: ProductoPendiente) => {
-        
-        
         const existeProd = this.tablas.datos.productosPend.find(prod=>prod.producto.idProductos === prodSelec.producto.idProductos)
 
         if (!existeProd) {
             this.tablas.datos.productosPend.push(prodSelec);
             this.actualizarDatosProductos();
         }
+
+        // Despues de agregar el producto prosedo a ponerlo en edición
+        this.tablas.funciones.onClickEdit('columnasProductos')(prodSelec);
+
+        // Borro
         // !existeProd ? this.tablas.datos.productosPend.push(prodSelec) : null;
 
     }
@@ -203,17 +228,28 @@ export class IngresoForm {
      * Valida y graba el comprobante
      */
     onClickConfirmar = () => {
-        this.ingresoFormService.confirmarYGrabarComprobante(this.comprobante)
+        const observableAux = this.ingresoFormService.confirmarYGrabarComprobante(this.comprobante)
             (this.comprobanteRelacionado)
             (this.proveedorSeleccionado)
             (this.tablas.datos.productosPend)
             (this.tablas.datos.modelosFactura)
             (this.cotizacionDatos)
-            (this.depositoSelec).subscribe((respuesta: any) => {
-                console.log(respuesta);
-                // Muestro mensaje
-                this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
-            })
+            (this.depositoSelec);
+        debugger;
+        try {
+            observableAux
+                // .catch(
+                //     (err, caught) => console.log(err)
+                // )
+                .subscribe(
+                    (respuesta: any) => this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()()
+                )
+        }
+        catch(err) {
+            console.log('joasdjoasdjosad');
+            console.log(err);
+        }
+        
     }
 
     ///////////////////////////////// Eventos (Distintos de onclick) /////////////////////////////////
@@ -245,27 +281,29 @@ export class IngresoForm {
         this.proveedores.filtrados.next(
             this.ingresoFormService.filtrarProveedores(this.proveedores.todos, codigo)
         );
+        // Reseteo el indice
+        this.proveedorEnfocadoIndex = -1;
     }
     
     /**
      * On enter en inputprov
      */
-    onEnterInputProv = (e) => {
+    // onEnterInputProv = (e) => {
         
-        try {
-            const codProv = e.target.value;
-            const provSeleccionado = _.clone(this.proveedores.todos.find((prove) => prove.padronCodigo.toString() === codProv));
-            this.ingresoFormService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
-            if (provSeleccionado) {
-                this.proveedorSeleccionado = provSeleccionado;
-            } else {
-                this.utilsService.showModal('Codigo incorrecto')('El codigo no existe')()();
-            }
-        }
-        catch(ex) {
-            this.utilsService.showModal('Codigo incorrecto')('El codigo no existe')()();
-        }
-    }
+    //     try {
+    //         const codProv = e.target.value;
+    //         const provSeleccionado = _.clone(this.proveedores.todos.find((prove) => prove.padronCodigo.toString() === codProv));
+    //         this.ingresoFormService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
+    //         if (provSeleccionado) {
+    //             this.proveedorSeleccionado = provSeleccionado;
+    //         } else {
+    //             this.utilsService.showModal('Codigo incorrecto')('El codigo no existe')()();
+    //         }
+    //     }
+    //     catch(ex) {
+    //         this.utilsService.showModal('Codigo incorrecto')('El codigo no existe')()();
+    //     }
+    // }
     
     /**
      * El blur es cuando se hace un leave del input (caundo se apreta click afuera por ejemplo).
@@ -329,40 +367,30 @@ export class IngresoForm {
     onSelectDeposito = (depSelect: Deposito) => {
         this.depositoSelec = depSelect;
     }
+
+    /**
+     * Evento de cuando se apreta felcha arriba o feclah abajo en input de busca proveedor
+     */
+    keyPressInputTexto = (e: any) => (upOrDown) => {
+        e.preventDefault();
+        // Hace todo el laburo de la lista popup y retorna el nuevo indice seleccionado
+        this.popupListaService.keyPressInputForPopup(upOrDown)(this.proveedores.filtrados)(this.proveedorEnfocadoIndex)
+            .subscribe(newIndex => this.proveedorEnfocadoIndex = newIndex)
+            .unsubscribe()
+    }
+
+    /**
+     * Evento on enter en el input de buscar proveedor
+     */
+    onEnterInputProv = (e: any) => {
+        e.preventDefault();
+        this.proveedores.filtrados.subscribe(provsLista => {
+            // Busco el producto
+            const provSelect = provsLista && provsLista.length ? provsLista[this.proveedorEnfocadoIndex] : null;
+            // Lo selecciono
+            provSelect ? this.popupLista.onClickListProv(provSelect) : null;
+            // Reseteo el index
+            this.proveedorEnfocadoIndex = -1;
+        })
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// /**
-//      * Evento click de la pesñta factura. Recarga los modelos de la factura
-//      */
-//     onClickFacturaTab = () => {
-//         // Checkeo si existe algun producto sin precio o sin cantidad asignado
-//         const existeProdSinPrecioOCantidad = this.tablas.datos.productosPend.some(
-//             prodPend => !prodPend.precio || !prodPend.pendiente
-//         );
-
-//         // Si existe, entonces NO hago la consulta y aviso al usuario tal sitaucion
-//         if (existeProdSinPrecioOCantidad) {
-//             this.utilsService.showModal('Aviso')('Algunos productos no tienen precio o cantidad definida')()();
-//         } else {
-//             // Caso contrario puedo proseguir y hacer la consulta libremente
-//             this.ingresoFormService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
-//                 this.tablas.datos.modelosFactura = modelProds
-//             });
-//         }
-//     }

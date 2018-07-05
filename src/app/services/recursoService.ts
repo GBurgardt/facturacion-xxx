@@ -98,7 +98,7 @@ export class RecursoService {
         return this.authService.getProductosByFiltro(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(filtros)
-            .map(respuesta => {console.log(respuesta);return respuesta.arraydatos.map(detalleProd => new DetalleProducto(detalleProd))} )
+            .map(respuesta => respuesta.arraydatos.map(detalleProd => new DetalleProducto(detalleProd)) )
             .catch(err => {
                 // Si hay algun error muestro el mensaje
                 this.utilsService.decodeErrorResponse(err);
