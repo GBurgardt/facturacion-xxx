@@ -78,8 +78,8 @@
                 <div class="col-sm-5">
                     <div class="form-group inline-group">
                         <label for="cteNro">Nro:</label>
-                        <input (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('comprobante')" [(ngModel)]="comprobante.puntoVenta" type="text" class="form-control pre-numero-input" id="puntoVenta" placeholder="">
-                        <input (blur)="onBlurNumeroAutocomp($event)('numero')('comprobante')" [(ngModel)]="comprobante.numero" type="text" class="form-control" id="numero" placeholder="">
+                        <input maxlength="4" (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('comprobante')" [(ngModel)]="comprobante.puntoVenta" type="text" class="form-control pre-numero-input" id="puntoVenta" placeholder="">
+                        <input maxlength="8" (blur)="onBlurNumeroAutocomp($event)('numero')('comprobante')" [(ngModel)]="comprobante.numero" type="text" class="form-control" id="numero" placeholder="">
                     </div>
                 </div>
                 <div class="col-sm-3">

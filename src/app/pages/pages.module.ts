@@ -12,6 +12,7 @@ import { ConfirmationModal } from './reusable/modals/confirmation-modal/confirma
 import { CustomCard } from 'app/pages/reusable/cards/customCard';
 import { PopupLista } from './reusable/otros/popup-lista/popup-lista.component';
 import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
+import { ComprobanteService } from '../services/comprobanteService';
 
 // import { DataTableModule } from "angular2-datatable";
 // import { DataTables } from './reusable/tablas/dataTables';
@@ -41,7 +42,8 @@ import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-li
     ],
     providers: [
         LocalStorageService,
-        PopupListaService
+        PopupListaService,
+        ComprobanteService
     ],
     exports: [
         //CustomCard

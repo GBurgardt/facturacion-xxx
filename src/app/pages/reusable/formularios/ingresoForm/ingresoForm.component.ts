@@ -1,9 +1,8 @@
 import * as _ from 'lodash';
-import { Component, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { UtilsService } from 'app/services/utilsService';
 import { Observable } from 'rxjs/Observable';
-import { Producto } from 'app/models/producto';
 import { Padron } from '../../../../models/padron';
 import { RecursoService } from 'app/services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
@@ -12,9 +11,7 @@ import { SisTipoOperacion } from 'app/models/sisTipoOperacion';
 import { TipoComprobante } from 'app/models/tipoComprobante';
 import { Moneda } from '../../../../models/moneda';
 import { ProductoPendiente } from 'app/models/productoPendiente';
-import { DateLikePicker } from '../../../../models/dateLikePicker';
 import { BehaviorSubject } from 'rxjs';
-import { Parametro } from '../../../../models/parametro';
 import { Cotizacion } from '../../../../models/cotizacion';
 import { ModeloFactura } from '../../../../models/modeloFactura';
 import { Comprobante } from 'app/models/comprobante';
@@ -60,7 +57,6 @@ export class IngresoForm {
     tiposOperacion: Observable<SisTipoOperacion[]>;
     monedas: Observable<Moneda[]>;
     depositos: Observable<Deposito[]>;
-    // depositos: Deposito[] = [];
 
     // Lista de proveedores completa (necesaria para filtrar) y filtrada
     proveedores: {
@@ -113,8 +109,6 @@ export class IngresoForm {
                     return newTabla;
                 });
 
-                var focused: any = document.activeElement;
-
                 // Hago focus en el select de imputacion
                 setTimeout(()=>{
                     const selectImpu: any = document.getElementsByClassName('select-impu-'+prodSelect.producto.idProductos);
@@ -150,7 +144,7 @@ export class IngresoForm {
 
     popupLista: any = {
         onClickListProv: (prove: Padron) => {
-            this.proveedorSeleccionado = _.clone(prove);
+            this.proveedorSeleccionado = new Padron({...prove});
             this.ingresoFormService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
         },
         getOffsetOfInputProveedor: () => this.utilsService.getOffset(document.getElementById('proveedorSeleccionado'))
@@ -219,9 +213,6 @@ export class IngresoForm {
         // Despues de agregar el producto prosedo a ponerlo en edición
         this.tablas.funciones.onClickEdit('columnasProductos')(prodSelec);
 
-        // Borro
-        // !existeProd ? this.tablas.datos.productosPend.push(prodSelec) : null;
-
     }
 
     /**
@@ -234,22 +225,10 @@ export class IngresoForm {
             (this.tablas.datos.productosPend)
             (this.tablas.datos.modelosFactura)
             (this.cotizacionDatos)
-            (this.depositoSelec);
-        debugger;
-        try {
-            observableAux
-                // .catch(
-                //     (err, caught) => console.log(err)
-                // )
-                .subscribe(
-                    (respuesta: any) => this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()()
-                )
-        }
-        catch(err) {
-            console.log('joasdjoasdjosad');
-            console.log(err);
-        }
-        
+            (this.depositoSelec)
+            .subscribe(
+                (respuesta: any) => this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()()
+            )
     }
 
     ///////////////////////////////// Eventos (Distintos de onclick) /////////////////////////////////
@@ -266,12 +245,9 @@ export class IngresoForm {
             )
         );
 
-        // Actualizo los modelos factura (si se ingresó precio y pendiente)
-        // (prodSelect && prodSelect.precio > 0 && prodSelect.pendiente > 0) ? 
-            this.ingresoFormService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
-                this.tablas.datos.modelosFactura = modelProds
-            }) 
-            // : null;
+        this.ingresoFormService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
+            this.tablas.datos.modelosFactura = modelProds
+        })
     }
 
     /**
@@ -285,25 +261,6 @@ export class IngresoForm {
         this.proveedorEnfocadoIndex = -1;
     }
     
-    /**
-     * On enter en inputprov
-     */
-    // onEnterInputProv = (e) => {
-        
-    //     try {
-    //         const codProv = e.target.value;
-    //         const provSeleccionado = _.clone(this.proveedores.todos.find((prove) => prove.padronCodigo.toString() === codProv));
-    //         this.ingresoFormService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
-    //         if (provSeleccionado) {
-    //             this.proveedorSeleccionado = provSeleccionado;
-    //         } else {
-    //             this.utilsService.showModal('Codigo incorrecto')('El codigo no existe')()();
-    //         }
-    //     }
-    //     catch(ex) {
-    //         this.utilsService.showModal('Codigo incorrecto')('El codigo no existe')()();
-    //     }
-    // }
     
     /**
      * El blur es cuando se hace un leave del input (caundo se apreta click afuera por ejemplo).
@@ -349,17 +306,9 @@ export class IngresoForm {
      * tipo: puntoVenta o numero
      * keyTipoe: comprobante, comprobanteRelacionado
      */
-    onBlurNumeroAutocomp = (e) => (tipo: string) => (keyTipo: string) => {
-        try {
-            this[keyTipo][tipo] = this.ingresoFormService.autocompNroComp(tipo)(this[keyTipo]);
-        }
-        catch (err) {
-            (err && err.nombreError) ? 
-                this.utilsService.showModal(err.nombreError)(err.descripcionError)()() : null;
-            // Limpio el campo
-            this[keyTipo][tipo] = '';
-        }
-    }
+    onBlurNumeroAutocomp = (e) => (tipo: string) => (keyTipo: string) => 
+        this[keyTipo][tipo] = this.ingresoFormService.autocompNroComp(tipo)(this[keyTipo]);
+    
 
     /**
      * Actualizo el deposito seleccionado que me viene de tablaIngreso

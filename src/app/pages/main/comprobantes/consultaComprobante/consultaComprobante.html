@@ -1,0 +1,141 @@
+<ba-card cardTitle="Consultar comprobantes" class="consulta-comprobante">
+
+    <ba-card cardTitle="Criterio de búsqueda" class="criterio-busqueda">
+
+        <div class="data-busqueda">
+
+            <!-- <div class="data-comprobante"> -->
+                <div class="data-comprobante-title">
+                    Comprobante
+                </div>
+                <div class="data-comprobante-content">
+                    <div class="input-row">
+                        <div class="item-input">
+                            <label for="comprobante">Modulo: </label>
+                            <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="sisModuloSelec" class="form-control select-input" id="compModulo">
+                                <option [ngValue]="utilsService.getInstanciaVacia(resourcesREST.sisModulos)">
+                                    Todos
+                                </option>
+                                <option *ngFor="let modulo of sisModulos | async" [ngValue]="modulo">
+                                    {{modulo.descripcion}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="item-input">
+                            <label for="comprobante">Tipo: </label>
+                            <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="sisModuloSelec" class="form-control select-input" id="compModulo">
+                                <option [ngValue]="utilsService.getInstanciaVacia(resourcesREST.sisModulos)">
+                                    Todos
+                                </option>
+                                <option *ngFor="let modulo of sisModulos | async" [ngValue]="modulo">
+                                    {{modulo.descripcion}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+        
+                    <div class="input-row">
+                        <div class="item-input nro-cte">
+                            <label for="desde">Nro: </label>
+                            <input [(ngModel)]="comprobante.test" type="text" class="form-control" id="ptoVentaCte" placeholder="">
+                            <input [(ngModel)]="comprobante.test" type="text" class="form-control" id="nroCte" placeholder="">
+                        </div>
+                    </div>
+                </div>
+            <!-- </div> -->
+
+        </div>
+
+        <div class="data-busqueda">
+            <div class="input-row flex-end-row">
+                <div class="item-input">
+                    <label for="comprobante">Producto: </label>
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="productoSelec" class="form-control select-input" id="productoSelect">
+                        <option [ngValue]="utilsService.getInstanciaVacia(resourcesREST.productos)">
+                            Todos
+                        </option>
+                        <option *ngFor="let prod of productos | async" [ngValue]="prod">
+                            {{prod.descripcion}}
+                        </option>
+                    </select>
+                </div>
+                <div class="item-input">
+                    <label for="comprobante">Clie/Prov: </label>
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="productoSelec" class="form-control select-input" id="productoSelect">
+                        <option [ngValue]="utilsService.getInstanciaVacia(resourcesREST.productos)">
+                            Todos
+                        </option>
+                        <option *ngFor="let prod of productos | async" [ngValue]="prod">
+                            {{prod.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-row flex-end-row">
+                <div class="item-input">
+                    <label for="comprobante">Deposito</label>
+                    <input [(ngModel)]="comprobante.test" type="text" class="form-control" id="comprobante" placeholder="">
+                </div>
+                <div class="item-input">
+                    <label for="comprobante">Estado: </label>
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="sisEstadoSelec" class="form-control select-input" id="compEstado">
+                        <option [ngValue]="utilsService.getInstanciaVacia(resourcesREST.sisEstados)">
+                            Todos
+                        </option>
+                        <option *ngFor="let modulo of sisModulos | async" [ngValue]="modulo">
+                            {{modulo.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row flex-end-row">
+                <div class="item-input">
+                    <label for="desde">Desde</label>
+                    <div class="input-group date-picker-fecha">
+                        <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="comprobante.test" ngbDatepicker #dComp="ngbDatepicker">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button" style="height: 100%;">
+                                <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="item-input">
+                    <label for="al">al</label>
+
+                    <div class="input-group date-picker-fecha">
+                        <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="comprobante.test" ngbDatepicker #dComp="ngbDatepicker">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button" style="height: 100%;">
+                                <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </ba-card>
+
+    <ngb-tabset class="col-sm-12 tabset-consulta">
+
+        <ngb-tab title="Comprobantes">
+            <ng-template ngbTabContent>
+
+            </ng-template>
+        </ngb-tab>
+
+        <ngb-tab title="Detalles">
+            <ng-template ngbTabContent>
+
+            </ng-template>
+        </ngb-tab>
+
+        <ngb-tab title="Resúmen">
+            <ng-template ngbTabContent>
+
+            </ng-template>
+        </ngb-tab>
+    </ngb-tabset>
+</ba-card>

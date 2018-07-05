@@ -224,5 +224,21 @@ export class UtilsService {
             year: (new Date()).getFullYear()
         }) : null
     
+    /**
+     * Decodifica la respuesta del error (scando el _body) y muestra el mensaje
+     */
+    showErrorWithBody = (err: any) => {
+
+        const theBody = err && err['_body'] ? JSON.parse(err['_body']) : null;
+
+        // debugger;
+
+        this.showModal(theBody.control.codigo)(theBody.control.descripcion)()();
+    }
+
+    /**
+     * Obtengo una instancia vacia la clase correspondiente a un recurso dado
+     */
+    getInstanciaVacia = (recursoRest) => recursoRest && recursoRest.Clase ? new recursoRest.Clase() : null;
 
 }

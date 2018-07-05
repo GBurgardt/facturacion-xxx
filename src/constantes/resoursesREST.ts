@@ -19,6 +19,8 @@ import { ProductoPendiente } from "app/models/productoPendiente";
 import { Parametro } from "app/models/parametro";
 import { Cotizacion } from "app/models/cotizacion";
 import { ProductoBuscaModelo } from "app/models/productoBuscaModelo";
+import { SisModulo } from "../app/models/sisModulo";
+import { SisEstado } from "app/models/sisEstado";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -107,5 +109,13 @@ export const resourcesREST = {
     buscaModelo: {
         nombre: 'buscaModelo',
         Clase: ProductoBuscaModelo
+    },
+    sisModulos: {
+        nombre: 'sisModulos',
+        Clase: SisModulo
+    },
+    sisEstados: {
+        nombre: 'sisEstados',
+        Clase: SisEstado
     }
 };

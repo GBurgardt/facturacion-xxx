@@ -1,0 +1,93 @@
+// :host /deep/ se mete en el componente importado en el html (en este caso es <ba-card>)
+:host /deep/ .consulta-comprobante {
+    > .card > .card-body {
+        display: flex;
+        flex-direction: column;
+        .criterio-busqueda {
+            > .card > .card-body {
+                display: flex;
+                .data-busqueda {
+                    display: flex;
+                    flex-direction: column;
+                    width: 50%;
+                    padding: 0 1%;
+                    justify-content: space-between;
+                    .input-row {
+                        display: flex;
+                        padding: 2px;
+                        margin-bottom: 10px;
+                        > .item-input {
+                            display: flex;
+                            padding: 0 5px;
+                            > input {
+                                margin: 0 5px;
+                            }
+                            > label {
+                                margin-bottom: 5px;
+                                margin-top: 3px;
+                                white-space: nowrap;
+                                padding-right: 5px;
+                            }
+                        }
+                    }
+
+                    .flex-end-row {
+                        justify-content: flex-end;
+                    }
+
+                    // .data-comprobante {
+                    //     display: flex;
+                    //     flex-direction: column;
+                        .data-comprobante-title {
+                            width: 20%;
+                            // padding-top: 5px;
+                            font-weight: 350;
+                            margin: 5px 0 2px;
+                        }
+                        .data-comprobante-content {
+                            width: 80%;
+                            border: solid 1px #c2c2c7;
+                            border-radius: 7px;
+                            // margin: 0px 8px 9px 0px;
+                            margin: 0px 8px 14px 0px;
+                            padding: 6px 5px 0px 5px;
+                            > .input-row {
+                                .item-input {
+                                    width: 50%;
+                                }
+
+                                .nro-cte {
+                                    display: flex;
+                                    width: 100%;
+                                    justify-content: flex-end;
+                                    > label {
+                                        width: 7%;
+                                    }
+
+                                    > input {
+                                        width: 49px;
+                                    }
+
+                                    > input:last-child {
+                                        width: 152px;
+                                        margin-right: 0;
+                                    }
+
+                                }
+                            }
+                        }
+                    // }
+
+
+                }
+
+                .flex-end-with-padding {
+                    justify-content: flex-end;
+                    padding-bottom: 1%;
+                }
+            }
+        }
+        
+    }
+}
+

@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import { Injectable } from "@angular/core";
 import { Padron } from "../../../../models/padron";
 import { AuthService } from "app/services/authService";
@@ -7,8 +6,6 @@ import { environment } from "environments/environment";
 import { ProductoPendiente } from "../../../../models/productoPendiente";
 import { RecursoService } from "app/services/recursoService";
 import { resourcesREST } from "constantes/resoursesREST";
-import { Producto } from "app/models/producto";
-import { Parametro } from "../../../../models/parametro";
 import { Cotizacion } from "app/models/cotizacion";
 import { ProductoBuscaModelo } from "../../../../models/productoBuscaModelo";
 import { ModeloFactura } from "../../../../models/modeloFactura";
@@ -16,13 +13,15 @@ import { Comprobante } from "app/models/comprobante";
 import { ComprobanteRelacionado } from "app/models/comprobanteRelacionado";
 import { Observable } from 'rxjs/Observable';
 import { Deposito } from '../../../../models/deposito';
+import { UtilsService } from '../../../../services/utilsService';
 
 @Injectable()
 export class IngresoFormService {
     constructor(
         private authService: AuthService,
         private localStorageService: LocalStorageService,
-        private recursoService: RecursoService
+        private recursoService: RecursoService,
+        private utilsService: UtilsService
     ) { }
 
     filtrarProveedores = (listaProveedores, textoBuscado) => {
@@ -215,10 +214,10 @@ export class IngresoFormService {
         (productosPend: ProductoPendiente[]) => 
         (modelosFactura: ModeloFactura[]) =>
         (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
-        (depositoSelec: Deposito) => 
-        this.authService.grabaComprobante(
-            this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec)
+        (depositoSelec: Deposito) => this.authService.grabaComprobante(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec)
+            .catch(err => Observable.throw(
+                this.utilsService.showErrorWithBody(err)
+            ))
 
     /**
      * Valida que los datos estén correctos
@@ -282,59 +281,39 @@ export class IngresoFormService {
         depositoSelec
     )
 
+   
+    // throw({
+    //     nombreError: 'Error',
+    //     descripcionError: 'Debe ingresar 4 caracteres o menos'
+    // })
     /**
      * Autocompleta con ceros
      */
-    autocompNroComp = (tipo) => (recursoComp) => {
-        if (tipo === 'puntoVenta') {
-            const lengthPtoVenta = recursoComp.puntoVenta ? recursoComp.puntoVenta.toString().length : 0;
-            if (lengthPtoVenta > 4) {
-                throw({
-                    nombreError: 'Error',
-                    descripcionError: 'Debe ingresar 4 caracteres o menos'
-                })
-            }
-            return lengthPtoVenta === 4 ? recursoComp.puntoVenta : 
-                lengthPtoVenta === 3 ? `0${recursoComp.puntoVenta}` :
-                lengthPtoVenta === 2 ? `00${recursoComp.puntoVenta}` :
-                lengthPtoVenta === 1 ? `000${recursoComp.puntoVenta}` : '';
-
-        } else {    
-            const lengthNumero = recursoComp.numero ? recursoComp.numero.toString().length : 0;
-            if (lengthNumero > 8) {
-                throw({
-                    nombreError: 'Error',
-                    descripcionError: 'Debe ingresar 8 caracteres o menos'
-                })
-            }
-            return lengthNumero === 8 ? recursoComp.numero : 
-                lengthNumero === 7 ? `0${recursoComp.numero}` :
-                lengthNumero === 6 ? `00${recursoComp.numero}` :
-                lengthNumero === 5 ? `000${recursoComp.numero}` :
-                lengthNumero === 4 ? `0000${recursoComp.numero}` :
-                lengthNumero === 3 ? `00000${recursoComp.numero}` :
-                lengthNumero === 2 ? `000000${recursoComp.numero}` :
-                lengthNumero === 1 ? `0000000${recursoComp.numero}` : '';
-        }
-    }
+    autocompNroComp = (tipo) => (recursoComp) => recursoComp && recursoComp[tipo] ?
+        recursoComp[tipo].padStart(
+            tipo === 'puntoVenta' ? 4 : 8,
+            0
+        ) : '';
+       
 
     seleccionarProveedor = (todos: Padron[]) => (seleccionado: Padron) => {
         // Primero busco si el ingresado existe
-        const provBuscado = _.clone(todos.find(
+        const provBuscado = new Padron({...todos.find(
             prove => prove.padronCodigo === Number(seleccionado.padronCodigo)
-        ));
+        )});
+        
         // Si existe, lo seteo como seleccionado
         if (provBuscado) {
             return provBuscado;
         } else {
             // Caso contrario..
             // Busco el padronCodigo del proveedor que estaba seleccionado
-            const proveedorAnterior: Padron = _.clone(todos.find(
+            const proveedorAnterior: Padron = new Padron({...todos.find(
                 prove =>    prove.padronApelli === seleccionado.padronApelli &&
                             prove.padronNombre === seleccionado.padronNombre &&
                             prove.cuit === seleccionado.cuit &&
                             prove.codigoPostal === seleccionado.codigoPostal
-            ));
+            )});
 
             // Si habia uno seleccionado, lo restauro
             if (proveedorAnterior) {
@@ -350,45 +329,5 @@ export class IngresoFormService {
             }
         }
     }
-
-
-    // keyPressInputForPopup = (upOrDown) => (prodsFiltrados) => (productoEnfocadoIndex) => 
-    //     // Busco el producto enfocado
-    //     prodsFiltrados.map(prodsLista => {
-    //         // Primero checkeo que el indice no se paseo
-    //         if (
-    //             prodsLista.length > 0 &&
-    //             !(upOrDown === 'down' && productoEnfocadoIndex === prodsLista.length - 1) &&
-    //             !(upOrDown === 'up' && productoEnfocadoIndex === 0)
-    //         ) {
-    //             // Primero actualizo el indice
-    //             const newIndex = productoEnfocadoIndex + (upOrDown === 'down' ? 1 : -1);
-
-    //             // Dsps les saco el enfoque a todos los elementos d ela lista
-    //             prodsLista.forEach(prodLista => {
-    //                 const aux = document.getElementsByClassName('li-popup-'+prodLista.producto.idProductos);
-    //                 // Le saco la clase que lo tiene seleccionado
-    //                 aux[0] && aux[0].className ? 
-    //                     aux[0].className = 'list-group-item listElement li-popup-'+prodLista.producto.idProductos : null;
-    //             });
-    
-    //             // Agarro el producto seleccenfocadoionado
-    //             const prodEnfocado = _.clone(prodsLista[newIndex])
-    //             // Agarro el elemento dom de la lista
-    //             const liPopup: any = prodEnfocado && prodEnfocado.producto ?
-    //                 document.getElementsByClassName('li-popup-'+prodEnfocado.producto.idProductos) :
-    //                 null;
-    //             // Lo selecciono y enfoco (si agarró algo)
-    //             liPopup && liPopup[0] && liPopup[0].className ? 
-    //                 liPopup[0].className += ' active-pop-elem' : null;
-    //             liPopup && liPopup[0] ? liPopup[0].focus() : null;
-                
-    //             return newIndex;
-    //         } else {
-    //             return productoEnfocadoIndex;
-    //         }
-
-    //     });
-    
 
 }

@@ -24,15 +24,16 @@ export const routes: Routes = [
             { path: 'tablas', loadChildren: './main/tablas/tablas.module#TablasModule' },
             { path: 'compras', loadChildren: './main/compras/compras.module#ComprasModule' },
             { path: 'stock', loadChildren: './main/stock/stock.module#StockModule' },
+            { path: 'comprobantes', loadChildren: './main/comprobantes/comprobantes.module#ComprobantesModule' },
 
             // Paginas de ejemplos para desarrollo
-            { path: 'editors', loadChildren: './examples/editors/editors.module#EditorsModule' },
-            { path: 'components', loadChildren: './examples/components/components.module#ComponentsModule' },
-            { path: 'charts', loadChildren: './examples/charts/charts.module#ChartsModule' },
-            { path: 'ui', loadChildren: './examples/ui/ui.module#UiModule' },
-            { path: 'forms', loadChildren: './examples/forms/forms.module#FormsModule' },
-            { path: 'tables', loadChildren: './examples/tables/tables.module#TablesModule' },
-            { path: 'maps', loadChildren: './examples/maps/maps.module#MapsModule' }
+            // { path: 'editors', loadChildren: './examples/editors/editors.module#EditorsModule' },
+            // { path: 'components', loadChildren: './examples/components/components.module#ComponentsModule' },
+            // { path: 'charts', loadChildren: './examples/charts/charts.module#ChartsModule' },
+            // { path: 'ui', loadChildren: './examples/ui/ui.module#UiModule' },
+            // { path: 'forms', loadChildren: './examples/forms/forms.module#FormsModule' },
+            // { path: 'tables', loadChildren: './examples/tables/tables.module#TablesModule' },
+            // { path: 'maps', loadChildren: './examples/maps/maps.module#MapsModule' }
         ]
     }
 ];

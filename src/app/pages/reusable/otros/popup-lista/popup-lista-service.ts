@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import { Injectable } from "@angular/core";
 
 @Injectable()
@@ -39,7 +38,9 @@ export class PopupListaService {
             });
 
             // Agarro el producto seleccenfocadoionado
-            const itemEnfocado = _.clone(itemsLista[newIndex])
+            // const itemEnfocado = _.clone(itemsLista[newIndex]);
+            const itemEnfocado = {...itemsLista[newIndex]};
+            
             // Agarro el elemento dom de la lista
             const liPopup: HTMLCollectionOf<any> = 
                 itemEnfocado.producto ? document.getElementsByClassName('li-popup-'+itemEnfocado.producto.idProductos) :
