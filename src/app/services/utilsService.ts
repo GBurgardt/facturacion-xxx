@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DefaultModal } from '../pages/reusable/modals/default-modal/default-modal.component';
-import { AuthService } from './authService';
 import { AppState } from 'app/app.service';
 import { ConfirmationModal } from 'app/pages/reusable/modals/confirmation-modal/confirmation-modal.component';
 import { isString } from 'util';
@@ -15,7 +14,6 @@ export class UtilsService {
 
     constructor(
         private modalService: NgbModal,
-        private authService: AuthService,
         private appState: AppState
     ) { }
 
@@ -240,5 +238,15 @@ export class UtilsService {
      * Obtengo una instancia vacia la clase correspondiente a un recurso dado
      */
     getInstanciaVacia = (recursoRest) => recursoRest && recursoRest.Clase ? new recursoRest.Clase() : null;
+
+
+
+    formatearFecha = (fecha) => 
+        fecha ? `${fecha.year}-${fecha.month < 10 ? '0'+fecha.month:fecha.month}-${fecha.day < 10 ? '0'+fecha.day : fecha.day}` : '0/0/0'
+
+
+    // Flatmap para arrays
+    flatMap = (f, arr) => arr.reduce((x, y) => [...x, ...f(y)], [])
+
 
 }

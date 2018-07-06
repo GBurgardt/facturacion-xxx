@@ -7,6 +7,7 @@ import { RecursoService } from "app/services/recursoService";
 import { AuthService } from "../../../services/authService";
 import { UtilsService } from "../../../services/utilsService";
 import { ConsultaComprobante } from "app/pages/main/comprobantes/consultaComprobante/consultaComprobante.component";
+import { ComprobanteService } from "../../../services/comprobanteService";
 
 @NgModule({
     imports: [
@@ -21,7 +22,8 @@ import { ConsultaComprobante } from "app/pages/main/comprobantes/consultaComprob
     providers: [
         RecursoService,
         AuthService,
-        UtilsService
+        UtilsService,
+        ComprobanteService
     ],
     exports: []
 })

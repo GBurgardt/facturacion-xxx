@@ -3,46 +3,72 @@
     <ba-card cardTitle="Criterio de búsqueda" class="criterio-busqueda">
 
         <div class="data-busqueda">
+            <div class="data-comprobante-title">
+                Comprobante
+            </div>
+            <div class="data-comprobante-content">
+                <div class="input-row">
+                    <div class="item-input">
+                        <label for="comprobante">Modulo: </label>
+                        <select [compareWith]="utilsService.dropdownCompareWith" 
+                                [(ngModel)]="sisModuloSelec" 
+                                (ngModelChange)="onChangeSisModulo($event)" 
+                                class="form-control select-input" id="sisModuloSelec">
+                            <option *ngFor="let modulo of sisModulos | async" [ngValue]="modulo">
+                                {{modulo.descripcion}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="item-input">
+                        <label for="comprobante">Tipo: </label>
+                        <select [compareWith]="utilsService.dropdownCompareWith" 
+                                [(ngModel)]="tipoComprobanteSelec" class="form-control select-input" id="tipoComprobanteSelec">
+                            <option [ngValue]="utilsService.getInstanciaVacia(resourcesREST.buscaCteTipoNro)">
+                                Todos
+                            </option>
+                            <option *ngFor="let tipo of tipoComprobantes | async" [ngValue]="tipo">
+                                {{tipo.descCorta}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+    
+                <div class="input-row">
+                    <div class="item-input nro-cte">
+                        <label for="desde">Nro: </label>
+                        <input [(ngModel)]="comprobante.puntoVenta" type="text" class="form-control" id="ptoVentaCte" placeholder="">
+                        <input [(ngModel)]="comprobante.numero" type="text" class="form-control" id="nroCte" placeholder="">
+                    </div>
+                </div>
+            </div>
 
-            <!-- <div class="data-comprobante"> -->
-                <div class="data-comprobante-title">
-                    Comprobante
-                </div>
-                <div class="data-comprobante-content">
-                    <div class="input-row">
-                        <div class="item-input">
-                            <label for="comprobante">Modulo: </label>
-                            <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="sisModuloSelec" class="form-control select-input" id="compModulo">
-                                <option [ngValue]="utilsService.getInstanciaVacia(resourcesREST.sisModulos)">
-                                    Todos
-                                </option>
-                                <option *ngFor="let modulo of sisModulos | async" [ngValue]="modulo">
-                                    {{modulo.descripcion}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="item-input">
-                            <label for="comprobante">Tipo: </label>
-                            <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="sisModuloSelec" class="form-control select-input" id="compModulo">
-                                <option [ngValue]="utilsService.getInstanciaVacia(resourcesREST.sisModulos)">
-                                    Todos
-                                </option>
-                                <option *ngFor="let modulo of sisModulos | async" [ngValue]="modulo">
-                                    {{modulo.descripcion}}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-        
-                    <div class="input-row">
-                        <div class="item-input nro-cte">
-                            <label for="desde">Nro: </label>
-                            <input [(ngModel)]="comprobante.test" type="text" class="form-control" id="ptoVentaCte" placeholder="">
-                            <input [(ngModel)]="comprobante.test" type="text" class="form-control" id="nroCte" placeholder="">
+            
+            <div class="input-row flex-end-row">
+                <div class="item-input">
+                    <label for="desde">Desde</label>
+                    <div class="input-group date-picker-fecha">
+                        <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="fechasFiltro.desde" ngbDatepicker #dDesd="ngbDatepicker">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" (click)="dDesd.toggle()" type="button" style="height: 100%;">
+                                <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                            </button>
                         </div>
                     </div>
                 </div>
-            <!-- </div> -->
+                <div class="item-input">
+                    <label for="al">al</label>
+
+                    <div class="input-group date-picker-fecha">
+                        <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="fechasFiltro.hasta" ngbDatepicker #dHast="ngbDatepicker">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" (click)="dHast.toggle()" type="button" style="height: 100%;">
+                                <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
 
         </div>
 
@@ -61,12 +87,12 @@
                 </div>
                 <div class="item-input">
                     <label for="comprobante">Clie/Prov: </label>
-                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="productoSelec" class="form-control select-input" id="productoSelect">
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="padronSelec" class="form-control select-input" id="padronSelec">
                         <option [ngValue]="utilsService.getInstanciaVacia(resourcesREST.productos)">
                             Todos
                         </option>
-                        <option *ngFor="let prod of productos | async" [ngValue]="prod">
-                            {{prod.descripcion}}
+                        <option *ngFor="let pad of padrones | async" [ngValue]="pad">
+                            {{pad.padronApelli + ', '+ pad.padronCodigo}}
                         </option>
                     </select>
                 </div>
@@ -74,60 +100,110 @@
             <div class="input-row flex-end-row">
                 <div class="item-input">
                     <label for="comprobante">Deposito</label>
-                    <input [(ngModel)]="comprobante.test" type="text" class="form-control" id="comprobante" placeholder="">
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="depositoSelec" class="form-control select-input" id="depositoSelec">
+                        <option [ngValue]="utilsService.getInstanciaVacia(resourcesREST.depositos)">
+                            Todos
+                        </option>
+                        <option *ngFor="let dep of depositos | async" [ngValue]="dep">
+                            {{dep.descripcion + ', ' + dep.codigoDep}}
+                        </option>
+                    </select>
                 </div>
                 <div class="item-input">
                     <label for="comprobante">Estado: </label>
-                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="sisEstadoSelec" class="form-control select-input" id="compEstado">
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="sisEstadoSelec" class="form-control select-input" id="sisEstadoSelec">
                         <option [ngValue]="utilsService.getInstanciaVacia(resourcesREST.sisEstados)">
                             Todos
                         </option>
-                        <option *ngFor="let modulo of sisModulos | async" [ngValue]="modulo">
+                        <option *ngFor="let modulo of sisEstados | async" [ngValue]="modulo">
                             {{modulo.descripcion}}
                         </option>
                     </select>
                 </div>
             </div>
 
-            <div class="input-row flex-end-row">
-                <div class="item-input">
-                    <label for="desde">Desde</label>
-                    <div class="input-group date-picker-fecha">
-                        <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="comprobante.test" ngbDatepicker #dComp="ngbDatepicker">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button" style="height: 100%;">
-                                <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="item-input">
-                    <label for="al">al</label>
 
-                    <div class="input-group date-picker-fecha">
-                        <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="comprobante.test" ngbDatepicker #dComp="ngbDatepicker">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button" style="height: 100%;">
-                                <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
-                            </button>
-                        </div>
-                    </div>
+            <div class="input-row flex-end-row">
+
+                <div class="btn-container item-input">
+                    <button (click)="onClickBuscar()" class="btn btn-primary">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                        Buscar
+                    </button>
                 </div>
+
             </div>
         </div>
 
     </ba-card>
 
     <ngb-tabset class="col-sm-12 tabset-consulta">
-
         <ngb-tab title="Comprobantes">
             <ng-template ngbTabContent>
-
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Comprobante</th>
+                            <th>Numero</th>
+                            <th>Fecha Emision</th>
+                            <th>Cod Cliente/Prov</th>
+                            <th>Nombre</th>
+                            <th>Cuit</th>
+                            <th>Dolar</th>
+                            <th>Moneda</th>
+                            <th>Imputada</th>
+                            <th>Modulo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let compBusc of compEncabezados | async">
+                            <td>{{ compBusc.comprobante }}</td>
+                            <td class="td-right td-nowrap" >{{ formatNumero(compBusc.numero) }}</td>
+                            <td>{{ compBusc.fechaEmi }}</td>
+                            <td class="td-right">{{ compBusc.idPadron }}</td>
+                            <td>{{ compBusc.nombre }}</td>
+                            <td class="td-right">{{ compBusc.cuit }}</td>
+                            <td class="td-right">{{ compBusc.cotDolar }}</td>
+                            <td>{{ compBusc.moneda }}</td>
+                            <td>{{ compBusc.imputada }}</td>
+                            <td>{{ compBusc.modulo }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </ng-template>
         </ngb-tab>
 
         <ngb-tab title="Detalles">
             <ng-template ngbTabContent>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Comprobante</th>
+                            <th>Numero</th>
+                            <th>Fecha Emision</th>
+                            <th>Cod Producto</th>
+                            <th>Articulo</th>
+                            <th>Original</th>
+                            <th>Pendiente</th>
+                            <th>Precio</th>
+                            <th>Deposito</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let compDet of compDetalles | async">
+                            <td>{{ compDet.comprobante }}</td>
+                            <td class="td-right td-nowrap">{{ formatNumero(compDet.numero) }}</td>
+                            <td>{{ compDet.fechaEmision }}</td>
+                            <td class="td-right">{{ compDet.codProducto }}</td>
+                            <td>{{ compDet.articulo }}</td>
+                            <td class="td-right">{{ compDet.original }}</td>
+                            <td class="td-right">{{ compDet.pendiente }}</td>
+                            <td class="td-right">{{ compDet.precio }}</td>
+                            <td class="td-right">{{ compDet.deposito }}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
             </ng-template>
         </ngb-tab>

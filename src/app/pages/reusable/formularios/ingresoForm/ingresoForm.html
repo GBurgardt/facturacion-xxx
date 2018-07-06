@@ -98,7 +98,14 @@
                     <div class="form-group inline-group last-child-custom-card">
                         <label for="fechaComprobante">Fecha: </label>
                         <div class="input-group">
-                            <input (blur)="onCalculateFecha($event)('fechaComprobante')" (keyup.enter)="onCalculateFecha($event)('fechaComprobante')" class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="comprobante.fechaComprobante" ngbDatepicker #dComp="ngbDatepicker">
+                            <input  (blur)="onCalculateFecha($event)('fechaComprobante')" 
+                                    (keyup.enter)="onCalculateFecha($event)('fechaComprobante')" 
+                                    class="form-control" 
+                                    placeholder="dd/mm/aaaa" 
+                                    name="dp" 
+                                    [(ngModel)]="comprobante.fechaComprobante" 
+                                    ngbDatepicker 
+                                    #dComp="ngbDatepicker">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button" style="height: 100%;">
                                     <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />

@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { NgbDateParserFormatter, NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
+import { DateLikePicker } from "../../../models/dateLikePicker";
 
 function padNumber(value: number) {
     if (isNumber(value)) {
@@ -21,20 +22,26 @@ function toInteger(value: any): number {
 @Injectable()
 export class NgbDateFRParserFormatter extends NgbDateParserFormatter {
     parse(value: string): NgbDateStruct {
+        debugger;
         if (value) {
             const dateParts = value.trim().split('/');
             if (dateParts.length === 1 && isNumber(dateParts[0])) {
-                return {year: toInteger(dateParts[0]), month: null, day: null};
+                return new DateLikePicker(null, {year: toInteger(dateParts[0]), month: null, day: null})
+                // return {year: toInteger(dateParts[0]), month: null, day: null};
             } else if (dateParts.length === 2 && isNumber(dateParts[0]) && isNumber(dateParts[1])) {
-                return {year: toInteger(dateParts[1]), month: toInteger(dateParts[0]), day: null};
+
+                return new DateLikePicker(null, {year: toInteger(dateParts[1]), month: toInteger(dateParts[0]), day: null});
+                // return {year: toInteger(dateParts[1]), month: toInteger(dateParts[0]), day: null};
             } else if (dateParts.length === 3 && isNumber(dateParts[0]) && isNumber(dateParts[1]) && isNumber(dateParts[2])) {
-                return {year: toInteger(dateParts[2]), month: toInteger(dateParts[1]), day: toInteger(dateParts[0])};
+                return new DateLikePicker(null, {year: toInteger(dateParts[2]), month: toInteger(dateParts[1]), day: toInteger(dateParts[0])});
+                // return {year: toInteger(dateParts[2]), month: toInteger(dateParts[1]), day: toInteger(dateParts[0])};
             }
         }   
         return null;
     }
 
     format(date: NgbDateStruct): string {
+        
         let stringDate: string = ""; 
         if(date) {
             stringDate += isNumber(date.day) ? padNumber(date.day) + "/" : "";

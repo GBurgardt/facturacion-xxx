@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { environment } from 'environments/environment';
 import { Headers, Http, Request, RequestOptions, RequestOptionsArgs, RequestMethod } from '@angular/http';
-import { Sucursal } from 'app/models/sucursal';
-import { Perfil } from 'app/models/perfil';
-import { Usuario } from '../models/usuario';
 
 // Libreria para encriptar en MD5 la clave
 import * as crypto from 'crypto-js';
@@ -13,28 +9,33 @@ import * as crypto from 'crypto-js';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 import 'rxjs/add/operator/toPromise';
-import { TipoComprobante } from '../models/tipoComprobante';
+
 import { resourcesREST } from 'constantes/resoursesREST';
-import { Rubro } from 'app/models/rubro';
-import { SubRubro } from 'app/models/subRubro';
-import { FormaPago } from '../models/formaPago';
+
 import { FiltroListaPrecios } from '../models/filtroListaPrecio';
 import { DetalleProducto } from '../models/detalleProducto';
 import { Padron } from '../models/padron';
 import { ProductoBuscaModelo } from 'app/models/productoBuscaModelo';
 import { Comprobante } from 'app/models/comprobante';
 import { ComprobanteRelacionado } from '../models/comprobanteRelacionado';
-import { Factura } from '../models/factura';
+
 import { Cotizacion } from 'app/models/cotizacion';
 import { ProductoPendiente } from 'app/models/productoPendiente';
 import { ModeloFactura } from 'app/models/modeloFactura';
 import { Deposito } from '../models/deposito';
+import { SisModulo } from '../models/sisModulo';
+import { Producto } from '../models/producto';
+import { SisEstado } from '../models/sisEstado';
+import { TipoComprobante } from 'app/models/tipoComprobante';
+import { DateLikePicker } from 'app/models/dateLikePicker';
+import { UtilsService } from './utilsService';
 
 @Injectable()
 export class AuthService {
 
     constructor(
-        private http: Http
+        private http: Http,
+        private utilsService: UtilsService
     ) { }
 
     /**
@@ -231,11 +232,12 @@ export class AuthService {
                 idCteTipo: comprobante.tipo.idCteTipo,
                 letra: comprobante.letra,
                 numero: Number(comprobante.puntoVenta + comprobante.numero),
-                fechaEmision: comprobante.fechaComprobante.getFechaFormateada(),
-                fechaVencimiento: comprobante.fechaComprobante.getFechaFormateada(),
-                fechaConta: comprobante.fechaComprobante.getFechaFormateada(),
+
+                fechaEmision: this.utilsService.formatearFecha(comprobante.fechaComprobante),
+                fechaVencimiento: this.utilsService.formatearFecha(comprobante.fechaComprobante),
+                fechaConta: this.utilsService.formatearFecha(comprobante.fechaComprobante),
                 cai: ' ',
-                caiVto:  comprobante.fechaComprobante.getFechaFormateada(),
+                caiVto: this.utilsService.formatearFecha(comprobante.fechaComprobante),
                 codBarra: ' ',
                 idPadron: provSelec.padronCodigo,
                 idFormaPago: 5,
@@ -298,8 +300,10 @@ export class AuthService {
                         return {
                             nroLote: prodTraza.trazabilidad.lote,
                             serie: prodTraza.trazabilidad.serie,
-                            fechaElab: prodTraza.trazabilidad.fechaElab.getFechaFormateada(),
-                            fechaVto: prodTraza.trazabilidad.fechaVto.getFechaFormateada(),
+                            fechaElab: this.utilsService.formatearFecha(prodTraza.trazabilidad.fechaElab),
+                            fechaVto: this.utilsService.formatearFecha(prodTraza.trazabilidad.fechaVto),
+                            // fechaElab: prodTraza.trazabilidad.fechaElab.getFechaFormateada(),
+                            // fechaVto: prodTraza.trazabilidad.fechaVto.getFechaFormateada(),
                             vigencia: true,
                             idProducto: prodTraza.producto.idProductos
                         }
@@ -325,6 +329,43 @@ export class AuthService {
         );
     }
 
+    /**
+    * @description Obtiene productos pendientes
+    * @argument token
+    * @argument filtros Lo filtro
+    */
+    getBuscaComprobantes = (token: string) =>   (comprobante: Comprobante) => 
+                                                (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker}) => 
+                                                (sisModuloSelec: SisModulo) => 
+                                                (tipoComprobanteSelec: TipoComprobante) =>
+                                                (productoSelec: Producto) =>
+                                                (sisEstadoSelec: SisEstado) => 
+                                                (padronSelec: Padron) =>
+                                                (depositoSelec: Deposito) => {
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            resourcesREST.buscaComprobantes.nombre,
+            {
+                comprobanteModulo : sisModuloSelec && sisModuloSelec.idSisModulos ? sisModuloSelec.idSisModulos : 0, 
+                comprobanteTipo : tipoComprobanteSelec && tipoComprobanteSelec.idCteTipo ? tipoComprobanteSelec.idCteTipo : 0,
+                comprobanteNumero : comprobante && comprobante.puntoVenta && comprobante.numero ? `${comprobante.puntoVenta}${comprobante.numero}` : 0,
+                fechaDesde : this.utilsService.formatearFecha(fechasFiltro.desde),
+                fechaHasta : this.utilsService.formatearFecha(fechasFiltro.hasta),
+                // fechaDesde : fechasFiltro.desde.getFechaFormateada(),
+                // fechaHasta : fechasFiltro.hasta.getFechaFormateada(),
+                idProducto : productoSelec && productoSelec.idProductos ? productoSelec.idProductos : 0,
+                padCodigo : padronSelec && padronSelec.padronCodigo ? padronSelec.padronCodigo : 0,
+                codigoDep : depositoSelec && depositoSelec.codigoDep ? depositoSelec.codigoDep : 0,
+                idEstado : sisEstadoSelec && sisEstadoSelec.idSisEstados ? sisEstadoSelec.idSisEstados : 0
+            },
+            {}
+        );
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////////////
     ///////////////////              MÉTODOS REUTILIZABLES          ///////////////////
@@ -336,19 +377,20 @@ export class AuthService {
     * @argument resource Ejemplos: 'cteTipo', 'rubros'
     * @argument queryParams Query params para setearle a la consulta
     */
-    getResourceList = (token: string) => (nombreRecurso: string) => (queryParams?) => {
-
-        return this.request(
-            [],
+    getResourceList = (token: string) => (nombreRecurso: string) => (params?) => (tipoParam?) => 
+        this.request(
+            params && tipoParam && tipoParam === 'path' ? 
+                params : [],
             RequestMethod.Get,
             {
                 token: token,
             },
             nombreRecurso,
             {},
-            queryParams ? queryParams : {}
-        );
-    }
+            params && tipoParam && tipoParam === 'query' ? 
+                params : {} 
+        )
+    
 
     /**
     * @description Borrar un recurso a partir de us id

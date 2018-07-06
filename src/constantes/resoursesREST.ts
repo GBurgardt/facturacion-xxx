@@ -117,5 +117,13 @@ export const resourcesREST = {
     sisEstados: {
         nombre: 'sisEstados',
         Clase: SisEstado
+    },
+    buscaComprobantes: {
+        nombre: 'buscaComprobantes',
+        Clase: null
+    },
+    buscaCteTipoNro: {
+        nombre: 'buscaCteTipoNro',
+        Clase: TipoComprobante
     }
 };

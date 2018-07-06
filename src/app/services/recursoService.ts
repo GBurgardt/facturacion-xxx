@@ -23,13 +23,17 @@ export class RecursoService {
     /**
      * Obtiene la lista de un recurso mappeada a su clase
      * @param recursoRest Json con nombre y Clase del modelo a mappear
+     * @param queryOrPathParams? Si es un array, son path. Si es un Objecto, son querys
      */
-    getRecursoList = (recursoRest) => (queryParams?) => {
+    getRecursoList = (recursoRest) => (queryOrPathParams?) => {
+        // Si es un object (json), es queryParam, sino es pathParam
+        const tipoParam = Array.isArray(queryOrPathParams) ? 'path' : 'query';
+        
         const lista: Observable<any[]> = this.authService.getResourceList(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
             recursoRest.nombre
-        )(queryParams).map(list => {
+        )(queryOrPathParams)(tipoParam).map(list => {
             return list.arraydatos.map(resource => {
                 return new recursoRest.Clase(resource);
             })
