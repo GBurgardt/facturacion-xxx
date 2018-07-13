@@ -2,11 +2,11 @@
     <div class="row">
         <div class="col-sm-2">
             <div class="form-group inline-group">
-                <label for="proveedorSeleccionado">Cliente</label>
-                <input  id="proveedorSeleccionado" 
+                <label for="cliente">Cliente</label>
+                <input  id="clienteSeleccionado" 
                         (blur)="onBlurInputProv($event)" 
-                        (ngModelChange)="onChangeInputProveedor($event)" 
-                        [(ngModel)]="proveedorSeleccionado.padronCodigo" 
+                        (ngModelChange)="onChangeInputCliente($event)" 
+                        [(ngModel)]="cliente.padronCodigo" 
                         type="text" 
                         class="form-control" 
                         placeholder=""
@@ -17,30 +17,30 @@
             </div>
         </div>
 
-        <popup-lista    *ngIf="proveedorSeleccionado.padronCodigo && proveedorSeleccionado.padronCodigo.length > 0" 
-                        [items]="proveedores.filtrados.asObservable().distinctUntilChanged()" 
+        <popup-lista    *ngIf="cliente.padronCodigo && cliente.padronCodigo.length > 0" 
+                        [items]="clientes.filtrados.asObservable().distinctUntilChanged()" 
                         [keysToShow]="['padronApelli', 'padronCodigo']" 
                         [onClickItem]="popupLista.onClickListProv"
-                        [fatherPosition]="popupLista.getOffsetOfInputProveedor()">
+                        [fatherPosition]="popupLista.getOffsetOfInputCliente()">
         </popup-lista>
 
         <div class="col-sm-3">
             <div class="form-group">
-                <input [(ngModel)]="proveedorSeleccionado.padronApelli" type="text" class="form-control" id="nombreProveedor" placeholder="">
+                <input [(ngModel)]="cliente.padronApelli" type="text" class="form-control" id="nombreCliente" placeholder="">
             </div>
         </div>
         <div class="col-sm-3">
             <div class="form-group inline-group">
                 <label for="cuit">CUIT</label>
-                <input [(ngModel)]="proveedorSeleccionado.cuit" type="text" class="form-control" id="cuit" placeholder="">
+                <input [(ngModel)]="cliente.cuit" type="text" class="form-control" id="cuit" placeholder="">
             </div>
         </div>
 
         <div class="col-sm-3 form-group inline-group tipo-compra-dropdown">
             <label for="tipoCompra">IVA:</label>
             <select class="form-control without-padding" [ngStyle]="{padding: '0px 8px 0px 8px'}" id="tipoCompra">
-                <option *ngFor="let tipoOp of tiposOperacion | async" [ngValue]="tipoOp">
-                    {{tipoOp.descripcion}}
+                <option *ngFor="let sIva of sisSitIvas | async" [ngValue]="sIva">
+                    {{sIva.descCorta}}
                 </option>
             </select>
         </div>
@@ -49,12 +49,12 @@
     <div class="row custom-card-container">
         <custom-card class="col-sm-5 card-flex-column-reverse" title="Comprobante">
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-5">
                     <div class="form-group inline-group">
                         <label for="cteTipo">Tipo:</label>
-                        <select [(ngModel)]="comprobante.tipo" class="form-control without-padding" [ngStyle]="{padding: '1px 8px 0px 8px'}" id="cteTipo">
-                            <option *ngFor="let tipoComp of tiposComprobantes | async" [ngValue]="tipoComp">
-                                {{tipoComp.descCorta}}
+                        <select class="form-control without-padding" [ngStyle]="{padding: '0px 8px 0px 8px'}" id="tipoCompra">
+                            <option *ngFor="let tipoOp of tiposOperacion | async" [ngValue]="tipoOp">
+                                {{tipoOp.descripcion}}
                             </option>
                         </select>
                     </div>
@@ -77,24 +77,27 @@
                 <div class="col-sm-8">
                     <div class="form-group inline-group">
                         <label for="cteNro">Nro:</label>
-                        <input maxlength="4" (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('comprobante')" [(ngModel)]="comprobante.puntoVenta" type="text" class="form-control pre-numero-input" id="puntoVenta" placeholder="">
+                        <input maxlength="4" (blur)="onBlurPtoVenta($event)('puntoVenta')('comprobante')" [(ngModel)]="comprobante.puntoVenta" type="text" class="form-control pre-numero-input" id="puntoVenta" placeholder="">
                         <input maxlength="8" (blur)="onBlurNumeroAutocomp($event)('numero')('comprobante')" [(ngModel)]="comprobante.numero" type="text" class="form-control" id="numero" placeholder="">
                     </div>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-sm-8">
+                <div class="col-sm-7">
                     <div class="form-group inline-group last-child-custom-card">
                         <label for="fechaComprobante">Fecha: </label>
                         <div class="input-group">
-                            <input  (blur)="onCalculateFecha($event)('fechaComprobante')" 
-                                    (keyup.enter)="onCalculateFecha($event)('fechaComprobante')" 
+                            <!-- Deshabilito la fecha si NÓ está seleccionado el cliente, el tipo comprobante y seteado el ptoventa -->
+                            <input  [disabled]="!(cliente && cliente.padronCodigo && comprobante && comprobante.tipo && comprobante.puntoVenta)" 
+                                    (blur)="onBlurFechaComprobante($event)" 
+                                    (keyup.enter)="onBlurFechaComprobante($event)" 
                                     class="form-control" 
                                     placeholder="dd/mm/aaaa" 
                                     name="dp" 
                                     [(ngModel)]="comprobante.fechaComprobante" 
                                     ngbDatepicker 
+                                    (ngModelChange)="onModelChangeFechaComp($event, d)"
                                     #dComp="ngbDatepicker">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button" style="height: 100%;">
@@ -105,10 +108,14 @@
                     </div>
                 </div>
 
-                <div class="col-sm-4">
+                <div class="col-sm-5">
                     <div class="form-group inline-group">
-                        <label for="cteNro">Deposito:</label>
-                        <input maxlength="4" (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('comprobante')" [(ngModel)]="comprobante.puntoVenta" type="text" class="form-control" id="puntoVenta" placeholder="">
+                        <label class="add-item-label" for="depositoInput">Deposito: </label>
+                        <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="depositoSelec" class="form-control without-padding">
+                            <option *ngFor="let dep of depositos | async" [ngValue]="dep">
+                                {{dep.descripcion}}
+                            </option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -118,7 +125,7 @@
             <ngb-tab title="Forma de Pago">
                 <ng-template ngbTabContent>
                     <div class="fpago-content">
-                        <tabla-forma-pago>
+                        <tabla-forma-pago [data]="dataTablaFormasPago">
                         </tabla-forma-pago>
     
                         <div class="txt-area-container">
@@ -258,7 +265,6 @@
         <div class="col-sm-5 card-total card-flex-column-reverse">
             
             <custom-card class=" " title="Totales">
-            <!-- <custom-card class="col-sm-5 card-total card-flex-column-reverse" title="Totales"> -->
                 <div class="card-total-content">
                     <div class="row">
                         <div class="col-sm-6">
@@ -299,7 +305,7 @@
         <custom-card class="col-sm-2 card-flex-column-reverse" title="">
             <div class="col-sm-12 btn-container">
                 <button [disabled]="!emisionRemitosService.checkIfDatosValidosComprobante(comprobante)
-                    (proveedorSeleccionado)(tablas.datos.productosPend)(tablas.datos.modelosFactura)(depositoSelec)"
+                    (cliente)(tablas.datos.productosPend)(tablas.datos.modelosFactura)(depositoSelec)"
                 
                         (click)="onClickConfirmar()" class="btn btn-primary btn-ingreso-from">
                     Confirmar

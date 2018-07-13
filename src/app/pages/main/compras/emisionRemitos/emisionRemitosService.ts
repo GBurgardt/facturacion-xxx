@@ -14,6 +14,8 @@ import { ComprobanteRelacionado } from "app/models/comprobanteRelacionado";
 import { Observable } from 'rxjs/Observable';
 import { Deposito } from '../../../../models/deposito';
 import { UtilsService } from '../../../../services/utilsService';
+import { FormaPago } from "app/models/formaPago";
+import { CteFechas } from "../../../../models/cteFechas";
 
 @Injectable()
 export class EmisionRemitosService {
@@ -24,12 +26,11 @@ export class EmisionRemitosService {
         private utilsService: UtilsService
     ) { }
 
-    filtrarProveedores = (listaProveedores, textoBuscado) => {
-        return listaProveedores.filter(
+    filtrarClientes = (listaClientes, textoBuscado) => 
+        listaClientes.filter(
             (prov: Padron) =>   prov.padronCodigo.toString().includes(textoBuscado) ||
                                 prov.padronApelli.toString().toLowerCase().includes(textoBuscado)
-        );              
-    }
+        );    
 
     getProveFormated = (prove) => `${prove.padronNombre} (${prove.padronCodigo})`;
 
@@ -152,10 +153,10 @@ export class EmisionRemitosService {
     /**
      * Buscar los productos pendientes
      */
-    buscarPendientes = (proveedor: Padron) => (comprobanteRel: ComprobanteRelacionado) => {
+    buscarPendientes = (cliente: Padron) => (comprobanteRel: ComprobanteRelacionado) => {
         return this.authService.getProductosPendientes(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(proveedor)(comprobanteRel)
+        )(cliente)(comprobanteRel)
             .map(respuesta => respuesta.arraydatos.map(prodPend => new ProductoPendiente(prodPend)));
     }
 
@@ -182,7 +183,7 @@ export class EmisionRemitosService {
     /**
      * Retorna un array de todas las letras (del iva) del proovedr seleccionado
      */
-    getLetrasProveedor = (proveSelec: Padron) => this.authService.getSisSitIva(
+    getLetrasCliente = (proveSelec: Padron) => this.authService.getSisSitIva(
         this.localStorageService.getObject(environment.localStorage.acceso).token
     )(proveSelec).map(
         respSisIva => respSisIva.datos.letra.split(',')
@@ -296,7 +297,7 @@ export class EmisionRemitosService {
         ) : '';
        
 
-    seleccionarProveedor = (todos: Padron[]) => (seleccionado: Padron) => {
+    seleccionarCliente = (todos: Padron[]) => (seleccionado: Padron) => {
         // Primero busco si el ingresado existe
         const provBuscado = new Padron({...todos.find(
             prove => prove.padronCodigo === Number(seleccionado.padronCodigo)
@@ -307,8 +308,8 @@ export class EmisionRemitosService {
             return provBuscado;
         } else {
             // Caso contrario..
-            // Busco el padronCodigo del proveedor que estaba seleccionado
-            const proveedorAnterior: Padron = new Padron({...todos.find(
+            // Busco el padronCodigo del cliente que estaba seleccionado
+            const clienteAnterior: Padron = new Padron({...todos.find(
                 prove =>    prove.padronApelli === seleccionado.padronApelli &&
                             prove.padronNombre === seleccionado.padronNombre &&
                             prove.cuit === seleccionado.cuit &&
@@ -316,9 +317,9 @@ export class EmisionRemitosService {
             )});
 
             // Si habia uno seleccionado, lo restauro
-            if (proveedorAnterior) {
+            if (clienteAnterior) {
                 // Vuelvo el padronCodigo a su valor correcto
-                return proveedorAnterior;
+                return clienteAnterior;
             } else {
                 // Caso contrario tiro mensajito
                 throw({
@@ -329,5 +330,22 @@ export class EmisionRemitosService {
             }
         }
     }
+
+    /**
+     * Get formas pago apra la tabla de forma pago emisiuon remito
+     */
+    getFormasPago = (cliente: Padron) => (fecha: any) => 
+        this.authService.getBuscaFormaPago(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(cliente)(fecha).map(resp => resp.arraydatos.map(fp => new FormaPago(fp)))
+ 
+        
+    /**
+     * Busca el (o los) intevalo fecha de un comprobaten dado
+     */
+    getBuscaCteFecha = (comprobante: Comprobante) => 
+        this.authService.getBuscaCteFecha(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(comprobante).map(resp => resp.arraydatos.map(cteFe => new CteFechas(cteFe)))
 
 }

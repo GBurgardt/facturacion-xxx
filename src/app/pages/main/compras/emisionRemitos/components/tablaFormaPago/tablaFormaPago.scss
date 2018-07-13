@@ -19,11 +19,11 @@
         }
 
         td {
-            :host /deep/ ba-checkbox {
-                label.custom-checkbox {
-                    margin-bottom: 0;
-                }
+            .checkbox-td {
+                display: block;
+                margin: 2px;
             }
+            
         }
     }
 }

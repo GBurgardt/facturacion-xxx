@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
-import { Component, Input } from '@angular/core';
+import * as moment from 'moment';
+import { Component } from '@angular/core';
 
 import { UtilsService } from 'app/services/utilsService';
 import { Observable } from 'rxjs/Observable';
@@ -15,11 +16,14 @@ import { BehaviorSubject } from 'rxjs';
 import { Cotizacion } from '../../../../models/cotizacion';
 import { ModeloFactura } from '../../../../models/modeloFactura';
 import { Comprobante } from 'app/models/comprobante';
-import { ComprobanteRelacionado } from 'app/models/comprobanteRelacionado';
 import { Factura } from '../../../../models/factura';
 import { Deposito } from 'app/models/deposito';
 import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
 import { EmisionRemitosService } from './emisionRemitosService';
+import { FormaPago } from '../../../../models/formaPago';
+import { CondIva } from '../../../../models/condIva';
+import { CteFechas } from '../../../../models/cteFechas';
+import { DateLikePicker } from '../../../../models/dateLikePicker';
 
 
 @Component({
@@ -32,15 +36,12 @@ import { EmisionRemitosService } from './emisionRemitosService';
  * Form reutilizable
  */
 export class EmisionRemitos {
-    @Input() titulo = '';
-    
-
     /////////////////////////////////////////////
     /////////// Modelos Comprobante /////////////
     /////////////////////////////////////////////
-    proveedorSeleccionado: Padron = new Padron();
+    cliente: Padron = new Padron();
     comprobante: Comprobante = new Comprobante();
-    comprobanteRelacionado: ComprobanteRelacionado = new ComprobanteRelacionado()
+    
     factura: Factura = new Factura();
     cotizacionDatos: {
         cotizacion: Cotizacion,
@@ -50,23 +51,28 @@ export class EmisionRemitos {
     depositoSelec: Deposito;
 
     // Inhdice del producto enfocado del popup
-    proveedorEnfocadoIndex: number = -1;
+    clienteEnfocadoIndex: number = -1;
+
+    // Intervalo de fecha del cte seleccionado (y el pto venta seteado)
+    cteFechasIntervalo: CteFechas = new CteFechas();
 
     /////////////////////////////////////////////
     //////////// Listas desplegables ////////////
     /////////////////////////////////////////////
+    sisSitIvas: Observable<CondIva[]>;
     tiposComprobantes: Observable<TipoComprobante[]>;
     tiposOperacion: Observable<SisTipoOperacion[]>;
     monedas: Observable<Moneda[]>;
     depositos: Observable<Deposito[]>;
 
-    // Lista de proveedores completa (necesaria para filtrar) y filtrada
-    proveedores: {
+    // Lista de clientes completa (necesaria para filtrar) y filtrada
+    clientes: {
         todos: Padron[];
         filtrados: BehaviorSubject<Padron[]>;
     } = {todos: [], filtrados: new BehaviorSubject([])}
 
     letras: string[] = [];
+
 
     /////////////////////////////////////////////
     ////////////////// Tablas ///////////////////
@@ -146,11 +152,18 @@ export class EmisionRemitos {
 
     popupLista: any = {
         onClickListProv: (prove: Padron) => {
-            this.proveedorSeleccionado = new Padron({...prove});
-            this.emisionRemitosService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
+            this.cliente = new Padron({...prove});
+            this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
         },
-        getOffsetOfInputProveedor: () => this.utilsService.getOffset(document.getElementById('proveedorSeleccionado'))
+        getOffsetOfInputCliente: () => this.utilsService.getOffset(document.getElementById('clienteSeleccionado'))
     }
+
+    
+    /////////////////////////////////////////////
+    ////////// EmisionRemitoDatos ///////////////
+    /////////////////////////////////////////////
+
+    dataTablaFormasPago: Observable<FormaPago[]>;
 
     /**
      * Toda la carga de data se hace en el mismo orden en el que está declarado arriba
@@ -161,17 +174,18 @@ export class EmisionRemitos {
         private utilsService: UtilsService,
         private popupListaService: PopupListaService
     ) {
-        ////////// Listas desplegables  //////////
-        this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)();
-        this.tiposOperacion = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)();
+
+        ////////// Listas desplegables //////////
+        this.sisSitIvas = this.recursoService.getRecursoList(resourcesREST.sisSitIva)();
+        this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.buscaCteTipoNro)([2]);
+        this.tiposOperacion = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)([2]);
         this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
         this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
 
-
-        ////////// Proveedores  //////////
-        this.recursoService.getRecursoList(resourcesREST.proveedores)().subscribe(proveedores => {
-            this.proveedores.todos = proveedores;
-            this.proveedores.filtrados.next(proveedores);
+        ////////// Clientes  //////////
+        this.recursoService.getRecursoList(resourcesREST.proveedores)().subscribe(clientes => {
+            this.clientes.todos = clientes;
+            this.clientes.filtrados.next(clientes);
         });
 
         ////////// Tablas //////////
@@ -183,23 +197,8 @@ export class EmisionRemitos {
         this.emisionRemitosService.getCotizacionDatos().subscribe(cotizDatos => this.cotizacionDatos.cotizacion = cotizDatos);
     }
 
+
     ///////////////////////////////// Eventos OnClick /////////////////////////////////
-
-    /**
-     * Busca los productos pendientes de acuerdo al comprobante relacionado
-     */
-    onClickBuscarPendientes = () => 
-        this.emisionRemitosService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado).subscribe(prodsPend=>{
-            // Agrego los productos
-            this.tablas.datos.productosPend = _.uniqWith(
-                this.tablas.datos.productosPend.concat(prodsPend),
-                (a:ProductoPendiente,b:ProductoPendiente) => a.producto.codProducto === b.producto.codProducto
-            );
-
-            // Actualizo datos de los productos
-            this.actualizarDatosProductos();
-        });
-    
 
     /**
      * Agrega el producto seleccionado a la lista de productosPendientes
@@ -220,16 +219,7 @@ export class EmisionRemitos {
     /**
      * Valida y graba el comprobante
      */
-    onClickConfirmar = () => this.emisionRemitosService.confirmarYGrabarComprobante(this.comprobante)
-        (this.comprobanteRelacionado)
-        (this.proveedorSeleccionado)
-        (this.tablas.datos.productosPend)
-        (this.tablas.datos.modelosFactura)
-        (this.cotizacionDatos)
-        (this.depositoSelec)
-        .subscribe(
-            (respuesta: any) => this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()()
-        )
+    onClickConfirmar = () => null;
     
 
     ///////////////////////////////// Eventos (Distintos de onclick) /////////////////////////////////
@@ -254,36 +244,36 @@ export class EmisionRemitos {
     /**
      * Evento change del input del proovedor
      */
-    onChangeInputProveedor = (codigo) => {
-        this.proveedores.filtrados.next(
-            this.emisionRemitosService.filtrarProveedores(this.proveedores.todos, codigo)
+    onChangeInputCliente = (codigo) => {
+        this.clientes.filtrados.next(
+            this.emisionRemitosService.filtrarClientes(this.clientes.todos, codigo)
         );
         // Reseteo el indice
-        this.proveedorEnfocadoIndex = -1;
+        this.clienteEnfocadoIndex = -1;
     }
     
     
     /**
      * El blur es cuando se hace un leave del input (caundo se apreta click afuera por ejemplo).
      * Acá lo que hago es poner un array vacio como próx valor de los filtrados, cosa que la lista desaparezca porque no hay nada
-     * También retorno el proveedor seleccionado en el input
+     * También retorno el cliente seleccionado en el input
      */
     onBlurInputProv = (e) => {
         // Vacio filtrados
-        this.proveedores.filtrados.next([]);
+        this.clientes.filtrados.next([]);
 
-        // Actualizo proveedor seleccionado
+        // Actualizo cliente seleccionado
         try {
-            this.proveedorSeleccionado = this.emisionRemitosService.seleccionarProveedor(this.proveedores.todos)(this.proveedorSeleccionado);
-            this.emisionRemitosService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
+            this.cliente = this.emisionRemitosService.seleccionarCliente(this.clientes.todos)(this.cliente);
+            this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
         }
         catch(err) {
             // Muestro error
             if (err && err.nombre && err.descripcion) {
                 this.utilsService.showModal(err.nombre)(err.descripcion)()();
             }
-            // Vacio proveedor seleccionado
-            this.proveedorSeleccionado = new Padron();
+            // Vacio cliente seleccionado
+            this.cliente = new Padron();
         }
     }
 
@@ -291,14 +281,36 @@ export class EmisionRemitos {
     /**
      * Setea la fecha de compra calculandola dado un string en formato 'ddmm', parseando a 'dd/mm/aaaa'
      */
-    onCalculateFecha = (e) => (keyFecha) => {
-        if (!this.comprobante[keyFecha] || typeof this.comprobante[keyFecha] !== 'string') return;
+    onBlurFechaComprobante = (e) => {
         
-        this.comprobante[keyFecha] = this.utilsService.stringToDateLikePicker(this.comprobante[keyFecha]);
+        // Primero checkeo que el intervalo existe ya que puede que el tipoComrpoiabte con ese pto venta NO tenga intervalo
+        // Por lo que el operador puede ingresar la fecha que se le cante, y yo pongo por defecto la del día
 
-        // Hago focus en el prox input
-        (keyFecha==='fechaComprobante') ? document.getElementById("fechaVto").focus() : null;
-        // (keyFecha==='fechaVto') ? document.getElementById("cteRelSelect").focus() : null;
+        if (this.comprobante.fechaComprobante) {
+            // Si NO hay intervalo, o si SI hay intervalo Y la fecha ingresada está dentro de el...
+            if (
+                (!this.cteFechasIntervalo || !this.cteFechasIntervalo.fechaApertura) ||
+                moment(
+                    this.utilsService.dateLikePickerToDate(this.comprobante.fechaComprobante)
+                ).isBetween(
+                    moment(this.cteFechasIntervalo.fechaApertura),
+                    moment(this.cteFechasIntervalo.fechaCierre)
+                )
+            ) {
+                // Actualizo fecha (sobretodo si el formato es 'ddmm')
+                this.comprobante.fechaComprobante = this.utilsService.stringToDateLikePicker(this.comprobante.fechaComprobante);
+                
+                // Actualizo las formas de pago de la tabla
+                this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante);
+            } else {
+                // Si se sale del intervalo permitido, seteo la fecha como fechaApertura
+                this.comprobante.fechaComprobante = new DateLikePicker(this.cteFechasIntervalo.fechaApertura);
+                // Y le aviso
+                this.utilsService.showModal('Error')('La fecha se sale del intervalo permitido')()();
+            }
+        }
+
+        
 
     }
 
@@ -319,28 +331,72 @@ export class EmisionRemitos {
     }
 
     /**
-     * Evento de cuando se apreta felcha arriba o feclah abajo en input de busca proveedor
+     * Evento de cuando se apreta felcha arriba o feclah abajo en input de busca cliente
      */
     keyPressInputTexto = (e: any) => (upOrDown) => {
         e.preventDefault();
         // Hace todo el laburo de la lista popup y retorna el nuevo indice seleccionado
-        this.popupListaService.keyPressInputForPopup(upOrDown)(this.proveedores.filtrados)(this.proveedorEnfocadoIndex)
-            .subscribe(newIndex => this.proveedorEnfocadoIndex = newIndex)
+        this.popupListaService.keyPressInputForPopup(upOrDown)(this.clientes.filtrados)(this.clienteEnfocadoIndex)
+            .subscribe(newIndex => this.clienteEnfocadoIndex = newIndex)
             .unsubscribe()
     }
 
     /**
-     * Evento on enter en el input de buscar proveedor
+     * Evento on enter en el input de buscar cliente
      */
     onEnterInputProv = (e: any) => {
         e.preventDefault();
-        this.proveedores.filtrados.subscribe(provsLista => {
+        this.clientes.filtrados.subscribe(provsLista => {
             // Busco el producto
-            const provSelect = provsLista && provsLista.length ? provsLista[this.proveedorEnfocadoIndex] : null;
+            const provSelect = provsLista && provsLista.length ? provsLista[this.clienteEnfocadoIndex] : null;
             // Lo selecciono
             provSelect ? this.popupLista.onClickListProv(provSelect) : null;
             // Reseteo el index
-            this.proveedorEnfocadoIndex = -1;
+            this.clienteEnfocadoIndex = -1;
         })
+    }
+
+    /**
+     * Evento que se dispara cuando se selecciona una fecha
+     */
+    onModelChangeFechaComp(e, d) {
+        // Actualizo las formas de pago de la tabla
+        this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante);
+    }
+
+
+    onBlurPtoVenta = (e) => (tipo) => (keyTipo) => {
+        // Consulto el service y traigo el intevalo de fecha de cteTipo
+        this.emisionRemitosService.getBuscaCteFecha(
+            this.comprobante
+        ).catch((err, c) => {
+            // Null en intervalo fechas..
+            this.cteFechasIntervalo = null;
+            // Pongo fecha seleccionada por dfecto en HOY
+            this.comprobante.fechaComprobante = new DateLikePicker(new Date());
+            return Observable.from([]);
+        })
+        .subscribe((cteFechas: CteFechas[]) => {
+            // Agarro el primer objeto (viene en un array pero es único)
+            const intervaloFecha = cteFechas && cteFechas.length === 1 ? cteFechas[0] : new CteFechas();
+            if (cteFechas.length > 0) {
+                // Actualizo intervalo
+                this.cteFechasIntervalo = intervaloFecha
+                // Seteo fecha por defecto
+                this.comprobante.fechaComprobante = new DateLikePicker(intervaloFecha.fechaApertura);
+            } else {
+                // Null en intervalo fechas..
+                this.cteFechasIntervalo = null;
+                // Pongo fecha seleccionada por dfecto en HOY
+                this.comprobante.fechaComprobante = new DateLikePicker(new Date());
+            }
+            // debugger;
+            // Actualizo las formas de pago para la fechaApertura
+            this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(intervaloFecha.fechaApertura);
+        });
+
+
+        // Hago el autocompletado de los nros
+        this.onBlurNumeroAutocomp(e)(tipo)(keyTipo)
     }
 }

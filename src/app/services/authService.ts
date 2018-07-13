@@ -371,7 +371,7 @@ export class AuthService {
     * @description Obtiene las formas de pago
     * @argument token
     */
-    getBuscaFormaPago = (token: string) => (proveedor: Padron) => (comproRel: ComprobanteRelacionado) => {
+    getBuscaFormaPago = (token: string) => (cliente: Padron) => (fecha: any) => {
         return this.request(
             [],
             RequestMethod.Post,
@@ -382,9 +382,29 @@ export class AuthService {
             {
                 activa: true,
                 todas: true,
-                fecha: this.utilsService.formatearFecha('02/02/2018'),
-                idPadronDesde: 1,
-                idPadronHasta: 2
+                fecha: this.utilsService.formatearFecha(fecha),
+                idPadronDesde: cliente.padronCodigo,
+                idPadronHasta: cliente.padronCodigo
+            },
+            {}
+        );
+    }
+
+    /**
+    * @description Obtiene las formas de pago
+    * @argument token
+    */
+   getBuscaCteFecha = (token: string) => (comprobante: Comprobante) => {
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            resourcesREST.buscaCteFecha.nombre,
+            {
+                idCteTipo: comprobante.tipo.idCteTipo,
+	            puntoVenta: comprobante.puntoVenta
             },
             {}
         );

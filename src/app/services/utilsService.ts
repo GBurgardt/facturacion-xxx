@@ -214,13 +214,16 @@ export class UtilsService {
 
     /**
      * Dado un string en formato ddmm retorna dd/mm/aaaa en typeData DateLikePicker, o null en caso de formato incorrecto
+     * Si es formato dd/mm/aaaa, tambien retoron un datelikepicker
      */
-    stringToDateLikePicker = (valueString) => valueString.length === 4 ?
-        new DateLikePicker(null, {
-            day: Number(valueString.substring(0, 2)),
-            month: Number(valueString.substring(2)),
-            year: (new Date()).getFullYear()
-        }) : null
+    stringToDateLikePicker = (valueFecha) => 
+        valueFecha.length === 4 ?
+            new DateLikePicker(null, {
+                day: Number(valueFecha.substring(0, 2)),
+                month: Number(valueFecha.substring(2)),
+                year: (new Date()).getFullYear()
+            }) : 
+            new DateLikePicker(null, valueFecha);
     
     /**
      * Decodifica la respuesta del error (scando el _body) y muestra el mensaje
@@ -248,7 +251,20 @@ export class UtilsService {
     // Flatmap para arrays
     flatMap = (f, arr) => arr.reduce((x, y) => [...x, ...f(y)], [])
 
-
     parseDecimal = (key) => Number(key).toFixed(2)
+
+    /**
+     * Pasa de datelikepiker a Date
+     */
+    dateLikePickerToDate = (fecha: DateLikePicker) => {
+        let newFecha = new Date();
+        if (fecha && fecha.day) {
+            // Se le resta 1 porque js cuenta meses desde 0 en adelante
+            newFecha.setFullYear(fecha.year, fecha.month - 1, fecha.day);
+            return newFecha;
+        } else {
+            return null;
+        }
+    }
 
 }

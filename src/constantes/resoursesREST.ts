@@ -21,6 +21,8 @@ import { Cotizacion } from "app/models/cotizacion";
 import { ProductoBuscaModelo } from "app/models/productoBuscaModelo";
 import { SisModulo } from "../app/models/sisModulo";
 import { SisEstado } from "app/models/sisEstado";
+import { CondIva } from "app/models/condIva";
+import { CteFechas } from "app/models/cteFechas";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -129,5 +131,13 @@ export const resourcesREST = {
     buscaFormaPago: {
         nombre: 'buscaFormaPago',
         Clase: null
+    },
+    sisSitIva: {
+        nombre: 'sisSitIva',
+        Clase: CondIva
+    },
+    buscaCteFecha: {
+        nombre: 'buscaCteFecha',
+        Clase: CteFechas
     }
 };

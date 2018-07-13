@@ -7,14 +7,14 @@
             <th>Detalle</th>
         </tr>
     
-        <tr *ngFor="let fp of data">
+        <tr *ngFor="let fp of data | async">
             <td>
-                <ba-checkbox [(ngModel)]="test" [label]="''" [ngModelOptions]="{standalone: true}"></ba-checkbox>
-                <!-- <input type="checkbox" name="seleccion" value="Bike"><br> -->
+                <input class="checkbox-td" type="checkbox"/>
+                <!-- <ba-checkbox [(ngModel)]="test" [label]="''" [ngModelOptions]="{standalone: true}"></ba-checkbox> -->
             </td>
-            <td>Contado</td>
-            <td>1</td>
-            <td>10% Dto</td>
+            <td>{{ fp.descripcion }}</td>
+            <td>{{ fp.listaPrecio.idListaPrecio }}</td>
+            <td>{{ fp.descripcion }}</td>
     
             <!-- <td>{{ fp.descripcion }}</td>
             <td>{{ fp.listaPrecio.idListaPrecio }}</td>

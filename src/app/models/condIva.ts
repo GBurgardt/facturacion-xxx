@@ -10,7 +10,7 @@ export class CondIva {
         descripcion: string;
         codAfip: number;
         descCorta: string;
-        codOncca: number
+        codOncca: number;
     }) {
         if (condIva) {
             this.condiva = condIva.condiva;

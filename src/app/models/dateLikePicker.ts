@@ -5,8 +5,8 @@ export class DateLikePicker {
 
     constructor (fechaDate?: Date, dataLikePicker?: any) {
         if (fechaDate) {
-            this.day = fechaDate.getDay();
-            this.month = fechaDate.getMonth();
+            this.day = fechaDate.getDate();
+            this.month = fechaDate.getMonth() + 1; // Esta genialidad de Js trae los meses de 0 en adelante.. por eso sumo 1
             this.year = fechaDate.getFullYear();
         } else if (dataLikePicker) {
             this.day = dataLikePicker.day;
