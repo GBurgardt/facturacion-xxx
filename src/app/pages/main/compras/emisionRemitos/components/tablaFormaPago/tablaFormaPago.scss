@@ -1,0 +1,29 @@
+@import '../../../../../../theme/sass/conf/conf';
+
+.tabla-forma-pago {
+    height: 112px; 
+    overflow: auto;
+    width: 204%;
+
+    // Bordes
+    table {
+        tr {
+            // td, th {
+            //     padding: 3px;
+            //     border: solid 1px #b6b6b9;
+            // }
+        }
+
+        tr:nth-child(even) {
+            background: #cacad2;
+        }
+
+        td {
+            :host /deep/ ba-checkbox {
+                label.custom-checkbox {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+}

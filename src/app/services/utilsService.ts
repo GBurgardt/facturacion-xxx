@@ -249,4 +249,6 @@ export class UtilsService {
     flatMap = (f, arr) => arr.reduce((x, y) => [...x, ...f(y)], [])
 
 
+    parseDecimal = (key) => Number(key).toFixed(2)
+
 }

@@ -53,7 +53,8 @@ export class ConsultaComprobante {
     padronSelec: Padron = new Padron();
     depositoSelec: Deposito = new Deposito();
 
-    compEncabezados: Observable<ComprobanteEncabezado[]> = Observable.of([]);
+    // compEncabezados: Observable<ComprobanteEncabezado[]> = Observable.of([]);
+    compEncabezados: BehaviorSubject<ComprobanteEncabezado[]> = new BehaviorSubject([]);
     compDetalles: BehaviorSubject<ComprobanteDetalle[]> = new BehaviorSubject([]);
     
 
@@ -87,18 +88,26 @@ export class ConsultaComprobante {
      */
     onClickBuscar = () => {
         // Busco los encabezados
-        this.compEncabezados = this.comprobanteService.buscarComprobantes(this.comprobante)(this.fechasFiltro)(this.sisModuloSelec)(this.tipoComprobanteSelec)(this.productoSelec)(this.sisEstadoSelec)(this.padronSelec)(this.depositoSelec);
         // Me suscribo a los cambios de los encabezados y en cada actualizacion de estos, actualizo también todos los detalles
-        this.compEncabezados.subscribe(
-            encabezados => 
+        // Aprovecho a fijarme si la cantidad es 0. En ese caso, muestro mensaje
+        this.comprobanteService.buscarComprobantes(this.comprobante)(this.fechasFiltro)(this.sisModuloSelec)(this.tipoComprobanteSelec)(this.productoSelec)(this.sisEstadoSelec)(this.padronSelec)(this.depositoSelec)
+            .subscribe(encabezados => {
+                // Actualizo encabezados
+                this.compEncabezados.next(encabezados);
+
+                encabezados && encabezados.length === 0 ?
+                    this.utilsService.showModal('Aviso')('No se encontraron comprobantes con esas condiciones')()() : null;
+
+                // Actualizo detalles
                 this.compDetalles.next(
                     this.utilsService.flatMap(
                         (encabezado: ComprobanteEncabezado) => encabezado.detalle,
                         encabezados
                     )
                 )
-            
-        )
+
+            })
+
     }
 
 
@@ -109,6 +118,18 @@ export class ConsultaComprobante {
         `${numero.toString().substring(0, numero.toString().length - 8).padStart(4,0)} - ${numero.toString().substring(numero.toString().length - 8)}`
     
 
+    /**
+     * Setea la fecha de compra calculandola dado un string en formato 'ddmm', parseando a 'dd/mm/aaaa'
+     */
+    onCalculateFecha = (e) => (keyFecha) => {
+        if (!this.fechasFiltro[keyFecha] || typeof this.fechasFiltro[keyFecha] !== 'string') return;
+        
+        this.fechasFiltro[keyFecha] = this.utilsService.stringToDateLikePicker(this.fechasFiltro[keyFecha]);
+
+        // Hago focus en el prox input
+        (keyFecha==='desde') ? document.getElementById("fechaHasta").focus() : null;
+
+    }
     
     
 }

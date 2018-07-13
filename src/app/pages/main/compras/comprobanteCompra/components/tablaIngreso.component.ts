@@ -1,11 +1,11 @@
-import * as _ from 'lodash';
+
 import { Component, Input } from '@angular/core';
 import { UtilsService } from 'app/services/utilsService';
 import { ProductoPendiente } from '../../../../../models/productoPendiente';
 import { BehaviorSubject } from 'rxjs';
 import { RecursoService } from '../../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
-import { IngresoFormService } from 'app/pages/reusable/formularios/ingresoForm/ingresoFormService';
+
 import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
 
 
@@ -54,7 +54,7 @@ export class TablaIngreso {
         private popupListaService: PopupListaService
     ) {
         // Cargo todos los productos pendientes posibles
-        recursoService.getRecursoList(resourcesREST.buscarPendientes)().subscribe(prodsPendPosibles => {
+        recursoService.getRecursoList(resourcesREST.buscaPendientes)().subscribe(prodsPendPosibles => {
             this.productosBusqueda.todos = prodsPendPosibles;
             this.productosBusqueda.filtrados.next(prodsPendPosibles);
         });
@@ -110,6 +110,10 @@ export class TablaIngreso {
         
         return key;
     }
+
+    
+    
+    
 
     // Checkea si pongo el 'tick' para finalizar la edicion. Osea, si está en edición.
     checkIfEditOn(item) {

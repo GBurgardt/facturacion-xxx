@@ -1,4 +1,4 @@
-.ingreso-form {
+.emision-remitos {
     
     // .inline-group {
     //     display: flex;
@@ -113,6 +113,20 @@
     .pre-numero-input {
         width: 30%;
         margin-right: 3px;
+    }
+
+
+    .tabs-forma-pago {
+        .fpago-content {
+            display: flex;
+            justify-content: space-between;
+            .txt-area-container {
+                width: 38%;
+                .text-area-forma-pago {
+                    height: 78px;
+                }
+            }
+        }
     }
 }
 

@@ -47,7 +47,8 @@
                 <div class="item-input">
                     <label for="desde">Desde</label>
                     <div class="input-group date-picker-fecha">
-                        <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="fechasFiltro.desde" ngbDatepicker #dDesd="ngbDatepicker">
+                        <input  (blur)="onCalculateFecha($event)('desde')"
+                                class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="fechasFiltro.desde" ngbDatepicker #dDesd="ngbDatepicker">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" (click)="dDesd.toggle()" type="button" style="height: 100%;">
                                 <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -59,7 +60,8 @@
                     <label for="al">al</label>
 
                     <div class="input-group date-picker-fecha">
-                        <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="fechasFiltro.hasta" ngbDatepicker #dHast="ngbDatepicker">
+                        <input  (blur)="onCalculateFecha($event)('hasta')"
+                                id="fechaHasta" class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="fechasFiltro.hasta" ngbDatepicker #dHast="ngbDatepicker">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" (click)="dHast.toggle()" type="button" style="height: 100%;">
                                 <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -126,7 +128,13 @@
             <div class="input-row flex-end-row">
 
                 <div class="btn-container item-input">
-                    <button (click)="onClickBuscar()" class="btn btn-primary">
+                    <button [disabled]="!fechasFiltro.desde || 
+                                        !fechasFiltro.desde.day || 
+                                        !fechasFiltro.hasta || 
+                                        !fechasFiltro.hasta.day ||
+                                        !sisModuloSelec || !sisModuloSelec.idSisModulos"
+                            (click)="onClickBuscar()" 
+                            class="btn btn-primary">
                         <i class="fa fa-search" aria-hidden="true"></i>
                         Buscar
                     </button>
@@ -137,7 +145,7 @@
 
     </ba-card>
 
-    <ngb-tabset class="col-sm-12 tabset-consulta">
+    <ngb-tabset *ngIf="(compEncabezados | async)?.length>0" class="col-sm-12 tabset-consulta">
         <ngb-tab title="Comprobantes">
             <ng-template ngbTabContent>
                 <table class="table table-striped">
@@ -163,7 +171,7 @@
                             <td class="td-right">{{ compBusc.idPadron }}</td>
                             <td>{{ compBusc.nombre }}</td>
                             <td class="td-right">{{ compBusc.cuit }}</td>
-                            <td class="td-right">{{ compBusc.cotDolar }}</td>
+                            <td class="td-right">{{ utilsService.parseDecimal(compBusc.cotDolar) }}</td>
                             <td>{{ compBusc.moneda }}</td>
                             <td>{{ compBusc.imputada }}</td>
                             <td>{{ compBusc.modulo }}</td>

@@ -1,45 +1,46 @@
 import { NgModule } from "@angular/core";
 import { routing } from './compras.routing';
 import { Compras } from ".";
-import { ComprobanteCompra } from "./comprobanteCompra";
-import { IngresoForm } from "app/pages/reusable/formularios/ingresoForm";
-import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
-import { NgaModule } from "app/theme/nga.module";
-//import { CustomCard } from "../../reusable/cards/customCard";
-import { NgbDatepickerModule, NgbTabsetModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbTabsetModule } from "@ng-bootstrap/ng-bootstrap";
 import { SharedModule } from "../SharedModule";
 import { RecursoService } from "app/services/recursoService";
 import { AuthService } from "../../../services/authService";
 import { UtilsService } from "../../../services/utilsService";
-import { IngresoFormService } from "app/pages/reusable/formularios/ingresoForm/ingresoFormService";
-import { TablaIngreso } from "app/pages/reusable/formularios/ingresoForm/components";
+import { TablaIngreso } from "app/pages/main/compras/comprobanteCompra/components";
+import { ComprobanteCompra } from "app/pages/main/compras/comprobanteCompra";
+import { ComprobanteCompraService } from "app/pages/main/compras/comprobanteCompra/comprobanteCompraService";
+
+import { EmisionRemitos } from "./emisionRemitos";
+import { EmisionRemitosService } from "./emisionRemitos/emisionRemitosService";
+import { TablaEmisionRem } from "app/pages/main/compras/emisionRemitos/components/tablaEmisionRem/tablaEmisionRem.component";
+import { TablaFormaPago } from "app/pages/main/compras/emisionRemitos/components/tablaFormaPago";
+import { NgaModule } from "app/theme/nga.module";
 
 @NgModule({
     imports: [
         routing,
-        //CommonModule,
-        //NgaModule,
-        //FormsModule,
-        //NgbDatepickerModule,
-        SharedModule,
-        NgbTabsetModule
+        NgbTabsetModule,
+        SharedModule
     ],
     declarations: [
         Compras,
         ComprobanteCompra,
-        IngresoForm,
-        TablaIngreso
-        //CustomCard
+        TablaIngreso,
+        TablaEmisionRem,
+        TablaFormaPago,
+        EmisionRemitos
     ],
     providers: [
         RecursoService,
         AuthService,
         UtilsService,
-        IngresoFormService
+        ComprobanteCompraService,
+        EmisionRemitosService
     ],
     exports: [
-        TablaIngreso
+        TablaIngreso,
+        TablaEmisionRem,
+        TablaFormaPago
     ]
 })
 export class ComprasModule {

@@ -2,7 +2,7 @@ import { NgModule }       from '@angular/core';
 import { CommonModule }   from '@angular/common';
 import { FormsModule }    from '@angular/forms';
 import { CustomCard } from 'app/pages/reusable/cards/customCard';
-import { IngresoForm } from '../reusable/formularios/ingresoForm';
+
 import { DataFilterPipe } from 'app/pages/reusable/tablas/dataTables/data-filter.pipe';
 import { DataTables } from 'app/pages/reusable/tablas/dataTables';
 import { DataTableModule } from 'angular2-datatable';

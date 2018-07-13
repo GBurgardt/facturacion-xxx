@@ -16,7 +16,7 @@ import { Deposito } from '../../../../models/deposito';
 import { UtilsService } from '../../../../services/utilsService';
 
 @Injectable()
-export class IngresoFormService {
+export class ComprobanteCompraService {
     constructor(
         private authService: AuthService,
         private localStorageService: LocalStorageService,
@@ -56,18 +56,21 @@ export class IngresoFormService {
             nombre: 'precio',
             key: 'precio',
             ancho: '10%',
-            enEdicion: null
+            enEdicion: null,
+            decimal: true
         },
         {
             nombre: 'ivaPorc',
             key: 'ivaPorc',
-            ancho: '10%'
+            ancho: '10%',
+            decimal: true
         },
         {
             nombre: 'cantidad',
             key: 'pendiente',
             ancho: '10%',
-            enEdicion: null
+            enEdicion: null,
+            decimal: true
         },
         // {
         //     nombre: 'deposito',

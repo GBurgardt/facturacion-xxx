@@ -162,7 +162,7 @@ export class AuthService {
             {
                 token: token,
             },
-            resourcesREST.buscarPendientes.nombre,
+            resourcesREST.buscaPendientes.nombre,
             {
                 cteTipo : comproRel.tipo.idCteTipo,
                 facNumero : comproRel.todosLosPendientes ? 0 : Number(comproRel.puntoVenta + comproRel.numero),
@@ -211,7 +211,7 @@ export class AuthService {
     }
 
     /**
-     * Graba un comprobante de ingresoForm
+     * Graba un comprobante de comprobanteCompra
      */
     grabaComprobante =  (token) => 
                         (comprobante: Comprobante) => 
@@ -361,6 +361,30 @@ export class AuthService {
                 padCodigo : padronSelec && padronSelec.padronCodigo ? padronSelec.padronCodigo : 0,
                 codigoDep : depositoSelec && depositoSelec.codigoDep ? depositoSelec.codigoDep : 0,
                 idEstado : sisEstadoSelec && sisEstadoSelec.idSisEstados ? sisEstadoSelec.idSisEstados : 0
+            },
+            {}
+        );
+    }
+
+
+    /**
+    * @description Obtiene las formas de pago
+    * @argument token
+    */
+    getBuscaFormaPago = (token: string) => (proveedor: Padron) => (comproRel: ComprobanteRelacionado) => {
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            resourcesREST.buscaFormaPago.nombre,
+            {
+                activa: true,
+                todas: true,
+                fecha: this.utilsService.formatearFecha('02/02/2018'),
+                idPadronDesde: 1,
+                idPadronHasta: 2
             },
             {}
         );

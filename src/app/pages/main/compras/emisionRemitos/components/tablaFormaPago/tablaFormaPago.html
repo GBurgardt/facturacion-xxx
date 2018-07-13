@@ -1,0 +1,24 @@
+<div class="tabla-forma-pago">
+    <table style="width:100%">
+        <tr>
+            <th></th>
+            <th>F.Pago</th>
+            <th>Lista</th>
+            <th>Detalle</th>
+        </tr>
+    
+        <tr *ngFor="let fp of data">
+            <td>
+                <ba-checkbox [(ngModel)]="test" [label]="''" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                <!-- <input type="checkbox" name="seleccion" value="Bike"><br> -->
+            </td>
+            <td>Contado</td>
+            <td>1</td>
+            <td>10% Dto</td>
+    
+            <!-- <td>{{ fp.descripcion }}</td>
+            <td>{{ fp.listaPrecio.idListaPrecio }}</td>
+            <td>{{ fp.descripcion }}</td>  -->
+        </tr>
+    </table> 
+</div>

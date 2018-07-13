@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { Padron } from '../../../../models/padron';
 import { RecursoService } from 'app/services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
-import { IngresoFormService } from 'app/pages/reusable/formularios/ingresoForm/ingresoFormService';
+
 import { SisTipoOperacion } from 'app/models/sisTipoOperacion';
 import { TipoComprobante } from 'app/models/tipoComprobante';
 import { Moneda } from '../../../../models/moneda';
@@ -19,17 +19,19 @@ import { ComprobanteRelacionado } from 'app/models/comprobanteRelacionado';
 import { Factura } from '../../../../models/factura';
 import { Deposito } from 'app/models/deposito';
 import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
+import { EmisionRemitosService } from './emisionRemitosService';
+
 
 @Component({
-    selector: 'ingreso-form',
-    templateUrl: './ingresoForm.html',
-    styleUrls: ['./ingresoForm.scss']
+    selector: 'emision-remitos',
+    templateUrl: './emisionRemitos.html',
+    styleUrls: ['./emisionRemitos.scss']
 })
 
 /**
  * Form reutilizable
  */
-export class IngresoForm {
+export class EmisionRemitos {
     @Input() titulo = '';
     
 
@@ -145,7 +147,7 @@ export class IngresoForm {
     popupLista: any = {
         onClickListProv: (prove: Padron) => {
             this.proveedorSeleccionado = new Padron({...prove});
-            this.ingresoFormService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
+            this.emisionRemitosService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
         },
         getOffsetOfInputProveedor: () => this.utilsService.getOffset(document.getElementById('proveedorSeleccionado'))
     }
@@ -155,7 +157,7 @@ export class IngresoForm {
      */
     constructor(
         private recursoService: RecursoService,
-        private ingresoFormService: IngresoFormService,
+        private emisionRemitosService: EmisionRemitosService,
         private utilsService: UtilsService,
         private popupListaService: PopupListaService
     ) {
@@ -173,12 +175,12 @@ export class IngresoForm {
         });
 
         ////////// Tablas //////////
-        this.tablas.columnas.columnasProductos = ingresoFormService.getColumnsProductos();
-        this.tablas.columnas.columnasTrazabilidad = ingresoFormService.getColumnsTrazabilidad();
-        this.tablas.columnas.columnasFactura = ingresoFormService.getColumnsFactura();
+        this.tablas.columnas.columnasProductos = emisionRemitosService.getColumnsProductos();
+        this.tablas.columnas.columnasTrazabilidad = emisionRemitosService.getColumnsTrazabilidad();
+        this.tablas.columnas.columnasFactura = emisionRemitosService.getColumnsFactura();
 
         ////////// Otros //////////
-        this.ingresoFormService.getCotizacionDatos().subscribe(cotizDatos => this.cotizacionDatos.cotizacion = cotizDatos);
+        this.emisionRemitosService.getCotizacionDatos().subscribe(cotizDatos => this.cotizacionDatos.cotizacion = cotizDatos);
     }
 
     ///////////////////////////////// Eventos OnClick /////////////////////////////////
@@ -187,7 +189,7 @@ export class IngresoForm {
      * Busca los productos pendientes de acuerdo al comprobante relacionado
      */
     onClickBuscarPendientes = () => 
-        this.ingresoFormService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado).subscribe(prodsPend=>{
+        this.emisionRemitosService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado).subscribe(prodsPend=>{
             // Agrego los productos
             this.tablas.datos.productosPend = _.uniqWith(
                 this.tablas.datos.productosPend.concat(prodsPend),
@@ -218,18 +220,17 @@ export class IngresoForm {
     /**
      * Valida y graba el comprobante
      */
-    onClickConfirmar = () => {
-        const observableAux = this.ingresoFormService.confirmarYGrabarComprobante(this.comprobante)
-            (this.comprobanteRelacionado)
-            (this.proveedorSeleccionado)
-            (this.tablas.datos.productosPend)
-            (this.tablas.datos.modelosFactura)
-            (this.cotizacionDatos)
-            (this.depositoSelec)
-            .subscribe(
-                (respuesta: any) => this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()()
-            )
-    }
+    onClickConfirmar = () => this.emisionRemitosService.confirmarYGrabarComprobante(this.comprobante)
+        (this.comprobanteRelacionado)
+        (this.proveedorSeleccionado)
+        (this.tablas.datos.productosPend)
+        (this.tablas.datos.modelosFactura)
+        (this.cotizacionDatos)
+        (this.depositoSelec)
+        .subscribe(
+            (respuesta: any) => this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()()
+        )
+    
 
     ///////////////////////////////// Eventos (Distintos de onclick) /////////////////////////////////
     
@@ -245,7 +246,7 @@ export class IngresoForm {
             )
         );
 
-        this.ingresoFormService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
+        this.emisionRemitosService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
             this.tablas.datos.modelosFactura = modelProds
         })
     }
@@ -255,7 +256,7 @@ export class IngresoForm {
      */
     onChangeInputProveedor = (codigo) => {
         this.proveedores.filtrados.next(
-            this.ingresoFormService.filtrarProveedores(this.proveedores.todos, codigo)
+            this.emisionRemitosService.filtrarProveedores(this.proveedores.todos, codigo)
         );
         // Reseteo el indice
         this.proveedorEnfocadoIndex = -1;
@@ -273,8 +274,8 @@ export class IngresoForm {
 
         // Actualizo proveedor seleccionado
         try {
-            this.proveedorSeleccionado = this.ingresoFormService.seleccionarProveedor(this.proveedores.todos)(this.proveedorSeleccionado);
-            this.ingresoFormService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
+            this.proveedorSeleccionado = this.emisionRemitosService.seleccionarProveedor(this.proveedores.todos)(this.proveedorSeleccionado);
+            this.emisionRemitosService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
         }
         catch(err) {
             // Muestro error
@@ -307,7 +308,7 @@ export class IngresoForm {
      * keyTipoe: comprobante, comprobanteRelacionado
      */
     onBlurNumeroAutocomp = (e) => (tipo: string) => (keyTipo: string) => 
-        this[keyTipo][tipo] = this.ingresoFormService.autocompNroComp(tipo)(this[keyTipo]);
+        this[keyTipo][tipo] = this.emisionRemitosService.autocompNroComp(tipo)(this[keyTipo]);
     
 
     /**

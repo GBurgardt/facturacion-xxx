@@ -98,8 +98,8 @@ export const resourcesREST = {
         nombre: 'sisTipoOperacion',
         Clase: SisTipoOperacion
     },
-    buscarPendientes: {
-        nombre: 'buscarPendientes',
+    buscaPendientes: {
+        nombre: 'buscaPendientes',
         Clase: ProductoPendiente
     },
     buscaCotizacion: {
@@ -125,5 +125,9 @@ export const resourcesREST = {
     buscaCteTipoNro: {
         nombre: 'buscaCteTipoNro',
         Clase: TipoComprobante
+    },
+    buscaFormaPago: {
+        nombre: 'buscaFormaPago',
+        Clase: null
     }
 };
