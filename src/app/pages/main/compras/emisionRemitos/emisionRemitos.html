@@ -143,7 +143,36 @@
             </ngb-tab>
             <ngb-tab title="Canje">
                 <ng-template ngbTabContent>
+                
+                    <div class="canje-container">
+                        <div class="canje-content">
+                            <div class="canje-item">
+                                <label for="tipoCompra">IVA:</label>
+                                <select class="form-control without-padding" id="selectCanje">
+                                    <option>Test</option>
+                                    <option>Test</option>
+                                    <option>Test</option>
+                                </select>
+                            </div>
 
+                            <div class="canje-item">
+                                <label for="cuit">Precio Ref:</label>
+                                <input [(ngModel)]="cliente.cuit" type="text" class="form-control" id="cuit" placeholder="">
+                            </div>
+                        </div>
+
+                        <div class="canje-content">
+                            <div class="canje-item">
+                                <label for="cuit">Precio Ref:</label>
+                                <input [(ngModel)]="cliente.cuit" type="text" class="form-control" id="cuit" placeholder="">
+                            </div>
+                            <div class="canje-item">
+                                <label for="cuit">Precio Ref:</label>
+                                <input [(ngModel)]="cliente.cuit" type="text" class="form-control" id="cuit" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                
                 </ng-template>
             </ngb-tab>
             <ngb-tab title="Cte Relacionado">

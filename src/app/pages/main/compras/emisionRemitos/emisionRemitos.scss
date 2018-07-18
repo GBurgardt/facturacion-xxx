@@ -132,6 +132,22 @@
                 }
             }
         }
+
+        .canje-container {
+            display: flex;
+            flex-direction: column;
+            .canje-content {
+                display: flex;
+                justify-content: space-between;
+                .canje-item {
+                    display: flex;
+
+                    label {
+                        white-space: nowrap;
+                    }
+                }
+            }
+        }
     }
 }
 
