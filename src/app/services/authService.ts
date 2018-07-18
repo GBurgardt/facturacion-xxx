@@ -391,10 +391,10 @@ export class AuthService {
     }
 
     /**
-    * @description Obtiene las formas de pago
+    * @description 
     * @argument token
     */
-   getBuscaCteFecha = (token: string) => (comprobante: Comprobante) => {
+    getBuscaCteFecha = (token: string) => (comprobante: Comprobante) => {
         return this.request(
             [],
             RequestMethod.Post,
@@ -405,6 +405,29 @@ export class AuthService {
             {
                 idCteTipo: comprobante.tipo.idCteTipo,
 	            puntoVenta: comprobante.puntoVenta
+            },
+            {}
+        );
+    }
+
+    /**
+    * @description Obtiene subtotales (se usa en emision remitos)
+    * @argument token
+    */
+    getCalculoSubtotales = (token: string) => (prodPend: ProductoPendiente) => {
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            resourcesREST.calculoSubtotales.nombre,
+            {
+                precio: prodPend.precio,
+                cantidad: prodPend.pendiente,
+                iva: prodPend.ivaPorc,
+                descuento: prodPend.descuento,
+                tipoDescuento: prodPend.tipoDescuento
             },
             {}
         );

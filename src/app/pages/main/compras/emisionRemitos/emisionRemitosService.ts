@@ -39,13 +39,13 @@ export class EmisionRemitosService {
             nombre: 'articulo',
             key: 'producto',
             subkey: 'codProducto',
-            ancho: '15%'
+            ancho: '5%'
         },
         {
             nombre: 'descripcion',
             key: 'producto',
             subkey: 'descripcion',
-            ancho: '20%'
+            ancho: '10%'
         },
         {
             nombre: 'imputacion',
@@ -54,33 +54,55 @@ export class EmisionRemitosService {
             enEdicion: null
         },
         {
-            nombre: 'precio',
-            key: 'precio',
-            ancho: '10%',
-            enEdicion: null
-        },
-        {
-            nombre: 'ivaPorc',
-            key: 'ivaPorc',
-            ancho: '10%'
-        },
-        {
             nombre: 'cantidad',
             key: 'pendiente',
-            ancho: '10%',
+            ancho: '7.5%',
             enEdicion: null
         },
-        // {
-        //     nombre: 'deposito',
-        //     key: 'deposito',
-        //     ancho: '10%',
-        //     enEdicion: null
-        // },
+        {
+            nombre: 'unidad',
+            key: 'producto',
+            subkey: 'unidadVenta',
+            ancho: '7.5%'
+        },
+        {
+            nombre: 'precio',
+            key: 'precio',
+            ancho: '7.5%',
+            enEdicion: null
+        },
+        {
+            nombre: 'dto',
+            key: 'descuento',
+            ancho: '7.5%',
+            enEdicion: null
+        },
+        {
+            nombre: 'tipo',
+            key: 'tipoDescuento',
+            ancho: '7.5%',
+            enEdicion: null
+        },
+        {
+            nombre: 'subtotal',
+            key: 'subtotal',
+            ancho: '7.5%'
+        },
+        {
+            nombre: '%IVA',
+            key: 'ivaPorc',
+            ancho: '7.5%'
+        },
+        {
+            nombre: 'subt.C/IVA',
+            key: 'subtotalIva',
+            ancho: '7.5%'
+        },
         {
             nombre: 'trazable',
             key: 'producto',
             subkey: 'trazable',
-            ancho: '10%'
+            ancho: '7.5%'
         }
     ];
 
@@ -347,5 +369,20 @@ export class EmisionRemitosService {
         this.authService.getBuscaCteFecha(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(comprobante).map(resp => resp.arraydatos.map(cteFe => new CteFechas(cteFe)))
+
+
+    /**
+     * 
+     */
+    getCalculoSubtotales = (prodPend: ProductoPendiente) => 
+        this.authService.getCalculoSubtotales(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(prodPend).map(respuesta => {
+            return {
+                idProducto: prodPend.producto.idProductos,
+                subtotal: respuesta.datos.subTotal,
+                subtotalIva: respuesta.datos.subTotalIva
+            }
+        });
 
 }

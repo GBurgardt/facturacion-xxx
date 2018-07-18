@@ -139,5 +139,9 @@ export const resourcesREST = {
     buscaCteFecha: {
         nombre: 'buscaCteFecha',
         Clase: CteFechas
+    },
+    calculoSubtotales: {
+        nombre: 'calculoSubtotales',
+        Clase: null
     }
 };

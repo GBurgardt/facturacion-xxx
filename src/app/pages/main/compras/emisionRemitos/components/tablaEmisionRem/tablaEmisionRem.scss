@@ -32,7 +32,8 @@
         tbody {
             tr td {
                 text-align: center;
-
+                padding: 1px 3px;
+                
                 .datepicker-datelikepicker {
                     display: flex;
                     width: 90%;
@@ -41,20 +42,27 @@
 
             }
 
-            .btn-container{
+            .btn-container-td {
                 display: flex;
                 //justify-content: space-evenly;
-                justify-content: flex-start;
-                .btn-accion {
-                    margin: 2%;
-                    font-size: 0.9rem;
-                    padding: 5px 9px;
-                    cursor: pointer;
-                    padding-top: 0;
-                }
-                .btn-editar {
-                    i {
-                        vertical-align: middle;
+                // justify-content: flex-start;
+                flex-direction: column;
+                justify-content: center;
+                .btn-container {
+                    display: flex;
+                    justify-content: flex-start;
+                    padding-top: 7px;
+                    .btn-accion {
+                        margin: 2%;
+                        font-size: 0.9rem;
+                        padding: 5px 9px;
+                        cursor: pointer;
+                        padding-top: 0;
+                    }
+                    .btn-editar {
+                        i {
+                            vertical-align: middle;
+                        }
                     }
                 }
             }
@@ -86,7 +94,11 @@
                 }
             }
 
-            
+            .row-agregar-producto {
+                td {
+                    padding: 3px 0px;
+                }
+            }
             
         }
 

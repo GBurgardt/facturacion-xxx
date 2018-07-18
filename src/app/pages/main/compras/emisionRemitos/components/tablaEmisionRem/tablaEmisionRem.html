@@ -14,15 +14,17 @@
         <tbody #tbodyref>
             <tr *ngFor="let item of mf.data">
                 <!-- BOTONES EDITAR Y BORRAR -->
-                <td *ngIf="edit || remove" class="btn-container">
-                    <div *ngIf="edit" (click)="edit(item)" class="btn-accion btn-editar">
-                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                    </div>
-                    <div *ngIf="remove" (click)="remove(item)" class="btn-accion btn-remover">
-                        <i class="fa fa-trash" aria-hidden="true"></i>
-                    </div>
-                    <div *ngIf="checkIfEditOn(item)" (click)="confirmEdit(item)" class="btn-accion btn-remover">
-                        <i class="fa fa-check" aria-hidden="true"></i>
+                <td *ngIf="edit || remove" class="btn-container-td">
+                    <div class="btn-container">
+                        <div *ngIf="edit" (click)="edit(item)" class="btn-accion btn-editar">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                        </div>
+                        <div *ngIf="remove" (click)="remove(item)" class="btn-accion btn-remover">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </div>
+                        <div *ngIf="checkIfEditOn(item)" (click)="confirmEdit(item)" class="btn-accion btn-remover">
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </div>
                     </div>
                 </td>
                 <!-- FIN BOTONES EDITAR Y BORRAR -->
@@ -31,7 +33,9 @@
                 <td *ngFor="let col of columns">
                     <div *ngIf="col.subkey">
                         <div *ngIf="!col.enEdicion || col.enEdicion !== item.producto.idProductos">
-                            {{parseKey(item[col.key][col.subkey])}}
+                            {{parseKey(
+                                !utilsService.checkIfJson(item[col.key][col.subkey]) ? item[col.key][col.subkey] : item[col.key][col.subkey].descripcion
+                                )}}
                         </div>
 
                         <div *ngIf="col.enEdicion && col.enEdicion === item.producto.idProductos">
@@ -59,7 +63,8 @@
 
                     <div *ngIf="!col.subkey">
                         <div *ngIf="!col.enEdicion || col.enEdicion !== item.producto.idProductos">
-                            <div *ngIf="col.nombre !== 'imputacion'">
+                            <!-- Caso comun -->
+                            <div *ngIf="col.nombre !== 'imputacion' && col.key !== 'subtotal' && col.key !== 'subtotalIva'">
                                 {{parseKey(item[col.key])}}
                             </div>
 
@@ -68,13 +73,16 @@
                                 {{ item[col.key] && item[col.key].seleccionada ? item[col.key].seleccionada.descripcion : ''}}
                             </div>
 
+                            <div *ngIf="col.key === 'subtotal' || col.key === 'subtotalIva'">
+                                {{ getSubtotal(item)(col.key) }}
+                            </div>
                             
 
                         </div>
                         <div *ngIf="col.enEdicion && col.enEdicion === item.producto.idProductos">
 
                             
-                            <input  *ngIf=" (col.nombre !== 'imputacion' && col.key !== 'trazabilidad' && col.nombre !== 'cantidad')"
+                            <input  *ngIf=" (col.nombre !== 'imputacion' && col.key !== 'trazabilidad' && col.nombre !== 'tipo')"
                                 [(ngModel)]="item[col.key]"  style="margin: 4px 6px; text-align: end;" type="text" 
                                 class="form-control edit-input" id="inputSubKey" placeholder="">
                             
@@ -88,7 +96,7 @@
                                 </option>
                             </select>
 
-                            <input  *ngIf="col.nombre === 'cantidad'"
+                            <input  *ngIf="col.nombre === 'tipo'"
                                 [(ngModel)]="item[col.key]"  style="margin: 4px 6px; text-align: end;" type="text" 
                                 class="form-control edit-input" id="inputSubKey" placeholder="" 
                                 (blur)="confirmEdit(item)">
@@ -101,46 +109,27 @@
             </tr>
 
             <!-- ROW PARA AGREGAR UN PRODUCTO -->
-            <tr *ngIf="enableAddItem">
+            <tr class="row-agregar-producto" *ngIf="enableAddItem">
                 <td></td>
-                <td>
-                    <input  [(ngModel)]="textoBusqueda" type="text" class="form-control input-new-prod" id="addInput" placeholder="" 
+                <td *ngFor="let col of columns">
+                    <div *ngIf="col.nombre === 'articulo'">
+                        <input  [(ngModel)]="textoBusqueda" type="text" class="form-control input-new-prod" id="addInput" placeholder="" 
                             (blur)="onBlurInputItemAdd()" 
                             (ngModelChange)="onChangeInputItemAdd($event)" 
                             (keydown.arrowdown)="keyPressInputTexto($event)('down')" 
                             (keydown.arrowup)="keyPressInputTexto($event)('up')" 
                             (keydown.enter)="onEnterInputBuscProd($event)">
 
-                    <popup-lista *ngIf="textoBusqueda && textoBusqueda.length > 0"
-                                    [items]="productosBusqueda.filtrados" 
-                                    [keysToShow]="['producto.descripcion', 'producto.codProducto']" 
-                                    [onClickItem]="onClickProductoListaLocal" 
-                                    [fatherPosition]="getOffsetOfAddInput()">
-                    </popup-lista>
-                </td>
-                <td>
-                    {{parseKey(productoSeleccionado.producto.descripcion)}}
-                </td>
-                <td>
-                    <select id="select-new-prod-impu" [(ngModel)]="productoSeleccionado.imputacion.seleccionada" class="form-control without-padding" >
-                        <option *ngFor="let impu of productoSeleccionado.imputacion.todas" [ngValue]="impu">
-                            {{impu.descripcion}}
-                        </option>
-                    </select>
-                </td>
-                <td>
-                    <input [(ngModel)]="productoSeleccionado.precio"  style="margin: 4px 6px;" type="text" 
-                            class="form-control edit-input" id="inputSubKeyPrecio" placeholder="">
-                </td>
-                <td>
-                    {{parseKey(productoSeleccionado.ivaPorc)}}
-                </td>
-                <td>
-                    <input [(ngModel)]="productoSeleccionado.pendiente"  style="margin: 4px 6px;" type="text" 
-                            class="form-control edit-input" id="inputSubKeyPendiente" placeholder="">
-                </td>
-                <td>
-                    {{parseKey(productoSeleccionado.producto.trazable)}}
+                        <popup-lista *ngIf="textoBusqueda && textoBusqueda.length > 0"
+                                        [items]="productosBusqueda.filtrados" 
+                                        [keysToShow]="['producto.descripcion', 'producto.codProducto']" 
+                                        [onClickItem]="onClickProductoListaLocal" 
+                                        [fatherPosition]="getOffsetOfAddInput()">
+                        </popup-lista>
+                    </div>
+
+                    <!-- <input *ngIf="col.nombre !== 'articulo'" type="text" 
+                        class="form-control edit-input"> -->
                 </td>
             </tr>
             <!-- FIN ROW PARA AGREGAR UN PRODUCTO -->

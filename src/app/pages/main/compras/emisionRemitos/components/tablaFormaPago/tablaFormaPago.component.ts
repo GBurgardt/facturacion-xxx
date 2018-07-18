@@ -1,4 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Observable } from 'rxjs';
+import { FormaPago } from 'app/models/formaPago';
+import { ListaPrecio } from 'app/models/listaPrecio';
 
 @Component({
     selector: 'tabla-forma-pago',
@@ -7,14 +10,41 @@ import { Component, Input } from '@angular/core';
 })
     
 export class TablaFormaPago {
+    // Datos de la tabla
+    @Input() dataTable;
 
-    
+    // Eventos de cambio que atrapo en EmisionRemito
+    @Output() onAddSelecFormaPago = new EventEmitter<FormaPago>();
+    @Output() onRemoveSelecFormaPago = new EventEmitter<FormaPago>();
 
-    @Input() data;
+    seleccionados: FormaPago[] = [];
 
-    constructor(
-    ) {
+    constructor() { }
 
+    /**
+     * Checkea si se puede seleccionar o no
+     */
+    checkIfSeleccionable = (fp: FormaPago) => 
+        this.seleccionados.some(fpSelec => fpSelec.listaPrecio.idListaPrecio !== fp.listaPrecio.idListaPrecio)
+
+    /**
+     * Evento change del checkbox
+     */
+    onChangeCheckbox = (e) => (fp: FormaPago) => {
+        if (e && e.target) {
+            const estado = e.target.checked;
+
+            // Actualizo la lista de seleccioandos del componete emisionRemitos
+            estado ? 
+                this.onAddSelecFormaPago.emit(fp) :
+                this.onRemoveSelecFormaPago.emit(fp);
+
+            // También actualizo la lista seleccionados de este componente (lo necesito para checkear si los checkbox son seleccionables o no)
+            estado ? 
+                this.seleccionados.push(fp) :
+                this.seleccionados = this.seleccionados.filter(fpSelec => fpSelec.idFormaPago !== fp.idFormaPago);
+        }
     }
+
     
 }

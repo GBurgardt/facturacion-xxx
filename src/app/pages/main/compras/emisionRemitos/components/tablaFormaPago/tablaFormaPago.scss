@@ -3,15 +3,12 @@
 .tabla-forma-pago {
     height: 112px; 
     overflow: auto;
-    width: 204%;
+    // width: 204%;
 
     // Bordes
     table {
-        tr {
-            // td, th {
-            //     padding: 3px;
-            //     border: solid 1px #b6b6b9;
-            // }
+        .table-header {
+            background: #b8b8bd;
         }
 
         tr:nth-child(even) {
@@ -19,11 +16,11 @@
         }
 
         td {
+            padding: 2px;
             .checkbox-td {
                 display: block;
                 margin: 2px;
-            }
-            
+            }           
         }
     }
 }

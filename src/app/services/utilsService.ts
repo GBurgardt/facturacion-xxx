@@ -267,4 +267,7 @@ export class UtilsService {
         }
     }
 
+
+    checkIfJson = (obj) => (obj && typeof obj === 'object');
+
 }

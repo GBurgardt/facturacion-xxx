@@ -16,6 +16,7 @@ export class ProductoPendiente {
     idFactDetalleImputada: number;
     idFactCabImputada: number;
     descuento: number;
+    tipoDescuento: string;
     cantBultos: number;
     despacho: string;
     observaciones: string;
@@ -53,6 +54,7 @@ export class ProductoPendiente {
         idFactDetalleImputada: number;
         idFactCabImputada: number;
         descuento: number;
+        tipoDescuento: string;
         cantBultos: number;
         despacho: string;
         observaciones: string;
@@ -73,6 +75,7 @@ export class ProductoPendiente {
             this.idFactDetalleImputada = productoPendiente.idFactDetalleImputada;
             this.idFactCabImputada = productoPendiente.idFactCabImputada;
             this.descuento = productoPendiente.descuento;
+            this.tipoDescuento = productoPendiente.tipoDescuento;
             this.cantBultos = productoPendiente.cantBultos;
             this.despacho = productoPendiente.despacho;
             this.observaciones = productoPendiente.observaciones;
@@ -110,6 +113,7 @@ export class ProductoPendiente {
             this.idFactDetalleImputada = null;
             this.idFactCabImputada = null;
             this.descuento = null;
+            this.tipoDescuento = null;
             this.cantBultos = null;
             this.despacho = null;
             this.observaciones = null;

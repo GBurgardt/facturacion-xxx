@@ -120,10 +120,15 @@
         .fpago-content {
             display: flex;
             justify-content: space-between;
+            .fpago-tabla {
+                width: 50%;
+            }
             .txt-area-container {
-                width: 38%;
+                width: 48%;
                 .text-area-forma-pago {
                     height: 78px;
+                    color: #000;
+                    font-size: 0.8rem;
                 }
             }
         }

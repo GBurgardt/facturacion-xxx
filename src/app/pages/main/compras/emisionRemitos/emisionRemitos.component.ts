@@ -50,6 +50,8 @@ export class EmisionRemitos {
 
     depositoSelec: Deposito;
 
+    formasPagoSeleccionadas: FormaPago[] = [];
+
     // Inhdice del producto enfocado del popup
     clienteEnfocadoIndex: number = -1;
 
@@ -86,6 +88,11 @@ export class EmisionRemitos {
         datos: {
             productosPend: ProductoPendiente[];
             modelosFactura: ModeloFactura[];
+            subtotalesProductos: {
+                idProducto: number,
+                subtotal: number,
+                subtotalIva: number
+            }[]
         },
         funciones: {
             onClickRemove: any;
@@ -100,7 +107,8 @@ export class EmisionRemitos {
         }, 
         datos: { 
             productosPend: [],
-            modelosFactura: []
+            modelosFactura: [],
+            subtotalesProductos: []
         },
         funciones: {
             onClickRemove: (prodSelect: ProductoPendiente) => {
@@ -141,6 +149,9 @@ export class EmisionRemitos {
                     }
                     return newTabla;
                 })
+
+                // Actualizo subtotales
+                this.actualizarSubtotales(prodSelect);
            }
         }
     };
@@ -160,10 +171,12 @@ export class EmisionRemitos {
 
     
     /////////////////////////////////////////////
-    ////////// EmisionRemitoDatos ///////////////
+    ////////////////// Otros ////////////////////
     /////////////////////////////////////////////
 
     dataTablaFormasPago: Observable<FormaPago[]>;
+
+    detallesFpsSeleccionadas: string = '';
 
     /**
      * Toda la carga de data se hace en el mismo orden en el que está declarado arriba
@@ -236,9 +249,11 @@ export class EmisionRemitos {
             )
         );
 
+        // Actualiza modelos. TODO: ¿Esto se usa acá en emisionRemito?
         this.emisionRemitosService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
             this.tablas.datos.modelosFactura = modelProds
-        })
+        });
+
     }
 
     /**
@@ -257,8 +272,9 @@ export class EmisionRemitos {
      * El blur es cuando se hace un leave del input (caundo se apreta click afuera por ejemplo).
      * Acá lo que hago es poner un array vacio como próx valor de los filtrados, cosa que la lista desaparezca porque no hay nada
      * También retorno el cliente seleccionado en el input
+     * También checkeo si ya seleccionó cte y pto venta y fecha, y si es así entonces hago la consulta de formas de pago
      */
-    onBlurInputProv = (e) => {
+    onBlurInputCliente = (e) => {
         // Vacio filtrados
         this.clientes.filtrados.next([]);
 
@@ -266,6 +282,11 @@ export class EmisionRemitos {
         try {
             this.cliente = this.emisionRemitosService.seleccionarCliente(this.clientes.todos)(this.cliente);
             this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
+
+            // Si están seteados los datos necesarios aprovecho a actualizar la data de la tabla de forma de pago
+            this.comprobante && this.comprobante.fechaComprobante && this.comprobante.fechaComprobante.day ?
+                this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante) :
+                null;
         }
         catch(err) {
             // Muestro error
@@ -300,8 +321,10 @@ export class EmisionRemitos {
                 // Actualizo fecha (sobretodo si el formato es 'ddmm')
                 this.comprobante.fechaComprobante = this.utilsService.stringToDateLikePicker(this.comprobante.fechaComprobante);
                 
-                // Actualizo las formas de pago de la tabla
-                this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante);
+                // Actualizo las formas de pago de la tabla (solo si está seteado el cliente)
+                this.cliente && this.cliente.cuit ?
+                    this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante) : 
+                    null;
             } else {
                 // Si se sale del intervalo permitido, seteo la fecha como fechaApertura
                 this.comprobante.fechaComprobante = new DateLikePicker(this.cteFechasIntervalo.fechaApertura);
@@ -360,8 +383,10 @@ export class EmisionRemitos {
      * Evento que se dispara cuando se selecciona una fecha
      */
     onModelChangeFechaComp(e, d) {
-        // Actualizo las formas de pago de la tabla
-        this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante);
+        // Actualizo las formas de pago de la tabla (solo si está seteado el cliente)
+        this.cliente && this.cliente.cuit ?
+            this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante) :
+            null;
     }
 
 
@@ -374,6 +399,10 @@ export class EmisionRemitos {
             this.cteFechasIntervalo = null;
             // Pongo fecha seleccionada por dfecto en HOY
             this.comprobante.fechaComprobante = new DateLikePicker(new Date());
+            // Actualizo las formas de pago para la fecha de hoy (solo si está seteado el cliente y la fecha)
+            this.cliente && this.cliente.cuit && this.comprobante && this.comprobante.fechaComprobante ?
+                this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante) : 
+                null;
             return Observable.from([]);
         })
         .subscribe((cteFechas: CteFechas[]) => {
@@ -390,13 +419,57 @@ export class EmisionRemitos {
                 // Pongo fecha seleccionada por dfecto en HOY
                 this.comprobante.fechaComprobante = new DateLikePicker(new Date());
             }
-            // debugger;
-            // Actualizo las formas de pago para la fechaApertura
-            this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(intervaloFecha.fechaApertura);
+            // Actualizo las formas de pago para la fechaApertura (solo si está seteado el cliente y la fecha)
+            this.cliente && this.cliente.cuit && this.comprobante && this.comprobante.fechaComprobante ?
+                this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(intervaloFecha.fechaApertura):
+                null;
         });
 
 
         // Hago el autocompletado de los nros
         this.onBlurNumeroAutocomp(e)(tipo)(keyTipo)
     }
+
+    /**
+     * Agrega o elimina una forma pago de las seleccionadas. También muestra los detalles 
+     */
+    handleFormaPagoSelec = (fp: FormaPago) => (tipoOperacion: string) => {
+        // Agrego o elimino
+        tipoOperacion === 'add' ?
+            this.formasPagoSeleccionadas.push(fp) :
+            this.formasPagoSeleccionadas = this.formasPagoSeleccionadas.filter(fpSelec => fpSelec.idFormaPago !== fp.idFormaPago);
+
+        // Saco los detalles de todas las seleccionadas
+        this.detallesFpsSeleccionadas = this.formasPagoSeleccionadas
+            .map(fpSelec => fp.listaPrecio)
+            .filter(
+                (lista, index, self) => index === self.findIndex(l => l.idListaPrecio === lista.idListaPrecio)
+            )
+            .map(lista => `Lista ${lista.idListaPrecio} \nDesde: ${lista.vigenciaDesde.getFechaFormateada()}, Hasta: ${lista.vigenciaHasta.getFechaFormateada()}, ${lista.idMoneda.descripcion}`)
+            .join('\n');
+        
+    }
+
+    /**
+     * Actualizo subtotales
+     */
+    actualizarSubtotales = (prod: ProductoPendiente) => {
+        // Obtengo el nuevo subtotal
+        this.emisionRemitosService.getCalculoSubtotales(prod).subscribe(nuevoSubtotal => {
+            // Checkeo si hay uno viejo
+            const viejoSubtotal = this.tablas.datos.subtotalesProductos.find(s => prod.producto.idProductos === s.idProducto);
+    
+            // Si hay uno viejo, lo edito. Si NO hay uno viejo, pusheo directamente el nuevo
+            if (viejoSubtotal) {
+                viejoSubtotal.subtotal = nuevoSubtotal.subtotal;
+                viejoSubtotal.subtotalIva = nuevoSubtotal.subtotalIva;
+            } else {
+                this.tablas.datos.subtotalesProductos.push(nuevoSubtotal);
+            }
+        });
+
+
+    }
+
+
 }

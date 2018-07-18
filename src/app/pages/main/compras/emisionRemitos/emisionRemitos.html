@@ -4,7 +4,7 @@
             <div class="form-group inline-group">
                 <label for="cliente">Cliente</label>
                 <input  id="clienteSeleccionado" 
-                        (blur)="onBlurInputProv($event)" 
+                        (blur)="onBlurInputCliente($event)" 
                         (ngModelChange)="onChangeInputCliente($event)" 
                         [(ngModel)]="cliente.padronCodigo" 
                         type="text" 
@@ -125,14 +125,17 @@
             <ngb-tab title="Forma de Pago">
                 <ng-template ngbTabContent>
                     <div class="fpago-content">
-                        <tabla-forma-pago [data]="dataTablaFormasPago">
+                        <tabla-forma-pago   class="fpago-tabla"
+                                            [dataTable]="dataTablaFormasPago"
+                                            (onAddSelecFormaPago)="handleFormaPagoSelec($event)('add')"
+                                            (onRemoveSelecFormaPago)="handleFormaPagoSelec($event)('remove')">
                         </tabla-forma-pago>
     
                         <div class="txt-area-container">
                             <label for="cteNro">Detalles:</label>
-                            <textarea   [(ngModel)]="comprobante.observaciones" 
+                            <textarea   disabled
                                         class="form-control text-area-forma-pago" 
-                                        id="txAreaFPago"></textarea>
+                                        id="txAreaFPago">{{ detallesFpsSeleccionadas }}</textarea>
                         </div>
                     </div>
 
@@ -159,17 +162,18 @@
                 <ng-template ngbTabContent>
                     
                     <tabla-emision-rem  [data]="tablas.datos.productosPend" 
-                                    [columns]="tablas.columnas.columnasProductos" 
-                                    [remove]="tablas.funciones.onClickRemove" 
-                                    [edit]="tablas.funciones.onClickEdit('columnasProductos')" 
-                                    [confirmEdit]="tablas.funciones.onClickConfirmEdit('columnasProductos')" 
-                                    [onClickProductoLista]="onClickProductoLista" 
-                                    [enableAddItem]="true">
+                                        [columns]="tablas.columnas.columnasProductos" 
+                                        [remove]="tablas.funciones.onClickRemove" 
+                                        [edit]="tablas.funciones.onClickEdit('columnasProductos')" 
+                                        [confirmEdit]="tablas.funciones.onClickConfirmEdit('columnasProductos')" 
+                                        [onClickProductoLista]="onClickProductoLista" 
+                                        [enableAddItem]="true" 
+                                        [subtotales]="tablas.datos.subtotalesProductos">
                     </tabla-emision-rem>
 
                 </ng-template>
             </ngb-tab>
-            <ngb-tab title="Trazabilidad">
+            <ngb-tab title="Trazable Lotes">
                 <ng-template ngbTabContent>
                 
                     <tabla-emision-rem  [data]="emisionRemitosService.getOnlyTrazables(tablas.datos.productosPend)" 
@@ -181,76 +185,17 @@
 
                 </ng-template>
             </ngb-tab>
-            <ngb-tab title="">
-                <ng-template ngbTabTitle>
-                    <!-- <div (click)="onClickFacturaTab()">Factura</div> -->
-                    <div>Factura</div>
-                </ng-template>
+            <ngb-tab title="Forma Pago">
                 <ng-template ngbTabContent>
                 
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <div class="form-group inline-group">
-                                <label for="cteTipo">Cte:</label>
-                                <select [(ngModel)]="factura.tipo" class="form-control without-padding" [ngStyle]="{padding: '1px 8px 0px 8px'}" id="cteTipo">
-                                    <option *ngFor="let tipoComp of tiposComprobantes | async">
-                                        {{tipoComp.descCorta}}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="form-group inline-group">
-                                <label for="cteNro">Nro:</label>
-                                <input [(ngModel)]="factura.preNumero" type="text" class="form-control pre-numero-input" id="preNumero" placeholder="">
-                                <input [(ngModel)]="factura.numero" type="text" class="form-control" id="numero" placeholder="">
-                            </div>
-                        </div>
+                    Forma pago
 
-                        <div class="col-sm-3">
-                            <div class="form-group inline-group last-child-custom-card">
-                                <label for="fechaComprobante">Fecha Contable</label>
-                                <div class="input-group">
-                                    <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="factura.fechaContable" ngbDatepicker #dComp="ngbDatepicker">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button" style="height: 100%;">
-                                            <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="form-group inline-group last-child-custom-card">
-                                <label for="fechaVto">Fecha Vto</label>
-                                <div class="input-group">
-                                    <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="factura.fechaVto" ngbDatepicker #dVto="ngbDatepicker">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary" (click)="dVto.toggle()" type="button" style="height: 100%;">
-                                            <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="subtotales-container">
-                        <div class="subtotales-titulo">
-                            <p>Subtotales</p>
-                        </div>
-
-                        <div class="subtotales-content">
-                            <tabla-emision-rem  [data]="tablas.datos.modelosFactura" 
-                                            [columns]="tablas.columnas.columnasFactura" 
-                                            
-                                            [confirmEdit]="tablas.funciones.onClickConfirmEdit('columnasTrazabilidad')" 
-                                            [onClickProductoLista]="onClickProductoLista">
-                            </tabla-emision-rem>   
-                        </div>
-                    </div>
-
-
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab title="Canje Referencia">
+                <ng-template ngbTabContent>
+                
+                    Canje Referencia
 
                 </ng-template>
             </ngb-tab>

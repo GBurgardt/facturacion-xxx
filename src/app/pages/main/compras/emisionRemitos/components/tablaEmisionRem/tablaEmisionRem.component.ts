@@ -35,7 +35,11 @@ export class TablaEmisionRem {
     @Input() remove;
     @Input() confirmEdit;
 
-    
+    @Input() subtotales: {
+        idProducto: number,
+        subtotal: number,
+        subtotalIva: number
+    }[];
 
     /////////// BUSQUEDA ///////////
     textoBusqueda: string;
@@ -61,10 +65,7 @@ export class TablaEmisionRem {
             this.productosBusqueda.filtrados.next(prodsPendPosibles);
         });
 
-        // Obtengo depositos
-        // recursoService.getRecursoList(resourcesREST.depositos)().subscribe(
-        //     depositos => this.depositos = depositos
-        // )
+        
     }
 
     
@@ -89,7 +90,7 @@ export class TablaEmisionRem {
     }
 
     /**
-     * Este método checkea el tipo de dato de la key y la parsea de acuerdo a el. Por ejemplo, si es boolean retrona 'si' en 'true' y 'no' en 'false'
+     * Este método checkea el tipo de dato de la key y la parsea de acuerdo a el. Por ejemplo, si es boolean retorna 'si' en 'true' y 'no' en 'false'
      * @param key
      */
     parseKey(key) {
@@ -209,13 +210,15 @@ export class TablaEmisionRem {
         this.onClickProductoLista(prodSelect)
     }
 
+    /**
+     * Retorna el subtotal requerido
+     */
+    getSubtotal = (item: ProductoPendiente) => (key) => {
+        const subtotalBuscado = this.subtotales
+            .find(st => st.idProducto === item.producto.idProductos);
+            
+        return subtotalBuscado && subtotalBuscado[key] ? 
+            subtotalBuscado[key] : 0
+    }
+
 }
-
-
-/**
- * (
-                    this.productoEnfocadoIndex >=0 && this.productoEnfocadoIndex < prodsLista.length-1 ||
-                    this.productoEnfocadoIndex === -1 && upOrDown === 'down' ||
-                    this.productoEnfocadoIndex === (prodsLista.length - 2) && upOrDown === 'up'
-                )
- */
