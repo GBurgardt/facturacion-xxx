@@ -4,7 +4,7 @@
             <tr>
                 <th *ngIf="edit || remove" style="width: 10%; border-top: none;"></th>
                 <!-- Recorro y muestro las columnas recibidas en el input -->
-                <th class="table-column" *ngFor="let col of columns" [ngStyle]="getStyleFromCol(col)">
+                <th class="table-column" *ngFor="let col of columns" [ngStyle]="getStyleFromCol(col)" [ngClass]="col.customClass ? col.customClass : 'text-align: left;'">
                     <mfDefaultSorter by="name">{{col.nombre}}</mfDefaultSorter>
                 </th>
             </tr>
@@ -28,7 +28,7 @@
                 <!-- FIN BOTONES EDITAR Y BORRAR -->
 
                 <!-- ACA MUESTRA LA DATA -->
-                <td *ngFor="let col of columns">
+                <td *ngFor="let col of columns" [ngClass]="col.customClass ? col.customClass : 'text-align: left;'">
                     <div *ngIf="col.subkey">
                         <!-- Si NO esta en edicion -->
                         <div *ngIf="!col.enEdicion || col.enEdicion !== item.producto.idProductos">

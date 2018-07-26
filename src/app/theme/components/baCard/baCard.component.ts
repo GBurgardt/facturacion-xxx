@@ -1,11 +1,22 @@
-import {Component, Input} from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'ba-card',
-  templateUrl: './baCard.html',
+    selector: 'ba-card',
+    templateUrl: './baCard.html',
 })
 export class BaCard {
-  @Input() cardTitle:String;
-  @Input() baCardClass:String;
-  @Input() cardType:String;
+    @Input() cardTitle: String;
+    @Input() baCardClass: String;
+    @Input() cardType: String;
+
+    @Input() toggleBtn: Boolean;
+
+    showCard: Boolean = true;
+
+    constructor() {
+    }
+    
+    onToggleCard = () => {
+        this.showCard = !this.showCard;
+    }
 }

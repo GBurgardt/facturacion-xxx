@@ -54,7 +54,9 @@ export class TablaIngreso {
         private popupListaService: PopupListaService
     ) {
         // Cargo todos los productos pendientes posibles
-        recursoService.getRecursoList(resourcesREST.buscaPendientes)().subscribe(prodsPendPosibles => {
+        recursoService.getRecursoList(resourcesREST.buscaPendientes)({
+            'idSisTipoModelo': 1
+        }).subscribe(prodsPendPosibles => {
             this.productosBusqueda.todos = prodsPendPosibles;
             this.productosBusqueda.filtrados.next(prodsPendPosibles);
         });

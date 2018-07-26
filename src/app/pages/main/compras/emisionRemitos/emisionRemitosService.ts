@@ -46,64 +46,77 @@ export class EmisionRemitosService {
             nombre: 'descripcion',
             key: 'producto',
             subkey: 'descripcion',
-            ancho: '10%'
+            ancho: '10%',
+            customClass: 'text-left'
         },
         {
             nombre: 'imputacion',
             key: 'imputacion',
             ancho: '15%',
-            enEdicion: null
+            enEdicion: null,
+            editarFocus: true,
+            customClass: 'text-left'
         },
         {
             nombre: 'cantidad',
             key: 'pendiente',
             ancho: '7.5%',
-            enEdicion: null
+            enEdicion: null,
+            customClass: 'text-right'
         },
         {
             nombre: 'unidad',
             key: 'producto',
             subkey: 'unidadVenta',
-            ancho: '7.5%'
+            ancho: '4.5%',
+            customClass: 'text-left'
         },
         {
             nombre: 'precio',
             key: 'precio',
-            ancho: '7.5%',
-            enEdicion: null
+            ancho: '5.5%',
+            enEdicion: null,
+            customClass: 'text-right'
         },
         {
             nombre: 'dto',
             key: 'descuento',
-            ancho: '7.5%',
-            enEdicion: null
+            ancho: '5.5%',
+            enEdicion: null,
+            customClass: 'text-right'
         },
         {
             nombre: 'tipo',
             key: 'tipoDescuento',
-            ancho: '7.5%',
-            enEdicion: null
+            ancho: '5.5%',
+            enEdicion: null,
+            elementoFinalBlur: true,
+            customClass: 'text-right'
         },
         {
             nombre: 'subtotal',
             key: 'subtotal',
-            ancho: '7.5%'
+            ancho: '5.5%',
+            customClass: 'text-right'
         },
         {
             nombre: '%IVA',
             key: 'ivaPorc',
-            ancho: '7.5%'
+            ancho: '5.5%',
+            customClass: 'text-right'
         },
         {
             nombre: 'subt.C/IVA',
             key: 'subtotalIva',
-            ancho: '7.5%'
+            ancho: '5.5%',
+            customClass: 'text-right'
         },
         {
             nombre: 'trazable',
             key: 'producto',
             subkey: 'trazable',
-            ancho: '7.5%'
+            ancho: '5.5%',
+            customClass: 'text-left'
         }
     ];
 
@@ -116,69 +129,121 @@ export class EmisionRemitosService {
         {
             nombre: 'descripcion',
             key: 'descripcionProd',
-            ancho: '15%'
+            ancho: '15%',
+            customClass: 'text-left'
         },
         {
             nombre: 'proveedor',
             key: 'proveedor',
-            ancho: '15%'
+            ancho: '15%',
+            customClass: 'text-left'
         },
         {
             nombre: 'gtin',
             key: 'gtin',
-            ancho: '15%'
+            ancho: '15%',
+            customClass: 'text-left'
         },
         {
             nombre: 'lote',
             key: 'nroLote',
-            ancho: '6.6%'
+            ancho: '6.6%',
+            customClass: 'text-right'
         },
         {
             nombre: 'serie',
             key: 'serie',
-            ancho: '6.6%'
+            ancho: '6.6%',
+            customClass: 'text-right'
         },
         {
             nombre: 'vto',
             key: 'fechaVto',
-            ancho: '6.6%'
+            ancho: '6.6%',
+            customClass: 'text-right'
         },
         {
             nombre: 'stock',
             key: 'stock',
-            ancho: '6.6%'
+            ancho: '6.6%',
+            customClass: 'text-right'
         },
         {
             nombre: 'receta N',
             key: 'recetaN',
             ancho: '6.6%',
-            enEdicion: null
+            enEdicion: null,
+            editarFocus: true,
+            customClass: 'text-right'
         },
         {
             nombre: 'cantidad',
             key: 'cantidad',
             ancho: '6.6%',
-            enEdicion: null
+            enEdicion: null,
+            elementoFinalBlur: true,
+            customClass: 'text-right'
         }
     ];
 
-    getColumnsFactura = () => [
+
+    getColumnsCanje = () => [
         {
-            nombre: 'cuenta',
+            nombre: 'articulo',
             key: 'cuentaContable',
             ancho: '30%'
         },
         {
             nombre: 'descripcion',
             key: 'descripcion',
-            ancho: '30%'
+            ancho: '30%',
+            customClass: 'text-left'
         },
         {
-            nombre: 'importe',
+            nombre: 'cantidad',
             key: 'importeTotal',
-            ancho: '30%'
+            ancho: '30%',
+            customClass: 'text-right'
         }
     ]
+
+    getColumnsDetallesFp = () => [
+        {
+            nombre: 'plazo',
+            key: 'cantDias',
+            ancho: '15%',
+            customClass: 'text-right'
+        },
+        {
+            nombre: 'int',
+            key: 'porcentaje',
+            ancho: '15%',
+            customClass: 'text-right'
+        },
+        {
+            nombre: 'detalle',
+            key: 'detalle',
+            ancho: '15%',
+            customClass: 'text-left'
+        },
+        {
+            nombre: 'monto',
+            key: 'monto',
+            ancho: '15%',
+            enEdicion: null,
+            editarFocus: true,
+            customClass: 'text-right'
+        },
+        {
+            nombre: 'observaciones',
+            key: 'observaciones',
+            ancho: '30%',
+            enEdicion: null,
+            elementoFinalBlur: true,
+            customClass: 'text-left'
+        }
+    ]
+
 
     /**
      * Buscar los productos pendientes
@@ -387,54 +452,6 @@ export class EmisionRemitosService {
                 subtotalIva: respuesta.datos.subTotalIva
             }
         });
-
-    getColumnsCanje = () => [
-        {
-            nombre: 'articulo',
-            key: 'cuentaContable',
-            ancho: '30%'
-        },
-        {
-            nombre: 'descripcion',
-            key: 'descripcion',
-            ancho: '30%'
-        },
-        {
-            nombre: 'cantidad',
-            key: 'importeTotal',
-            ancho: '30%'
-        }
-    ]
-
-    getColumnsDetallesFp = () => [
-        {
-            nombre: 'plazo',
-            key: 'cantDias',
-            ancho: '15%'
-        },
-        {
-            nombre: 'int',
-            key: 'porcentaje',
-            ancho: '15%'
-        },
-        {
-            nombre: 'detalle',
-            key: 'detalle',
-            ancho: '15%'
-        },
-        {
-            nombre: 'monto',
-            key: 'monto',
-            ancho: '15%',
-            enEdicion: null
-        },
-        {
-            nombre: 'observaciones',
-            key: 'observaciones',
-            ancho: '30%',
-            enEdicion: null
-        }
-    ]
 
 
     /**

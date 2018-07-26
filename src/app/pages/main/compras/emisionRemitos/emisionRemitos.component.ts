@@ -28,6 +28,7 @@ import { SisCanje } from '../../../../models/sisCanje';
 import { ComprobanteRelacionado } from '../../../../models/comprobanteRelacionado';
 import { Lote } from '../../../../models/lote';
 import { DetalleFormaPago } from 'app/models/detalleFormaPago';
+import { GlobalState } from 'app/global.state';
 
 
 @Component({
@@ -127,7 +128,8 @@ export class EmisionRemitos {
         private recursoService: RecursoService,
         private emisionRemitosService: EmisionRemitosService,
         private utilsService: UtilsService,
-        private popupListaService: PopupListaService
+        private popupListaService: PopupListaService,
+        private _state: GlobalState
     ) {
 
         ////////// Listas desplegables //////////
@@ -158,6 +160,9 @@ export class EmisionRemitos {
 
         ////////// Otros //////////
         this.emisionRemitosService.getCotizacionDatos().subscribe(cotizDatos => this.cotizacionDatos.cotizacion = cotizDatos);
+
+        // Notifico el menu seleccionado
+        // this._state.notifyDataChanged('menu.isCollapsed', 'Emision Remito');
     }
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -184,16 +189,15 @@ export class EmisionRemitos {
 
         // Hago focus en el select de imputacion
         setTimeout(() => {
-            const elementFocusClass = tipoColumnas === 'columnasProductos' ? 'select-impu-'+itemSelect.producto.idProductos : '';
-            const selectImpu: any = document.getElementsByClassName(elementFocusClass);
-            if(selectImpu && selectImpu[0]) {
-                selectImpu[0].focus();
-            } else {
-                // TODO: Ver bien esta cuestión
-                const inputFocusClass = tipoColumnas === 'columnasProductos' ? 'input-edit-'+itemSelect.producto.idProductos : '';
-                const inputFocus: any = document.getElementsByClassName(inputFocusClass);
-                inputFocus && inputFocus[0] ? inputFocus[0].focus() : null
-            }
+
+            const idItem =  itemSelect.nroLote ? itemSelect.nroLote : 
+                            itemSelect.idFormaPagoDet ? itemSelect.idFormaPagoDet : 
+                            itemSelect.producto && itemSelect.producto.idProductos ? itemSelect.producto.idProductos : '000';
+
+            const inputFocusClass = 'editar-focus-'+idItem;
+
+            const elementFocus: any = document.getElementsByClassName(inputFocusClass);
+            elementFocus && elementFocus[0] ? elementFocus[0].focus() : null
         });
 
     }

@@ -26,14 +26,16 @@
         thead {
             tr th {
                 text-align: center;
+                padding: 6px 4px;
+                // font-weight: bold;
             }
         }
 
         tbody {
             tr td {
                 text-align: center;
-                padding: 1px 3px;
-                
+                padding:0 4px;
+
                 .datepicker-datelikepicker {
                     display: flex;
                     width: 90%;

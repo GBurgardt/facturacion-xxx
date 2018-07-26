@@ -1,8 +1,15 @@
 <div baCardBlur class="animated fadeIn card {{cardType}} {{baCardClass || ''}}" zoom-in>
+
     <div *ngIf="cardTitle" class="card-header clearfix">
         <h3 class="card-title" translate>{{cardTitle}}</h3>
+
+        <div class="toggle-btn" (click)="onToggleCard()">
+            <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </div>
+
     </div>
-    <div class="card-body">
+    <div *ngIf="showCard" class="card-body">
         <ng-content></ng-content>
     </div>
+
 </div>

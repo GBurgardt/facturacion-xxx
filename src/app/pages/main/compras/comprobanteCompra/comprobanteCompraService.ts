@@ -44,33 +44,38 @@ export class ComprobanteCompraService {
             nombre: 'descripcion',
             key: 'producto',
             subkey: 'descripcion',
-            ancho: '20%'
+            ancho: '20%',
+            customClass: 'text-left'
         },
         {
             nombre: 'imputacion',
             key: 'imputacion',
             ancho: '15%',
-            enEdicion: null
+            enEdicion: null,
+            customClass: 'text-left'
         },
         {
             nombre: 'precio',
             key: 'precio',
             ancho: '10%',
             enEdicion: null,
-            decimal: true
+            decimal: true,
+            customClass: 'text-right'
         },
         {
             nombre: 'ivaPorc',
             key: 'ivaPorc',
             ancho: '10%',
-            decimal: true
+            decimal: true,
+            customClass: 'text-right'
         },
         {
             nombre: 'cantidad',
             key: 'pendiente',
             ancho: '10%',
             enEdicion: null,
-            decimal: true
+            decimal: true,
+            customClass: 'text-right'
         },
         // {
         //     nombre: 'deposito',
@@ -82,7 +87,8 @@ export class ComprobanteCompraService {
             nombre: 'trazable',
             key: 'producto',
             subkey: 'trazable',
-            ancho: '10%'
+            ancho: '10%',
+            customClass: 'text-left'
         }
     ];
 

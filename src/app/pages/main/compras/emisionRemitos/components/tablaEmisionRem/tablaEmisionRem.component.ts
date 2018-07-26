@@ -230,12 +230,26 @@ export class TablaEmisionRem {
     }
 
     // Cheackea si esta en edicion
-    checkIfEditOn = (item) => (col) => 
-        col.enEdicion && (
-            (item.producto && item.producto.idProductos && col.enEdicion === item.producto.idProductos) ||
-            (item.nroLote && col.enEdicion === item.nroLote) ||
-            (item.idFormaPagoDet && col.enEdicion === item.idFormaPagoDet)
-        )
+    checkIfEditOn = (item) => (col) => col.enEdicion && (
+        (item.producto && item.producto.idProductos && col.enEdicion === item.producto.idProductos) ||
+        (item.nroLote && col.enEdicion === item.nroLote) ||
+        (item.idFormaPagoDet && col.enEdicion === item.idFormaPagoDet)
+    )
+    
     
 
+    /**
+     * Retorna la clase del input que se va a poner en edicio y enfocar primero, cuando se apreta en editar
+     */
+    getClassInputEditable = (item) => (col) => {
+        if (item){
+            // Agarro el id dependiendo el tipo de archivo. Como lo uso en lotes trazables y en detalles formas pagos y productos pendientes, solo me fijo esos dos
+            const idItem =  item.nroLote ? item.nroLote : 
+                            item.idFormaPagoDet ? item.idFormaPagoDet : 
+                            item.producto && item.producto.idProductos ? item.producto.idProductos : '000';
+
+            // 'form-control edit-input input-edit-' + item.producto.idProductos
+            return `form-control edit-input${col.editarFocus ? ` editar-focus-${idItem}` : '' }`
+        }    
+    }
 }

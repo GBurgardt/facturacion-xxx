@@ -1,33 +1,42 @@
-<div class="page-top clearfix" baScrollPosition maxHeight="50" (scrollChange)="scrolledChanged($event)"
-     [ngClass]="{scrolled: isScrolled}">
-<a href (click)="toggleMenu()" class="collapse-menu-link ion-navicon"></a>
-    <a routerLink="/pages/dashboard" class="al-logo clearfix"><span>Kernel </span>Informática</a>
+<div class="page-top clearfix" baScrollPosition maxHeight="50" (scrollChange)="scrolledChanged($event)" [ngClass]="{scrolled: isScrolled}">
+    
+    <div class="page-top-content" [ngStyle]="{'margin-left': isMenuCollapsed ? '10px' : '168px' }">
 
-    <!--  <a routerLink="/pages/dashboard" class="al-logo clearfix"><span><img src="../../../../assets/img/logo-kernel.fw.png"/>Kernel </span>Informática</a>
- -->
+        <div class="content-left">
+            <a href (click)="toggleMenu()" class="collapse-menu-link ion-navicon"></a>
+            <div class="current-menu-selected">
+                {{ currentMenuSelected }}
+            </div>
+        </div>
 
-
-   <!--<img src="../../../../assets/img/logo-kernel.fw.png"/><div class="search">
-    <i class="ion-ios-search-strong" ng-click="startSearch()"></i>
-    <input id="searchInput" type="text" placeholder="Buscar...">
-  </div> -->
-
-  <div class="user-profile clearfix">
-
-
-    <div class="dropdown al-user-profile">
-
-        <a class="profile-toggle-link dropdown-toggle"  id="user-profile-dd" data-toggle="dropdown" aria-expanded="false">
-        <img src="{{ ( 'default' | baProfilePicture ) }}">
-
-      </a>
-
-      <ul class="dropdown-menu top-dropdown-menu profile-dropdown" aria-labelledby="user-profile-dd">
-        <li class="dropdown-item"><a href><i class="fa fa-user"></i>Mi Cuenta</a></li>
-        <li class="dropdown-item"><a href><i class="fa fa-cog"></i>Configuración</a></li>
-        <li class="dropdown-item"><a href class="signout"><i class="fa fa-power-off"></i>Salir</a></li>
-      </ul>
+        <div class="user-profile clearfix" >
+            <div class="dropdown al-user-profile">
+                <a class="profile-toggle-link dropdown-toggle" id="user-profile-dd" data-toggle="dropdown" aria-expanded="false">
+                    <img src="{{ ( 'default' | baProfilePicture ) }}">
+                </a>
+    
+                <ul class="dropdown-menu top-dropdown-menu profile-dropdown" aria-labelledby="user-profile-dd">
+                    <li class="dropdown-item">
+                        <a href>
+                            <i class="fa fa-user"></i>Mi Cuenta</a>
+                    </li>
+                    <li class="dropdown-item">
+                        <a href>
+                            <i class="fa fa-cog"></i>Configuración</a>
+                    </li>
+                    <li class="dropdown-item">
+                        <a href class="signout">
+                            <i class="fa fa-power-off"></i>Salir</a>
+                    </li>
+                </ul>
+            </div>
+            <ba-msg-center></ba-msg-center>
+        </div>
+    
+        
     </div>
-    <ba-msg-center></ba-msg-center>
-  </div>
+    
 </div>
+
+
+
