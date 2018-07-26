@@ -14,9 +14,6 @@ import { resourcesREST } from 'constantes/resoursesREST';
     templateUrl: './productos.html'
 })
 
-
-
-
 export class Productos {
 
     // Data de la tabla

@@ -171,49 +171,30 @@ export class EmisionRemitos {
     }
 
     onClickEdit = (tipoColumnas) => (itemSelect: any) => { 
-        // debugger;
-        // if (tipoColumnas === 'columnasProductos') {
-            this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
-                let newTabla = tabla;
-                if (newTabla.enEdicion !== undefined) {
-                    
-                    tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = itemSelect.producto.idProductos :
-                    tipoColumnas === 'columnasTrazabilidad' ? newTabla.enEdicion = itemSelect.nroLote :
-                    tipoColumnas === 'columnasDetallesFp' ? newTabla.enEdicion = itemSelect.idFormaPagoDet : null
-                }
-                return newTabla;
-            });
-    
-            // Hago focus en el select de imputacion
-            setTimeout(()=>{
-                const elementFocusClass = tipoColumnas === 'columnasProductos' ? 'select-impu-'+itemSelect.producto.idProductos : '';
-                const selectImpu: any = document.getElementsByClassName(elementFocusClass);
-                if(selectImpu && selectImpu[0]) {
-                    selectImpu[0].focus();
-                } else {
-                    // TODO: Ver bien esta cuestión
-                    const inputFocusClass = tipoColumnas === 'columnasProductos' ? 'input-edit-'+itemSelect.producto.idProductos : '';
-                    const inputFocus: any = document.getElementsByClassName(inputFocusClass);
-                    inputFocus && inputFocus[0] ? inputFocus[0].focus() : null
-                }
-            });
-        // } else if (tipoColumnas === 'columnasTrazabilidad') {
-        //     this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
-        //         let newTabla = tabla;
-        //         if (newTabla.enEdicion !== undefined) {
-        //             newTabla.enEdicion = itemSelect.nroLote
-        //         }
-        //         return newTabla;
-        //     });
-        // } else if (tipoColumnas === 'columnasDetallesFp') {
-        //     this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
-        //         let newTabla = tabla;
-        //         if (newTabla.enEdicion !== undefined) {
-        //             newTabla.enEdicion = itemSelect.idFormaPagoDet
-        //         }
-        //         return newTabla;
-        //     });
-        // }
+        this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
+            let newTabla = tabla;
+            if (newTabla.enEdicion !== undefined) {
+                
+                tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = itemSelect.producto.idProductos :
+                tipoColumnas === 'columnasTrazabilidad' ? newTabla.enEdicion = itemSelect.nroLote :
+                tipoColumnas === 'columnasDetallesFp' ? newTabla.enEdicion = itemSelect.idFormaPagoDet : null
+            }
+            return newTabla;
+        });
+
+        // Hago focus en el select de imputacion
+        setTimeout(() => {
+            const elementFocusClass = tipoColumnas === 'columnasProductos' ? 'select-impu-'+itemSelect.producto.idProductos : '';
+            const selectImpu: any = document.getElementsByClassName(elementFocusClass);
+            if(selectImpu && selectImpu[0]) {
+                selectImpu[0].focus();
+            } else {
+                // TODO: Ver bien esta cuestión
+                const inputFocusClass = tipoColumnas === 'columnasProductos' ? 'input-edit-'+itemSelect.producto.idProductos : '';
+                const inputFocus: any = document.getElementsByClassName(inputFocusClass);
+                inputFocus && inputFocus[0] ? inputFocus[0].focus() : null
+            }
+        });
 
     }
 
@@ -249,15 +230,26 @@ export class EmisionRemitos {
         // Despues de agregar el producto prosedo a ponerlo en edición
         this.onClickEdit('columnasProductos')(prodSelec);
 
-        // Agrego los productos trazables a la tabla de trazabilidad
-        this.emisionRemitosService.buscaLotes(
-            this.tablas.datos.productosPend
-        )(
-            this.comprobante
-        ).subscribe(
-            lotes => this.tablas.datos.lotesTraza = lotes
-        )
+        // Actualizo grilla trazable lotes
+        this.actualizarTrazableLotes();
 
+    }
+
+
+    /**
+     * Actualiza la grilla de Trazable Lotes
+     */
+    actualizarTrazableLotes = () => {
+        // Agrego los lotes de los productos trazables a la grilla de trazabilidad lotes
+        if (this.tablas.datos.productosPend.length > 0) {
+            this.emisionRemitosService.buscaLotes(
+                this.tablas.datos.productosPend
+            )(
+                this.comprobante
+            ).subscribe(
+                lotes => this.tablas.datos.lotesTraza = lotes
+            )
+        }
 
     }
 
@@ -326,12 +318,12 @@ export class EmisionRemitos {
 
     /**
      * Setea la fecha de compra calculandola dado un string en formato 'ddmm', parseando a 'dd/mm/aaaa'
+     * También hago otras cosas
      */
     onBlurFechaComprobante = (e) => {
         
         // Primero checkeo que el intervalo existe ya que puede que el tipoComrpoiabte con ese pto venta NO tenga intervalo
         // Por lo que el operador puede ingresar la fecha que se le cante, y yo pongo por defecto la del día
-
         if (this.comprobante.fechaComprobante) {
             // Si NO hay intervalo, o si SI hay intervalo Y la fecha ingresada está dentro de el...
             if (
@@ -356,6 +348,10 @@ export class EmisionRemitos {
                 // Y le aviso
                 this.utilsService.showModal('Error')('La fecha se sale del intervalo permitido')()();
             }
+
+            // Actualizo grilla trazable lotes
+            this.actualizarTrazableLotes();
+
         }
     }
 
