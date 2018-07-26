@@ -14,9 +14,9 @@ import { Moneda } from '../../../../models/moneda';
 import { ProductoPendiente } from 'app/models/productoPendiente';
 import { BehaviorSubject } from 'rxjs';
 import { Cotizacion } from '../../../../models/cotizacion';
-import { ModeloFactura } from '../../../../models/modeloFactura';
+
 import { Comprobante } from 'app/models/comprobante';
-import { Factura } from '../../../../models/factura';
+
 import { Deposito } from 'app/models/deposito';
 import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
 import { EmisionRemitosService } from './emisionRemitosService';
@@ -24,6 +24,10 @@ import { FormaPago } from '../../../../models/formaPago';
 import { CondIva } from '../../../../models/condIva';
 import { CteFechas } from '../../../../models/cteFechas';
 import { DateLikePicker } from '../../../../models/dateLikePicker';
+import { SisCanje } from '../../../../models/sisCanje';
+import { ComprobanteRelacionado } from '../../../../models/comprobanteRelacionado';
+import { Lote } from '../../../../models/lote';
+import { DetalleFormaPago } from 'app/models/detalleFormaPago';
 
 
 @Component({
@@ -37,26 +41,15 @@ import { DateLikePicker } from '../../../../models/dateLikePicker';
  */
 export class EmisionRemitos {
     /////////////////////////////////////////////
-    /////////// Modelos Comprobante /////////////
+    /////////// Objetos Seleccionados ///////////
     /////////////////////////////////////////////
     cliente: Padron = new Padron();
     comprobante: Comprobante = new Comprobante();
-    
-    factura: Factura = new Factura();
-    cotizacionDatos: {
-        cotizacion: Cotizacion,
-        total: number
-    } = { cotizacion: new Cotizacion(), total: 0};
-
-    depositoSelec: Deposito;
-
+    comprobanteRelacionado: ComprobanteRelacionado = new ComprobanteRelacionado()
+    deposito: Deposito;
+    tipoOperacion: SisTipoOperacion = new SisTipoOperacion();
+    sisCanje: SisCanje = new SisCanje();
     formasPagoSeleccionadas: FormaPago[] = [];
-
-    // Inhdice del producto enfocado del popup
-    clienteEnfocadoIndex: number = -1;
-
-    // Intervalo de fecha del cte seleccionado (y el pto venta seteado)
-    cteFechasIntervalo: CteFechas = new CteFechas();
 
     /////////////////////////////////////////////
     //////////// Listas desplegables ////////////
@@ -66,117 +59,66 @@ export class EmisionRemitos {
     tiposOperacion: Observable<SisTipoOperacion[]>;
     monedas: Observable<Moneda[]>;
     depositos: Observable<Deposito[]>;
-
-    // Lista de clientes completa (necesaria para filtrar) y filtrada
-    clientes: {
-        todos: Padron[];
-        filtrados: BehaviorSubject<Padron[]>;
-    } = {todos: [], filtrados: new BehaviorSubject([])}
-
+    productos: Observable<ProductoPendiente[]>;
+    sisCanjes: Observable<SisCanje[]>;
+    clientes: { todos: Padron[]; filtrados: BehaviorSubject<Padron[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
     letras: string[] = [];
+    
+    /////////////////////////////////////////////
+    ////////////////// Otros ////////////////////
+    /////////////////////////////////////////////
+    // Inhdice del producto enfocado del popup
+    clienteEnfocadoIndex: number = -1;
+    
+    detalleListaFpsSeleccionadas: string = '';
 
+    cotizacionDatos: {
+        cotizacion: Cotizacion,
+        total: number
+    } = { cotizacion: new Cotizacion(), total: 0};
+
+    // Intervalo de fecha del cte seleccionado (y el pto venta seteado)
+    cteFechasIntervalo: CteFechas = new CteFechas();
 
     /////////////////////////////////////////////
     ////////////////// Tablas ///////////////////
     /////////////////////////////////////////////
+    dataTablaFormasPago: Observable<FormaPago[]>;
+
     tablas: {
         columnas: {
             columnasProductos: any[];
             columnasTrazabilidad: any[];
-            columnasFactura: any[];
+            columnasCanje: any[];
+            columnasDetallesFp: any[];
         },
         datos: {
             productosPend: ProductoPendiente[];
-            modelosFactura: ModeloFactura[];
             subtotalesProductos: {
                 idProducto: number,
                 subtotal: number,
                 subtotalIva: number
-            }[]
-        },
-        funciones: {
-            onClickRemove: any;
-            onClickEdit: any;
-            onClickConfirmEdit: any;
+            }[];
+            productosCanje: ProductoPendiente[];
+            lotesTraza: Lote[];
+            detallesFormaPago: DetalleFormaPago[]
         }
     } = { 
         columnas: { 
             columnasProductos: [],
             columnasTrazabilidad: [],
-            columnasFactura: []
+            columnasCanje: [],
+            columnasDetallesFp: []
         }, 
         datos: { 
             productosPend: [],
-            modelosFactura: [],
-            subtotalesProductos: []
-        },
-        funciones: {
-            onClickRemove: (prodSelect: ProductoPendiente) => {
-                _.remove(this.tablas.datos.productosPend, (prod: ProductoPendiente) => {
-                    return prod.producto.idProductos === prodSelect.producto.idProductos;
-                });
-            },
-            onClickEdit: (tipoColumnas) => (prodSelect: ProductoPendiente) => { 
-                this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
-                    let newTabla = tabla;
-                    if (newTabla.enEdicion !== undefined) {
-                        newTabla.enEdicion = prodSelect.producto.idProductos
-                    }
-                    return newTabla;
-                });
-
-                // Hago focus en el select de imputacion
-                setTimeout(()=>{
-                    const selectImpu: any = document.getElementsByClassName('select-impu-'+prodSelect.producto.idProductos);
-                    if(selectImpu && selectImpu[0]) {
-                        selectImpu[0].focus();
-                    } else {
-                        const inputFocus: any = document.getElementsByClassName('input-edit-'+prodSelect.producto.idProductos);
-                        inputFocus && inputFocus[0] ? inputFocus[0].focus() : null
-                    }
-                });
-            },
-            onClickConfirmEdit: (tipoColumnas) => (prodSelect: ProductoPendiente) => { 
-                // Actualizo datos dle producto
-                this.actualizarDatosProductos();
-
-                // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
-                this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
-                    let newTabla = tabla;
-                    if (newTabla.enEdicion !== undefined && newTabla.enEdicion) {
-                        // Seteo en false asi sale de edicion
-                        newTabla.enEdicion = false;
-                    }
-                    return newTabla;
-                })
-
-                // Actualizo subtotales
-                this.actualizarSubtotales(prodSelect);
-           }
+            subtotalesProductos: [],
+            productosCanje: [],
+            lotesTraza: [],
+            detallesFormaPago: []
         }
     };
     
-
-    /////////////////////////////////////////////
-    //////////////// PopupLista /////////////////
-    /////////////////////////////////////////////
-
-    popupLista: any = {
-        onClickListProv: (prove: Padron) => {
-            this.cliente = new Padron({...prove});
-            this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
-        },
-        getOffsetOfInputCliente: () => this.utilsService.getOffset(document.getElementById('clienteSeleccionado'))
-    }
-
-    
-    /////////////////////////////////////////////
-    ////////////////// Otros ////////////////////
-    /////////////////////////////////////////////
-
-    dataTablaFormasPago: Observable<FormaPago[]>;
-
-    detallesFpsSeleccionadas: string = '';
 
     /**
      * Toda la carga de data se hace en el mismo orden en el que está declarado arriba
@@ -195,6 +137,13 @@ export class EmisionRemitos {
         this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
         this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
 
+        // this.productos = this.recursoService.getRecursoList(resourcesREST.buscaPendientes)();
+        this.productos = this.recursoService.getRecursoList(resourcesREST.buscaPendientes)({
+            'idSisTipoModelo': 1
+        });
+
+        this.sisCanjes = this.recursoService.getRecursoList(resourcesREST.sisCanjes)();
+
         ////////// Clientes  //////////
         this.recursoService.getRecursoList(resourcesREST.proveedores)().subscribe(clientes => {
             this.clientes.todos = clientes;
@@ -204,14 +153,87 @@ export class EmisionRemitos {
         ////////// Tablas //////////
         this.tablas.columnas.columnasProductos = emisionRemitosService.getColumnsProductos();
         this.tablas.columnas.columnasTrazabilidad = emisionRemitosService.getColumnsTrazabilidad();
-        this.tablas.columnas.columnasFactura = emisionRemitosService.getColumnsFactura();
+        this.tablas.columnas.columnasCanje = emisionRemitosService.getColumnsCanje();
+        this.tablas.columnas.columnasDetallesFp = emisionRemitosService.getColumnsDetallesFp();
 
         ////////// Otros //////////
         this.emisionRemitosService.getCotizacionDatos().subscribe(cotizDatos => this.cotizacionDatos.cotizacion = cotizDatos);
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////// Eventos Click /////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
 
-    ///////////////////////////////// Eventos OnClick /////////////////////////////////
+    onClickRemove = (prodSelect: ProductoPendiente) => {
+        _.remove(this.tablas.datos.productosPend, (prod: ProductoPendiente) => {
+            return prod.producto.idProductos === prodSelect.producto.idProductos;
+        });
+    }
+
+    onClickEdit = (tipoColumnas) => (itemSelect: any) => { 
+        // debugger;
+        // if (tipoColumnas === 'columnasProductos') {
+            this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
+                let newTabla = tabla;
+                if (newTabla.enEdicion !== undefined) {
+                    
+                    tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = itemSelect.producto.idProductos :
+                    tipoColumnas === 'columnasTrazabilidad' ? newTabla.enEdicion = itemSelect.nroLote :
+                    tipoColumnas === 'columnasDetallesFp' ? newTabla.enEdicion = itemSelect.idFormaPagoDet : null
+                }
+                return newTabla;
+            });
+    
+            // Hago focus en el select de imputacion
+            setTimeout(()=>{
+                const elementFocusClass = tipoColumnas === 'columnasProductos' ? 'select-impu-'+itemSelect.producto.idProductos : '';
+                const selectImpu: any = document.getElementsByClassName(elementFocusClass);
+                if(selectImpu && selectImpu[0]) {
+                    selectImpu[0].focus();
+                } else {
+                    // TODO: Ver bien esta cuestión
+                    const inputFocusClass = tipoColumnas === 'columnasProductos' ? 'input-edit-'+itemSelect.producto.idProductos : '';
+                    const inputFocus: any = document.getElementsByClassName(inputFocusClass);
+                    inputFocus && inputFocus[0] ? inputFocus[0].focus() : null
+                }
+            });
+        // } else if (tipoColumnas === 'columnasTrazabilidad') {
+        //     this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
+        //         let newTabla = tabla;
+        //         if (newTabla.enEdicion !== undefined) {
+        //             newTabla.enEdicion = itemSelect.nroLote
+        //         }
+        //         return newTabla;
+        //     });
+        // } else if (tipoColumnas === 'columnasDetallesFp') {
+        //     this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
+        //         let newTabla = tabla;
+        //         if (newTabla.enEdicion !== undefined) {
+        //             newTabla.enEdicion = itemSelect.idFormaPagoDet
+        //         }
+        //         return newTabla;
+        //     });
+        // }
+
+    }
+
+    onClickConfirmEdit = (tipoColumnas) => (itemSelect: any) => { 
+        // Actualizo datos dle producto
+        this.actualizarDatosProductos();
+
+        // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
+        this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
+            let newTabla = tabla;
+            if (newTabla.enEdicion !== undefined && newTabla.enEdicion) {
+                // Seteo en false asi sale de edicion
+                newTabla.enEdicion = false;
+            }
+            return newTabla;
+        })
+
+        // Actualizo subtotales
+        this.actualizarSubtotales(itemSelect);
+    }
 
     /**
      * Agrega el producto seleccionado a la lista de productosPendientes
@@ -225,7 +247,17 @@ export class EmisionRemitos {
         }
 
         // Despues de agregar el producto prosedo a ponerlo en edición
-        this.tablas.funciones.onClickEdit('columnasProductos')(prodSelec);
+        this.onClickEdit('columnasProductos')(prodSelec);
+
+        // Agrego los productos trazables a la tabla de trazabilidad
+        this.emisionRemitosService.buscaLotes(
+            this.tablas.datos.productosPend
+        )(
+            this.comprobante
+        ).subscribe(
+            lotes => this.tablas.datos.lotesTraza = lotes
+        )
+
 
     }
 
@@ -233,40 +265,33 @@ export class EmisionRemitos {
      * Valida y graba el comprobante
      */
     onClickConfirmar = () => null;
-    
 
-    ///////////////////////////////// Eventos (Distintos de onclick) /////////////////////////////////
-    
     /**
-     * Actualiza el total en cotizacion y los modelosFactura
+     * Busca los productos pendientes de acuerdo al comprobante relacionado
      */
-    actualizarDatosProductos = () => {
-        // Actualizo el Total Comprobante sumando todos los precios nuevamente (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
-        this.cotizacionDatos.total = Math.round(
-            _.sumBy(
-                this.tablas.datos.productosPend,
-                (prod) => Number(prod.precio) ? Number(prod.precio) * Number(prod.pendiente) : 0
-            )
-        );
+    onClickBuscarPendientes = () => 
+        this.emisionRemitosService.buscarPendientes(this.cliente)(this.comprobanteRelacionado).subscribe(prodsPend=>{
+            // Agrego los productos
+            this.tablas.datos.productosPend = _.uniqWith(
+                this.tablas.datos.productosPend.concat(prodsPend),
+                (a:ProductoPendiente,b:ProductoPendiente) => a.producto.codProducto === b.producto.codProducto
+            );
 
-        // Actualiza modelos. TODO: ¿Esto se usa acá en emisionRemito?
-        this.emisionRemitosService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
-            this.tablas.datos.modelosFactura = modelProds
+            // Actualizo datos de los productos
+            this.actualizarDatosProductos();
         });
 
-    }
-
     /**
-     * Evento change del input del proovedor
+     * Event on click en la lista del popup de cliente
      */
-    onChangeInputCliente = (codigo) => {
-        this.clientes.filtrados.next(
-            this.emisionRemitosService.filtrarClientes(this.clientes.todos, codigo)
-        );
-        // Reseteo el indice
-        this.clienteEnfocadoIndex = -1;
+    onClickPopupCliente = (prove: Padron) => {
+        this.cliente = new Padron({...prove});
+        this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
     }
     
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////// Eventos Blur ////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
     
     /**
      * El blur es cuando se hace un leave del input (caundo se apreta click afuera por ejemplo).
@@ -332,9 +357,6 @@ export class EmisionRemitos {
                 this.utilsService.showModal('Error')('La fecha se sale del intervalo permitido')()();
             }
         }
-
-        
-
     }
 
     /**
@@ -345,51 +367,6 @@ export class EmisionRemitos {
     onBlurNumeroAutocomp = (e) => (tipo: string) => (keyTipo: string) => 
         this[keyTipo][tipo] = this.emisionRemitosService.autocompNroComp(tipo)(this[keyTipo]);
     
-
-    /**
-     * Actualizo el deposito seleccionado que me viene de tablaIngreso
-     */
-    onSelectDeposito = (depSelect: Deposito) => {
-        this.depositoSelec = depSelect;
-    }
-
-    /**
-     * Evento de cuando se apreta felcha arriba o feclah abajo en input de busca cliente
-     */
-    keyPressInputTexto = (e: any) => (upOrDown) => {
-        e.preventDefault();
-        // Hace todo el laburo de la lista popup y retorna el nuevo indice seleccionado
-        this.popupListaService.keyPressInputForPopup(upOrDown)(this.clientes.filtrados)(this.clienteEnfocadoIndex)
-            .subscribe(newIndex => this.clienteEnfocadoIndex = newIndex)
-            .unsubscribe()
-    }
-
-    /**
-     * Evento on enter en el input de buscar cliente
-     */
-    onEnterInputProv = (e: any) => {
-        e.preventDefault();
-        this.clientes.filtrados.subscribe(provsLista => {
-            // Busco el producto
-            const provSelect = provsLista && provsLista.length ? provsLista[this.clienteEnfocadoIndex] : null;
-            // Lo selecciono
-            provSelect ? this.popupLista.onClickListProv(provSelect) : null;
-            // Reseteo el index
-            this.clienteEnfocadoIndex = -1;
-        })
-    }
-
-    /**
-     * Evento que se dispara cuando se selecciona una fecha
-     */
-    onModelChangeFechaComp(e, d) {
-        // Actualizo las formas de pago de la tabla (solo si está seteado el cliente)
-        this.cliente && this.cliente.cuit ?
-            this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante) :
-            null;
-    }
-
-
     onBlurPtoVenta = (e) => (tipo) => (keyTipo) => {
         // Consulto el service y traigo el intevalo de fecha de cteTipo
         this.emisionRemitosService.getBuscaCteFecha(
@@ -430,8 +407,67 @@ export class EmisionRemitos {
         this.onBlurNumeroAutocomp(e)(tipo)(keyTipo)
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////// Otras Eventos ///////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////
+
     /**
-     * Agrega o elimina una forma pago de las seleccionadas. También muestra los detalles 
+     * Actualizo el deposito seleccionado que me viene de tablaIngreso
+     */
+    onSelectDeposito = (depSelect: Deposito) => {
+        this.deposito = depSelect;
+    }
+
+    /**
+     * Evento de cuando se apreta felcha arriba o feclah abajo en input de busca cliente
+     */
+    keyPressInputTexto = (e: any) => (upOrDown) => {
+        e.preventDefault();
+        // Hace todo el laburo de la lista popup y retorna el nuevo indice seleccionado
+        this.popupListaService.keyPressInputForPopup(upOrDown)(this.clientes.filtrados)(this.clienteEnfocadoIndex)
+            .subscribe(newIndex => this.clienteEnfocadoIndex = newIndex)
+            .unsubscribe()
+    }
+
+    /**
+     * Evento on enter en el input de buscar cliente
+     */
+    onEnterInputProv = (e: any) => {
+        e.preventDefault();
+        this.clientes.filtrados.subscribe(provsLista => {
+            // Busco el producto
+            const provSelect = provsLista && provsLista.length ? provsLista[this.clienteEnfocadoIndex] : null;
+            // Lo selecciono
+            provSelect ? this.onClickPopupCliente(provSelect) : null;
+            // Reseteo el index
+            this.clienteEnfocadoIndex = -1;
+        })
+    }
+
+    /**
+     * Evento que se dispara cuando se selecciona una fecha
+     */
+    onModelChangeFechaComp(e, d) {
+        // Actualizo las formas de pago de la tabla (solo si está seteado el cliente)
+        this.cliente && this.cliente.cuit ?
+            this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante) :
+            null;
+    }   
+    
+    /**
+     * Evento change del input del proovedor
+     */
+    onChangeInputCliente = (codigo) => {
+        this.clientes.filtrados.next(
+            this.emisionRemitosService.filtrarClientes(this.clientes.todos, codigo)
+        );
+        // Reseteo el indice
+        this.clienteEnfocadoIndex = -1;
+    }
+
+    /**
+     * Agrega o elimina una forma pago de las seleccionadas. Tambien muestra detalle de la lista correspondiente
      */
     handleFormaPagoSelec = (fp: FormaPago) => (tipoOperacion: string) => {
         // Agrego o elimino
@@ -439,14 +475,23 @@ export class EmisionRemitos {
             this.formasPagoSeleccionadas.push(fp) :
             this.formasPagoSeleccionadas = this.formasPagoSeleccionadas.filter(fpSelec => fpSelec.idFormaPago !== fp.idFormaPago);
 
-        // Saco los detalles de todas las seleccionadas
-        this.detallesFpsSeleccionadas = this.formasPagoSeleccionadas
+        // Detalle de lista correspondiente
+        this.detalleListaFpsSeleccionadas = this.formasPagoSeleccionadas
             .map(fpSelec => fp.listaPrecio)
             .filter(
                 (lista, index, self) => index === self.findIndex(l => l.idListaPrecio === lista.idListaPrecio)
             )
             .map(lista => `Lista ${lista.idListaPrecio} \nDesde: ${lista.vigenciaDesde.getFechaFormateada()}, Hasta: ${lista.vigenciaHasta.getFechaFormateada()}, ${lista.idMoneda.descripcion}`)
             .join('\n');
+
+
+        // Ahora mappeo los detalles de las formas de pago seleccionadas para mostrarlos en la grilla de el medio
+        this.tablas.datos.detallesFormaPago = this.formasPagoSeleccionadas
+            .map(
+                fp => fp.detalles
+            )
+            .reduce((a, b) => [...a].concat([...b]), []); // Aca aplasto el array bidimensional a uno de una dimensión
+
         
     }
 
@@ -467,9 +512,21 @@ export class EmisionRemitos {
                 this.tablas.datos.subtotalesProductos.push(nuevoSubtotal);
             }
         });
-
-
+    }
+    
+    /**
+     * Actualiza el total en cotizacion y otros
+     */
+    actualizarDatosProductos = () => {
+        // Actualizo el Total Comprobante sumando todos los precios nuevamente 
+        // (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
+        this.cotizacionDatos.total = Math.round(
+            _.sumBy(
+                this.tablas.datos.productosPend,
+                (prod) => Number(prod.precio) ? Number(prod.precio) * Number(prod.pendiente) : 0
+            )
+        );
     }
 
-
+    
 }

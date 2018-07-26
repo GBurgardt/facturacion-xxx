@@ -1,15 +1,9 @@
 
 import { Component, Input } from '@angular/core';
 import { UtilsService } from 'app/services/utilsService';
-
-import { BehaviorSubject } from 'rxjs';
-
-import { resourcesREST } from 'constantes/resoursesREST';
-
+import { BehaviorSubject, Observable } from 'rxjs';
 import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
 import { ProductoPendiente } from '../../../../../../models/productoPendiente';
-import { RecursoService } from 'app/services/recursoService';
-
 
 @Component({
     selector: 'tabla-emision-rem',
@@ -28,7 +22,7 @@ export class TablaEmisionRem {
     // Reusabilidad tabla
     @Input() enableAddItem = false;
 
-    // Inputs
+    
     @Input() columns;
     @Input() data;
     @Input() edit;
@@ -43,6 +37,7 @@ export class TablaEmisionRem {
 
     /////////// BUSQUEDA ///////////
     textoBusqueda: string;
+    @Input() productosObservable: Observable<ProductoPendiente[]>;
     productosBusqueda: {
         todos: ProductoPendiente[];
         filtrados: BehaviorSubject<ProductoPendiente[]>;
@@ -53,19 +48,23 @@ export class TablaEmisionRem {
     productoEnfocadoIndex: number = -1;
 
     @Input() onClickProductoLista;
+    
+    // Lo uso para ver si la fecha fue seteada
+    @Input() comprobante;
 
     constructor(
         private utilsService: UtilsService,
-        private recursoService: RecursoService,
         private popupListaService: PopupListaService
-    ) {
-        // Cargo todos los productos pendientes posibles
-        recursoService.getRecursoList(resourcesREST.buscaPendientes)().subscribe(prodsPendPosibles => {
-            this.productosBusqueda.todos = prodsPendPosibles;
-            this.productosBusqueda.filtrados.next(prodsPendPosibles);
-        });
+    ) { }
 
-        
+    ngOnInit() {
+        // Cargo todos los productos pendientes posibles
+        if (this.productosObservable) {
+            this.productosObservable.subscribe(prodsPendPosibles => {
+                this.productosBusqueda.todos = prodsPendPosibles;
+                this.productosBusqueda.filtrados.next(prodsPendPosibles);
+            });
+        }
     }
 
     
@@ -114,21 +113,6 @@ export class TablaEmisionRem {
         return key;
     }
 
-    // Checkea si pongo el 'tick' para finalizar la edicion. Osea, si está en edición.
-    checkIfEditOn(item) {
-        if (this.columns) {
-            return this.columns.some(col=>{
-                // Lo hago específico porque esta talba es específica, casi que no la reutilizo
-                return col.enEdicion && col.enEdicion === item.producto.idProductos
-                // if (!col.subkey) {
-                //     return col.enEdicion && col.enEdicion === item[this.utilsService.getNameIdKeyOfResource(item)];
-                // } else if (col.subkey && !col.subsubkey) {
-                //     return col.enEdicion && col.enEdicion === (item[col.key])[this.utilsService.getNameIdKeyOfResource(item[col.key])];
-                // } 
-
-            });
-        };
-    }
 
     /**
      * Evento change del input de codProducto
@@ -220,5 +204,38 @@ export class TablaEmisionRem {
         return subtotalBuscado && subtotalBuscado[key] ? 
             subtotalBuscado[key] : 0
     }
+
+
+    // Checkea si NO esta en edicion
+    // checkIfEnEdicion = (col) => (item) => 
+    //     !col.enEdicion || col.enEdicion !== item.producto.idProductos
+
+    checkIfEnEdicion = (col) => (item) => 
+        col.enEdicion && col.enEdicion === item.producto.idProductos
+    
+        
+    // Checkea si pongo el 'tick' para finalizar la edicion.
+    checkIfShowTick(item) {
+        if (this.columns) {
+            return this.columns.some(col=>{
+                
+                return col.enEdicion && (
+                    (item.producto && item.producto.idProductos && col.enEdicion === item.producto.idProductos) ||
+                    (item.nroLote && col.enEdicion === item.nroLote) ||
+                    (item.idFormaPagoDet && col.enEdicion === item.idFormaPagoDet)
+                )
+
+            });
+        };
+    }
+
+    // Cheackea si esta en edicion
+    checkIfEditOn = (item) => (col) => 
+        col.enEdicion && (
+            (item.producto && item.producto.idProductos && col.enEdicion === item.producto.idProductos) ||
+            (item.nroLote && col.enEdicion === item.nroLote) ||
+            (item.idFormaPagoDet && col.enEdicion === item.idFormaPagoDet)
+        )
+    
 
 }

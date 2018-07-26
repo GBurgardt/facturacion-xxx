@@ -23,6 +23,8 @@ import { SisModulo } from "../app/models/sisModulo";
 import { SisEstado } from "app/models/sisEstado";
 import { CondIva } from "app/models/condIva";
 import { CteFechas } from "app/models/cteFechas";
+import { SisCanje } from "app/models/sisCanje";
+import { Lote } from "app/models/lote";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -143,5 +145,17 @@ export const resourcesREST = {
     calculoSubtotales: {
         nombre: 'calculoSubtotales',
         Clase: null
+    },
+    sisCanjes: {
+        nombre: 'sisCanjes',
+        Clase: SisCanje
+    },
+    buscaLote: {
+        nombre: 'buscaLote',
+        Clase: Lote
+    },
+    buscaLotes: {
+        nombre: 'buscaLotes',
+        Clase: Lote
     }
 };

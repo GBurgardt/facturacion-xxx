@@ -41,7 +41,8 @@ export class NgbDateFRParserFormatter extends NgbDateParserFormatter {
     }
 
     format(date: NgbDateStruct): string {
-        
+        // if (date)
+        //     debugger;
         let stringDate: string = ""; 
         if(date) {
             stringDate += isNumber(date.day) ? padNumber(date.day) + "/" : "";

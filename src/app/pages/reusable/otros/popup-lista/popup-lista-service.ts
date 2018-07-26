@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
+import { UtilsService } from "app/services/utilsService";
 
 @Injectable()
 export class PopupListaService {
 
-    constructor() { }
-
+    constructor(private utilsService: UtilsService) { }
     
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////// Servicios popup ////////////////////////////////////////////
@@ -67,5 +67,8 @@ export class PopupListaService {
         }
 
     });
+
+
+    getOffsetOfInputCliente = (idElemento) => this.utilsService.getOffset(document.getElementById(idElemento))
 
 }

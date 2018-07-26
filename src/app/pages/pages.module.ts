@@ -13,6 +13,7 @@ import { CustomCard } from 'app/pages/reusable/cards/customCard';
 import { PopupLista } from './reusable/otros/popup-lista/popup-lista.component';
 import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
 import { ComprobanteService } from '../services/comprobanteService';
+import { UtilsService } from '../services/utilsService';
 
 // import { DataTableModule } from "angular2-datatable";
 // import { DataTables } from './reusable/tablas/dataTables';
@@ -43,7 +44,8 @@ import { ComprobanteService } from '../services/comprobanteService';
     providers: [
         LocalStorageService,
         PopupListaService,
-        ComprobanteService
+        ComprobanteService,
+        UtilsService
     ],
     exports: [
         //CustomCard

@@ -22,7 +22,7 @@
                         <div *ngIf="remove" (click)="remove(item)" class="btn-accion btn-remover">
                             <i class="fa fa-trash" aria-hidden="true"></i>
                         </div>
-                        <div *ngIf="checkIfEditOn(item)" (click)="confirmEdit(item)" class="btn-accion btn-remover">
+                        <div *ngIf="checkIfShowTick(item)" (click)="confirmEdit(item)" class="btn-accion btn-remover">
                             <i class="fa fa-check" aria-hidden="true"></i>
                         </div>
                     </div>
@@ -32,13 +32,13 @@
                 <!-- ACA MUESTRA LA DATA -->
                 <td *ngFor="let col of columns">
                     <div *ngIf="col.subkey">
-                        <div *ngIf="!col.enEdicion || col.enEdicion !== item.producto.idProductos">
+                        <div *ngIf="!checkIfEditOn(item)(col)">
                             {{parseKey(
                                 !utilsService.checkIfJson(item[col.key][col.subkey]) ? item[col.key][col.subkey] : item[col.key][col.subkey].descripcion
                                 )}}
                         </div>
 
-                        <div *ngIf="col.enEdicion && col.enEdicion === item.producto.idProductos">
+                        <div *ngIf="checkIfEditOn(item)(col)">
                             <input *ngIf=" (col.nombre !== 'trazable' && col.key !== 'trazabilidad') ||
                                             (col.key === 'trazabilidad' && col.subkey !== 'fechaElab' && col.subkey !== 'fechaVto')"
                                     [(ngModel)]="item[col.key][col.subkey]" 
@@ -62,7 +62,7 @@
                     </div>
 
                     <div *ngIf="!col.subkey">
-                        <div *ngIf="!col.enEdicion || col.enEdicion !== item.producto.idProductos">
+                        <div *ngIf="!checkIfEditOn(item)(col)">
                             <!-- Caso comun -->
                             <div *ngIf="col.nombre !== 'imputacion' && col.key !== 'subtotal' && col.key !== 'subtotalIva'">
                                 {{parseKey(item[col.key])}}
@@ -79,11 +79,11 @@
                             
 
                         </div>
-                        <div *ngIf="col.enEdicion && col.enEdicion === item.producto.idProductos">
+                        <div *ngIf="checkIfEditOn(item)(col)">
 
                             
                             <input  *ngIf=" (col.nombre !== 'imputacion' && col.key !== 'trazabilidad' && col.nombre !== 'tipo')"
-                                [(ngModel)]="item[col.key]"  style="margin: 4px 6px; text-align: end;" type="text" 
+                                [(ngModel)]="item[col.key]" style="margin: 4px 6px; text-align: end;" type="text" 
                                 class="form-control edit-input" id="inputSubKey" placeholder="">
                             
                             <!-- CASOS PARTICULARES -->
@@ -118,7 +118,8 @@
                             (ngModelChange)="onChangeInputItemAdd($event)" 
                             (keydown.arrowdown)="keyPressInputTexto($event)('down')" 
                             (keydown.arrowup)="keyPressInputTexto($event)('up')" 
-                            (keydown.enter)="onEnterInputBuscProd($event)">
+                            (keydown.enter)="onEnterInputBuscProd($event)" 
+                            [disabled]="!comprobante.fechaComprobante || !comprobante.fechaComprobante.year">
 
                         <popup-lista *ngIf="textoBusqueda && textoBusqueda.length > 0"
                                         [items]="productosBusqueda.filtrados" 

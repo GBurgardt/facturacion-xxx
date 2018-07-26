@@ -136,17 +136,44 @@
         .canje-container {
             display: flex;
             flex-direction: column;
+            margin: 0% 0.4%;
             .canje-content {
                 display: flex;
                 justify-content: space-between;
                 .canje-item {
                     display: flex;
-
+                    width: 40%;
+                    
                     label {
                         white-space: nowrap;
+                        margin: 5px 4px 4px;
+                        padding-top: 4px;
+                    }
+
+                    input, select {
+                        margin: 4px 0;
+                        max-height: 25px;
+                        // min-width: 50px;
+                    }
+
+                }
+
+                .fecha-item {
+                    input {
+                        margin: 0;
+                        max-height: 30px;
                     }
                 }
             }
+
+            :first-child {
+                margin-bottom: 2%;
+            }
+        }
+
+        .cte-rel-container {
+            padding: 1% 2% 2%;
+
         }
     }
 }

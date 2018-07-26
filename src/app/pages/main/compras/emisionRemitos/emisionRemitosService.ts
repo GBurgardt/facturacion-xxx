@@ -16,6 +16,7 @@ import { Deposito } from '../../../../models/deposito';
 import { UtilsService } from '../../../../services/utilsService';
 import { FormaPago } from "app/models/formaPago";
 import { CteFechas } from "../../../../models/cteFechas";
+import { Lote } from "../../../../models/lote";
 
 @Injectable()
 export class EmisionRemitosService {
@@ -109,47 +110,54 @@ export class EmisionRemitosService {
     getColumnsTrazabilidad = () => [
         {
             nombre: 'articulo',
-            key: 'producto',
-            subkey: 'codProducto',
+            key: 'codProducto',
             ancho: '15%'
         },
         {
             nombre: 'descripcion',
-            key: 'producto',
-            subkey: 'descripcion',
-            ancho: '20%'
+            key: 'descripcionProd',
+            ancho: '15%'
         },
         {
-            nombre: 'GLN',
-            key: 'gln',
-            ancho: '5%'
+            nombre: 'proveedor',
+            key: 'proveedor',
+            ancho: '15%'
+        },
+        {
+            nombre: 'gtin',
+            key: 'gtin',
+            ancho: '15%'
         },
         {
             nombre: 'lote',
-            key: 'trazabilidad',
-            subkey: 'lote',
-            ancho: '5%',
-            enEdicion: null
+            key: 'nroLote',
+            ancho: '6.6%'
         },
         {
             nombre: 'serie',
-            key: 'trazabilidad',
-            subkey: 'serie',
-            ancho: '5%',
+            key: 'serie',
+            ancho: '6.6%'
+        },
+        {
+            nombre: 'vto',
+            key: 'fechaVto',
+            ancho: '6.6%'
+        },
+        {
+            nombre: 'stock',
+            key: 'stock',
+            ancho: '6.6%'
+        },
+        {
+            nombre: 'receta N',
+            key: 'recetaN',
+            ancho: '6.6%',
             enEdicion: null
         },
         {
-            nombre: 'fecha elab',
-            key: 'trazabilidad',
-            subkey: 'fechaElab',
-            ancho: '20%',
-            enEdicion: null
-        },
-        {
-            nombre: 'fecha vto',
-            key: 'trazabilidad',
-            subkey: 'fechaVto',
-            ancho: '20%',
+            nombre: 'cantidad',
+            key: 'cantidad',
+            ancho: '6.6%',
             enEdicion: null
         }
     ];
@@ -188,12 +196,7 @@ export class EmisionRemitosService {
     getAllProductos = () => this.recursoService.getRecursoList(resourcesREST.productos)();
     
 
-    /**
-     * Retorna un array de solo los prodPendientes que son trazables
-     */
-    getOnlyTrazables = (prodsPend: ProductoPendiente[]) => {
-        return prodsPend.filter(prod => prod.producto.trazable);
-    }
+    
 
     /**
      * Retorna los datos de cotizacion
@@ -374,7 +377,7 @@ export class EmisionRemitosService {
     /**
      * 
      */
-    getCalculoSubtotales = (prodPend: ProductoPendiente) => 
+    getCalculoSubtotales = (prodPend: ProductoPendiente) =>
         this.authService.getCalculoSubtotales(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(prodPend).map(respuesta => {
@@ -384,5 +387,64 @@ export class EmisionRemitosService {
                 subtotalIva: respuesta.datos.subTotalIva
             }
         });
+
+    getColumnsCanje = () => [
+        {
+            nombre: 'articulo',
+            key: 'cuentaContable',
+            ancho: '30%'
+        },
+        {
+            nombre: 'descripcion',
+            key: 'descripcion',
+            ancho: '30%'
+        },
+        {
+            nombre: 'cantidad',
+            key: 'importeTotal',
+            ancho: '30%'
+        }
+    ]
+
+    getColumnsDetallesFp = () => [
+        {
+            nombre: 'plazo',
+            key: 'cantDias',
+            ancho: '15%'
+        },
+        {
+            nombre: 'int',
+            key: 'porcentaje',
+            ancho: '15%'
+        },
+        {
+            nombre: 'detalle',
+            key: 'detalle',
+            ancho: '15%'
+        },
+        {
+            nombre: 'monto',
+            key: 'monto',
+            ancho: '15%',
+            enEdicion: null
+        },
+        {
+            nombre: 'observaciones',
+            key: 'observaciones',
+            ancho: '30%',
+            enEdicion: null
+        }
+    ]
+
+
+    /**
+     * Busca lotes dados varios productos
+     */
+    buscaLotes = (productos: ProductoPendiente[]) => (comprobante: Comprobante) => 
+        this.authService.getBuscaLotes(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(productos)(comprobante).map(resp => resp.arraydatos.map(lote => new Lote(lote)))
+    
+
 
 }

@@ -433,6 +433,66 @@ export class AuthService {
         );
     }
 
+    /**
+    * @description Obtiene los loties de un producto dado
+    * @argument token
+    */
+    getBuscaLote = (token: string) => (prodPend: ProductoPendiente) => (comprobante: Comprobante) => {
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            resourcesREST.buscaLote.nombre,
+            {
+                nroLote: " ",
+                serie: " ",
+                fechaVtoDesde: "01-01-2000",
+                fechaVtoHasta: comprobante.fechaComprobante,
+                vigencia: 1,
+                idProducto: prodPend.producto.idProductos,
+                idPadron: 0,
+                idCteTipo: 0,
+                facNumero: 0,
+                stock: 1
+            },
+            {}
+        );
+    }
+
+    /**
+    * @description Obtiene los lotes de varios productos
+    * @argument token
+    */
+   getBuscaLotes = (token: string) => (productos: ProductoPendiente[]) => (comprobante: Comprobante) => {
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            resourcesREST.buscaLotes.nombre,
+            {
+                nroLote: " ",
+                serie: " ",
+                fechaVtoDesde: "2000-01-01",
+                fechaVtoHasta: this.utilsService.formatearFecha(comprobante.fechaComprobante),
+                vigencia: 1,
+                productos: productos.map(prod => {
+                    return {
+                        idProducto: prod.producto.idProductos
+                    }
+                }),
+                idPadron: 0,
+                idCteTipo: 0,
+                facNumero: 0,
+                stock: 1
+            },
+            {}
+        );
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////////////
     ///////////////////              MÉTODOS REUTILIZABLES          ///////////////////
