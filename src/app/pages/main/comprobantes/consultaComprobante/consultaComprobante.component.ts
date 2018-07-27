@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { AuthService } from 'app/services/authService';
-
 import { RecursoService } from '../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
 import { SisModulo } from '../../../../models/sisModulo';
@@ -16,8 +14,6 @@ import { DateLikePicker } from '../../../../models/dateLikePicker';
 import { ComprobanteEncabezado } from '../../../../models/comprobanteEncabezado';
 import { ComprobanteDetalle } from '../../../../models/comprobanteDetalle';
 
-// import { mergeMap } from 'rxjs/operators';
-import 'rxjs/add/operator/mergeMap';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 @Component({
@@ -126,8 +122,10 @@ export class ConsultaComprobante {
         
         this.fechasFiltro[keyFecha] = this.utilsService.stringToDateLikePicker(this.fechasFiltro[keyFecha]);
 
-        // Hago focus en el prox input
-        (keyFecha==='desde') ? document.getElementById("fechaHasta").focus() : null;
+        // Hago focus en el prox input y luego al boton buscar
+        (keyFecha==='desde') ? document.getElementById("fechaHasta").focus() : 
+            (keyFecha==='hasta') ? document.getElementById("btnBuscar").focus() : null;
+        
 
     }
     

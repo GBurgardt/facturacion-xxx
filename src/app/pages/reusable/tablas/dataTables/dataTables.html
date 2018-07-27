@@ -1,12 +1,21 @@
-
 <div class="panel panel-default">
     <table class="table table-striped" [mfData]="data | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
         <thead>
+            <tr *ngIf="filtrosActivos">
+                <th *ngIf="enableEditDelete" style="width: 10%">
+                    
+                </th>
+                
+                <th class="table-column" *ngFor="let col of columns" [ngStyle]="getStyleFromCol(col)" [ngClass]="col.customClass ? col.customClass : 'text-align: left;'">
+                    <input type="text" class="form-control" placeholder="">
+                </th>
+            </tr>
+
             <!-- Hay que usar el 90% en las tablas (si enableEditDelete es true) -->
             <tr>
                 <th *ngIf="enableEditDelete" style="width: 10%"></th>
                 <!-- Recorro y muestro las columnas recibidas en el input -->
-                <th class="table-column" *ngFor="let col of columns" [ngStyle]="getStyleFromCol(col)">
+                <th class="table-column" *ngFor="let col of columns" [ngStyle]="getStyleFromCol(col)" [ngClass]="col.customClass ? col.customClass : 'text-align: left;'">
                     <mfDefaultSorter by="name">{{col.nombre}}</mfDefaultSorter>
                 </th>
             </tr>
@@ -26,7 +35,7 @@
                     </div>
                 </td>
 
-                <td *ngFor="let col of columns">
+                <td *ngFor="let col of columns" [ngClass]="col.customClass ? col.customClass : 'text-align: left;'">
                     <div *ngIf="!col.subkey">
                         <div *ngIf="!col.enEdicion || col.enEdicion !== item[utilsService.getNameIdKeyOfResource(item)]">
                             {{parseKey(item[col.key])}}
@@ -46,7 +55,13 @@
                     </div>
 
                     <div *ngIf="col.subsubkey">
-                        <input [(ngModel)]="(item[col.key])[col.subkey]" style="margin-top: 4px;" type="text" class="form-control edit-input" id="inputSubKey" placeholder="">
+                            <div *ngIf="!col.enEdicion || col.enEdicion !== (item[col.key])[utilsService.getNameIdKeyOfResource(item[col.key])]">
+                                {{(parseKey(item[col.key])[col.subkey])[col.subsubkey]}}
+                            </div>
+                            <div *ngIf="col.enEdicion && col.enEdicion === (item[col.key])[this.utilsService.getNameIdKeyOfResource(item[col.key])]">
+                                <input [(ngModel)]="((item[col.key])[col.subkey])[col.subsubkey]"  style="margin-top: 4px;" type="text" class="form-control edit-input" id="inputSubKey" placeholder="">
+                            </div>
+                        
                     </div>
                 </td>
             </tr>

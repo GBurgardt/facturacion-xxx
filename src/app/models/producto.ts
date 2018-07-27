@@ -16,9 +16,9 @@ export class Producto {
     traReceta: boolean;
     traInforma: boolean;
     gtin: string;
-    puntoPedido: number;
-    costoReposicion: number;
-    precioVentaProv: number;
+    puntoPedido: string;
+    costoReposicion: string;
+    precioVentaProv: string;
     observaciones: string;
     IVA: IVA;
     subRubro: SubRubro;
@@ -66,9 +66,9 @@ export class Producto {
             this.traReceta = producto.traReceta;
             this.traInforma = producto.traInforma;
             this.gtin = producto.gtin;
-            this.puntoPedido = producto.puntoPedido;
-            this.costoReposicion = producto.costoReposicion;
-            this.precioVentaProv = producto.precioVentaProv;
+            this.puntoPedido = Number(producto.puntoPedido).toFixed(2);
+            this.costoReposicion = Number(producto.costoReposicion).toFixed(2);
+            this.precioVentaProv = Number(producto.precioVentaProv).toFixed(2);
             this.observaciones = producto.observaciones;
             this.IVA = new IVA(producto.IVA);
             this.subRubro = new SubRubro(producto.subRubro);

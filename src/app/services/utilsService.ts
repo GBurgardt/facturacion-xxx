@@ -166,18 +166,29 @@ export class UtilsService {
 
     }
 
+    
     /**
-     * Se usa en las listas desplegables, te agarra el item elegido cuando se edita un recurso
+     * Se usa en las listas desplegables, te agarra el item definido en el recurso cuando se edita un recurso
      * @param item1
      * @param item2
      */
     dropdownCompareWith(item1: any, item2: any) {
-        // debugger;
-        // Obtengo la primer key (que siempre es la ID) de la clase del objeto recibido
         const idRecurso1 = item1 ? Object.keys(item1)[0] : null;
         const idRecurso2 = item2 ? Object.keys(item2)[0] : null;
         return idRecurso1 && idRecurso2 ? item1[idRecurso1] === item2[idRecurso2] : null;
     }
+    // dropdownCompareWith = (keyId?) => (item1: any, item2: any) => {
+    //     debugger;
+    //     if (item1 && item2) {
+    //         if (keyId) {
+    //             return item1[keyId] === item2[keyId]
+    //         } else {
+    //             const idRecurso1 = item1 ? Object.keys(item1)[0] : null;
+    //             const idRecurso2 = item2 ? Object.keys(item2)[0] : null;
+    //             return idRecurso1 && idRecurso2 ? item1[idRecurso1] === item2[idRecurso2] : null;
+    //         }
+    //     }
+    // }
 
     /**
      * 
@@ -244,8 +255,17 @@ export class UtilsService {
 
 
 
-    formatearFecha = (fecha) => 
-        fecha ? `${fecha.year}-${fecha.month < 10 ? '0'+fecha.month:fecha.month}-${fecha.day < 10 ? '0'+fecha.day : fecha.day}` : '0/0/0'
+    formatearFecha = (formato) => (fecha) => {
+        debugger;
+        if (fecha && fecha.year) {
+            if (formato === 'yyyy-mm-dd') {
+                return `${fecha.year}-${fecha.month < 10 ? '0'+fecha.month:fecha.month}-${fecha.day < 10 ? '0'+fecha.day : fecha.day}`;
+            } else {
+                return `${fecha.day < 10 ? '0'+fecha.day : fecha.day}-${fecha.month < 10 ? '0'+fecha.month:fecha.month}-${fecha.year}`;
+            }
+        }
+
+    }
 
 
     // Flatmap para arrays

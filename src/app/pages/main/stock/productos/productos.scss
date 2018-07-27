@@ -1,4 +1,13 @@
 .productos {
+
+    .filtros-container {
+        display: flex;
+
+        input {
+            margin:0 5px;
+        }
+    }
+
     .btn-container {
         display: flex;
         justify-content: flex-end;

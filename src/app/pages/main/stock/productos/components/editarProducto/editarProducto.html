@@ -83,7 +83,7 @@
                     <label for="IVA">IVA</label>
                     <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.IVA" class="form-control" id="IVA">
                         <option *ngFor="let iva of ivas | async" [ngValue]="iva">
-                            {{iva.porcIVA}}
+                            {{utilsService.parseDecimal(iva.porcIVA)}}
                         </option>
                     </select>
                 </div>
@@ -152,10 +152,21 @@
 
             <div class="offset-sm-2 col-sm-3">
                 <div class="form-group">
+                    <label for="modeloInputacion">Modelo inputacion</label>
+                    <select [compareWith]="compareWithModeloImpu" [(ngModel)]="recurso.modeloCab" class="form-control" id="modeloCab">
+                        <option *ngFor="let modCab of modelosCab | async" [ngValue]="modCab">
+                            {{modCab.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- <div class="offset-sm-2 col-sm-3">
+                <div class="form-group">
                     <label for="modeloImputacion">Modelo inputacion</label>
                     <input [(ngModel)]="recurso.modeloImputacion" type="text" class="form-control" id="modeloImputacion" placeholder="">
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <button [disabled]="utilsService.checkIfIncomplete(recurso)([

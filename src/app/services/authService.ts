@@ -233,11 +233,11 @@ export class AuthService {
                 letra: comprobante.letra,
                 numero: Number(comprobante.puntoVenta + comprobante.numero),
 
-                fechaEmision: this.utilsService.formatearFecha(comprobante.fechaComprobante),
-                fechaVencimiento: this.utilsService.formatearFecha(comprobante.fechaComprobante),
-                fechaConta: this.utilsService.formatearFecha(comprobante.fechaComprobante),
+                fechaEmision: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
+                fechaVencimiento: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
+                fechaConta: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
                 cai: ' ',
-                caiVto: this.utilsService.formatearFecha(comprobante.fechaComprobante),
+                caiVto: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
                 codBarra: ' ',
                 idPadron: provSelec.padronCodigo,
                 idFormaPago: 5,
@@ -300,8 +300,8 @@ export class AuthService {
                         return {
                             nroLote: prodTraza.trazabilidad.lote,
                             serie: prodTraza.trazabilidad.serie,
-                            fechaElab: this.utilsService.formatearFecha(prodTraza.trazabilidad.fechaElab),
-                            fechaVto: this.utilsService.formatearFecha(prodTraza.trazabilidad.fechaVto),
+                            fechaElab: this.utilsService.formatearFecha('yyyy-mm-dd')(prodTraza.trazabilidad.fechaElab),
+                            fechaVto: this.utilsService.formatearFecha('yyyy-mm-dd')(prodTraza.trazabilidad.fechaVto),
                             // fechaElab: prodTraza.trazabilidad.fechaElab.getFechaFormateada(),
                             // fechaVto: prodTraza.trazabilidad.fechaVto.getFechaFormateada(),
                             vigencia: true,
@@ -353,8 +353,8 @@ export class AuthService {
                 comprobanteModulo : sisModuloSelec && sisModuloSelec.idSisModulos ? sisModuloSelec.idSisModulos : 0, 
                 comprobanteTipo : tipoComprobanteSelec && tipoComprobanteSelec.idCteTipo ? tipoComprobanteSelec.idCteTipo : 0,
                 comprobanteNumero : comprobante && comprobante.puntoVenta && comprobante.numero ? `${comprobante.puntoVenta}${comprobante.numero}` : 0,
-                fechaDesde : this.utilsService.formatearFecha(fechasFiltro.desde),
-                fechaHasta : this.utilsService.formatearFecha(fechasFiltro.hasta),
+                fechaDesde : this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.desde),
+                fechaHasta : this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.hasta),
                 // fechaDesde : fechasFiltro.desde.getFechaFormateada(),
                 // fechaHasta : fechasFiltro.hasta.getFechaFormateada(),
                 idProducto : productoSelec && productoSelec.idProductos ? productoSelec.idProductos : 0,
@@ -382,7 +382,7 @@ export class AuthService {
             {
                 activa: true,
                 todas: true,
-                fecha: this.utilsService.formatearFecha(fecha),
+                fecha: this.utilsService.formatearFecha('yyyy-mm-dd')(fecha),
                 idPadronDesde: cliente.padronCodigo,
                 idPadronHasta: cliente.padronCodigo
             },
@@ -477,7 +477,7 @@ export class AuthService {
                 nroLote: " ",
                 serie: " ",
                 fechaVtoDesde: "2000-01-01",
-                fechaVtoHasta: this.utilsService.formatearFecha(comprobante.fechaComprobante),
+                fechaVtoHasta: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
                 vigencia: 1,
                 productos: productos.map(prod => {
                     return {

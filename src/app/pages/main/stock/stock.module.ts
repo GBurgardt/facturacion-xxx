@@ -9,6 +9,7 @@ import { EditarProducto } from "app/pages/main/stock/productos/components/editar
 import { RecursoService } from "../../../services/recursoService";
 import { AuthService } from "../../../services/authService";
 import { UtilsService } from "../../../services/utilsService";
+import { TablaProductos } from "./productos/components/tablaProductos";
 
 @NgModule({
     imports: [
@@ -19,12 +20,16 @@ import { UtilsService } from "../../../services/utilsService";
         Stock,
         Productos,
         NuevoProducto,
-        EditarProducto
+        EditarProducto,
+        TablaProductos
     ],
     providers: [
         RecursoService,
         AuthService,
         UtilsService
+    ],
+    exports: [
+        TablaProductos
     ]
 })
 export class StockModule {

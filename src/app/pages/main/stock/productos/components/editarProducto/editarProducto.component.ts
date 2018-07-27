@@ -13,6 +13,7 @@ import { SubRubro } from '../../../../../../models/subRubro';
 import { Unidad } from '../../../../../../models/unidad';
 import { resourcesREST } from 'constantes/resoursesREST';
 import { Rubro } from 'app/models/rubro';
+import { ModeloCab } from '../../../../../../models/modeloCab';
 
 @Component({
     selector: 'editar-producto',
@@ -28,6 +29,7 @@ export class EditarProducto {
     subRubros: Observable<SubRubro[]>;
     unidadesCompra: Observable<Unidad[]>;
     unidadesVenta: Observable<Unidad[]>;
+    modelosCab: Observable<ModeloCab[]>;
 
     constructor(
         private recursoService: RecursoService,
@@ -41,6 +43,7 @@ export class EditarProducto {
         this.unidadesCompra = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.unidadesVenta = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.ivas = this.recursoService.getRecursoList(resourcesREST.sisIVA)();
+        this.modelosCab = this.recursoService.getRecursoList(resourcesREST.modeloCab)();
 
         // Busco el recurso por id
         this.route.params.subscribe(params =>
@@ -50,12 +53,12 @@ export class EditarProducto {
                 )
                 .subscribe(recurso =>{
                     this.recurso = recurso;
-
-
                 })
         );
 
     }
+
+
 
     onClickEditar = async () => {
         try {
@@ -76,5 +79,8 @@ export class EditarProducto {
             this.utilsService.decodeErrorResponse(ex);
         }
     }
+
+    compareWithModeloImpu = (mod1: ModeloCab, mod2: ModeloCab) => mod1 && mod2 ? mod1.idModeloCab === mod2.idModeloCab : mod1 === mod2
+    
 
 }

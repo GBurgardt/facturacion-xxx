@@ -25,6 +25,7 @@ import { CondIva } from "app/models/condIva";
 import { CteFechas } from "app/models/cteFechas";
 import { SisCanje } from "app/models/sisCanje";
 import { Lote } from "app/models/lote";
+import { ModeloCab } from "app/models/modeloCab";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -157,5 +158,10 @@ export const resourcesREST = {
     buscaLotes: {
         nombre: 'buscaLotes',
         Clase: Lote
+    },
+    modeloCab: {
+        nombre: 'modeloCab',
+        Clase: ModeloCab
     }
+
 };
