@@ -387,39 +387,11 @@ export class EmisionRemitosService {
         ) : '';
        
 
-    seleccionarCliente = (todos: Padron[]) => (seleccionado: Padron) => {
-        // Primero busco si el ingresado existe
-        const provBuscado = new Padron({...todos.find(
+    seleccionarCliente = (todos: Padron[]) => (seleccionado: Padron) => 
+        new Padron({...todos.find(
             prove => prove.padronCodigo === Number(seleccionado.padronCodigo)
         )});
-        
-        // Si existe, lo seteo como seleccionado
-        if (provBuscado) {
-            return provBuscado;
-        } else {
-            // Caso contrario..
-            // Busco el padronCodigo del cliente que estaba seleccionado
-            const clienteAnterior: Padron = new Padron({...todos.find(
-                prove =>    prove.padronApelli === seleccionado.padronApelli &&
-                            prove.padronNombre === seleccionado.padronNombre &&
-                            prove.cuit === seleccionado.cuit &&
-                            prove.codigoPostal === seleccionado.codigoPostal
-            )});
-
-            // Si habia uno seleccionado, lo restauro
-            if (clienteAnterior) {
-                // Vuelvo el padronCodigo a su valor correcto
-                return clienteAnterior;
-            } else {
-                // Caso contrario tiro mensajito
-                throw({
-                    nombre: 'Codigo incorrecto',
-                    descripcion: 'El codigo no existe'
-                })
-                
-            }
-        }
-    }
+    
 
     /**
      * Get formas pago apra la tabla de forma pago emisiuon remito

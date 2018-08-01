@@ -148,7 +148,7 @@ export class ComprobanteCompra {
             this.proveedorSeleccionado = new Padron({...prove});
             this.comprobanteCompraService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
         },
-        getOffsetOfInputProveedor: () => this.utilsService.getOffset(document.getElementById('proveedorSeleccionado'))
+        getOffsetOfInputProveedor: () => this.utilsService.getOffset(document.getElementById('inputProveedor'))
     }
 
     /**
@@ -227,9 +227,12 @@ export class ComprobanteCompra {
         (this.tablas.datos.modelosFactura)
         (this.cotizacionDatos)
         (this.depositoSelec)
-        .subscribe(
-            (respuesta: any) => this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()()
-        )
+        .subscribe((respuesta: any) => {
+            this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
+
+            // Focus en input proveedor
+            document.getElementById('inputProveedor') ? document.getElementById('inputProveedor').focus() : null
+        })
     
 
     ///////////////////////////////// Eventos (Distintos de onclick) /////////////////////////////////

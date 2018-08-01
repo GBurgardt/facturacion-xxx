@@ -81,6 +81,8 @@ export class EmisionRemitos {
     // Intervalo de fecha del cte seleccionado (y el pto venta seteado)
     cteFechasIntervalo: CteFechas = new CteFechas();
 
+    disabledClienteCustom: boolean = false;
+
     /////////////////////////////////////////////
     ////////////////// Tablas ///////////////////
     /////////////////////////////////////////////
@@ -240,27 +242,19 @@ export class EmisionRemitos {
     }
 
 
-    /**
-     * Actualiza la grilla de Trazable Lotes
-     */
-    actualizarTrazableLotes = () => {
-        // Agrego los lotes de los productos trazables a la grilla de trazabilidad lotes
-        if (this.tablas.datos.productosPend.length > 0) {
-            this.emisionRemitosService.buscaLotes(
-                this.tablas.datos.productosPend
-            )(
-                this.comprobante
-            ).subscribe(
-                lotes => this.tablas.datos.lotesTraza = lotes
-            )
-        }
-
-    }
 
     /**
      * Valida y graba el comprobante
      */
-    onClickConfirmar = () => null;
+    onClickConfirmar = () => {
+        const keys = Object.keys(this);
+
+        keys.forEach(a => 
+            typeof a !== 'function' ?
+                console.log(this[a]) :
+                null
+        )
+    };
 
     /**
      * Busca los productos pendientes de acuerdo al comprobante relacionado
@@ -283,6 +277,9 @@ export class EmisionRemitos {
     onClickPopupCliente = (prove: Padron) => {
         this.cliente = new Padron({...prove});
         this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
+
+        // Deshabilito la posibilidad de hacer un cliente custom
+        this.disabledClienteCustom = true;
     }
     
     ///////////////////////////////////////////////////////////////////////////////////
@@ -301,13 +298,38 @@ export class EmisionRemitos {
 
         // Actualizo cliente seleccionado
         try {
-            this.cliente = this.emisionRemitosService.seleccionarCliente(this.clientes.todos)(this.cliente);
-            this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
+            // Busco si existe
+            const clienteExistente = this.emisionRemitosService.seleccionarCliente(this.clientes.todos)(this.cliente);
 
-            // Si están seteados los datos necesarios aprovecho a actualizar la data de la tabla de forma de pago
-            this.comprobante && this.comprobante.fechaComprobante && this.comprobante.fechaComprobante.day ?
-                this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante) :
-                null;
+            if (clienteExistente && clienteExistente.padronCodigo) {
+                this.cliente = clienteExistente;
+    
+                this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
+    
+                // Si están seteados los datos necesarios aprovecho a actualizar la data de la tabla de forma de pago
+                this.comprobante && this.comprobante.fechaComprobante && this.comprobante.fechaComprobante.day ?
+                    this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante) :
+                    null;
+
+                // Deshabilito los input del customcliente
+                this.disabledClienteCustom = true;
+
+                // Hago foco en dropdown tipo
+                document.getElementById('tipoOperacionDropdown').focus();
+
+            } else {
+                // Caso contrario creo un nuevo cliente con el cod ingresado y habilito el custom client
+                const nuevoCliente = new Padron();
+                nuevoCliente.padronCodigo = this.cliente.padronCodigo;
+                this.cliente = nuevoCliente;
+                this.disabledClienteCustom = false;
+                // Y hago focus en #nombreCliente [El setTimeOut es necesario ya que el input previamente está deshabilitado, por lo que el navegador hace focus en el próx elemento habilitado (esto es por defecto). Por lo cual es necesario esperar una milésima de segundo en que el navegador haga ese foco, para luego hacer ESTE foco desde acá (ya con el input habilitado)]
+                setTimeout(() => {
+                    document.getElementById('nombreCliente').focus();
+                })
+
+
+            }
         }
         catch(err) {
             // Muestro error
@@ -526,6 +548,24 @@ export class EmisionRemitos {
                 (prod) => Number(prod.precio) ? Number(prod.precio) * Number(prod.pendiente) : 0
             )
         );
+    }
+
+
+    /**
+     * Actualiza la grilla de Trazable Lotes
+     */
+    actualizarTrazableLotes = () => {
+        // Agrego los lotes de los productos trazables a la grilla de trazabilidad lotes
+        if (this.tablas.datos.productosPend.length > 0) {
+            this.emisionRemitosService.buscaLotes(
+                this.tablas.datos.productosPend
+            )(
+                this.comprobante
+            ).subscribe(
+                lotes => this.tablas.datos.lotesTraza = lotes
+            )
+        }
+
     }
 
     

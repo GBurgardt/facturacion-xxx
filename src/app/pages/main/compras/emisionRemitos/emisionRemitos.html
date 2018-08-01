@@ -26,19 +26,19 @@
 
         <div class="col-sm-3">
             <div class="form-group">
-                <input [(ngModel)]="cliente.padronApelli" type="text" class="form-control" id="nombreCliente" placeholder="">
+                <input [disabled]="disabledClienteCustom" [(ngModel)]="cliente.padronApelli" type="text" class="form-control" id="nombreCliente" placeholder="">
             </div>
         </div>
         <div class="col-sm-3">
             <div class="form-group inline-group">
                 <label for="cuit">CUIT</label>
-                <input [(ngModel)]="cliente.cuit" type="text" class="form-control" id="cuit" placeholder="">
+                <input [disabled]="disabledClienteCustom" [(ngModel)]="cliente.cuit" type="text" class="form-control" id="cuit" placeholder="">
             </div>
         </div>
 
         <div class="col-sm-3 form-group inline-group tipo-compra-dropdown">
             <label for="tipoCompra">IVA:</label>
-            <select class="form-control without-padding" [ngStyle]="{padding: '0px 8px 0px 8px'}" id="tipoCompra">
+            <select [disabled]="disabledClienteCustom" class="form-control without-padding" [ngStyle]="{padding: '0px 8px 0px 8px'}" id="tipoCompra">
                 <option *ngFor="let sIva of sisSitIvas | async" [ngValue]="sIva">
                     {{sIva.descCorta}}
                 </option>
@@ -52,7 +52,7 @@
                 <div class="col-sm-5">
                     <div class="form-group inline-group">
                         <label for="cteTipo">Tipo:</label>
-                        <select [(ngModel)]="tipoOperacion" class="form-control without-padding" [ngStyle]="{padding: '0px 8px 0px 8px'}" id="tipoCompra">
+                        <select [(ngModel)]="tipoOperacion" class="form-control without-padding" [ngStyle]="{padding: '0px 8px 0px 8px'}" id="tipoOperacionDropdown">
                             <option *ngFor="let tipoOp of tiposOperacion | async" [ngValue]="tipoOp">
                                 {{tipoOp.descripcion}}
                             </option>
@@ -77,8 +77,23 @@
                 <div class="col-sm-8">
                     <div class="form-group inline-group">
                         <label for="cteNro">Nro:</label>
-                        <input maxlength="4" (blur)="onBlurPtoVenta($event)('puntoVenta')('comprobante')" [(ngModel)]="comprobante.puntoVenta" type="text" class="form-control pre-numero-input" id="puntoVenta" placeholder="">
-                        <input maxlength="8" (blur)="onBlurNumeroAutocomp($event)('numero')('comprobante')" [(ngModel)]="comprobante.numero" type="text" class="form-control" id="numero" placeholder="">
+                        <select [(ngModel)]="comprobante.tipo" class="form-control without-padding" [ngStyle]="{padding: '1px 0px 0px'}" id="cteTipo">
+                            <option *ngFor="let tipoComp of tiposComprobantes | async" [ngValue]="tipoComp">
+                                {{tipoComp.descCorta}}
+                            </option>
+                        </select>
+                        <select [(ngModel)]="comprobante.tipo" class="form-control without-padding" [ngStyle]="{padding: '1px 35px 0px', 'margin-left': '9px'}" id="cteTipo">
+
+                            <option *ngFor="let tipoComp of tiposComprobantes | async" [ngValue]="tipoComp">
+                                {{tipoComp.descCorta}}
+                            </option>
+                        </select>
+
+
+      <!-- padding: 1px 44px 0px;
+      margin-left: 9px -->
+                        <!-- <input maxlength="4" (blur)="onBlurPtoVenta($event)('puntoVenta')('comprobante')" [(ngModel)]="comprobante.puntoVenta" type="text" class="form-control pre-numero-input" id="puntoVenta" placeholder="">
+                        <input maxlength="8" (blur)="onBlurNumeroAutocomp($event)('numero')('comprobante')" [(ngModel)]="comprobante.numero" type="text" class="form-control" id="numero" placeholder=""> -->
                     </div>
                 </div>
             </div>
