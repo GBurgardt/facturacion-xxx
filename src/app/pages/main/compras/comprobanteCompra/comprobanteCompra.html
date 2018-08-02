@@ -52,7 +52,7 @@
     </div>
 
     <div class="row custom-card-container">
-        <custom-card class="col-sm-7 card-flex-column-reverse" title="Comprobante">
+        <custom-card class="col-sm-7 card-flex-column" title="Comprobante">
             <div class="row">
                 <div class="col-sm-4 without-padding">
                     <div class="col-sm-7 inline-flex">
@@ -130,45 +130,62 @@
             </div>
         </custom-card>
 
-        <custom-card class="col-sm-5 comp-rel-card card-flex-column-reverse" title="Comprobante Relacionado">
-            <div class="row">
-                <div class="col-sm-5">
-                    <div class="form-group inline-group">
-                        <label for="cteRelTipo">Cte:</label>
+        <div class="col-sm-5 comp-rel-card-container">
 
-                        <select id="cteRelSelect" [(ngModel)]="comprobanteRelacionado.tipo" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteRelTipo">
-                            <option *ngFor="let tipoComp of tiposComprobantes | async" [ngValue]="tipoComp">
-                                {{tipoComp.descCorta}}
-                            </option>
-                        </select>
+            <custom-card class="col-sm-12 comp-rel-card card-flex-column without-padding" title="Comprobante Relacionado">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <div class="form-group inline-group">
+                            <label for="cteRelTipo">Cte:</label>
+    
+                            <select id="cteRelSelect" [(ngModel)]="comprobanteRelacionado.tipo" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteRelTipo">
+                                <option *ngFor="let tipoComp of tiposComprobantes | async" [ngValue]="tipoComp">
+                                    {{tipoComp.descCorta}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="form-group inline-group">
+                            <label for="cteNro">Nro:</label>
+                            <input [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null" (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('comprobanteRelacionado')" [(ngModel)]="comprobanteRelacionado.puntoVenta" type="text" class="form-control pre-numero-input" id="puntoVenta" placeholder="">
+                            <input [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null" (blur)="onBlurNumeroAutocomp($event)('numero')('comprobanteRelacionado')" [(ngModel)]="comprobanteRelacionado.numero" type="text" class="form-control" id="numero" placeholder="">
+                        </div>
                     </div>
                 </div>
-                <div class="col-sm-7">
-                    <div class="form-group inline-group">
-                        <label for="cteNro">Nro:</label>
-                        <input [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null" (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('comprobanteRelacionado')" [(ngModel)]="comprobanteRelacionado.puntoVenta" type="text" class="form-control pre-numero-input" id="puntoVenta" placeholder="">
-                        <input [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null" (blur)="onBlurNumeroAutocomp($event)('numero')('comprobanteRelacionado')" [(ngModel)]="comprobanteRelacionado.numero" type="text" class="form-control" id="numero" placeholder="">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <div class="checkbox-todoPendiente">
+                            <ba-checkbox    [(ngModel)]="comprobanteRelacionado.todosLosPendientes" 
+                                            [label]="'Todos los pendientes'" 
+                                            [ngModelOptions]="{standalone: true}">
+                            </ba-checkbox>
+                        </div>
                     </div>
+    
+                    <div class="col-sm-3 btn-container">
+                        <!-- <button [disabled]="utilsService.checkIfIncomplete(comprobanteRelacionado)([])()" -->
+                        <button (click)="onClickBuscarPendientes()" type="submit" class="btn btn-primary">Buscar</button>
+                    </div>
+                </div>
+    
+            </custom-card>
+
+            <div class="col-sm-12 deposito without-padding">
+                <div class="form-group inline-group padding-content">
+                    <label class="add-item-label" for="depositoInput">Deposito: </label>
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="depositoSelec" class="form-control without-padding">
+                        <option *ngFor="let dep of depositos | async" [ngValue]="dep">
+                            {{dep.descripcion}}
+                        </option>
+                    </select>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-9">
-                    <div class="checkbox-todoPendiente">
-                        <ba-checkbox    [(ngModel)]="comprobanteRelacionado.todosLosPendientes" 
-                                        [label]="'Todos los pendientes'" 
-                                        [ngModelOptions]="{standalone: true}">
-                        </ba-checkbox>
-                    </div>
-                </div>
 
-                <div class="col-sm-3 btn-container">
-                    <!-- <button [disabled]="utilsService.checkIfIncomplete(comprobanteRelacionado)([])()" -->
-                    <button (click)="onClickBuscarPendientes()" type="submit" class="btn btn-primary">Buscar</button>
-                </div>
-            </div>
+        </div>
 
             
-        </custom-card>
+        
 
         
     </div>
@@ -278,14 +295,14 @@
     </div>
 
     <div class="row custom-card-container">
-        <custom-card class="col-sm-5 card-observaciones card-flex-column-reverse" title="Observaciones">
+        <custom-card class="col-sm-5 card-observaciones card-flex-column" title="Observaciones">
             <textarea [(ngModel)]="comprobante.observaciones" class="form-control text-area-observaciones" id="observaciones"></textarea>
         </custom-card>
 
-        <div class="col-sm-5 card-total card-flex-column-reverse">
+        <div class="col-sm-5 card-total card-flex-column">
             
             <custom-card class=" " title="Totales">
-            <!-- <custom-card class="col-sm-5 card-total card-flex-column-reverse" title="Totales"> -->
+            <!-- <custom-card class="col-sm-5 card-total card-flex-column" title="Totales"> -->
                 <div class="card-total-content">
                     <div class="row">
                         <div class="col-sm-6">
@@ -311,19 +328,10 @@
                     </div>
                 </div>
             </custom-card>
-            <div class="deposito">
-                <div class="form-group inline-group">
-                    <label class="add-item-label" for="depositoInput">Deposito: </label>
-                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="depositoSelec" class="form-control without-padding">
-                        <option *ngFor="let dep of depositos | async" [ngValue]="dep">
-                            {{dep.descripcion}}
-                        </option>
-                    </select>
-                </div>
-            </div>
+            
         </div>
 
-        <custom-card class="col-sm-2 card-flex-column-reverse" title="">
+        <custom-card class="col-sm-2 card-flex-column" title="">
             <div class="col-sm-12 btn-container">
                 <button [disabled]="!comprobanteCompraService.checkIfDatosValidosComprobante(comprobante)
                     (proveedorSeleccionado)(tablas.datos.productosPend)(tablas.datos.modelosFactura)(depositoSelec)"

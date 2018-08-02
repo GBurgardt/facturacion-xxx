@@ -147,7 +147,7 @@ export class ComprobanteCompraService {
             ancho: '30%'
         },
         {
-            nombre: 'descripcion',
+            nombre: 'descripción',
             key: 'descripcion',
             ancho: '30%'
         },

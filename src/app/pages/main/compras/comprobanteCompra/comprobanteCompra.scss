@@ -75,16 +75,29 @@
                 padding: 1.7%;
             }
 
-            .deposito {
-                display: flex;
-                justify-content: flex-end;
-                div {
-                    margin-bottom: 5px;
-                    width: 50%;
-                }
+        }
+        
+        .deposito {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 8px;
+            div {
+                margin-bottom: 5px;
+                width: 50%;
+            }
+
+            .padding-content {
+                margin-bottom: 0 !important;
             }
         }
 
+        .card-comprobantes {
+
+            height: 138px;
+            :host /deep/.custom-card {
+                height: 100% !important;
+            }
+        }
         
     }
 
@@ -105,14 +118,20 @@
         font-weight: bold;
     }
 
-    .card-flex-column-reverse {
+    .card-flex-column {
         display: flex;
-        flex-direction: column-reverse;
+        // flex-direction: column-reverse;
+        flex-direction: column;
     }
 
     .pre-numero-input {
         width: 30%;
         margin-right: 3px;
+    }
+
+    .comp-relacionado-container {
+        display: flex;
+        flex-direction: column;
     }
 }
 
