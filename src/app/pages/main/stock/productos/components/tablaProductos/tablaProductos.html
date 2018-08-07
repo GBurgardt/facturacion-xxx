@@ -1,6 +1,7 @@
 <div class="panel panel-default tabla-productos">
-    <table class="table table-striped" [mfData]="data | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage"
-        [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+    <!-- <table class="table table-striped" [mfData]="data | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+        [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder"> -->
+    <table class="table table-striped" [mfData]="data" #mf="mfDataTable" mfRowsOnPage="10">
         <thead>
 
             <tr>
@@ -130,8 +131,6 @@
                         </popup-lista>
                     </div>
 
-                    <!-- <input *ngIf="col.nombre !== 'articulo'" type="text" 
-                        class="form-control edit-input"> -->
                 </td>
             </tr>
             <!-- FIN ROW PARA AGREGAR UN PRODUCTO -->
@@ -140,7 +139,7 @@
 
         <tfoot>
             <tr>
-                <td colspan="12" style="border-top: none">
+                <td colspan="12">
                     <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
                 </td>
             </tr>

@@ -52,7 +52,8 @@ export class ComprobanteCompraService {
             key: 'imputacion',
             ancho: '15%',
             enEdicion: null,
-            customClass: 'text-left'
+            customClass: 'text-left',
+            editarFocus: true
         },
         {
             nombre: 'precio',
@@ -115,7 +116,8 @@ export class ComprobanteCompraService {
             key: 'trazabilidad',
             subkey: 'lote',
             ancho: '5%',
-            enEdicion: null
+            enEdicion: null,
+            editarFocus: true
         },
         {
             nombre: 'serie',
@@ -154,7 +156,12 @@ export class ComprobanteCompraService {
         {
             nombre: 'importe',
             key: 'importeTotal',
-            ancho: '30%'
+            ancho: '30%',
+            decimal: true,
+            enEdicion: null,
+            customClass: 'text-right',
+            editarFocus: true,
+            elementoFinalBlur: true
         }
     ]
 

@@ -222,6 +222,14 @@ a {
   text-align: right;
 }
 
+.text-right-select {
+  text-align-last: right;
+
+  option {
+    direction: rtl;
+  }
+}
+
 .text-left {
   text-align: left;
 }

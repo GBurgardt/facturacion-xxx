@@ -65,6 +65,9 @@ export class EmisionRemitos {
     clientes: { todos: Padron[]; filtrados: BehaviorSubject<Padron[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
     letras: string[] = [];
     
+    puntosVenta: string[] = [];
+    nrosCteTipo: string[] = [];
+
     /////////////////////////////////////////////
     ////////////////// Otros ////////////////////
     /////////////////////////////////////////////
@@ -136,7 +139,14 @@ export class EmisionRemitos {
 
         ////////// Listas desplegables //////////
         this.sisSitIvas = this.recursoService.getRecursoList(resourcesREST.sisSitIva)();
-        this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.buscaCteTipoNro)([2]);
+
+        this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
+            'sisComprobante': 6
+        });
+
+        this.puntosVenta = [];
+        this.nrosCteTipo = [];
+
         this.tiposOperacion = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)([2]);
         this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
         this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();

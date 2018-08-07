@@ -1,5 +1,5 @@
 <div class="editar-producto">
-    <ba-card cardTitle="Editar producto" baCardClass="with-scroll">
+    <ba-card cardTitle="Modificar producto" baCardClass="with-scroll">
         <div class="row">
             <div class="col-sm-2">
                 <div class="form-group">
@@ -81,7 +81,7 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="IVA">IVA</label>
-                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.IVA" class="form-control" id="IVA">
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.IVA" class="form-control text-right-select" id="IVA">
                         <option *ngFor="let iva of ivas | async" [ngValue]="iva">
                             {{utilsService.parseDecimal(iva.porcIVA)}}
                         </option>
@@ -95,19 +95,19 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="precioVentaProv">Precio Venta Prov</label>
-                    <input [(ngModel)]="recurso.precioVentaProv" type="text" class="form-control" id="precioVentaProv" placeholder="">
+                    <input [(ngModel)]="recurso.precioVentaProv" type="text" class="form-control text-right" id="precioVentaProv" placeholder="">
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="costoReposicion">Costo Reposicion</label>
-                    <input [(ngModel)]="recurso.costoReposicion" type="text" class="form-control" id="costoReposicion" placeholder="">
+                    <input [(ngModel)]="recurso.costoReposicion" type="text" class="form-control text-right" id="costoReposicion" placeholder="">
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="puntoPedido">Punto Pedido</label>
-                    <input [(ngModel)]="recurso.puntoPedido" type="text" class="form-control" id="puntoPedido" placeholder="">
+                    <input [(ngModel)]="recurso.puntoPedido" type="text" class="form-control text-right" id="puntoPedido" placeholder="">
                 </div>
             </div>
             <div class="col-sm-2">

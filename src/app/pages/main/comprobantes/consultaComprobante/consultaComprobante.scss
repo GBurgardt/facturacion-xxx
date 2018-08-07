@@ -87,7 +87,16 @@
         }
     }
 
-    .tabset-consulta {
+    
+
+}
+
+
+:host /deep/ .tabset-consulta {
+
+
+    > .tab-content > .tab-pane {
+
         .table-striped > tbody > tr > td {
             border: none;
             padding: 1px 12px;
@@ -99,6 +108,19 @@
         .table-striped > tbody > tr > .td-nowrap {
             white-space: nowrap;
         }
-    }
-}
 
+
+        // .table-consulta-comp {
+        //     background: red !important;
+        // }
+
+        .table-consulta-comp thead tr th {
+            padding: 7px 10px;
+        }
+        
+        .table-consulta-comp  thead td  {
+            padding: 7px 5px;
+        }
+    }
+
+}

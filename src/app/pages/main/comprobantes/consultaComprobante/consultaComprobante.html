@@ -1,4 +1,4 @@
-<ba-card cardTitle="Criterio de búsqueda" class="consulta-comprobante criterio-busqueda" toggleBtn="true">
+<ba-card  class="consulta-comprobante criterio-busqueda" toggleBtn="true">
 
     <div class="data-busqueda">
         <div class="data-comprobante-title">
@@ -19,7 +19,7 @@
                     <label for="comprobante">Tipo: </label>
                     <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="tipoComprobanteSelec" class="form-control select-input"
                         id="tipoComprobanteSelec">
-                        <option [ngValue]="utilsService.getInstanciaVacia(resourcesREST.buscaCteTipoNro)">
+                        <option [ngValue]="utilsService.getInstanciaVacia(resourcesREST.cteTipo)">
                             Todos
                         </option>
                         <option *ngFor="let tipo of tipoComprobantes | async" [ngValue]="tipo">
@@ -32,8 +32,8 @@
             <div class="input-row">
                 <div class="item-input nro-cte">
                     <label for="desde">Nro: </label>
-                    <input [(ngModel)]="comprobante.puntoVenta" type="text" class="form-control" id="ptoVentaCte" placeholder="">
-                    <input [(ngModel)]="comprobante.numero" type="text" class="form-control" id="nroCte" placeholder="">
+                    <input [(ngModel)]="comprobante.puntoVenta" type="text" class="form-control text-right" id="ptoVentaCte" placeholder="">
+                    <input [(ngModel)]="comprobante.numero" type="text" class="form-control text-right" id="nroCte" placeholder="">
                 </div>
             </div>
         </div>
@@ -146,13 +146,13 @@
     <ngb-tab title="Comprobantes">
         <ng-template ngbTabContent>
 
-            <table class="table table-striped" [mfData]="compEncabezados | async" #mf="mfDataTable" mfRowsOnPage="10">
+            <table class="table table-striped table-consulta-comp" [mfData]="compEncabezados | async" #mf="mfDataTable" mfRowsOnPage="10">
                 <thead>
                     <tr>
                         <th>Comprobante</th>
                         <th>Numero</th>
                         <th>Fecha Emision</th>
-                        <th>Cod Cliente/Prov</th>
+                        <th>Cli/Pro</th>
                         <th>Nombre</th>
                         <th>Cuit</th>
                         <th>Dolar</th>
@@ -166,7 +166,7 @@
                     <tr *ngFor="let compBusc of mf.data">
                         <td>{{ compBusc.comprobante }}</td>
                         <td class="td-right td-nowrap">{{ formatNumero(compBusc.numero) }}</td>
-                        <td>{{ compBusc.fechaEmi }}</td>
+                        <td>{{ utilsService.formatearFecha('DD/MM/YYYY')(compBusc.fechaEmi) }}</td>
                         <td class="td-right">{{ compBusc.idPadron }}</td>
                         <td>{{ compBusc.nombre }}</td>
                         <td class="td-right">{{ compBusc.cuit }}</td>
@@ -209,7 +209,7 @@
                     <tr *ngFor="let compDet of mf.data">
                         <td>{{ compDet.comprobante }}</td>
                         <td class="td-nowrap">{{ formatNumero(compDet.numero) }}</td>
-                        <td>{{ compDet.fechaEmision }}</td>
+                        <td>{{ utilsService.formatearFecha('DD/MM/YYYY')(compDet.fechaEmision) }}</td>
                         <td>{{ compDet.codProducto }}</td>
                         <td>{{ compDet.articulo }}</td>
                         <td class="td-right">{{ utilsService.parseDecimal(compDet.original) }}</td>

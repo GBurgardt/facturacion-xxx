@@ -75,9 +75,12 @@ export class ConsultaComprobante {
      * Cuando se cambia un módulo se actualiza la lista de tiposComprobantes
      */
     onChangeSisModulo = (moduloSelec: SisModulo) => 
-        this.tipoComprobantes = this.recursoService.getRecursoList(resourcesREST.buscaCteTipoNro)([
-            moduloSelec.idSisModulos
-        ]);
+        this.tipoComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
+            'sisModulo': moduloSelec.idSisModulos
+        })
+        // ([
+        //     moduloSelec.idSisModulos
+        // ]);
 
     /**
      * On click buscar

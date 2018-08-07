@@ -10,13 +10,6 @@
     }
 }
 
-// .data-table-container {
-    // margin: 1% 2%;
-    // .card > .card-body {
-    //     // TODO: Este padding probablemente lo saque después cuando ponga fltros y eso
-    //     padding-top: 8px;
-
-    // }
 .panel {
     .table {
         .table-column {
@@ -24,6 +17,9 @@
         }
 
         thead {
+            background: #c2c3d2;
+            color: black;
+            text-shadow: 0 0 3px #fff;
             tr th {
                 text-align: center;
                 padding: 6px 4px;

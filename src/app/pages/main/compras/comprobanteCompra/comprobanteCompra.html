@@ -148,8 +148,8 @@
                     <div class="col-sm-7">
                         <div class="form-group inline-group">
                             <label for="cteNro">Nro:</label>
-                            <input [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null" (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('comprobanteRelacionado')" [(ngModel)]="comprobanteRelacionado.puntoVenta" type="text" class="form-control pre-numero-input" id="puntoVenta" placeholder="">
-                            <input [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null" (blur)="onBlurNumeroAutocomp($event)('numero')('comprobanteRelacionado')" [(ngModel)]="comprobanteRelacionado.numero" type="text" class="form-control" id="numero" placeholder="">
+                            <input [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null" (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('comprobanteRelacionado')" [(ngModel)]="comprobanteRelacionado.puntoVenta" type="text" class="form-control pre-numero-input text-right" id="puntoVenta" placeholder="">
+                            <input [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null" (blur)="onBlurNumeroAutocomp($event)('numero')('comprobanteRelacionado')" [(ngModel)]="comprobanteRelacionado.numero" type="text" class="form-control text-right" id="numero" placeholder="">
                         </div>
                     </div>
                 </div>
@@ -280,8 +280,8 @@
                         <div class="subtotales-content">
                             <tabla-ingreso  [data]="tablas.datos.modelosFactura" 
                                             [columns]="tablas.columnas.columnasFactura" 
-                                            
-                                            [confirmEdit]="tablas.funciones.onClickConfirmEdit('columnasTrazabilidad')" 
+                                            [edit]="tablas.funciones.onClickEdit('columnasFactura')" 
+                                            [confirmEdit]="tablas.funciones.onClickConfirmEdit('columnasFactura')" 
                                             [onClickProductoLista]="onClickProductoLista">
                             </tabla-ingreso>   
                         </div>
@@ -306,14 +306,14 @@
                 <div class="card-total-content">
                     <div class="row">
                         <div class="col-sm-6">
-                            <div>
+                            <div class="total-item">
                                 <label class="titulo-cotizacion">Cotizacion Dolar: </label>
                                 <label>{{utilsService.parseDecimal(cotizacionDatos.cotizacion.cotizacion)}}</label>
                             </div>
                         </div>
         
                         <div class="col-sm-6">
-                            <div id="fechaComprobante">
+                            <div class="" id="fechaComprobante">
                                 <label class="titulo-cotizacion">Fecha: </label>
                                 <label>{{cotizacionDatos.cotizacion.fechaCotizacion | date:'dd/MM/yyyy'}}</label>
                             </div>
@@ -321,10 +321,15 @@
                     </div>
         
                     <div class="row">
-                        <div class="total-comprobante col-sm-6">
-                            <label class="titulo-cotizacion">Total Comprobante: </label>
+                        <div class="total-comprobante col-sm-6 total-item">
+                            <label class="titulo-cotizacion">Total Neto: </label>
                             <label>{{cotizacionDatos.total}}</label>
                         </div>
+
+                        <!-- <div class="col-sm-6">
+                            <label class="titulo-cotizacion">Total Neto: </label>
+                            <label>{{cotizacionDatos.total}}</label>
+                        </div> -->
                     </div>
                 </div>
             </custom-card>

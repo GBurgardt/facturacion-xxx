@@ -101,29 +101,54 @@ export class ComprobanteCompra {
                     return prod.producto.idProductos === prodSelect.producto.idProductos;
                 });
             },
-            onClickEdit: (tipoColumnas) => (prodSelect: ProductoPendiente) => { 
+            onClickEdit: (tipoColumnas) => (itemSelect: any) => { 
+                // this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
+                //     let newTabla = tabla;
+                //     if (newTabla.enEdicion !== undefined) {
+                //         newTabla.enEdicion = prodSelect.producto.idProductos
+                //     }
+                //     return newTabla;
+                // });
+
+                // // Hago focus en el select de imputacion
+                // setTimeout(()=>{
+                //     const selectImpu: any = document.getElementsByClassName('select-impu-'+prodSelect.producto.idProductos);
+                //     if(selectImpu && selectImpu[0]) {
+                //         selectImpu[0].focus();
+                //     } else {
+                //         const inputFocus: any = document.getElementsByClassName('input-edit-'+prodSelect.producto.idProductos);
+                //         inputFocus && inputFocus[0] ? inputFocus[0].focus() : null
+                //     }
+                // });
+
+
                 this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
                     let newTabla = tabla;
                     if (newTabla.enEdicion !== undefined) {
-                        newTabla.enEdicion = prodSelect.producto.idProductos
+                        
+                        tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = itemSelect.producto.idProductos :
+                        tipoColumnas === 'columnasTrazabilidad' ? newTabla.enEdicion = itemSelect.producto.idProductos :
+                        tipoColumnas === 'columnasFactura' ? newTabla.enEdicion = itemSelect.cuentaContable : null
                     }
                     return newTabla;
                 });
-
+        
                 // Hago focus en el select de imputacion
-                setTimeout(()=>{
-                    const selectImpu: any = document.getElementsByClassName('select-impu-'+prodSelect.producto.idProductos);
-                    if(selectImpu && selectImpu[0]) {
-                        selectImpu[0].focus();
-                    } else {
-                        const inputFocus: any = document.getElementsByClassName('input-edit-'+prodSelect.producto.idProductos);
-                        inputFocus && inputFocus[0] ? inputFocus[0].focus() : null
-                    }
+                setTimeout(() => {
+        
+                    const idItem =  itemSelect.cuentaContable ? itemSelect.cuentaContable : 
+                                    itemSelect.producto && itemSelect.producto.idProductos ? itemSelect.producto.idProductos : '000';
+        
+                    const inputFocusClass = 'editar-focus-'+idItem;
+        
+                    const elementFocus: any = document.getElementsByClassName(inputFocusClass);
+                    elementFocus && elementFocus[0] ? elementFocus[0].focus() : null
                 });
             },
-            onClickConfirmEdit: (tipoColumnas) => (prodSelect: ProductoPendiente) => { 
-                // Actualizo datos dle producto
-                this.actualizarDatosProductos();
+            onClickConfirmEdit: (tipoColumnas) => (itemSelect: any) => { 
+                // Actualizo datos dle producto (si NO son las facturas lo que se edita)
+                if (tipoColumnas !== 'columnasFactura')
+                    this.actualizarDatosProductos();
 
                 // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
                 this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
@@ -162,7 +187,9 @@ export class ComprobanteCompra {
     ) {
         ////////// Listas desplegables  //////////
         // Trae los tipoComprobante solamente del modulo 1 (Modulo Compra)
-        this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.buscaCteTipoNro)([1]);
+        this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
+            'sisModulo': 1
+        });
         this.tiposOperacion = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)();
         this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
         this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
@@ -189,16 +216,20 @@ export class ComprobanteCompra {
      * Busca los productos pendientes de acuerdo al comprobante relacionado
      */
     onClickBuscarPendientes = () => 
-        this.comprobanteCompraService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado).subscribe(prodsPend=>{
-            // Agrego los productos
-            this.tablas.datos.productosPend = _.uniqWith(
-                this.tablas.datos.productosPend.concat(prodsPend),
-                (a:ProductoPendiente,b:ProductoPendiente) => a.producto.codProducto === b.producto.codProducto
-            );
+        this.comprobanteCompraService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado)
+            .subscribe(
+                prodsPend => {
+                    // Agrego los productos
+                    this.tablas.datos.productosPend = _.uniqWith(
+                        this.tablas.datos.productosPend.concat(prodsPend),
+                        (a:ProductoPendiente,b:ProductoPendiente) => a.producto.codProducto === b.producto.codProducto
+                    );
 
-            // Actualizo datos de los productos
-            this.actualizarDatosProductos();
-        });
+                    // Actualizo datos de los productos
+                    this.actualizarDatosProductos();
+                },
+                error => this.utilsService.decodeErrorResponse(error)
+            );
     
 
     /**
@@ -220,19 +251,33 @@ export class ComprobanteCompra {
     /**
      * Valida y graba el comprobante
      */
-    onClickConfirmar = () => this.comprobanteCompraService.confirmarYGrabarComprobante(this.comprobante)
-        (this.comprobanteRelacionado)
-        (this.proveedorSeleccionado)
-        (this.tablas.datos.productosPend)
-        (this.tablas.datos.modelosFactura)
-        (this.cotizacionDatos)
-        (this.depositoSelec)
-        .subscribe((respuesta: any) => {
-            this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
+    onClickConfirmar = () => 
+        this.comprobanteCompraService.confirmarYGrabarComprobante(this.comprobante)
+            (this.comprobanteRelacionado)
+            (this.proveedorSeleccionado)
+            (this.tablas.datos.productosPend)
+            (this.tablas.datos.modelosFactura)
+            (this.cotizacionDatos)
+            (this.depositoSelec)
+            .subscribe((respuesta: any) => {
+                this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
 
-            // Focus en input proveedor
-            document.getElementById('inputProveedor') ? document.getElementById('inputProveedor').focus() : null
-        })
+                // Blanqueo los campos
+                const auxFecha = this.comprobante.fechaComprobante;
+                this.comprobante = new Comprobante();
+                this.comprobante.fechaComprobante = auxFecha;
+                this.comprobanteRelacionado = new ComprobanteRelacionado();
+                this.proveedorSeleccionado = new Padron();
+                this.tablas.datos.productosPend = [];
+                this.tablas.datos.modelosFactura = [];
+                this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
+                this.depositoSelec = new Deposito()
+                
+
+                // Focus en input proveedor (TODO SET TIME OUT)
+                document.getElementById('inputProveedor') ? document.getElementById('inputProveedor').focus() : null
+            })
+    
     
 
     ///////////////////////////////// Eventos (Distintos de onclick) /////////////////////////////////

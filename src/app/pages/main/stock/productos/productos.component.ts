@@ -43,7 +43,7 @@ export class Productos {
                 nombre: 'Código',
                 key: 'codProducto',
                 ancho: '10%',
-                customClass: 'text-right',
+                customClass: 'text-left',
                 nombreFiltro: 'codigo'
             },
             {

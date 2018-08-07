@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { Injectable } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DefaultModal } from '../pages/reusable/modals/default-modal/default-modal.component';
@@ -256,13 +257,21 @@ export class UtilsService {
 
 
     formatearFecha = (formato) => (fecha) => {
-        debugger;
+        // debugger;
         if (fecha && fecha.year) {
             if (formato === 'yyyy-mm-dd') {
                 return `${fecha.year}-${fecha.month < 10 ? '0'+fecha.month:fecha.month}-${fecha.day < 10 ? '0'+fecha.day : fecha.day}`;
             } else {
                 return `${fecha.day < 10 ? '0'+fecha.day : fecha.day}-${fecha.month < 10 ? '0'+fecha.month:fecha.month}-${fecha.year}`;
             }
+        } else {
+            return moment(fecha).format(formato)
+            // Si es Date
+            // if (formato === 'yyyy-mm-dd') {
+            //     return `${fecha.year}-${fecha.month}-${fecha.day}`
+            // } else {
+            //     return `${fecha.day}-${fecha.month}-${fecha.year}`
+            // }
         }
 
     }

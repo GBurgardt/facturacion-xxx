@@ -60,7 +60,9 @@ export class TablaProductos {
     constructor(
         private utilsService: UtilsService,
         private popupListaService: PopupListaService
-    ) { }
+    ) {
+    
+    }
 
     ngOnInit() {
         // Cargo todos los productos pendientes posibles

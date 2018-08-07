@@ -118,20 +118,22 @@ export class TablaIngreso {
     
 
     // Checkea si pongo el 'tick' para finalizar la edicion. Osea, si está en edición.
-    checkIfEditOn(item) {
-        if (this.columns) {
-            return this.columns.some(col=>{
-                // Lo hago específico porque esta talba es específica, casi que no la reutilizo
-                return col.enEdicion && col.enEdicion === item.producto.idProductos
-                // if (!col.subkey) {
-                //     return col.enEdicion && col.enEdicion === item[this.utilsService.getNameIdKeyOfResource(item)];
-                // } else if (col.subkey && !col.subsubkey) {
-                //     return col.enEdicion && col.enEdicion === (item[col.key])[this.utilsService.getNameIdKeyOfResource(item[col.key])];
-                // } 
+    // checkIfEditOn(item) {
+    //     if (this.columns) {
+    //         return this.columns.some(col=>{
+    //             // Lo hago específico porque esta talba es específica, casi que no la reutilizo
+    //             return col.enEdicion && col.enEdicion === item.producto.idProductos
+    //             // if (!col.subkey) {
+    //             //     return col.enEdicion && col.enEdicion === item[this.utilsService.getNameIdKeyOfResource(item)];
+    //             // } else if (col.subkey && !col.subsubkey) {
+    //             //     return col.enEdicion && col.enEdicion === (item[col.key])[this.utilsService.getNameIdKeyOfResource(item[col.key])];
+    //             // } 
 
-            });
-        };
-    }
+    //         });
+    //     };
+    // }
+
+    
 
     /**
      * Evento change del input de codProducto
@@ -212,6 +214,40 @@ export class TablaIngreso {
         this.textoBusqueda = '';
         this.onClickProductoLista(prodSelect)
     }
+
+    /**
+     * Retorna la clase del input que se va a poner en edicio y enfocar primero, cuando se apreta en editar
+     */
+    getClassInputEditable = (item) => (col) => {
+        if (item){
+            // Agarro el id dependiendo el tipo de archivo. Como lo uso en lotes trazables y en detalles formas pagos y productos pendientes, solo me fijo esos dos
+            const idItem =  item.cuentaContable ? item.cuentaContable : 
+                            item.producto && item.producto.idProductos ? item.producto.idProductos : '000';
+
+            // 'form-control edit-input input-edit-' + item.producto.idProductos
+            return `form-control edit-input${col.editarFocus ? ` editar-focus-${idItem}` : '' }`
+        }    
+    }
+
+    // Checkea si pongo el 'tick' para finalizar la edicion.
+    checkIfShowTick(item) {
+        if (this.columns) {
+            return this.columns.some(col=>{
+                
+                return col.enEdicion && (
+                    (item.cuentaContable && col.enEdicion === item.cuentaContable) ||
+                    (item.idFormaPagoDet && col.enEdicion === item.idFormaPagoDet)
+                )
+
+            });
+        };
+    }
+
+    // Cheackea si esta en edicion
+    checkIfEditOn = (item) => (col) => col.enEdicion && (
+        (item.producto && item.producto.idProductos && col.enEdicion === item.producto.idProductos) ||
+        (item.cuentaContable && col.enEdicion === item.cuentaContable)
+    )
 
 }
 

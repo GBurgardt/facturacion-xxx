@@ -1,6 +1,6 @@
 <div class="panel panel-default tabla-ingreso">
     <table class="table table-striped" [mfData]="data | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
-        <thead>
+        <thead class="head-table">
             <tr>
                 <th *ngIf="edit || remove" style="width: 10%; border-top: none;"></th>
                 <!-- Recorro y muestro las columnas recibidas en el input -->
@@ -21,7 +21,7 @@
                     <div *ngIf="remove" (click)="remove(item)" class="btn-accion btn-remover">
                         <i class="fa fa-trash" aria-hidden="true"></i>
                     </div>
-                    <div *ngIf="checkIfEditOn(item)" (click)="confirmEdit(item)" class="btn-accion btn-remover">
+                    <div *ngIf="checkIfShowTick(item)" (click)="confirmEdit(item)" class="btn-accion btn-remover">
                         <i class="fa fa-check" aria-hidden="true"></i>
                     </div>
                 </td>
@@ -31,7 +31,7 @@
                 <td *ngFor="let col of columns" [ngClass]="col.customClass ? col.customClass : 'text-align: left;'">
                     <div *ngIf="col.subkey">
                         <!-- Si NO esta en edicion -->
-                        <div *ngIf="!col.enEdicion || col.enEdicion !== item.producto.idProductos">
+                        <div *ngIf="!checkIfEditOn(item)(col)">
 
                             <div *ngIf="col.decimal">
                                 {{utilsService.parseDecimal(item[col.key][col.subkey])}}
@@ -44,13 +44,14 @@
                         </div>
 
                         <!-- Si SI está en edicion -->
-                        <div *ngIf="col.enEdicion && col.enEdicion === item.producto.idProductos">
+                        <div *ngIf="checkIfEditOn(item)(col)">
                             <input *ngIf=" (col.nombre !== 'trazable' && col.key !== 'trazabilidad') ||
                                             (col.key === 'trazabilidad' && col.subkey !== 'fechaElab' && col.subkey !== 'fechaVto')"
                                     [(ngModel)]="item[col.key][col.subkey]" 
                                     style="margin: 4px 6px;" 
                                     type="text" 
-                                    [ngClass]="'form-control edit-input input-edit-' + item.producto.idProductos" 
+                                    
+                                    [ngClass]="getClassInputEditable(item)(col)"
                                     id="inputSubKey" 
                                     placeholder="">
 
@@ -71,7 +72,7 @@
                     <div *ngIf="!col.subkey">
 
                         <!-- Si NO está en edicion -->
-                        <div *ngIf="!col.enEdicion || col.enEdicion !== item.producto.idProductos">
+                        <div *ngIf="!checkIfEditOn(item)(col)">
                             <div *ngIf="col.nombre !== 'imputacion' && !col.decimal">
                                 {{parseKey(item[col.key])}}
                             </div>
@@ -88,15 +89,22 @@
                         </div>
 
                         <!-- Si SI está en edicion -->
-                        <div *ngIf="col.enEdicion && col.enEdicion === item.producto.idProductos">    
-                            <input  *ngIf=" (col.nombre !== 'imputacion' && col.key !== 'trazabilidad' && col.nombre !== 'cantidad')"
+                        <div *ngIf="checkIfEditOn(item)(col)">    
+                            <input  *ngIf=" (col.nombre !== 'imputacion' && col.key !== 'trazabilidad' && col.nombre !== 'cantidad' && !col.elementoFinalBlur)"
                                 [(ngModel)]="item[col.key]"  style="margin: 4px 6px; text-align: end;" type="text" 
-                                class="form-control edit-input" id="inputSubKey" placeholder="">
+                                class="form-control edit-input" id="inputSubKey" placeholder="" [ngClass]="getClassInputEditable(item)(col)">
                             
+                            <!-- ULTIMO INPUT EDITABLE. CAPTURO EL BLUR -->
+                            <input  *ngIf="col.elementoFinalBlur"
+                            [(ngModel)]="item[col.key]"  style="margin: 4px 6px; text-align: end;" type="text" 
+                            class="form-control edit-input" id="inputSubKey" placeholder="" 
+                            (blur)="confirmEdit(item)" [ngClass]="getClassInputEditable(item)(col)">
+                            <!-- FIN ULTIMO INPUT EDITABLE -->
+
                             <!-- CASOS PARTICULARES -->
                             <select *ngIf="col.nombre === 'imputacion'" 
                                     [(ngModel)]="item[col.key].seleccionada"
-                                    [ngClass]="'form-control without-padding select-impu-' + item.producto.idProductos" 
+                                    [ngClass]="'form-control without-padding editar-focus-' + item.producto.idProductos" 
                                     >
                                 <option *ngFor="let impu of item[col.key].todas" [ngValue]="impu">
                                     {{impu.descripcion}}

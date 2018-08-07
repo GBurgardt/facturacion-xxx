@@ -16,8 +16,11 @@
 
         .subtotales-container {
             padding: 0 5% 1%;
+            display: flex;
             .subtotales-titulo {
                 font-size: 1rem;
+
+                margin: 3px 24px 0px 0;
             }
 
             .subtotales-content {
@@ -73,6 +76,11 @@
         .card-total {
             .card-total-content {
                 padding: 1.7%;
+
+                .total-item {
+                    display: flex;
+    justify-content: space-between;
+                }
             }
 
         }

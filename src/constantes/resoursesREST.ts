@@ -127,10 +127,10 @@ export const resourcesREST = {
         nombre: 'buscaComprobantes',
         Clase: null
     },
-    buscaCteTipoNro: {
-        nombre: 'buscaCteTipoNro',
-        Clase: TipoComprobante
-    },
+    // buscaCteTipoNro: {
+    //     nombre: 'buscaCteTipoNro',
+    //     Clase: TipoComprobante
+    // },
     buscaFormaPago: {
         nombre: 'buscaFormaPago',
         Clase: null
