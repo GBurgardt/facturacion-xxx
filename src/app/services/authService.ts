@@ -633,7 +633,7 @@ export class AuthService {
                 codigoBarra: recurso.codigoBarra,
                 descripcionCorta: recurso.descripcionCorta,
                 descripcion: recurso.descripcion,
-                modeloImputacion: recurso.modeloImputacion,
+                modeloImputacion: recurso.modeloCab.idModeloCab,
                 aptoCanje: recurso.aptoCanje,
                 stock:  recurso.stock,
                 trazable: recurso.trazable,

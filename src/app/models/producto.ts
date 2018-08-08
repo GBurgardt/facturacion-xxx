@@ -10,7 +10,7 @@ export class Producto {
     descripcionCorta: string;
     descripcion: string;
     aptoCanje: boolean;
-    modeloImputacion: string;
+    // modeloImputacion: string;
     stock: boolean;
     trazable: boolean;
     traReceta: boolean;
@@ -35,7 +35,7 @@ export class Producto {
         descripcionCorta: string;
         descripcion: string;
         aptoCanje: boolean;
-        modeloImputacion: string;
+        // modeloImputacion: string;
         stock: boolean;
         trazable: boolean;
         traReceta: boolean;
@@ -60,7 +60,7 @@ export class Producto {
             this.descripcionCorta = producto.descripcionCorta;
             this.descripcion = producto.descripcion;
             this.aptoCanje = producto.aptoCanje;
-            this.modeloImputacion = producto.modeloImputacion;
+            // this.modeloImputacion = producto.modeloImputacion;
             this.stock = producto.stock;
             this.trazable = producto.trazable;
             this.traReceta = producto.traReceta;
@@ -84,7 +84,7 @@ export class Producto {
             this.descripcionCorta = null;  
             this.descripcion = null;       
             this.aptoCanje = false;         
-            this.modeloImputacion = null;  
+            // this.modeloImputacion = null;  
             this.stock = false;             
             this.trazable = false;          
             this.traReceta = false;         

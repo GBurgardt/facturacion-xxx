@@ -50,6 +50,7 @@ export class NuevoProducto {
             const resp: any = await this.recursoService.setRecurso(
                 this.recurso
             )();
+    
 
             this.utilsService.showModal(
                 resp.control.codigo

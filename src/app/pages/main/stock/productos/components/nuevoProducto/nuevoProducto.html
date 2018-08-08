@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-sm-2">
                 <div class="form-group">
-                    <label for="codProducto">Codigo</label>
+                    <label for="codProducto">Codigo *</label>
                     <input [(ngModel)]="recurso.codProducto" type="text" class="form-control" id="codProducto" placeholder="">
                 </div>
             </div>
@@ -33,7 +33,7 @@
         <div class="row custom-card">
             <div class="col-sm-3">
                 <div class="form-group">
-                    <label for="rubro">Rubro</label>
+                    <label for="rubro">Rubro *</label>
                     <select [(ngModel)]="recurso.rubro" class="form-control" id="rubro">
                         <option *ngFor="let rubro of rubros | async" [ngValue]="rubro">
                             {{rubro.descripcion}}
@@ -43,7 +43,7 @@
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
-                    <label for="subRubro">Sub Rubro</label>
+                    <label for="subRubro">Sub Rubro *</label>
                     <select [(ngModel)]="recurso.subRubro" class="form-control" id="subRubro">
                         <option *ngFor="let subRubro of subRubros | async" [ngValue]="subRubro">
                             {{subRubro.descripcion}}
@@ -53,7 +53,7 @@
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
-                    <label for="unidadCompra">Unidad Compra</label>
+                    <label for="unidadCompra">Unidad Compra *</label>
                     <select [(ngModel)]="recurso.unidadCompra" class="form-control" id="unidadCompra">
                         <option *ngFor="let uniCompra of unidadesCompra | async" [ngValue]="uniCompra">
                             {{uniCompra.descripcion}}
@@ -63,7 +63,7 @@
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
-                    <label for="unidadVenta">Unidad Venta</label>
+                    <label for="unidadVenta">Unidad Venta *</label>
                     <select [(ngModel)]="recurso.unidadVenta" class="form-control" id="unidadVenta">
                         <option *ngFor="let uniVenta of unidadesVenta | async" [ngValue]="uniVenta">
                             {{uniVenta.descripcion}}
@@ -80,7 +80,7 @@
 
             <div class="col-sm-3">
                 <div class="form-group">
-                    <label for="IVA">IVA</label>
+                    <label for="IVA">IVA *</label>
                     <select [(ngModel)]="recurso.IVA" class="form-control text-right-select" id="IVA">
                         <option *ngFor="let iva of ivas | async" [ngValue]="iva">
                             {{iva.porcIVA}}
@@ -94,19 +94,19 @@
         <div class="row custom-card">
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label for="precioVentaProv">Precio Venta Prov</label>
+                    <label for="precioVentaProv">Precio Venta Prov *</label>
                     <input [(ngModel)]="recurso.precioVentaProv" type="text" class="form-control text-right" id="precioVentaProv" placeholder="">
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
-                    <label for="costoReposicion">Costo Reposicion</label>
+                    <label for="costoReposicion">Costo Reposicion *</label>
                     <input [(ngModel)]="recurso.costoReposicion" type="text" class="form-control text-right" id="costoReposicion" placeholder="">
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
-                    <label for="puntoPedido">Punto Pedido</label>
+                    <label for="puntoPedido">Punto Pedido *</label>
                     <input [(ngModel)]="recurso.puntoPedido" type="text" class="form-control text-right" id="puntoPedido" placeholder="">
                 </div>
             </div>
@@ -152,7 +152,7 @@
 
             <div class="offset-sm-2 col-sm-3">
                 <div class="form-group">
-                    <label for="modeloInputacion">Modelo inputacion</label>
+                    <label for="modeloInputacion">Modelo inputacion *</label>
                     <select [compareWith]="compareWithModeloImpu" [(ngModel)]="recurso.modeloCab" class="form-control" id="modeloCab">
                         <option *ngFor="let modCab of modelosCab | async" [ngValue]="modCab">
                             {{modCab.descripcion}}
@@ -166,11 +166,7 @@
                     <label for="modeloImputacion">Modelo inputacion</label>
                     <input [(ngModel)]="recurso.modeloImputacion" type="text" class="form-control" id="modeloImputacion" placeholder="">
                 </div>
-            </div> -->
-        </div>
-
-        <button [disabled]="utilsService.checkIfIncomplete(recurso)([
-                                'idProductos',
+                'idProductos',
                                 'aptoCanje', 
                                 'stock', 
                                 'trazable', 
@@ -186,6 +182,24 @@
                                 'unidadVenta',
                                 'editar',
                                 'modeloCab'
+            </div> -->
+        </div>
+
+        <button [disabled]="utilsService.checkIfIncomplete(recurso)([
+                                'idProductos',
+                                
+                                'codigoBarra',
+                                'aptoCanje',
+                                'stock',
+                                'trazable',
+                                'traReceta',
+                                'traInforma',
+                                'IVA',
+                                'descripcionCorta',
+                                'descripcion',
+                                'gtin',
+                                'observaciones',
+                                'editar'
                             ])()"
                 (click)="onClickCrear()" type="submit" class="btn btn-primary">Confirmar</button>
     </ba-card>
