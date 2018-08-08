@@ -13,6 +13,7 @@ import { SubRubro } from '../../../../../../models/subRubro';
 import { Unidad } from '../../../../../../models/unidad';
 import { resourcesREST } from 'constantes/resoursesREST';
 import { Rubro } from 'app/models/rubro';
+import { ModeloCab } from 'app/models/modeloCab';
 
 @Component({
     selector: 'nuevo-producto',
@@ -27,6 +28,7 @@ export class NuevoProducto {
     subRubros: Observable<SubRubro[]>;
     unidadesCompra: Observable<Unidad[]>;
     unidadesVenta: Observable<Unidad[]>;
+    modelosCab: Observable<ModeloCab[]>;
 
     constructor(
         private recursoService: RecursoService,
@@ -39,6 +41,7 @@ export class NuevoProducto {
         this.unidadesCompra = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.unidadesVenta = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.ivas = this.recursoService.getRecursoList(resourcesREST.sisIVA)();
+        this.modelosCab = this.recursoService.getRecursoList(resourcesREST.modeloCab)();
     }
 
     onClickCrear = async () => {
@@ -60,5 +63,7 @@ export class NuevoProducto {
             this.utilsService.decodeErrorResponse(ex);
         }
     }
+
+    compareWithModeloImpu = (mod1: ModeloCab, mod2: ModeloCab) => mod1 && mod2 ? mod1.idModeloCab === mod2.idModeloCab : mod1 === mod2
 
 }

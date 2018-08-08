@@ -152,13 +152,25 @@
 
             <div class="offset-sm-2 col-sm-3">
                 <div class="form-group">
+                    <label for="modeloInputacion">Modelo inputacion</label>
+                    <select [compareWith]="compareWithModeloImpu" [(ngModel)]="recurso.modeloCab" class="form-control" id="modeloCab">
+                        <option *ngFor="let modCab of modelosCab | async" [ngValue]="modCab">
+                            {{modCab.descripcion}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- <div class="offset-sm-2 col-sm-3">
+                <div class="form-group">
                     <label for="modeloImputacion">Modelo inputacion</label>
                     <input [(ngModel)]="recurso.modeloImputacion" type="text" class="form-control" id="modeloImputacion" placeholder="">
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <button [disabled]="utilsService.checkIfIncomplete(recurso)([
+                                'idProductos',
                                 'aptoCanje', 
                                 'stock', 
                                 'trazable', 
@@ -169,7 +181,11 @@
                                 'descripcion',
                                 'modeloImputacion',
                                 'gtin',
-                                'observaciones'
+                                'observaciones',
+                                'unidadCompra',
+                                'unidadVenta',
+                                'editar',
+                                'modeloCab'
                             ])()"
                 (click)="onClickCrear()" type="submit" class="btn btn-primary">Confirmar</button>
     </ba-card>

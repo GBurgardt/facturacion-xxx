@@ -97,6 +97,8 @@ export class UtilsService {
         // Obtengo la primer key de la clase del objeto recibido
         const idRecurso = Object.keys(objeto)[0];
 
+        // if (objeto && ignoreList)
+        //     debugger;
         // Recorro las keys y checkeo que NO sean null (excepto ignoradas)
         const someKeyIsNull = Object.keys(objeto).some((key) => {
             // Si la key NO está incluida en las ignoradas, la evaluo
@@ -117,6 +119,7 @@ export class UtilsService {
         });
         // Evaluo condicion extra
         const resultExtraCondition = extraCondition ? extraCondition(objeto) : false;
+
 
         // Si alguna key es null o si se cumple la condicion extra (si esta existe), entonces retorno true (lo uqe significa que deshabilita el button de confirmar)
         return  someKeyIsNull || resultExtraCondition;
