@@ -22,6 +22,7 @@ export const routes: Routes = [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'dashboard', loadChildren: './main/dashboard/dashboard.module#DashboardModule' },
             { path: 'tablas', loadChildren: './main/tablas/tablas.module#TablasModule' },
+            { path: 'ventas', loadChildren: './main/ventas/ventas.module#VentasModule' },
             { path: 'compras', loadChildren: './main/compras/compras.module#ComprasModule' },
             { path: 'stock', loadChildren: './main/stock/stock.module#StockModule' },
             { path: 'comprobantes', loadChildren: './main/comprobantes/comprobantes.module#ComprobantesModule' },

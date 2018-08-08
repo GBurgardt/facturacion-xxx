@@ -10,12 +10,6 @@ import { TablaIngreso } from "app/pages/main/compras/comprobanteCompra/component
 import { ComprobanteCompra } from "app/pages/main/compras/comprobanteCompra";
 import { ComprobanteCompraService } from "app/pages/main/compras/comprobanteCompra/comprobanteCompraService";
 
-import { EmisionRemitos } from "./emisionRemitos";
-import { EmisionRemitosService } from "./emisionRemitos/emisionRemitosService";
-import { TablaEmisionRem } from "app/pages/main/compras/emisionRemitos/components/tablaEmisionRem/tablaEmisionRem.component";
-import { TablaFormaPago } from "app/pages/main/compras/emisionRemitos/components/tablaFormaPago";
-import { NgaModule } from "app/theme/nga.module";
-
 @NgModule({
     imports: [
         routing,
@@ -25,22 +19,16 @@ import { NgaModule } from "app/theme/nga.module";
     declarations: [
         Compras,
         ComprobanteCompra,
-        TablaIngreso,
-        TablaEmisionRem,
-        TablaFormaPago,
-        EmisionRemitos
+        TablaIngreso
     ],
     providers: [
         RecursoService,
         AuthService,
         UtilsService,
-        ComprobanteCompraService,
-        EmisionRemitosService
+        ComprobanteCompraService
     ],
     exports: [
-        TablaIngreso,
-        TablaEmisionRem,
-        TablaFormaPago
+        TablaIngreso
     ]
 })
 export class ComprasModule {
