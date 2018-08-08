@@ -163,7 +163,7 @@ export class ComprobanteCompra {
                     return newTabla;
                 })
 
-                // Hago la sumatoria de los subtotales de la factura
+                // // Hago la sumatoria de los subtotales de la factura
                 if (tipoColumnas === 'columnasFactura') {
                     
                     // Actualizo el Total Comprobante sumando todos los precios nuevamente (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
@@ -312,7 +312,16 @@ export class ComprobanteCompra {
         );
 
         this.comprobanteCompraService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
-            this.tablas.datos.modelosFactura = modelProds
+            this.tablas.datos.modelosFactura = modelProds;
+
+            this.sumatoriaSubtotales = Math.round(
+                _.sumBy(
+                    this.tablas.datos.modelosFactura,
+                    (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
+                )
+            );
+
+            // debugger;
         })
     }
 
