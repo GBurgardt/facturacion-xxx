@@ -48,6 +48,9 @@ export class TablaIngreso {
 
     @Input() onClickProductoLista;
 
+    // Sumatoria de los subtotales
+    // @Input() sumatoriaSubtotales;
+
     constructor(
         private utilsService: UtilsService,
         private recursoService: RecursoService,

@@ -117,6 +117,7 @@ export class UtilsService {
         });
         // Evaluo condicion extra
         const resultExtraCondition = extraCondition ? extraCondition(objeto) : false;
+
         // Si alguna key es null o si se cumple la condicion extra (si esta existe), entonces retorno true (lo uqe significa que deshabilita el button de confirmar)
         return  someKeyIsNull || resultExtraCondition;
     }
@@ -166,6 +167,8 @@ export class UtilsService {
         }
 
     }
+
+    upperFirstLetter = (rrr) => `${rrr[0].toUpperCase()}${rrr.substring(1)}`
 
     
     /**

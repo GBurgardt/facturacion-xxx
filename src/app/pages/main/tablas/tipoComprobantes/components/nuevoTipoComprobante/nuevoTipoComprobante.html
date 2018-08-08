@@ -63,7 +63,9 @@
             </div>
         </div>
         
-        <button [disabled]="utilsService.checkIfIncomplete(recurso)()(checkSurEnu)"
+        <button [disabled]="utilsService.checkIfIncomplete(recurso)([
+            'idCteTipo', 'cursoLegal', 'numerador', 'observaciones'
+        ])(checkSurEnu)"
                 (click)="onClickCrearTipoComprobante()" 
                 type="submit" 
                 class="btn btn-primary">

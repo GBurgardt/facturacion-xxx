@@ -51,6 +51,9 @@ export class ComprobanteCompra {
     // Inhdice del producto enfocado del popup
     proveedorEnfocadoIndex: number = -1;
 
+    // Suma de todos los subtotales
+    sumatoriaSubtotales: number = 0;
+
     /////////////////////////////////////////////
     //////////// Listas desplegables ////////////
     /////////////////////////////////////////////
@@ -159,6 +162,20 @@ export class ComprobanteCompra {
                     }
                     return newTabla;
                 })
+
+                // Hago la sumatoria de los subtotales de la factura
+                if (tipoColumnas === 'columnasFactura') {
+                    
+                    // Actualizo el Total Comprobante sumando todos los precios nuevamente (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
+                    this.sumatoriaSubtotales = Math.round(
+                        _.sumBy(
+                            this.tablas.datos.modelosFactura,
+                            (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
+                        )
+                    );
+
+                }
+
            }
         }
     };
@@ -339,13 +356,14 @@ export class ComprobanteCompra {
     /**
      * Setea la fecha de compra calculandola dado un string en formato 'ddmm', parseando a 'dd/mm/aaaa'
      */
-    onCalculateFecha = (e) => (keyFecha) => {
-        if (!this.comprobante[keyFecha] || typeof this.comprobante[keyFecha] !== 'string') return;
+    onCalculateFecha = (e) => (keyFecha) => (objetoContenedor) => {
+        if (!this[objetoContenedor][keyFecha] || typeof this[objetoContenedor][keyFecha] !== 'string') return;
         
-        this.comprobante[keyFecha] = this.utilsService.stringToDateLikePicker(this.comprobante[keyFecha]);
+        this[objetoContenedor][keyFecha] = this.utilsService.stringToDateLikePicker(this[objetoContenedor][keyFecha]);
 
         // Hago focus en el prox input
-        (keyFecha==='fechaComprobante') ? document.getElementById("fechaVto").focus() : null;
+        (keyFecha==='fechaComprobante') || (keyFecha==='fechaContable') ? 
+            document.getElementById(`fechaVto${this.utilsService.upperFirstLetter(objetoContenedor)}`).focus() : null;
 
     }
 

@@ -98,8 +98,8 @@
                     <div class="form-group inline-group last-child-custom-card">
                         <label for="fechaComprobante">Fecha: </label>
                         <div class="input-group">
-                            <input  (blur)="onCalculateFecha($event)('fechaComprobante')" 
-                                    (keyup.enter)="onCalculateFecha($event)('fechaComprobante')" 
+                            <input  (blur)="onCalculateFecha($event)('fechaComprobante')('comprobante')" 
+                                    (keyup.enter)="onCalculateFecha($event)('fechaComprobante')('comprobante')" 
                                     class="form-control" 
                                     placeholder="dd/mm/aaaa" 
                                     name="dp" 
@@ -118,7 +118,7 @@
                     <div class="form-group inline-group last-child-custom-card">
                         <label for="fechaVto">Vto: </label>
                         <div class="input-group">
-                            <input id="fechaVto" (blur)="onCalculateFecha($event)('fechaVto')" (keyup.enter)="onCalculateFecha($event)('fechaVto')" class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="comprobante.fechaVto" ngbDatepicker #dVto="ngbDatepicker">
+                            <input id="fechaVtoComprobante" (blur)="onCalculateFecha($event)('fechaVto')('comprobante')" (keyup.enter)="onCalculateFecha($event)('fechaVto')('comprobante')" class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="comprobante.fechaVto" ngbDatepicker #dVto="ngbDatepicker">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" (click)="dVto.toggle()" type="button" style="height: 100%;">
                                     <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -164,7 +164,6 @@
                     </div>
     
                     <div class="col-sm-3 btn-container">
-                        <!-- <button [disabled]="utilsService.checkIfIncomplete(comprobanteRelacionado)([])()" -->
                         <button (click)="onClickBuscarPendientes()" type="submit" class="btn btn-primary">Buscar</button>
                     </div>
                 </div>
@@ -239,8 +238,9 @@
                         <div class="col-sm-3">
                             <div class="form-group inline-group">
                                 <label for="cteNro">Nro:</label>
-                                <input [(ngModel)]="factura.preNumero" type="text" class="form-control pre-numero-input" id="preNumero" placeholder="">
-                                <input [(ngModel)]="factura.numero" type="text" class="form-control" id="numero" placeholder="">
+                                
+                                <input maxlength="4" (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('factura')" [(ngModel)]="factura.puntoVenta" type="text" class="form-control pre-numero-input text-right" id="puntoVenta" placeholder="">
+                                <input maxlength="8" (blur)="onBlurNumeroAutocomp($event)('numero')('factura')" [(ngModel)]="factura.numero" type="text" class="form-control text-right" id="numero" placeholder="">
                             </div>
                         </div>
 
@@ -248,7 +248,11 @@
                             <div class="form-group inline-group last-child-custom-card">
                                 <label for="fechaComprobante">Fecha Contable</label>
                                 <div class="input-group">
-                                    <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="factura.fechaContable" ngbDatepicker #dComp="ngbDatepicker">
+
+                                    <input  (blur)="onCalculateFecha($event)('fechaContable')('factura')" 
+                                            (keyup.enter)="onCalculateFecha($event)('fechaContable')('factura')" 
+                                            class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="factura.fechaContable" ngbDatepicker #dComp="ngbDatepicker">
+                                    <!-- <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="factura.fechaContable" ngbDatepicker #dComp="ngbDatepicker"> -->
                                     <div class="input-group-append">
                                         <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button" style="height: 100%;">
                                             <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -261,7 +265,9 @@
                             <div class="form-group inline-group last-child-custom-card">
                                 <label for="fechaVto">Fecha Vto</label>
                                 <div class="input-group">
-                                    <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="factura.fechaVto" ngbDatepicker #dVto="ngbDatepicker">
+                                    <input  (blur)="onCalculateFecha($event)('fechaVto')('factura')" 
+                                            (keyup.enter)="onCalculateFecha($event)('fechaVto')('factura')" 
+                                            id="fechaVtoFactura" class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="factura.fechaVto" ngbDatepicker #dVto="ngbDatepicker">
                                     <div class="input-group-append">
                                         <button class="btn btn-outline-secondary" (click)="dVto.toggle()" type="button" style="height: 100%;">
                                             <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -313,7 +319,7 @@
                         </div>
         
                         <div class="col-sm-6">
-                            <div class="" id="fechaComprobante">
+                            <div class="total-item" id="fechaComprobante">
                                 <label class="titulo-cotizacion">Fecha: </label>
                                 <label>{{cotizacionDatos.cotizacion.fechaCotizacion | date:'dd/MM/yyyy'}}</label>
                             </div>
@@ -326,10 +332,10 @@
                             <label>{{cotizacionDatos.total}}</label>
                         </div>
 
-                        <!-- <div class="col-sm-6">
-                            <label class="titulo-cotizacion">Total Neto: </label>
-                            <label>{{cotizacionDatos.total}}</label>
-                        </div> -->
+                        <div class="total-comprobante col-sm-6 total-item">
+                            <label class="titulo-cotizacion">Total Cte: </label>
+                            <label>{{cotizacionDatos.total + sumatoriaSubtotales}}</label>
+                        </div>
                     </div>
                 </div>
             </custom-card>
