@@ -295,18 +295,7 @@ export class ComprobanteCompra {
                 document.getElementById('inputProveedor') ? document.getElementById('inputProveedor').focus() : null
             })
     
-            onClickCancelar = () =>{
-                // Blanqueo los campos
-                const auxFecha = this.comprobante.fechaComprobante;
-                this.comprobante = new Comprobante();
-                this.comprobante.fechaComprobante = auxFecha;
-                this.comprobanteRelacionado = new ComprobanteRelacionado();
-                this.proveedorSeleccionado = new Padron();
-                this.tablas.datos.productosPend = [];
-                this.tablas.datos.modelosFactura = [];
-                this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
-                this.depositoSelec = new Deposito()
-            }   
+    
 
     ///////////////////////////////// Eventos (Distintos de onclick) /////////////////////////////////
     
@@ -419,4 +408,17 @@ export class ComprobanteCompra {
             this.proveedorEnfocadoIndex = -1;
         })
     }
+
+    onClickCancelar = () =>{
+        // Blanqueo los campos
+        const auxFecha = this.comprobante.fechaComprobante;
+        this.comprobante = new Comprobante();
+        this.comprobante.fechaComprobante = auxFecha;
+        this.comprobanteRelacionado = new ComprobanteRelacionado();
+        this.proveedorSeleccionado = new Padron();
+        this.tablas.datos.productosPend = [];
+        this.tablas.datos.modelosFactura = [];
+        this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
+        this.depositoSelec = new Deposito()
+    }   
 }
