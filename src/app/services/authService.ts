@@ -663,9 +663,6 @@ export class AuthService {
         if (nombreRecurso === resourcesREST.listaPrecios.nombre) {
             return {
                 codLista: recurso.codigoLista,
-                // fechaAlta: this.utilsService.dateToString(recurso.fechaAlta),
-                // vigenciaDesde: this.utilsService.dateToString(recurso.vigenciaDesde),
-                // vigenciaHasta: this.utilsService.dateToString(recurso.vigenciaHasta),
                 fechaAlta: `${recurso.fechaAlta.year}-${recurso.fechaAlta.month}-${recurso.fechaAlta.day}`,
                 vigenciaDesde: `${recurso.vigenciaDesde.year}-${recurso.vigenciaDesde.month}-${recurso.vigenciaDesde.day}`,
                 vigenciaHasta: `${recurso.vigenciaHasta.year}-${recurso.vigenciaHasta.month}-${recurso.vigenciaHasta.day}`,
@@ -793,7 +790,10 @@ export class AuthService {
                         observaciones: detalle.observaciones ? detalle.observaciones : null,
                         idProducto: detalle.producto.idProductos
                     }
-                })
+                }),
+                idPadronCliente: recurso.idPadronCliente,
+                idPadronRepresentante: recurso.idPadronRepresentante,
+                porc1: recurso.porc1,
             }
         }
 

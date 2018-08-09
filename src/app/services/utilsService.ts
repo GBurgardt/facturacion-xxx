@@ -97,8 +97,7 @@ export class UtilsService {
         // Obtengo la primer key de la clase del objeto recibido
         const idRecurso = Object.keys(objeto)[0];
 
-        // if (objeto && ignoreList)
-        //     debugger;
+        
         // Recorro las keys y checkeo que NO sean null (excepto ignoradas)
         const someKeyIsNull = Object.keys(objeto).some((key) => {
             // Si la key NO está incluida en las ignoradas, la evaluo

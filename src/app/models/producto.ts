@@ -90,8 +90,11 @@ export class Producto {
             this.traReceta = false;         
             this.traInforma = false;        
             this.gtin = null;              
-            this.puntoPedido = null;       
-            this.precioVentaProv = null;   
+            
+            this.puntoPedido = Number(0).toFixed(2);
+            this.costoReposicion = Number(0).toFixed(2);
+            this.precioVentaProv = Number(0).toFixed(2);
+
             this.observaciones = null;     
             this.IVA = new IVA();               
             this.subRubro = new SubRubro();          

@@ -231,4 +231,19 @@ export class NuevoListaPrecio {
         this.detallesActivos = !this.detallesActivos;
     }
 
+    /**
+     * Setea la fecha de compra calculandola dado un string en formato 'ddmm', parseando a 'dd/mm/aaaa'
+     */
+    onCalculateFecha = (e) => (keyFecha) => (objetoContenedor) => {
+        if (!this[objetoContenedor][keyFecha] || typeof this[objetoContenedor][keyFecha] !== 'string') return;
+        
+        this[objetoContenedor][keyFecha] = this.utilsService.stringToDateLikePicker(this[objetoContenedor][keyFecha]);
+
+        // Hago focus en el prox input
+        (keyFecha==='fechaAlta') ? document.getElementById(`fechaVigenciaDesde`).focus() : null;
+        (keyFecha==='vigenciaDesde') ? document.getElementById(`fechaVigenciaHasta`).focus() : null;
+        (keyFecha==='vigenciaHasta') ? document.getElementById(`porcPrecioVenta`).focus() : null;
+
+    }
+
 }

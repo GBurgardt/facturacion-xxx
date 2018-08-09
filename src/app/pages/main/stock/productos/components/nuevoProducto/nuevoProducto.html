@@ -34,7 +34,7 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="rubro">Rubro *</label>
-                    <select [(ngModel)]="recurso.rubro" class="form-control" id="rubro">
+                    <select [(ngModel)]="recurso.rubro" (ngModelChange)="onChangeRubro($event)" class="form-control" id="rubro">
                         <option *ngFor="let rubro of rubros | async" [ngValue]="rubro">
                             {{rubro.descripcion}}
                         </option>
@@ -83,7 +83,7 @@
                     <label for="IVA">IVA *</label>
                     <select [(ngModel)]="recurso.IVA" class="form-control text-right-select" id="IVA">
                         <option *ngFor="let iva of ivas | async" [ngValue]="iva">
-                            {{iva.porcIVA}}
+                            {{utilsService.parseDecimal(iva.porcIVA)}}
                         </option>
                     </select>
                 </div>
@@ -160,34 +160,10 @@
                     </select>
                 </div>
             </div>
-
-            <!-- <div class="offset-sm-2 col-sm-3">
-                <div class="form-group">
-                    <label for="modeloImputacion">Modelo inputacion</label>
-                    <input [(ngModel)]="recurso.modeloImputacion" type="text" class="form-control" id="modeloImputacion" placeholder="">
-                </div>
-                'idProductos',
-                                'aptoCanje', 
-                                'stock', 
-                                'trazable', 
-                                'traReceta', 
-                                'traInforma',
-                                'codigoBarra',
-                                'descripcionCorta',
-                                'descripcion',
-                                'modeloImputacion',
-                                'gtin',
-                                'observaciones',
-                                'unidadCompra',
-                                'unidadVenta',
-                                'editar',
-                                'modeloCab'
-            </div> -->
         </div>
 
         <button [disabled]="utilsService.checkIfIncomplete(recurso)([
                                 'idProductos',
-                                
                                 'codigoBarra',
                                 'aptoCanje',
                                 'stock',

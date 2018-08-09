@@ -58,7 +58,7 @@
                 <div class="col-sm-3">
                     <div class="form-group">
                         <label for="porc1">Porcentaje precio venta</label>
-                        <input [(ngModel)]="recurso.porc1" type="text" class="form-control" id="porc1" placeholder="">
+                        <input [(ngModel)]="recurso.porc1" type="text" class="form-control text-right" id="porc1" placeholder="">
                     </div>
                 </div>
     
@@ -66,14 +66,14 @@
                 <div class="col-sm-3">
                     <div class="form-group">
                         <label for="idPadronCliente">Cliente</label>
-                        <input [(ngModel)]="recurso.idPadronCliente" type="text" class="form-control" id="idPadronCliente" placeholder="">
+                        <input [(ngModel)]="recurso.idPadronCliente" type="text" class="form-control text-right" id="idPadronCliente" placeholder="">
                     </div>
                 </div>
                 
                 <div class="col-sm-3">
                     <div class="form-group">
                         <label for="idPadronRepresentante">Representante</label>
-                        <input [(ngModel)]="recurso.idPadronRepresentante" type="text" class="form-control" id="idPadronRepresentante" placeholder="">
+                        <input [(ngModel)]="recurso.idPadronRepresentante" type="text" class="form-control text-right" id="idPadronRepresentante" placeholder="">
                     </div>
                 </div>
     
@@ -104,8 +104,9 @@
     
             </div>
             <div class="row btn-container-continuar">
+                <button routerLink="/pages/tablas/lista-precios" type="submit" class="btn btn-default ">Volver</button>
                 <button [disabled]="utilsService.checkIfIncomplete(recurso)(['listaPrecioDetCollection', 'activa'])()"
-                 class="btn btn-default btn-continuar" (click)="onClickTogglePaso($event)">Continuar</button>
+                 class="btn btn-default" (click)="onClickTogglePaso($event)">Continuar</button>
             </div>
         </custom-card>
 

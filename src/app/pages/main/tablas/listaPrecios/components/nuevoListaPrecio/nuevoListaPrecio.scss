@@ -49,8 +49,8 @@
     .btn-container-continuar {
         display: flex;
         justify-content: flex-end;
-        .btn-continuar {
-            margin: 0.6% 2.1%;
+        > button {
+            margin: 0.6% 0.8%;
         }
     }
 }

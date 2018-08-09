@@ -13,7 +13,7 @@
                     <div class="form-group">
                         <label for="codigoLista">Fecha Alta</label>
                         <div class="input-group">
-                            <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.fechaAlta" ngbDatepicker #dAlta="ngbDatepicker">
+                            <input (blur)="onCalculateFecha($event)('fechaAlta')('recurso')" class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.fechaAlta" ngbDatepicker #dAlta="ngbDatepicker">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" (click)="dAlta.toggle()" type="button" style="height: 100%;">
                                     <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -27,7 +27,7 @@
                     <div class="form-group">
                         <label for="vigenciaDesde">Vigencia Desde</label>
                         <div class="input-group">
-                            <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.vigenciaDesde" ngbDatepicker #dVigDes="ngbDatepicker">
+                            <input (blur)="onCalculateFecha($event)('vigenciaDesde')('recurso')" id="fechaVigenciaDesde" class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.vigenciaDesde" ngbDatepicker #dVigDes="ngbDatepicker">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" (click)="dVigDes.toggle()" type="button" style="height: 100%;">
                                     <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -41,7 +41,7 @@
                     <div class="form-group">
                         <label for="vigenciaHasta">Vigencia Hasta</label>
                         <div class="input-group">
-                            <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.vigenciaHasta" ngbDatepicker #dVigHas="ngbDatepicker">
+                            <input (blur)="onCalculateFecha($event)('vigenciaHasta')('recurso')" id="fechaVigenciaHasta" class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.vigenciaHasta" ngbDatepicker #dVigHas="ngbDatepicker">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" (click)="dVigHas.toggle()" type="button" style="height: 100%;">
                                     <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -58,7 +58,7 @@
                 <div class="col-sm-3">
                     <div class="form-group">
                         <label for="porc1">Porcentaje precio venta</label>
-                        <input [(ngModel)]="recurso.porc1" type="text" class="form-control" id="porc1" placeholder="">
+                        <input [(ngModel)]="recurso.porc1" type="text" class="form-control text-right" id="porcPrecioVenta" placeholder="">
                     </div>
                 </div>
     
@@ -66,14 +66,14 @@
                 <div class="col-sm-3">
                     <div class="form-group">
                         <label for="idPadronCliente">Cliente</label>
-                        <input [(ngModel)]="recurso.idPadronCliente" type="text" class="form-control" id="idPadronCliente" placeholder="">
+                        <input [(ngModel)]="recurso.idPadronCliente" type="text" class="form-control text-right" id="idPadronCliente" placeholder="">
                     </div>
                 </div>
                 
                 <div class="col-sm-3">
                     <div class="form-group">
                         <label for="idPadronRepresentante">Representante</label>
-                        <input [(ngModel)]="recurso.idPadronRepresentante" type="text" class="form-control" id="idPadronRepresentante" placeholder="">
+                        <input [(ngModel)]="recurso.idPadronRepresentante" type="text" class="form-control text-right" id="idPadronRepresentante" placeholder="">
                     </div>
                 </div>
     
@@ -104,8 +104,9 @@
     
             </div>
             <div class="row btn-container-continuar">
-                <button [disabled]="utilsService.checkIfIncomplete(recurso)(['listaPrecioDetCollection'])()"
-                 class="btn btn-default btn-continuar" (click)="onClickTogglePaso($event)">Continuar</button>
+                <button routerLink="/pages/tablas/lista-precios" type="submit" class="btn btn-default ">Volver</button>
+                <button [disabled]="utilsService.checkIfIncomplete(recurso)(['listaPrecioDetCollection', 'idPadronCliente', 'idPadronRepresentante', 'activa'])()"
+                 class="btn btn-default" (click)="onClickTogglePaso($event)">Continuar</button>
             </div>
         </custom-card>
 
@@ -190,7 +191,7 @@
 
         <div *ngIf="detallesActivos" class="col-sm-12 btn-confirm-container">
             <button (click)="onClickTogglePaso($event)" type="submit" class="btn btn-primary btn-volver">Volver</button>
-            <button [disabled]="utilsService.checkIfIncomplete(recurso)()()"
+            <button [disabled]="utilsService.checkIfIncomplete(recurso)(['idPadronCliente', 'idPadronRepresentante', 'activa'])()"
                     (click)="onClickConfirmar($event)" type="submit" class="btn btn-primary">Confirmar</button>
         </div>
     </ba-card>
