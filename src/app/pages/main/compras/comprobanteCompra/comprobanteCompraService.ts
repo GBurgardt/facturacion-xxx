@@ -15,6 +15,7 @@ import { Observable } from 'rxjs/Observable';
 import { Deposito } from '../../../../models/deposito';
 import { UtilsService } from '../../../../services/utilsService';
 import { FormaPago } from "app/models/formaPago";
+import { DetalleFormaPago } from "app/models/detalleFormaPago";
 
 @Injectable()
 export class ComprobanteCompraService {
@@ -248,9 +249,11 @@ export class ComprobanteCompraService {
         (productosPend: ProductoPendiente[]) => 
         (modelosFactura: ModeloFactura[]) =>
         (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
-        (depositoSelec: Deposito) => this.authService.grabaComprobante(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec)
-            .catch(err => Observable.throw(
-                this.utilsService.showErrorWithBody(err)
+        (depositoSelec: Deposito) => 
+        (detallesFormaPago: DetalleFormaPago[]) => 
+            this.authService.grabaComprobante(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec)(detallesFormaPago)
+                .catch(err => Observable.throw(
+                    this.utilsService.showErrorWithBody(err)
             ))
 
     /**

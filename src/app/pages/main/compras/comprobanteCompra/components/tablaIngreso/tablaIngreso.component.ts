@@ -260,9 +260,16 @@ export class TablaIngreso {
     )
 
 
-    test = () => {
-        console.log('ojasdojasdjosoj')
+    getPositionTooltip = () => {
+        const fatherPosition = this.getOffsetOfAddInput();
+
+        return {
+            top: (fatherPosition.top - 3) + 'px', 
+            left: (fatherPosition.left + 115) + 'px'
+        }
     }
+
+
 
 }
 

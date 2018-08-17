@@ -67,6 +67,8 @@ export class ComprobanteCompra {
     tiposOperacion: Observable<SisTipoOperacion[]>;
     monedas: Observable<Moneda[]>;
     depositos: Observable<Deposito[]>;
+    
+    tiposComprobantesRel: Observable<TipoComprobante[]>;
 
     // Lista de proveedores completa (necesaria para filtrar) y filtrada
     proveedores: {
@@ -146,9 +148,7 @@ export class ComprobanteCompra {
                 });
             },
             onClickConfirmEdit: (tipoColumnas) => (itemSelect: any) => { 
-                // Actualizo datos dle producto (si NO son las facturas lo que se edita)
-                if (tipoColumnas !== 'columnasFactura')
-                    this.actualizarDatosProductos();
+                
 
                 // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
                 this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
@@ -187,6 +187,10 @@ export class ComprobanteCompra {
                     // Guardo el importe para usarlo en la proxima edicion
                     itemSelect.auxPreviusImporte = itemSelect.importe
                 }
+
+                // Actualizo datos dle producto (si NO son las facturas lo que se edita)
+                if (tipoColumnas !== 'columnasFactura')
+                    this.actualizarDatosProductos();
 
            }
         }
@@ -289,17 +293,45 @@ export class ComprobanteCompra {
 
     }
 
+
+    onClickCancelar = () => this.utilsService.showModal(
+        'Aviso'
+    )(
+        '¿Cancelar comprobante?'
+    )(  
+        () => {
+            // Blanqueo los campos
+            const auxFecha = this.comprobante.fechaComprobante;
+            this.comprobante = new Comprobante();
+            this.comprobante.fechaComprobante = auxFecha;
+            this.comprobanteRelacionado = new ComprobanteRelacionado();
+            this.proveedorSeleccionado = new Padron();
+            this.tablas.datos.productosPend = [];
+            this.tablas.datos.modelosFactura = [];
+            this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
+            this.depositoSelec = new Deposito()
+            this.tablas.datos.detallesFormaPago = [];
+        }   
+    )({
+        tipoModal: 'confirmation'
+    });
+
     /**
      * Valida y graba el comprobante
      */
-    onClickConfirmar = () => 
-        this.comprobanteCompraService.confirmarYGrabarComprobante(this.comprobante)
+    onClickConfirmar = () => this.utilsService.showModal(
+        'Aviso'
+    )(
+        '¿Confirmar comprobante?'
+    )(  
+        () => this.comprobanteCompraService.confirmarYGrabarComprobante(this.comprobante)
             (this.comprobanteRelacionado)
             (this.proveedorSeleccionado)
             (this.tablas.datos.productosPend)
             (this.tablas.datos.modelosFactura)
             (this.cotizacionDatos)
             (this.depositoSelec)
+            (this.tablas.datos.detallesFormaPago)
             .subscribe((respuesta: any) => {
                 this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
 
@@ -313,11 +345,16 @@ export class ComprobanteCompra {
                 this.tablas.datos.modelosFactura = [];
                 this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
                 this.depositoSelec = new Deposito()
-                
+                this.tablas.datos.detallesFormaPago = [];
+                this.dataTablaFormasPago = Observable.of([]);
 
                 // Focus en input proveedor (TODO SET TIME OUT)
                 document.getElementById('inputProveedor') ? document.getElementById('inputProveedor').focus() : null
             })
+     
+    )({
+        tipoModal: 'confirmation'
+    });
     
     
 
@@ -342,7 +379,7 @@ export class ComprobanteCompra {
             )
         );
 
-        debugger;
+        // debugger;
 
         this.comprobanteCompraService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
             this.tablas.datos.modelosFactura = modelProds;
@@ -457,18 +494,7 @@ export class ComprobanteCompra {
         })
     }
 
-    onClickCancelar = () =>{
-        // Blanqueo los campos
-        const auxFecha = this.comprobante.fechaComprobante;
-        this.comprobante = new Comprobante();
-        this.comprobante.fechaComprobante = auxFecha;
-        this.comprobanteRelacionado = new ComprobanteRelacionado();
-        this.proveedorSeleccionado = new Padron();
-        this.tablas.datos.productosPend = [];
-        this.tablas.datos.modelosFactura = [];
-        this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
-        this.depositoSelec = new Deposito()
-    }   
+    
 
     /**
      * Agrega o elimina una forma pago de las seleccionadas. Tambien muestra detalle de la lista correspondiente
@@ -496,6 +522,30 @@ export class ComprobanteCompra {
             )
             .reduce((a, b) => [...a].concat([...b]), []); // Aca aplasto el array bidimensional a uno de una dimensión
 
-        debugger;
+        // debugger;
     }
+
+    /**
+     * Calcula el resto pagar
+     */
+    calcRestoPagar = () => {
+        const sumMontos = _.sumBy(
+            this.tablas.datos.detallesFormaPago,
+            (fPago) => Number(fPago.monto) ? Number(fPago.monto) : 0
+        )
+        
+        return this.cotizacionDatos.total - sumMontos
+    }
+
+    /**
+     * Evento cuando cambio cteTipo en comprobante
+     */
+    onChangeCteTipo = (cteTipoSelect: TipoComprobante) => {  
+        this.tiposComprobantesRel = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
+            'sisModulo': 1,
+            'idCteTipo': cteTipoSelect.idCteTipo
+        });
+    }
+
+
 }

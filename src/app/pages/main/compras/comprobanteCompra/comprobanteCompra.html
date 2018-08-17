@@ -66,7 +66,7 @@
                     <div class="col-sm-8 inline-flex">
                         <div class="form-group inline-group">
                             <label for="cteTipo">Cte:</label>
-                            <select [(ngModel)]="comprobante.tipo" class="form-control without-padding" [ngStyle]="{padding: '1px 8px 0px 8px'}" id="cteTipo">
+                            <select [(ngModel)]="comprobante.tipo" (ngModelChange)="onChangeCteTipo($event)" class="form-control without-padding" [ngStyle]="{padding: '1px 8px 0px 8px'}" id="cteTipo">
                                 <option *ngFor="let tipoComp of tiposComprobantes | async" [ngValue]="tipoComp">
                                     {{tipoComp.descCorta}}
                                 </option>
@@ -149,7 +149,7 @@
                                     <label for="cteRelTipo">Cte:</label>
             
                                     <select id="cteRelSelect" [(ngModel)]="comprobanteRelacionado.tipo" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteRelTipo">
-                                        <option *ngFor="let tipoComp of tiposComprobantes | async" [ngValue]="tipoComp">
+                                        <option *ngFor="let tipoComp of tiposComprobantesRel | async" [ngValue]="tipoComp">
                                             {{tipoComp.descCorta}}
                                         </option>
                                     </select>
@@ -179,6 +179,10 @@
                                     !(
                                         comprobanteRelacionado.puntoVenta && 
                                         comprobanteRelacionado.numero
+                                    ) ||
+                                    !(
+                                        proveedorSeleccionado &&
+                                        proveedorSeleccionado.padronCodigo
                                     )
                                 " (click)="onClickBuscarPendientes()" type="submit" class="btn btn-primary">Buscar</button>
                             </div>
@@ -328,20 +332,16 @@
             </ngb-tab>
             <ngb-tab title="Forma Pago">
                 <ng-template ngbTabContent>
-                
-
                     <tabla-ingreso  [data]="tablas.datos.detallesFormaPago" 
                                     [columns]="tablas.columnas.columnasDetallesFp" 
                                     [edit]="tablas.funciones.onClickEdit('columnasDetallesFp')" 
                                     [confirmEdit]="tablas.funciones.onClickConfirmEdit('columnasDetallesFp')">
                     </tabla-ingreso>
 
-                    <!-- <tabla-ingreso  [data]="comprobanteCompraService.getOnlyTrazables(tablas.datos.productosPend)" 
-                                    [columns]="tablas.columnas.columnasTrazabilidad" 
-                                    [edit]="tablas.funciones.onClickEdit('columnasTrazabilidad')" 
-                                    [confirmEdit]="tablas.funciones.onClickConfirmEdit('columnasTrazabilidad')" 
-                                    [onClickProductoLista]="onClickProductoLista">
-                    </tabla-ingreso> -->
+                    <div class="resto-pagar">
+                        <label class="resto-pagar-content">Resto Pagar: {{ calcRestoPagar() }}</label>
+                    </div>
+
 
                 </ng-template>
             </ngb-tab>

@@ -123,8 +123,8 @@
 
             </tr>
 
-            <!-- <div class="tooltip-add-prod" *ngIf="true"> -->
-            <div class="tooltip-add-prod" *ngIf="showTooltip && (!comprobante || !comprobante.puntoVenta || !comprobante.numero)">
+            <!-- <div class="tooltip-add-prod" *ngIf="true" [ngStyle]="getPositionTooltip()"> -->
+            <div class="tooltip-add-prod" *ngIf="showTooltip && (!comprobante || !comprobante.puntoVenta || !comprobante.numero)" [ngStyle]="getPositionTooltip()">
                 <span>
                     Debe completar el nro de comprobante antes de agregar productos
                 </span>
@@ -152,7 +152,15 @@
                                     [fatherPosition]="getOffsetOfAddInput()">
                     </popup-lista>
                 </td>
+                <!-- <td class="tooltip-add-prod" *ngIf="showTooltip && (!comprobante || !comprobante.puntoVenta || !comprobante.numero)"> -->
+                <!-- <td class="tooltip-add-prod" *ngIf="true">
+                    <span>
+                        Debe completar el nro de comprobante antes de agregar productos
+                    </span>
+                </td> -->
+                <!-- <td *ngIf="!(showTooltip && (!comprobante || !comprobante.puntoVenta || !comprobante.numero))"></td> -->
                 <td></td>
+
                 <td></td>
                 <td></td>
                 <td></td>

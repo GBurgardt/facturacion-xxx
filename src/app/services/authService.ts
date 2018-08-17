@@ -30,6 +30,7 @@ import { TipoComprobante } from 'app/models/tipoComprobante';
 import { DateLikePicker } from 'app/models/dateLikePicker';
 import { UtilsService } from './utilsService';
 import { SisCanje } from '../models/sisCanje';
+import { DetalleFormaPago } from 'app/models/detalleFormaPago';
 
 @Injectable()
 export class AuthService {
@@ -222,6 +223,7 @@ export class AuthService {
                         (modelosFactura: ModeloFactura[]) =>
                         (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
                         (depositoSelec: Deposito) => 
+                        (detallesFormaPago: DetalleFormaPago[]) =>
         this.request(
             [],
             RequestMethod.Post,
@@ -261,7 +263,7 @@ export class AuthService {
                 idFactCab: null,
                 factCabecera: true,
                 factDet: true,
-                factFormaPago: false,
+                factFormaPago: true,
                 factImputa: true,
                 factPie: modelosFactura.length > 0,
                 produmo: true,
@@ -296,18 +298,27 @@ export class AuthService {
                     }
                 }),
                 grillaTrazabilidad: productosPend
-                    .filter(prodPend => prodPend.producto.trazable)
-                    .map(prodTraza => {
-                        return {
-                            nroLote: prodTraza.trazabilidad.lote,
-                            serie: prodTraza.trazabilidad.serie,
-                            fechaElab: this.utilsService.formatearFecha('yyyy-mm-dd')(prodTraza.trazabilidad.fechaElab),
-                            fechaVto: this.utilsService.formatearFecha('yyyy-mm-dd')(prodTraza.trazabilidad.fechaVto),
-                            vigencia: true,
+                .filter(prodPend => prodPend.producto.trazable)
+                .map(prodTraza => {
+                    return {
+                        nroLote: prodTraza.trazabilidad.lote,
+                        serie: prodTraza.trazabilidad.serie,
+                        fechaElab: this.utilsService.formatearFecha('yyyy-mm-dd')(prodTraza.trazabilidad.fechaElab),
+                        fechaVto: this.utilsService.formatearFecha('yyyy-mm-dd')(prodTraza.trazabilidad.fechaVto),
+                        vigencia: true,
                             idProducto: prodTraza.producto.idProductos
                         }
-                    })
-
+                    }),
+                grillaFormaPago: detallesFormaPago.map(mod => {
+                    return {
+                        plazo: mod.cantDias ? mod.cantDias : 0,
+                        interes: mod.porcentaje ? mod.porcentaje : 0,
+                        monto: mod.monto ? Number(mod.monto) : 0,
+                        detalle: mod.detalle ? mod.detalle : ' ',
+                        observaciones: mod.observaciones ? mod.observaciones : ' '
+                    }
+                }),
+                    
                 
             },
             {}
