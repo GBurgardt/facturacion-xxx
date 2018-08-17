@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import {layoutPaths} from '../../../theme';
+import {layoutPaths} from '../..';
 
 @Pipe({name: 'baProfilePicture'})
 export class BaProfilePicturePipe implements PipeTransform {

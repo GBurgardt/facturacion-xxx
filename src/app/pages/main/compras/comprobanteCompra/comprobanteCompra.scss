@@ -101,9 +101,11 @@
 
         .card-comprobantes {
 
-            height: 138px;
+            // height: 138px;
             :host /deep/.custom-card {
-                height: 100% !important;
+                // height: 100% !important;
+                height: auto !important;
+                
             }
         }
         
@@ -140,6 +142,39 @@
     .comp-relacionado-container {
         display: flex;
         flex-direction: column;
+    }
+
+    .tabs-opciones {
+        display: block;
+        .fpago-content {
+            display: flex;
+            justify-content: space-between;
+            .fpago-tabla {
+                // width: 50%;
+                width: 100%;
+
+            }
+            .txt-area-container {
+                width: 48%;
+                .text-area-forma-pago {
+                    height: 78px;
+                    color: #000;
+                    font-size: 0.8rem;
+                }
+
+                .txt-header {
+                    display: flex;
+                    > select {
+                        width: 18%;
+                        height: 19px;
+                        margin: 0px 8px 6px;
+                    }
+                    > label {
+                        margin-top: 2px;
+                    }
+                }
+            }
+        }
     }
 }
 

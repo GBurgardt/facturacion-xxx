@@ -1,4 +1,5 @@
 import { SisComprobante } from "./sisComprobante";
+import { Numerador } from "./numerador";
 
 export class TipoComprobante {
     idCteTipo: number;
@@ -34,7 +35,7 @@ export class TipoComprobante {
             this.surenu = tipoComprobante.surenu;
             this.observaciones = tipoComprobante.observaciones;
             this.comprobante = new SisComprobante(tipoComprobante.comprobante);
-            this.numerador = tipoComprobante.numerador;
+            this.numerador = tipoComprobante.numerador.map(n => new Numerador(n));
         } else {
             this.idCteTipo = null;
             this.codigoComp = null;

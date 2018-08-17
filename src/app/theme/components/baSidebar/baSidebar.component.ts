@@ -1,6 +1,6 @@
 import {Component, ElementRef, HostListener} from '@angular/core';
 import {GlobalState} from '../../../global.state';
-import {layoutSizes} from '../../../theme';
+import {layoutSizes} from '../..';
 
 @Component({
   selector: 'ba-sidebar',

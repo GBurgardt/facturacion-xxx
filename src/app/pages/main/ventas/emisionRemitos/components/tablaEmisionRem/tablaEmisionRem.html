@@ -33,9 +33,22 @@
                 <td *ngFor="let col of columns" [ngClass]="col.customClass ? col.customClass : 'text-align: left;'">
                     <div *ngIf="col.subkey">
                         <div *ngIf="!checkIfEditOn(item)(col)">
-                            {{parseKey(
+
+
+                            <div *ngIf="col.decimal">
+                                <!-- {{utilsService.parseDecimal(item[col.key][col.subkey])}} -->
+                                {{utilsService.parseDecimal(!utilsService.checkIfJson(item[col.key][col.subkey]) ? item[col.key][col.subkey] : item[col.key][col.subkey].descripcion)}}
+                            </div>
+
+                            <div *ngIf="!col.decimal">
+                                    {{parseKey(
+                                        !utilsService.checkIfJson(item[col.key][col.subkey]) ? item[col.key][col.subkey] : item[col.key][col.subkey].descripcion
+                                        )}}
+                            </div>
+
+                            <!-- {{parseKey(
                                 !utilsService.checkIfJson(item[col.key][col.subkey]) ? item[col.key][col.subkey] : item[col.key][col.subkey].descripcion
-                                )}}
+                                )}} -->
                         </div>
 
                         <div *ngIf="checkIfEditOn(item)(col)">
@@ -66,17 +79,21 @@
                     <div *ngIf="!col.subkey">
                         <div *ngIf="!checkIfEditOn(item)(col)">
                             <!-- Caso comun -->
-                            <div *ngIf="col.nombre !== 'imputacion' && col.key !== 'subtotal' && col.key !== 'subtotalIva'">
+                            <div *ngIf="col.nombre !== 'imputacion' && col.key !== 'subtotal' && col.key !== 'subtotalIva' && !col.decimal" >
                                 {{parseKey(item[col.key])}}
                             </div>
 
                             <!-- CASOS PARTICULARES -->
-                            <div *ngIf="col.nombre === 'imputacion'">
+                            <div *ngIf="col.nombre === 'imputacion' && !col.decimal">
                                 {{ item[col.key] && item[col.key].seleccionada ? item[col.key].seleccionada.descripcion : ''}}
                             </div>
 
-                            <div *ngIf="col.key === 'subtotal' || col.key === 'subtotalIva'">
+                            <div *ngIf="col.key === 'subtotal' || col.key === 'subtotalIva' && !col.decimal">
                                 {{ getSubtotal(item)(col.key) }}
+                            </div>
+
+                            <div *ngIf="col.decimal">
+                                {{utilsService.parseDecimal(item[col.key])}}
                             </div>
                             
 

@@ -90,7 +90,7 @@
 
                         <!-- Si SI está en edicion -->
                         <div *ngIf="checkIfEditOn(item)(col)">    
-                            <input  *ngIf=" (col.nombre !== 'imputacion' && col.key !== 'trazabilidad' && col.nombre !== 'cantidad' && !col.elementoFinalBlur)"
+                            <input  *ngIf=" (col.nombre !== 'imputacion' && col.key !== 'trazabilidad' && !col.elementoFinalBlur)"
                                 [(ngModel)]="item[col.key]"  style="margin: 4px 6px; text-align: end;" type="text" 
                                 class="form-control edit-input" id="inputSubKey" placeholder="" [ngClass]="getClassInputEditable(item)(col)">
                             
@@ -104,17 +104,17 @@
                             <!-- CASOS PARTICULARES -->
                             <select *ngIf="col.nombre === 'imputacion'" 
                                     [(ngModel)]="item[col.key].seleccionada"
-                                    [ngClass]="'form-control without-padding editar-focus-' + item.producto.idProductos" 
+                                    [ngClass]="'form-control without-padding editar-focus-' + item.producto.idProductos+'-'+item.numero" 
                                     >
                                 <option *ngFor="let impu of item[col.key].todas" [ngValue]="impu">
                                     {{impu.descripcion}}
                                 </option>
                             </select>
 
-                            <input  *ngIf="col.nombre === 'cantidad'"
+                            <!-- <input  *ngIf="col.nombre === 'cantidad'"
                                 [(ngModel)]="item[col.key]"  style="margin: 4px 6px; text-align: end;" type="text" 
                                 class="form-control edit-input" id="inputSubKey" placeholder="" 
-                                (blur)="confirmEdit(item)">
+                                (blur)="confirmEdit(item)"> -->
                             <!-- FIN CASOS PARTICULARES -->
                         </div>
                     </div>
@@ -123,16 +123,27 @@
 
             </tr>
 
+            <!-- <div class="tooltip-add-prod" *ngIf="true"> -->
+            <div class="tooltip-add-prod" *ngIf="showTooltip && (!comprobante || !comprobante.puntoVenta || !comprobante.numero)">
+                <span>
+                    Debe completar el nro de comprobante antes de agregar productos
+                </span>
+            </div>
+
             <!-- ROW PARA AGREGAR UN PRODUCTO -->
             <tr *ngIf="enableAddItem">
                 <td></td>
-                <td>
+                <td (mouseenter) = "showTooltip = true"  (mouseleave) = "showTooltip = false">
                     <input  [(ngModel)]="textoBusqueda" type="text" class="form-control input-new-prod" id="addInput" placeholder="" 
                             (blur)="onBlurInputItemAdd()" 
                             (ngModelChange)="onChangeInputItemAdd($event)" 
                             (keydown.arrowdown)="keyPressInputTexto($event)('down')" 
                             (keydown.arrowup)="keyPressInputTexto($event)('up')" 
-                            (keydown.enter)="onEnterInputBuscProd($event)">
+                            (keydown.enter)="onEnterInputBuscProd($event)"
+                            [disabled]="!comprobante || !comprobante.puntoVenta || !comprobante.numero"
+                            >
+
+                            
 
                     <popup-lista *ngIf="textoBusqueda && textoBusqueda.length > 0"
                                     [items]="productosBusqueda.filtrados" 
@@ -141,7 +152,15 @@
                                     [fatherPosition]="getOffsetOfAddInput()">
                     </popup-lista>
                 </td>
-                <td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <!-- <td>
                     {{parseKey(productoSeleccionado.producto.descripcion)}}
                 </td>
                 <td>
@@ -164,7 +183,7 @@
                 </td>
                 <td>
                     {{parseKey(productoSeleccionado.producto.trazable)}}
-                </td>
+                </td> -->
             </tr>
             <!-- FIN ROW PARA AGREGAR UN PRODUCTO -->
 

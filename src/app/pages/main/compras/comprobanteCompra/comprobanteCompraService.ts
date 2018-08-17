@@ -14,6 +14,7 @@ import { ComprobanteRelacionado } from "app/models/comprobanteRelacionado";
 import { Observable } from 'rxjs/Observable';
 import { Deposito } from '../../../../models/deposito';
 import { UtilsService } from '../../../../services/utilsService';
+import { FormaPago } from "app/models/formaPago";
 
 @Injectable()
 export class ComprobanteCompraService {
@@ -78,17 +79,26 @@ export class ComprobanteCompraService {
             decimal: true,
             customClass: 'text-right'
         },
-        // {
-        //     nombre: 'deposito',
-        //     key: 'deposito',
-        //     ancho: '10%',
-        //     enEdicion: null
-        // },
+        {
+            nombre: 'importe',
+            key: 'importe',
+            ancho: '5%',
+            enEdicion: null,
+            decimal: true,
+            customClass: 'text-right',
+            elementoFinalBlur: true
+        },
         {
             nombre: 'trazable',
             key: 'producto',
             subkey: 'trazable',
-            ancho: '10%',
+            ancho: '5%',
+            customClass: 'text-left'
+        },
+        {
+            nombre: 'Nro Comprobante',
+            key: 'numero',
+            ancho: '5%',
             customClass: 'text-left'
         }
     ];
@@ -139,6 +149,12 @@ export class ComprobanteCompraService {
             subkey: 'fechaVto',
             ancho: '20%',
             enEdicion: null
+        },
+        {
+            nombre: 'Nro Comprobante',
+            key: 'numero',
+            ancho: '5%',
+            customClass: 'text-left'
         }
     ];
 
@@ -168,12 +184,14 @@ export class ComprobanteCompraService {
     /**
      * Buscar los productos pendientes
      */
-    buscarPendientes = (proveedor: Padron) => (comprobanteRel: ComprobanteRelacionado) => {
-        return this.authService.getProductosPendientes(
-            this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(proveedor)(comprobanteRel)
-            .map(respuesta => respuesta.arraydatos.map(prodPend => new ProductoPendiente(prodPend)));
-    }
+    buscarPendientes = (proveedor: Padron) => (comprobanteRel: ComprobanteRelacionado) => 
+        this.authService.getProductosPendientes(this.localStorageService.getObject(environment.localStorage.acceso).token)(proveedor)(comprobanteRel)
+            .map(
+                respuesta => respuesta.arraydatos.map(
+                    prodPend => new ProductoPendiente(prodPend)
+                )
+            );
+    
 
     /**
      * Retorna todos los productos de la empresa actual
@@ -345,5 +363,57 @@ export class ComprobanteCompraService {
             }
         }
     }
+
+
+    /**
+     * Get formas pago apra la tabla de forma pago emisiuon remito
+     */
+    getFormasPago = (fecha: any) => 
+        this.authService.getBuscaFormaPago(this.localStorageService.getObject(environment.localStorage.acceso).token)()(fecha)
+            .map(resp => resp.arraydatos.map(fp => new FormaPago(fp)))
+            .catch((err, caught) => {
+                this.utilsService.showErrorWithBody(err);
+                return Observable.of([]);
+            })
+
+
+    getColumnsDetallesFp = () => [
+        {
+            nombre: 'plazo',
+            key: 'cantDias',
+            ancho: '15%',
+            customClass: 'text-right'
+        },
+        {
+            nombre: 'int',
+            key: 'porcentaje',
+            ancho: '15%',
+            decimal: true,
+            customClass: 'text-right'
+        },
+        {
+            nombre: 'detalle',
+            key: 'detalle',
+            ancho: '15%',
+            customClass: 'text-left'
+        },
+        {
+            nombre: 'monto',
+            key: 'monto',
+            ancho: '15%',
+            enEdicion: null,
+            editarFocus: true,
+            decimal: true,
+            customClass: 'text-right'
+        },
+        {
+            nombre: 'observaciones',
+            key: 'observaciones',
+            ancho: '30%',
+            enEdicion: null,
+            elementoFinalBlur: true,
+            customClass: 'text-left'
+        }
+    ]
 
 }

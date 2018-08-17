@@ -6,9 +6,11 @@ import { SharedModule } from "../SharedModule";
 import { RecursoService } from "app/services/recursoService";
 import { AuthService } from "../../../services/authService";
 import { UtilsService } from "../../../services/utilsService";
-import { TablaIngreso } from "app/pages/main/compras/comprobanteCompra/components";
+import { TablaIngreso } from "app/pages/main/compras/comprobanteCompra/components/tablaIngreso";
 import { ComprobanteCompra } from "app/pages/main/compras/comprobanteCompra";
 import { ComprobanteCompraService } from "app/pages/main/compras/comprobanteCompra/comprobanteCompraService";
+import { TablaFormaPagoComp } from "app/pages/main/compras/comprobanteCompra/components/tablaFormaPagoComp";
+import { EmisionRemitosService } from "../ventas/emisionRemitos/emisionRemitosService";
 
 @NgModule({
     imports: [
@@ -19,16 +21,19 @@ import { ComprobanteCompraService } from "app/pages/main/compras/comprobanteComp
     declarations: [
         Compras,
         ComprobanteCompra,
-        TablaIngreso
+        TablaIngreso,
+        TablaFormaPagoComp
     ],
     providers: [
         RecursoService,
         AuthService,
         UtilsService,
-        ComprobanteCompraService
+        ComprobanteCompraService,
+        EmisionRemitosService
     ],
     exports: [
-        TablaIngreso
+        TablaIngreso,
+        TablaFormaPagoComp
     ]
 })
 export class ComprasModule {

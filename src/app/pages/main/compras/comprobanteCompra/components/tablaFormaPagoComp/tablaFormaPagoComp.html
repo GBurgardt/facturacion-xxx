@@ -1,0 +1,22 @@
+<div class="tabla-forma-pago-comp">
+    <table style="width:100%">
+        <tr class="table-header">
+            <th></th>
+            <th>F.Pago</th>
+            <th>Lista</th>
+            <th>Detalle</th>
+        </tr>
+    
+        <tr *ngFor="let fp of dataTable | async">
+            <td>
+                <input (change)="onChangeCheckbox($event)(fp)" [disabled]="checkIfSeleccionable(fp)" class="checkbox-td" type="checkbox"/>
+            </td>
+            <td>{{ fp.descripcion }}</td>
+            <td>{{ fp.listaPrecio.idListaPrecio }}</td>
+            <td>{{ fp.descripcion }}</td>
+        </tr>
+    </table> 
+</div>
+
+
+<!-- <ba-checkbox [(ngModel)]="test" [label]="''" [ngModelOptions]="{standalone: true}"></ba-checkbox> -->

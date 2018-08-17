@@ -2,11 +2,11 @@
     border: 0;
     border-radius: 5px;
     position: relative;
-    box-shadow: 0 0px 26px 0 rgba(0, 0, 0, 0.25);
     margin: 1px;
-    //margin-bottom: 17px;
 
-    height: 100%;
+    // box-shadow: 0 0px 26px 0 rgba(0, 0, 0, 0.25);
+    background: #efefef;
+    padding: 1px 8px;
 
     .custom-card-header {
         width: 100%;

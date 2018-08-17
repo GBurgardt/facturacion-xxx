@@ -1,12 +1,12 @@
 
 import { Component, Input } from '@angular/core';
-import { UtilsService } from 'app/services/utilsService';
-import { ProductoPendiente } from '../../../../../models/productoPendiente';
+import { UtilsService } from '../../../../../../services/utilsService';
+import { ProductoPendiente } from '../../../../../../models/productoPendiente';
 import { BehaviorSubject } from 'rxjs';
-import { RecursoService } from '../../../../../services/recursoService';
+import { RecursoService } from '../../../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
 
-import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
+import { PopupListaService } from '../../../../../reusable/otros/popup-lista/popup-lista-service';
 
 
 @Component({
@@ -33,6 +33,8 @@ export class TablaIngreso {
     @Input() remove;
     @Input() confirmEdit;
 
+    // Lo uso para habilitar/deshabilitar input de ingerso new prod
+    @Input() comprobante;
     
 
     /////////// BUSQUEDA ///////////
@@ -223,9 +225,12 @@ export class TablaIngreso {
      */
     getClassInputEditable = (item) => (col) => {
         if (item){
-            // Agarro el id dependiendo el tipo de archivo. Como lo uso en lotes trazables y en detalles formas pagos y productos pendientes, solo me fijo esos dos
             const idItem =  item.cuentaContable ? item.cuentaContable : 
-                            item.producto && item.producto.idProductos ? item.producto.idProductos : '000';
+                            item.idFormaPagoDet ? item.idFormaPagoDet : 
+                            // item.producto && item.producto.idProductos ? item.producto.idProductos : '000';
+                            item.producto && item.producto.idProductos ? `${item.producto.idProductos}-${item.numero}` : '000';
+
+            // if(item.producto && item.producto.idProductos ) debugger;
 
             // 'form-control edit-input input-edit-' + item.producto.idProductos
             return `form-control edit-input${col.editarFocus ? ` editar-focus-${idItem}` : '' }`
@@ -248,9 +253,16 @@ export class TablaIngreso {
 
     // Cheackea si esta en edicion
     checkIfEditOn = (item) => (col) => col.enEdicion && (
-        (item.producto && item.producto.idProductos && col.enEdicion === item.producto.idProductos) ||
-        (item.cuentaContable && col.enEdicion === item.cuentaContable)
+        // (item.producto && item.producto.idProductos && col.enEdicion === item.producto.idProductos) ||
+        (item.producto && item.producto.idProductos && col.enEdicion === `${item.producto.idProductos}-${item.numero}`) ||
+        (item.cuentaContable && col.enEdicion === item.cuentaContable) || 
+        (item.idFormaPagoDet && col.enEdicion === item.idFormaPagoDet)
     )
+
+
+    test = () => {
+        console.log('ojasdojasdjosoj')
+    }
 
 }
 

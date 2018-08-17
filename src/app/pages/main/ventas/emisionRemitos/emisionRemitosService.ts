@@ -17,6 +17,7 @@ import { UtilsService } from '../../../../services/utilsService';
 import { FormaPago } from "app/models/formaPago";
 import { CteFechas } from "../../../../models/cteFechas";
 import { Lote } from "../../../../models/lote";
+import { SisCanje } from "../../../../models/sisCanje";
 
 @Injectable()
 export class EmisionRemitosService {
@@ -62,6 +63,7 @@ export class EmisionRemitosService {
             key: 'pendiente',
             ancho: '7.5%',
             enEdicion: null,
+            decimal: true,
             customClass: 'text-right'
         },
         {
@@ -76,6 +78,7 @@ export class EmisionRemitosService {
             key: 'precio',
             ancho: '5.5%',
             enEdicion: null,
+            decimal: true,
             customClass: 'text-right'
         },
         {
@@ -83,6 +86,7 @@ export class EmisionRemitosService {
             key: 'descuento',
             ancho: '5.5%',
             enEdicion: null,
+            decimal: true,
             customClass: 'text-right'
         },
         {
@@ -97,12 +101,14 @@ export class EmisionRemitosService {
             nombre: 'subtotal',
             key: 'subtotal',
             ancho: '5.5%',
+            // decimal: true,
             customClass: 'text-right'
         },
         {
             nombre: '%IVA',
             key: 'ivaPorc',
             ancho: '5.5%',
+            decimal: true,
             customClass: 'text-right'
         },
         {
@@ -165,6 +171,7 @@ export class EmisionRemitosService {
         {
             nombre: 'stock',
             key: 'stock',
+            decimal: true,
             ancho: '6.6%',
             customClass: 'text-right'
         },
@@ -182,6 +189,7 @@ export class EmisionRemitosService {
             ancho: '6.6%',
             enEdicion: null,
             elementoFinalBlur: true,
+            decimal: true,
             customClass: 'text-right'
         }
     ];
@@ -203,6 +211,7 @@ export class EmisionRemitosService {
             nombre: 'cantidad',
             key: 'importeTotal',
             ancho: '30%',
+            decimal: true,
             customClass: 'text-right'
         }
     ]
@@ -218,6 +227,7 @@ export class EmisionRemitosService {
             nombre: 'int',
             key: 'porcentaje',
             ancho: '15%',
+            decimal: true,
             customClass: 'text-right'
         },
         {
@@ -232,6 +242,7 @@ export class EmisionRemitosService {
             ancho: '15%',
             enEdicion: null,
             editarFocus: true,
+            decimal: true,
             customClass: 'text-right'
         },
         {
@@ -299,16 +310,34 @@ export class EmisionRemitosService {
     /**
      * 
      */
-    confirmarYGrabarComprobante = (comprobante: Comprobante) => 
+    confirmarYEmitirRemito = (comprobante: Comprobante) =>
         (comproRelac: ComprobanteRelacionado) =>
-        (provSelec: Padron) => 
-        (productosPend: ProductoPendiente[]) => 
-        (modelosFactura: ModeloFactura[]) =>
-        (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
-        (depositoSelec: Deposito) => this.authService.grabaComprobante(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec)
-            .catch(err => Observable.throw(
-                this.utilsService.showErrorWithBody(err)
-            ))
+            (clienteSelec: Padron) =>
+                (productosPend: ProductoPendiente[]) =>
+                    (cotizacionDatos: { cotizacion: Cotizacion, total: number }) =>
+                        (sisCanje: SisCanje) =>
+                        this.authService.emitirRemito(
+                            this.localStorageService.getObject(environment.localStorage.acceso).token
+                        )(
+                            comprobante
+                        )(
+                            comproRelac
+                        )(
+                            clienteSelec
+                        )(
+                            productosPend
+                        )(
+                            null
+                        )(
+                            cotizacionDatos
+                        )(
+                            null
+                        )(
+                            sisCanje
+                        )
+                            .catch(err => Observable.throw(
+                                this.utilsService.showErrorWithBody(err)
+                            ))
 
     /**
      * Valida que los datos estén correctos

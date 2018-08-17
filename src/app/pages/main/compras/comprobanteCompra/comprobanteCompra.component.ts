@@ -20,6 +20,9 @@ import { Factura } from '../../../../models/factura';
 import { Deposito } from 'app/models/deposito';
 import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
 import { ComprobanteCompraService } from './comprobanteCompraService';
+import { FormaPago } from 'app/models/formaPago';
+
+import { DetalleFormaPago } from 'app/models/detalleFormaPago';
 
 @Component({
     selector: 'comprobante-compra',
@@ -54,6 +57,9 @@ export class ComprobanteCompra {
     // Suma de todos los subtotales
     sumatoriaSubtotales: number = 0;
 
+    formasPagoSeleccionadas: FormaPago[] = [];
+    // detalleListaFpsSeleccionadas: string = '';
+
     /////////////////////////////////////////////
     //////////// Listas desplegables ////////////
     /////////////////////////////////////////////
@@ -73,15 +79,18 @@ export class ComprobanteCompra {
     /////////////////////////////////////////////
     ////////////////// Tablas ///////////////////
     /////////////////////////////////////////////
+    dataTablaFormasPago: Observable<FormaPago[]>;
     tablas: {
         columnas: {
             columnasProductos: any[];
             columnasTrazabilidad: any[];
             columnasFactura: any[];
+            columnasDetallesFp: any[];
         },
         datos: {
             productosPend: ProductoPendiente[];
             modelosFactura: ModeloFactura[];
+            detallesFormaPago: DetalleFormaPago[]
         },
         funciones: {
             onClickRemove: any;
@@ -92,46 +101,32 @@ export class ComprobanteCompra {
         columnas: { 
             columnasProductos: [],
             columnasTrazabilidad: [],
-            columnasFactura: []
+            columnasFactura: [],
+            columnasDetallesFp: []
         }, 
         datos: { 
             productosPend: [],
-            modelosFactura: []
+            modelosFactura: [],
+            detallesFormaPago: []
         },
         funciones: {
             onClickRemove: (prodSelect: ProductoPendiente) => {
                 _.remove(this.tablas.datos.productosPend, (prod: ProductoPendiente) => {
-                    return prod.producto.idProductos === prodSelect.producto.idProductos;
+                    // return prod.producto.idProductos === prodSelect.producto.idProductos;
+                    return prod.producto.idProductos === prodSelect.producto.idProductos && prod.numero === prodSelect.numero;
                 });
             },
             onClickEdit: (tipoColumnas) => (itemSelect: any) => { 
-                // this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
-                //     let newTabla = tabla;
-                //     if (newTabla.enEdicion !== undefined) {
-                //         newTabla.enEdicion = prodSelect.producto.idProductos
-                //     }
-                //     return newTabla;
-                // });
-
-                // // Hago focus en el select de imputacion
-                // setTimeout(()=>{
-                //     const selectImpu: any = document.getElementsByClassName('select-impu-'+prodSelect.producto.idProductos);
-                //     if(selectImpu && selectImpu[0]) {
-                //         selectImpu[0].focus();
-                //     } else {
-                //         const inputFocus: any = document.getElementsByClassName('input-edit-'+prodSelect.producto.idProductos);
-                //         inputFocus && inputFocus[0] ? inputFocus[0].focus() : null
-                //     }
-                // });
-
 
                 this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
                     let newTabla = tabla;
                     if (newTabla.enEdicion !== undefined) {
                         
-                        tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = itemSelect.producto.idProductos :
-                        tipoColumnas === 'columnasTrazabilidad' ? newTabla.enEdicion = itemSelect.producto.idProductos :
-                        tipoColumnas === 'columnasFactura' ? newTabla.enEdicion = itemSelect.cuentaContable : null
+                        // tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = itemSelect.producto.idProductos :
+                        tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = `${itemSelect.producto.idProductos}-${itemSelect.numero}` :
+                        tipoColumnas === 'columnasTrazabilidad' ? newTabla.enEdicion = `${itemSelect.producto.idProductos}-${itemSelect.numero}` :
+                        tipoColumnas === 'columnasFactura' ? newTabla.enEdicion = itemSelect.cuentaContable : 
+                        tipoColumnas === 'columnasDetallesFp' ? newTabla.enEdicion = itemSelect.idFormaPagoDet : null
                     }
                     return newTabla;
                 });
@@ -140,7 +135,9 @@ export class ComprobanteCompra {
                 setTimeout(() => {
         
                     const idItem =  itemSelect.cuentaContable ? itemSelect.cuentaContable : 
-                                    itemSelect.producto && itemSelect.producto.idProductos ? itemSelect.producto.idProductos : '000';
+                                    itemSelect.idFormaPagoDet ? itemSelect.idFormaPagoDet : 
+                                    // itemSelect.producto && itemSelect.producto.idProductos ? itemSelect.producto.idProductos : '000';
+                                    itemSelect.producto && itemSelect.producto.idProductos ? `${itemSelect.producto.idProductos}-${itemSelect.numero}` : '000';
         
                     const inputFocusClass = 'editar-focus-'+idItem;
         
@@ -163,7 +160,7 @@ export class ComprobanteCompra {
                     return newTabla;
                 })
 
-                // // Hago la sumatoria de los subtotales de la factura
+                // Hago la sumatoria de los subtotales de la factura
                 if (tipoColumnas === 'columnasFactura') {
                     
                     // Actualizo el Total Comprobante sumando todos los precios nuevamente (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
@@ -174,6 +171,21 @@ export class ComprobanteCompra {
                         )
                     );
 
+                }
+
+                // Actualizo el importe si y solo si esta editando productos, y si el importe viene modificado
+                if (tipoColumnas === 'columnasProductos') {
+                    // Si el importe es 0, es la primer edicion por lo que calculo el importe
+                    if (itemSelect.importe === 0) {
+                        itemSelect.importe = itemSelect.pendiente * itemSelect.precio
+                    } else {
+                        // Si el importe es igual al importe previo, entonces el importe NO se editó, por lo que seguramte se editó la cantidad o el precio y debo recalcular el importe
+                        if (itemSelect.importe === itemSelect.auxPreviusImporte) {
+                            itemSelect.importe = itemSelect.pendiente * itemSelect.precio
+                        }
+                    }
+                    // Guardo el importe para usarlo en la proxima edicion
+                    itemSelect.auxPreviusImporte = itemSelect.importe
                 }
 
            }
@@ -222,6 +234,7 @@ export class ComprobanteCompra {
         this.tablas.columnas.columnasProductos = comprobanteCompraService.getColumnsProductos();
         this.tablas.columnas.columnasTrazabilidad = comprobanteCompraService.getColumnsTrazabilidad();
         this.tablas.columnas.columnasFactura = comprobanteCompraService.getColumnsFactura();
+        this.tablas.columnas.columnasDetallesFp = comprobanteCompraService.getColumnsDetallesFp();
 
         ////////// Otros //////////
         this.comprobanteCompraService.getCotizacionDatos().subscribe(cotizDatos => this.cotizacionDatos.cotizacion = cotizDatos);
@@ -253,15 +266,26 @@ export class ComprobanteCompra {
      * Agrega el producto seleccionado a la lista de productosPendientes
      */
     onClickProductoLista = (prodSelec: ProductoPendiente) => {
-        const existeProd = this.tablas.datos.productosPend.find(prod=>prod.producto.idProductos === prodSelec.producto.idProductos)
+        
+        // Le seteo el nroComprobante
+        const auxProdSelect = Object.assign({}, prodSelec);
+        auxProdSelect.numero = Number(this.comprobante.puntoVenta + this.comprobante.numero).toString();
+        
+
+
+        // Checkeo que no exista
+        const existeProd = this.tablas.datos.productosPend.find(
+            prod => prod.producto.idProductos === auxProdSelect.producto.idProductos &&
+                    prod.numero === auxProdSelect.numero
+        )
 
         if (!existeProd) {
-            this.tablas.datos.productosPend.push(prodSelec);
+            this.tablas.datos.productosPend.push(auxProdSelect);
             this.actualizarDatosProductos();
         }
 
-        // Despues de agregar el producto prosedo a ponerlo en edición
-        this.tablas.funciones.onClickEdit('columnasProductos')(prodSelec);
+        // Despues de agregar el producto procedo a ponerlo en edición
+        this.tablas.funciones.onClickEdit('columnasProductos')(auxProdSelect);
 
     }
 
@@ -304,12 +328,21 @@ export class ComprobanteCompra {
      */
     actualizarDatosProductos = () => {
         // Actualizo el Total Comprobante sumando todos los precios nuevamente (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
+        // this.cotizacionDatos.total = Math.round(
+        //     _.sumBy(
+        //         this.tablas.datos.productosPend,
+        //         (prod) => Number(prod.precio) ? Number(prod.precio) * Number(prod.pendiente) : 0
+        //     )
+        // );
+        // Actualizo el Total Comprobante sumando todos los importes nuevamente
         this.cotizacionDatos.total = Math.round(
             _.sumBy(
                 this.tablas.datos.productosPend,
-                (prod) => Number(prod.precio) ? Number(prod.precio) * Number(prod.pendiente) : 0
+                (prod) => Number(prod.importe) ? Number(prod.importe) : 0
             )
         );
+
+        debugger;
 
         this.comprobanteCompraService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
             this.tablas.datos.modelosFactura = modelProds;
@@ -320,9 +353,9 @@ export class ComprobanteCompra {
                     (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
                 )
             );
-
-            // debugger;
         })
+
+
     }
 
     /**
@@ -369,6 +402,12 @@ export class ComprobanteCompra {
         if (!this[objetoContenedor][keyFecha] || typeof this[objetoContenedor][keyFecha] !== 'string') return;
         
         this[objetoContenedor][keyFecha] = this.utilsService.stringToDateLikePicker(this[objetoContenedor][keyFecha]);
+
+        // Obtengo las formas de pago
+        if(this.comprobante.fechaComprobante) {
+            this.dataTablaFormasPago = this.comprobanteCompraService.getFormasPago(this.comprobante.fechaComprobante);
+            
+        }
 
         // Hago focus en el prox input
         (keyFecha==='fechaComprobante') || (keyFecha==='fechaContable') ? 
@@ -430,4 +469,33 @@ export class ComprobanteCompra {
         this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
         this.depositoSelec = new Deposito()
     }   
+
+    /**
+     * Agrega o elimina una forma pago de las seleccionadas. Tambien muestra detalle de la lista correspondiente
+     */
+    handleFormaPagoSelec = (fp: FormaPago) => (tipoOperacion: string) => {
+        // Agrego o elimino
+        tipoOperacion === 'add' ?
+            this.formasPagoSeleccionadas.push(fp) :
+            this.formasPagoSeleccionadas = this.formasPagoSeleccionadas.filter(fpSelec => fpSelec.idFormaPago !== fp.idFormaPago);
+
+        // Detalle de lista correspondiente
+        // this.detalleListaFpsSeleccionadas = this.formasPagoSeleccionadas
+        //     .map(fpSelec => fp.listaPrecio)
+        //     .filter(
+        //         (lista, index, self) => index === self.findIndex(l => l.idListaPrecio === lista.idListaPrecio)
+        //     )
+        //     .map(lista => `Lista ${lista.idListaPrecio} \nDesde: ${lista.vigenciaDesde.getFechaFormateada()}, Hasta: ${lista.vigenciaHasta.getFechaFormateada()}, ${lista.idMoneda.descripcion}`)
+        //     .join('\n');
+
+
+        // Ahora mappeo los detalles de las formas de pago seleccionadas para mostrarlos en la grilla de el medio
+        this.tablas.datos.detallesFormaPago = this.formasPagoSeleccionadas
+            .map(
+                fp => fp.detalles
+            )
+            .reduce((a, b) => [...a].concat([...b]), []); // Aca aplasto el array bidimensional a uno de una dimensión
+
+        debugger;
+    }
 }

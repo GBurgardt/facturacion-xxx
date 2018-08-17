@@ -40,6 +40,11 @@ export class ProductoPendiente {
         fechaVto: DateLikePicker
     }
 
+    importe: number;
+    auxPreviusImporte: number;
+
+    // nroComprobante: string;
+
     constructor(productoPendiente?: {
         comprobante: string;
         numero: string;
@@ -99,6 +104,12 @@ export class ProductoPendiente {
                 fechaVto: null
             };
 
+            this.importe = 0;
+            this.auxPreviusImporte = 0;
+
+            // this.nroComprobante = '';
+
+
         } else {
             this.comprobante = null;
             this.numero = null;
@@ -129,6 +140,11 @@ export class ProductoPendiente {
                 fechaElab: null,
                 fechaVto: null
             };
+
+            this.importe = null;
+            this.auxPreviusImporte = null;
+
+            // this.nroComprobante = null;
         }
     }
 

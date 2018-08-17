@@ -29,6 +29,8 @@ import { ComprobanteRelacionado } from '../../../../models/comprobanteRelacionad
 import { Lote } from '../../../../models/lote';
 import { DetalleFormaPago } from 'app/models/detalleFormaPago';
 import { GlobalState } from 'app/global.state';
+import { Numerador } from 'app/models/numerador';
+import { Numero } from '../../../../models/numero';
 
 
 @Component({
@@ -52,6 +54,8 @@ export class EmisionRemitos {
     sisCanje: SisCanje = new SisCanje();
     formasPagoSeleccionadas: FormaPago[] = [];
 
+    numeroCteSelec: Numero = new Numero();
+
     /////////////////////////////////////////////
     //////////// Listas desplegables ////////////
     /////////////////////////////////////////////
@@ -65,8 +69,7 @@ export class EmisionRemitos {
     clientes: { todos: Padron[]; filtrados: BehaviorSubject<Padron[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
     letras: string[] = [];
     
-    puntosVenta: string[] = [];
-    nrosCteTipo: string[] = [];
+    numerosCte: Numero[] = [];
 
     /////////////////////////////////////////////
     ////////////////// Otros ////////////////////
@@ -143,9 +146,6 @@ export class EmisionRemitos {
         this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
             'sisComprobante': 6
         });
-
-        this.puntosVenta = [];
-        this.nrosCteTipo = [];
 
         this.tiposOperacion = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)([2]);
         this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
@@ -251,19 +251,47 @@ export class EmisionRemitos {
 
     }
 
-
+    onClickCancelar = () => 
+        this.utilsService.showModal('Aviso')('¿Cancelar emision de remito?')()({
+            tipoModal: 'confirmation'
+        });
 
     /**
      * Valida y graba el comprobante
      */
     onClickConfirmar = () => {
         const keys = Object.keys(this);
+        debugger;
+        // keys.forEach(a => 
+        //     typeof a !== 'function' ?
+        //         console.log(this[a]) :
+        //         null
+        // );
 
-        keys.forEach(a => 
-            typeof a !== 'function' ?
-                console.log(this[a]) :
-                null
-        )
+        this.emisionRemitosService.confirmarYEmitirRemito(this.comprobante)
+            (this.comprobanteRelacionado)
+            (this.cliente)
+            (this.tablas.datos.productosPend)
+            (this.cotizacionDatos)
+            (this.sisCanje)
+            .subscribe((respuesta: any) => {
+                this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
+
+                // Blanqueo los campos
+                const auxFecha = this.comprobante.fechaComprobante;
+                this.comprobante = new Comprobante();
+                this.comprobante.fechaComprobante = auxFecha;
+                this.comprobanteRelacionado = new ComprobanteRelacionado();
+                this.cliente = new Padron();
+                this.tablas.datos.productosPend = [];
+                // this.tablas.datos.modelosFactura = [];
+                this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
+                // this.depositoSelec = new Deposito()
+                
+
+                // Focus en input proveedor (TODO SET TIME OUT)
+                document.getElementById('inputProveedor') ? document.getElementById('inputProveedor').focus() : null
+            })
     };
 
     /**
@@ -357,23 +385,24 @@ export class EmisionRemitos {
      * También hago otras cosas
      */
     onBlurFechaComprobante = (e) => {
+
+        // Actualizo fecha (sobretodo si el formato es 'ddmm')
+        this.comprobante.fechaComprobante = this.utilsService.stringToDateLikePicker(this.comprobante.fechaComprobante);
         
         // Primero checkeo que el intervalo existe ya que puede que el tipoComrpoiabte con ese pto venta NO tenga intervalo
         // Por lo que el operador puede ingresar la fecha que se le cante, y yo pongo por defecto la del día
         if (this.comprobante.fechaComprobante) {
             // Si NO hay intervalo, o si SI hay intervalo Y la fecha ingresada está dentro de el...
             if (
-                (!this.cteFechasIntervalo || !this.cteFechasIntervalo.fechaApertura) ||
+                // (!this.cteFechasIntervalo || !this.cteFechasIntervalo.fechaApertura) ||
+                (this.cteFechasIntervalo && this.cteFechasIntervalo.fechaApertura) &&
                 moment(
                     this.utilsService.dateLikePickerToDate(this.comprobante.fechaComprobante)
                 ).isBetween(
                     moment(this.cteFechasIntervalo.fechaApertura),
                     moment(this.cteFechasIntervalo.fechaCierre)
                 )
-            ) {
-                // Actualizo fecha (sobretodo si el formato es 'ddmm')
-                this.comprobante.fechaComprobante = this.utilsService.stringToDateLikePicker(this.comprobante.fechaComprobante);
-                
+            ) { 
                 // Actualizo las formas de pago de la tabla (solo si está seteado el cliente)
                 this.cliente && this.cliente.cuit ?
                     this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante) : 
@@ -399,7 +428,10 @@ export class EmisionRemitos {
     onBlurNumeroAutocomp = (e) => (tipo: string) => (keyTipo: string) => 
         this[keyTipo][tipo] = this.emisionRemitosService.autocompNroComp(tipo)(this[keyTipo]);
     
-    onBlurPtoVenta = (e) => (tipo) => (keyTipo) => {
+    /**
+     * Se dispara cuando se selecciona el pto de venta, actualizando las formas de pago
+     */
+    onSelectPtoVenta = (e) => {
         // Consulto el service y traigo el intevalo de fecha de cteTipo
         this.emisionRemitosService.getBuscaCteFecha(
             this.comprobante
@@ -430,13 +462,13 @@ export class EmisionRemitos {
             }
             // Actualizo las formas de pago para la fechaApertura (solo si está seteado el cliente y la fecha)
             this.cliente && this.cliente.cuit && this.comprobante && this.comprobante.fechaComprobante ?
-                this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(intervaloFecha.fechaApertura):
+                this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante):
                 null;
         });
 
 
         // Hago el autocompletado de los nros
-        this.onBlurNumeroAutocomp(e)(tipo)(keyTipo)
+        // this.onBlurNumeroAutocomp(e)(tipo)(keyTipo)
     }
 
 
@@ -578,5 +610,21 @@ export class EmisionRemitos {
 
     }
 
+
+    /**
+     * Cuando cambia el tipo comprobante lo que hago es agarrar todos los numeros (q inclyyen pto venta y numero) y mappearlos en un array
+     */
+    onChangeTipoComprobante = (cteTipoSelect) => {
+        
+        this.recursoService.getRecursoList(resourcesREST.cteTipo)({
+            'sisComprobante': 6,
+            'idCteTipo': cteTipoSelect.idCteTipo
+        }).subscribe(a=>{
+            const cteTipoEncontrado = new TipoComprobante(a[0]);
+            this.numerosCte = _.flatten(cteTipoEncontrado.numerador.map((num: Numerador) => num.numero));
+            // debugger
+        })
+    }
     
 }
+

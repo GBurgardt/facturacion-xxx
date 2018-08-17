@@ -29,6 +29,7 @@ import { SisEstado } from '../models/sisEstado';
 import { TipoComprobante } from 'app/models/tipoComprobante';
 import { DateLikePicker } from 'app/models/dateLikePicker';
 import { UtilsService } from './utilsService';
+import { SisCanje } from '../models/sisCanje';
 
 @Injectable()
 export class AuthService {
@@ -246,7 +247,6 @@ export class AuthService {
                 interesCanje: 0,
                 idMoneda: comprobante.moneda.idMoneda,
                 nombre: provSelec.padronApelli,
-                // nombre: 'testest',
                 cuit: provSelec.cuit.toString(),
                 sisSitIva: provSelec.condIva.descCorta,
                 codigoPostal: ' ',
@@ -282,7 +282,8 @@ export class AuthService {
                         observacionDetalle: prod.producto.observaciones ? prod.producto.observaciones : ' ',
                         imputacion: prod.imputacion.seleccionada.ctaContable,
                         idFactCabImputa: prod.idFactCabImputada ? prod.idFactCabImputada : null,
-                        itemImputada: prod.itemImputada
+                        itemImputada: prod.itemImputada,
+                        importe: prod.importe
                     }
                 }),
                 grillaSubTotales: modelosFactura.map(mod => {
@@ -302,8 +303,109 @@ export class AuthService {
                             serie: prodTraza.trazabilidad.serie,
                             fechaElab: this.utilsService.formatearFecha('yyyy-mm-dd')(prodTraza.trazabilidad.fechaElab),
                             fechaVto: this.utilsService.formatearFecha('yyyy-mm-dd')(prodTraza.trazabilidad.fechaVto),
-                            // fechaElab: prodTraza.trazabilidad.fechaElab.getFechaFormateada(),
-                            // fechaVto: prodTraza.trazabilidad.fechaVto.getFechaFormateada(),
+                            vigencia: true,
+                            idProducto: prodTraza.producto.idProductos
+                        }
+                    })
+
+                
+            },
+            {}
+        );
+
+    /**
+     * Emitir remito
+     */
+    emitirRemito =  (token) => 
+                        (comprobante: Comprobante) => 
+                        (comproRelac: ComprobanteRelacionado) =>
+                        (clienteSelect: Padron) => 
+                        (productosPend: ProductoPendiente[]) => 
+                        (modelosFactura: ModeloFactura[]) =>
+                        (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
+                        (depositoSelec: Deposito) => 
+                        (sisCanje: SisCanje) => 
+        this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            'grabaComprobante',
+            {
+                idCteTipo: comprobante.tipo.idCteTipo,
+                letra: 'X',
+                numero: Number(comprobante.puntoVenta + comprobante.numero),
+
+                fechaEmision: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
+                fechaVencimiento: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
+                fechaConta: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
+                cai: ' ',
+                caiVto: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
+                codBarra: ' ',
+                idPadron: clienteSelect.padronCodigo,
+                idFormaPago: 0,
+                productoCanje: sisCanje.descripcion,
+                precioReferenciaCanje: sisCanje.precio,
+                interesCanje: sisCanje.interes,
+                idMoneda: comprobante.moneda.idMoneda,
+                nombre: clienteSelect.padronApelli,
+                cuit: clienteSelect.cuit.toString(),
+                sisSitIva: clienteSelect.condIva.descCorta,
+                codigoPostal: ' ',
+                listaPrecio: ' ',   
+                cotDolar: cotizacionDatos.cotizacion.cotizacion,
+                fechaDolar: `2018-01-01`,
+                observaciones: comprobante.observaciones,
+                idModeloCab: null,
+                relComprobante: comproRelac.tipo.idCteTipo,
+                relPuntoVenta: comproRelac.puntoVenta,
+                relNumero: comproRelac.numero,
+                idFactCab: null,
+                factCabecera: true,
+                factDet: true,
+                factFormaPago: false,
+                factImputa: true,
+                factPie: modelosFactura.length > 0,
+                produmo: true,
+                lote: productosPend.every(prodPend => prodPend.producto.trazable),
+                grillaArticulos: productosPend.map(prod => {
+                    return {
+                        idProducto: prod.producto.idProductos,
+                        articulo: prod.producto.descripcion ? prod.producto.descripcion : '',
+                        pendiente: prod.pendiente,
+                        precio: prod.precio,
+                        porCalc: prod.porCalc ? prod.porCalc : 0,
+                        descuento: prod.descuento,
+                        ivaPorc: prod.ivaPorc,
+                        cantidadBulto: prod.cantBultos,
+                        despacho: prod.despacho ? prod.despacho : ' ',
+                        trazable: prod.producto.trazable,
+                        idDeposito: depositoSelec.idDeposito,
+                        observacionDetalle: prod.producto.observaciones ? prod.producto.observaciones : ' ',
+                        imputacion: prod.imputacion.seleccionada.ctaContable,
+                        idFactCabImputa: prod.idFactCabImputada ? prod.idFactCabImputada : null,
+                        itemImputada: prod.itemImputada,
+                        importe: prod.importe
+                    }
+                }),
+                grillaSubTotales: modelosFactura.map(mod => {
+                    return {
+                        cuenta: mod.cuentaContable,
+                        descripcionPie: mod.descripcion,
+                        importe: mod.importeTotal,
+                        totalComprobante: cotizacionDatos.total,
+                        porcentaje: 0
+                    }
+                }),
+                grillaTrazabilidad: productosPend
+                    .filter(prodPend => prodPend.producto.trazable)
+                    .map(prodTraza => {
+                        return {
+                            nroLote: prodTraza.trazabilidad.lote,
+                            serie: prodTraza.trazabilidad.serie,
+                            fechaElab: this.utilsService.formatearFecha('yyyy-mm-dd')(prodTraza.trazabilidad.fechaElab),
+                            fechaVto: this.utilsService.formatearFecha('yyyy-mm-dd')(prodTraza.trazabilidad.fechaVto),
                             vigencia: true,
                             idProducto: prodTraza.producto.idProductos
                         }
@@ -371,7 +473,7 @@ export class AuthService {
     * @description Obtiene las formas de pago
     * @argument token
     */
-    getBuscaFormaPago = (token: string) => (cliente: Padron) => (fecha: any) => {
+    getBuscaFormaPago = (token: string) => (cliente?: Padron) => (fecha: any) => {
         return this.request(
             [],
             RequestMethod.Post,
@@ -383,8 +485,8 @@ export class AuthService {
                 activa: true,
                 todas: true,
                 fecha: this.utilsService.formatearFecha('yyyy-mm-dd')(fecha),
-                idPadronDesde: cliente.padronCodigo,
-                idPadronHasta: cliente.padronCodigo
+                idPadronDesde: cliente ? cliente.padronCodigo : null,
+                idPadronHasta: cliente ? cliente.padronCodigo : null
             },
             {}
         );

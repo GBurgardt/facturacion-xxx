@@ -1,4 +1,4 @@
-@import '../../../../../theme/sass/conf/conf';
+@import '../../../../../../theme/sass/conf/conf';
 
 :host /deep/ .widgets {
     .data-table-container {
@@ -89,11 +89,23 @@
                     .input-new-prod {
                         width: 97%;
                         margin: 0 auto;
+                        margin: 5px auto;
                     }
                 }
             }
 
-            
+            .tooltip-add-prod {
+                position: absolute;
+                background: #c3c5d4;
+                padding: 5px 10px;
+                text-align: center;
+                border-radius: 24px;
+                opacity: 0.8;
+                left: 222px;
+                top: 87px;
+                font-size: 11px;
+                transition: width 2s;
+            }
             
         }
 

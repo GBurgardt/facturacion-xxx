@@ -1,6 +1,6 @@
 import {Component, ViewChild, Input, Output, ElementRef, EventEmitter} from '@angular/core';
 
-import {BaThemePreloader} from '../../../theme/services';
+import {BaThemePreloader} from '../../services';
 
 import 'amcharts3';
 import 'amcharts3/amcharts/plugins/responsive/responsive.js';

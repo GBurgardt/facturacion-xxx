@@ -6,7 +6,7 @@ import { BaImageLoaderService, BaThemePreloader, BaThemeSpinner } from './theme/
 import { BaThemeConfig } from './theme/theme.config';
 import { layoutPaths } from './theme/theme.constants';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { NgbDateFRParserFormatter } from 'app/pages/reusable/otros/ngb-date-fr-parser-formatter';
+import { NgbDateFRParserFormatter } from './pages/reusable/otros/ngb-date-fr-parser-formatter';
 
 
 /*
