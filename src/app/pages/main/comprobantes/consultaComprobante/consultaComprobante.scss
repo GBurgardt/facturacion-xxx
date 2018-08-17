@@ -121,6 +121,12 @@
         .table-consulta-comp  thead td  {
             padding: 7px 5px;
         }
+
+        .table-consulta-comp {
+            .btn-print {
+                cursor: pointer;
+            }
+        }
     }
 
 }

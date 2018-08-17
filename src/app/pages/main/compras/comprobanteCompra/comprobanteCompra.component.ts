@@ -256,7 +256,8 @@ export class ComprobanteCompra {
                     // Agrego los productos
                     this.tablas.datos.productosPend = _.uniqWith(
                         this.tablas.datos.productosPend.concat(prodsPend),
-                        (a:ProductoPendiente,b:ProductoPendiente) => a.producto.codProducto === b.producto.codProducto
+                        (a:ProductoPendiente,b:ProductoPendiente) =>    a.producto.idProductos === b.producto.idProductos && 
+                                                                        a.numero === b.numero
                     );
 
                     // Actualizo datos de los productos

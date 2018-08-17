@@ -44,4 +44,13 @@ export class ComprobanteService {
         )(comprobante)(fechasFiltro)(sisModuloSelec)(tipoComprobanteSelec)(productoSelec)(sisEstadoSelec)(padronSelec)(depositoSelec)
             .map(respuesta => respuesta.arraydatos.map(compEnca => new ComprobanteEncabezado(compEnca)))
 
+
+    descargarPdf = (compBusc) => {
+        return this.authService.descargarComprobante(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            compBusc.idFactCab
+        )
+    }
+
 }

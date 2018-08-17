@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
-import { Headers, Http, Request, RequestOptions, RequestOptionsArgs, RequestMethod } from '@angular/http';
+import { Headers, Http, Request, RequestOptions, RequestOptionsArgs, RequestMethod, ResponseContentType } from '@angular/http';
 
 // Libreria para encriptar en MD5 la clave
 import * as crypto from 'crypto-js';
@@ -53,7 +53,8 @@ export class AuthService {
         headers: any,
         endPoint: string,
         body: any,
-        queryParams: any
+        queryParams: any,
+        notJson = false
     ) {
 
         // Creo los headerss
@@ -94,14 +95,15 @@ export class AuthService {
             method: method,
             search: null,
             headers: auxHeaders,
-            body: (Object.keys(body).length === 0 && body.constructor === Object) ? null : JSON.stringify(body)
+            body: (Object.keys(body).length === 0 && body.constructor === Object) ? null : JSON.stringify(body),
+            responseType: notJson ? ResponseContentType.ArrayBuffer : ResponseContentType.Json
         };
 
         var reqOptions = new RequestOptions(opciones);
         var req = new Request(reqOptions);
 
-        return this.http.request(req).timeout(environment.facturacionRest.timeoutDefault).map(res =>
-            res.json()
+        return this.http.request(req).timeout(environment.facturacionRest.timeoutDefault).map(
+            res => notJson ? res : res.json()
         );
     }
 
@@ -426,6 +428,24 @@ export class AuthService {
             },
             {}
         );
+
+
+    descargarComprobante = (token) => (idFactCab) => {
+        // debugger;
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            `descargarPdf`,
+            {
+                idFactCab: idFactCab
+            },
+            { },
+            true
+        );
+    }
 
 
     /** */

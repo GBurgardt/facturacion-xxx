@@ -131,6 +131,38 @@ export class ConsultaComprobante {
         
 
     }
+
+    /**
+     * Descargar pdf del comprobante
+     */
+    onClickPrint = (compBusc: ComprobanteEncabezado) => {
+        this.comprobanteService.descargarPdf(compBusc).subscribe(resp => {
+            const bodyResp = resp['_body'];
+
+            var newBlob = new Blob([bodyResp], {type: "application/pdf"})
+            
+            // IE
+            if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                window.navigator.msSaveOrOpenBlob(newBlob);
+                return;
+            } 
+            
+            const data = window.URL.createObjectURL(newBlob);
+
+            var link = document.createElement('a');
+            link.href = data;
+            // link.download="fileBody.pdf";
+            link.download=`${compBusc.numero}.pdf`;
+            link.click();
+
+            // Firefox
+            setTimeout(function(){
+                // For Firefox it is necessary to delay revoking the ObjectURL
+                window.URL.revokeObjectURL(data);
+            }, 100)
+        });
+        
+    }
     
     
 }
