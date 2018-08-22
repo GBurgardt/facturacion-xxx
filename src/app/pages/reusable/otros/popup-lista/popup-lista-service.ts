@@ -21,17 +21,19 @@ export class PopupListaService {
             // Primero actualizo el indice
             const newIndex = productoEnfocadoIndex + (upOrDown === 'down' ? 1 : -1);
 
-            // Dsps les saco el enfoque a todos los elementos d ela lista
+            // Dsps les saco el enfoque a todos los elementos de la lista
             itemsLista.forEach(item => {
                 const aux = 
                     item.producto ? document.getElementsByClassName('li-popup-'+item.producto.idProductos) :
+                    item.idProductos ? document.getElementsByClassName('li-popup-'+item.idProductos) :
                     item.padronCodigo ? document.getElementsByClassName('li-popup-'+item.padronCodigo) : 
-                    null
+                    null        
 
                 // Le saco la clase que lo tiene seleccionado
-                aux[0] && aux[0].className ? 
+                aux && aux[0] && aux[0].className ? 
                     aux[0].className = 
                         item.producto ? 'list-group-item listElement li-popup-'+item.producto.idProductos :
+                        item.idProductos ? 'list-group-item listElement li-popup-'+item.idProductos :
                         item.padronCodigo ? 'list-group-item listElement li-popup-'+item.padronCodigo : 
                         null :
                     null;
@@ -40,13 +42,14 @@ export class PopupListaService {
             // Agarro el producto seleccenfocadoionado
             // const itemEnfocado = _.clone(itemsLista[newIndex]);
             const itemEnfocado = {...itemsLista[newIndex]};
-            
+
             // Agarro el elemento dom de la lista
             const liPopup: HTMLCollectionOf<any> = 
                 itemEnfocado.producto ? document.getElementsByClassName('li-popup-'+itemEnfocado.producto.idProductos) :
+                itemEnfocado.idProductos ? document.getElementsByClassName('li-popup-'+itemEnfocado.idProductos) :
                 itemEnfocado.padronCodigo ? document.getElementsByClassName('li-popup-'+itemEnfocado.padronCodigo) :
                 null;
-            
+                        
             // Lo selecciono y enfoco (si agarró algo)
             liPopup && liPopup[0] && liPopup[0].className ? 
                 liPopup[0].className += ' active-pop-elem' : null;

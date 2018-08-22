@@ -4,6 +4,7 @@
             (mousedown)="onClickItem(item)" 
             [ngClass]="'list-group-item listElement li-popup-' + (!item ? 'none' :
                 item.producto ? item.producto.idProductos : 
+                item.idProductos ? item.idProductos : 
                 item.padronCodigo ? item.padronCodigo : 
                 'raro')" 
             >

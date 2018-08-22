@@ -225,8 +225,10 @@ export class AuthService {
                         (modelosFactura: ModeloFactura[]) =>
                         (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
                         (depositoSelec: Deposito) => 
-                        (detallesFormaPago: DetalleFormaPago[]) =>
-        this.request(
+                        (detallesFormaPago: DetalleFormaPago[]) => {
+
+
+        return this.request(
             [],
             RequestMethod.Post,
             {
@@ -269,7 +271,8 @@ export class AuthService {
                 factImputa: true,
                 factPie: modelosFactura.length > 0,
                 produmo: true,
-                lote: productosPend.every(prodPend => prodPend.producto.trazable),
+                lote:   productosPend.some(prodPend => prodPend.producto.trazable) &&
+                        comprobante.tipo.descCorta !== 'OC',
                 grillaArticulos: productosPend.map(prod => {
                     return {
                         idProducto: prod.producto.idProductos,
@@ -325,6 +328,8 @@ export class AuthService {
             },
             {}
         );
+    }
+        
 
     /**
      * Emitir remito
@@ -570,7 +575,12 @@ export class AuthService {
     * @description Obtiene los loties de un producto dado
     * @argument token
     */
-    getBuscaLote = (token: string) => (prodPend: ProductoPendiente) => (comprobante: Comprobante) => {
+    getBuscaLote = (token: string) => (filtros: {
+        idPadron: string,
+        nroLote: string,
+        codProducto: string,
+        fechaVtoHasta: any
+    }) => {
         return this.request(
             [],
             RequestMethod.Post,
@@ -579,13 +589,13 @@ export class AuthService {
             },
             resourcesREST.buscaLote.nombre,
             {
-                nroLote: " ",
+                nroLote: filtros.nroLote ? filtros.nroLote : " ",
                 serie: " ",
-                fechaVtoDesde: "01-01-2000",
-                fechaVtoHasta: comprobante.fechaComprobante,
+                fechaVtoDesde: "2000-01-01",
+                fechaVtoHasta: this.utilsService.formatearFecha('yyyy-mm-dd')(filtros.fechaVtoHasta),
                 vigencia: 1,
-                idProducto: prodPend.producto.idProductos,
-                idPadron: 0,
+                codProducto: filtros.codProducto ? filtros.codProducto : " ",
+                idPadron: filtros.idPadron ? filtros.idPadron : 0,
                 idCteTipo: 0,
                 facNumero: 0,
                 stock: 1

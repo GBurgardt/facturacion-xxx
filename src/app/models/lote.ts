@@ -11,7 +11,11 @@ export class Lote {
     descripcionProd: string;
     stock: number;
     ingresos: number;
-    egresos: number
+    egresos: number;
+
+    cantidad: number;
+    numero: number;
+    comprobante: string;
 
     constructor(lote?: {
         nroLote: string;
@@ -24,7 +28,11 @@ export class Lote {
         descripcionProd: string;
         stock: number;
         ingresos: number;
-        egresos: number
+        egresos: number;
+
+        cantidad: number;
+        numero: number;
+        comprobante: string;
     }) {
         if (lote) {
             this.nroLote = lote.nroLote;
@@ -38,6 +46,11 @@ export class Lote {
             this.stock = lote.stock;
             this.ingresos = lote.ingresos;
             this.egresos = lote.egresos
+            
+            this.cantidad = lote.cantidad;
+            this.numero = lote.numero;
+            this.comprobante = lote.comprobante;
+
         } else {
             this.nroLote = null;
             this.item = null;
@@ -49,7 +62,12 @@ export class Lote {
             this.descripcionProd = null;
             this.stock = null;
             this.ingresos = null;
-            this.egresos = null
+            this.egresos = null;
+
+                        
+            this.cantidad = null;
+            this.numero = null;
+            this.comprobante = null;
         }
     }
 }

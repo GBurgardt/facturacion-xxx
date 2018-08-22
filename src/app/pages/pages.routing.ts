@@ -26,6 +26,7 @@ export const routes: Routes = [
             { path: 'compras', loadChildren: './main/compras/compras.module#ComprasModule' },
             { path: 'stock', loadChildren: './main/stock/stock.module#StockModule' },
             { path: 'comprobantes', loadChildren: './main/comprobantes/comprobantes.module#ComprobantesModule' },
+            { path: 'lotes', loadChildren: './main/lotes/lotes.module#LotesModule' },
 
             // Paginas de ejemplos para desarrollo
             // { path: 'editors', loadChildren: './examples/editors/editors.module#EditorsModule' },
