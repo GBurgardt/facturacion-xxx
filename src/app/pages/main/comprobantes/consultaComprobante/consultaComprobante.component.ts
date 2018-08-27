@@ -163,6 +163,12 @@ export class ConsultaComprobante {
         });
         
     }
-    
-    
+
+    /**
+     * Evento blur de pto venta y numero en comprobante
+     * tipo: puntoVenta o numero
+     * keyTipoe: comprobante, comprobanteRelacionado
+     */
+    onBlurNumeroAutocomp = (e) => (tipo: string) => (keyTipo: string) => 
+        this[keyTipo][tipo] = this.utilsService.autocompNroComp(tipo)(this[keyTipo])
 }

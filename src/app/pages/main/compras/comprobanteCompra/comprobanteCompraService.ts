@@ -42,6 +42,13 @@ export class ComprobanteCompraService {
             subkey: 'codProducto',
             ancho: '15%'
         },
+        // {
+        //     nombre: 'Codigo',
+        //     key: 'producto',
+        //     subkey: 'codProducto',
+        //     ancho: '20%',
+        //     customClass: 'text-right'
+        // },
         {
             nombre: 'descripcion',
             key: 'producto',

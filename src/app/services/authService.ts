@@ -303,17 +303,17 @@ export class AuthService {
                     }
                 }),
                 grillaTrazabilidad: productosPend
-                .filter(prodPend => prodPend.producto.trazable)
-                .map(prodTraza => {
-                    return {
-                        nroLote: prodTraza.trazabilidad.lote,
-                        serie: prodTraza.trazabilidad.serie,
-                        fechaElab: this.utilsService.formatearFecha('yyyy-mm-dd')(prodTraza.trazabilidad.fechaElab),
-                        fechaVto: this.utilsService.formatearFecha('yyyy-mm-dd')(prodTraza.trazabilidad.fechaVto),
-                        vigencia: true,
-                            idProducto: prodTraza.producto.idProductos
-                        }
-                    }),
+                    .filter(prodPend => prodPend.producto.trazable)
+                    .map(prodTraza => {
+                        return {
+                            nroLote: prodTraza.trazabilidad.lote,
+                            serie: prodTraza.trazabilidad.serie,
+                            fechaElab: this.utilsService.formatearFecha('yyyy-mm-dd')(prodTraza.trazabilidad.fechaElab),
+                            fechaVto: this.utilsService.formatearFecha('yyyy-mm-dd')(prodTraza.trazabilidad.fechaVto),
+                            vigencia: true,
+                                idProducto: prodTraza.producto.idProductos
+                            }
+                        }),
                 grillaFormaPago: detallesFormaPago.map(mod => {
                     return {
                         plazo: mod.cantDias ? mod.cantDias : 0,
@@ -493,8 +493,6 @@ export class AuthService {
                 comprobanteNumero : comprobante && comprobante.puntoVenta && comprobante.numero ? `${comprobante.puntoVenta}${comprobante.numero}` : 0,
                 fechaDesde : this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.desde),
                 fechaHasta : this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.hasta),
-                // fechaDesde : fechasFiltro.desde.getFechaFormateada(),
-                // fechaHasta : fechasFiltro.hasta.getFechaFormateada(),
                 idProducto : productoSelec && productoSelec.idProductos ? productoSelec.idProductos : 0,
                 padCodigo : padronSelec && padronSelec.padronCodigo ? padronSelec.padronCodigo : 0,
                 codigoDep : depositoSelec && depositoSelec.codigoDep ? depositoSelec.codigoDep : 0,
@@ -594,7 +592,7 @@ export class AuthService {
                 fechaVtoDesde: "2000-01-01",
                 fechaVtoHasta: this.utilsService.formatearFecha('yyyy-mm-dd')(filtros.fechaVtoHasta),
                 vigencia: 1,
-                codProducto: filtros.codProducto ? filtros.codProducto : " ",
+                codProducto: filtros.codProducto ? filtros.codProducto : null,
                 idPadron: filtros.idPadron ? filtros.idPadron : 0,
                 idCteTipo: 0,
                 facNumero: 0,
@@ -631,6 +629,39 @@ export class AuthService {
                 idCteTipo: 0,
                 facNumero: 0,
                 stock: 1
+            },
+            {}
+        );
+    }
+
+    /**
+    * @description Obtiene los stock
+    * @argument token
+    */
+    getBuscaStock = (token: string) => (filtros: {
+        fechaHasta: any,
+        codProducto: any,
+        productoSelect: Producto,
+        cteTipo: TipoComprobante,
+        deposito: Deposito
+    }) => (tipo: string) => {
+        return this.request(
+            [tipo],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            resourcesREST.buscaStock.nombre,
+            {
+                fechaHasta: this.utilsService.formatearFecha('yyyy-mm-dd')(filtros.fechaHasta),
+                idProductoDesde: 0,
+                idProductoHasta: 0,
+                idProducto: filtros.productoSelect ? filtros.productoSelect.idProductos : 0,
+                idDeposito: filtros.deposito ? filtros.deposito.idDeposito : 0,
+                idCteTipo: filtros.cteTipo ? filtros.cteTipo.idCteTipo : 0,
+                idRubro: 0,
+                idSubRubro: 0,
+                tipoEstado: 0
             },
             {}
         );

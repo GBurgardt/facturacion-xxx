@@ -302,7 +302,14 @@ export class UtilsService {
         }
     }
 
-
     checkIfJson = (obj) => (obj && typeof obj === 'object');
 
+    /**
+     * Autocompleta con ceros
+     */
+    autocompNroComp = (tipo) => (recursoComp) => recursoComp && recursoComp[tipo] ?
+        recursoComp[tipo].padStart(
+            tipo === 'puntoVenta' ? 4 : 8,
+            0
+        ) : '';
 }

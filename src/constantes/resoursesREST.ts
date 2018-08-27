@@ -162,6 +162,10 @@ export const resourcesREST = {
     modeloCab: {
         nombre: 'modeloCab',
         Clase: ModeloCab
+    },
+    buscaStock: {
+        nombre: 'buscaStock',
+        Clase: ModeloCab
     }
 
 };

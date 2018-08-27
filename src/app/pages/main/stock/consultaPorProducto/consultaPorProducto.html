@@ -1,64 +1,14 @@
-<ba-card cardTitle="Filtros" class="consulta-lotes criterio-busqueda" toggleBtn="true">
+<ba-card cardTitle="Filtros" class="consulta-por-producto" toggleBtn="true">
 
     <div class="block-column">
         <div class="input-row">
             <div class="item-input nro-cte">
                 <label  for="desde">
-                    Proveedor
-                </label>
-                <input  [(ngModel)]="filtros.idPadron"
-                        type="text" 
-                        class="form-control text-right minor-input" 
-                        id="inputProveedor" 
-                        placeholder=""
-                        (keydown.arrowdown)="keyPressInputTextoProv($event)('down')" 
-                        (keydown.arrowup)="keyPressInputTextoProv($event)('up')"
-                        (keyup.enter)="onEnterInputProv($event)" 
-                        (ngModelChange)="onChangeInputProv($event)" 
-                        (blur)="onBlurInputProv($event)"
-                        >
-
-                <popup-lista    *ngIf="filtros.idPadron && filtros.idPadron.length > 0" 
-                                [items]="proveedores.filtrados.asObservable().distinctUntilChanged()" 
-                                [keysToShow]="['padronApelli', 'padronCodigo']" 
-                                [onClickItem]="onSelectProveedor"
-                                [fatherPosition]="popupListaService.getOffsetOfInputCliente('inputProveedor')">
-                </popup-lista>
-
-                <input  [disabled]="true"
-                        [(ngModel)]="info.nombreProv"
-                        type="text" 
-                        class="form-control text-right" 
-                        id="nroProv" 
-                        placeholder="">
-            </div>
-        </div>
-    
-        <div class="input-row">
-            <div class="item-input nro-cte">
-                <label  for="desde">
-                    Lote Nro
-                </label>
-                <input  [(ngModel)]="filtros.nroLote"
-                        type="text" 
-                        class="form-control text-right minor-input" 
-                        id="inputLoteNro" 
-                        placeholder=""
-                        >
-                
-            </div>
-        </div>
-    </div>
-
-    <div class="block-column">
-        <div class="input-row">
-            <div class="item-input nro-cte">
-                <label  for="desde" [ngStyle]="{'min-width': '117px'}">
                     Producto
                 </label>
                 <input  [(ngModel)]="filtros.codProducto"
                         type="text" 
-                        class="form-control text-right minor-input" 
+                        class="form-control text-right" 
                         id="inputProducto" 
                         placeholder=""
                         (keydown.arrowdown)="keyPressInputTextoProd($event)('down')" 
@@ -75,41 +25,78 @@
                                 [fatherPosition]="popupListaService.getOffsetOfInputCliente('inputProducto')">
                 </popup-lista>
 
-                <input  [disabled]="true"
+                <input  disabled
                         [(ngModel)]="info.nombreProd"
                         type="text" 
                         class="form-control text-right" 
-                        id="nroProv" 
+                        id="inputInfoProd" 
                         placeholder="">
             </div>
         </div>
     
         <div class="input-row">
+            <div class="item-select">
+                <label for="selectComprobante">
+                    Comprobante
+                </label>
+                <select [(ngModel)]="filtros.cteTipo" class="form-control" id="selectComprobante">
+                    <option *ngFor="let tipoCte of cteTipos | async" [ngValue]="tipoCte">
+                        {{tipoCte.descCorta}}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="block-column">
+
+        <!-- <div class="input-row">
+            <div class="item-input">
+                <input  [(ngModel)]="info.nombreProd"
+                        type="text" 
+                        class="form-control text-right" 
+                        id="inputInfoProd" 
+                        placeholder="">
+            </div>
+        </div> -->
+
+        <div class="input-row">
+            <div class="item-select">
+                <label for="selectComprobante">
+                    Deposito
+                </label>
+                <select [(ngModel)]="filtros.deposito" class="form-control" id="selectDeposito">
+                    <option *ngFor="let dep of depositos | async" [ngValue]="dep">
+                        {{dep.descripcion}}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="block-column">
+        
+        <div class="input-row">
             <div class="item-input nro-cte">
-                <label  for="desde" [ngStyle]="{'min-width': '117px', 'margin-top': '7px'}">
-                    Vencimiento Hasta
+                <label for="desde" [ngStyle]="{'min-width': '117px', 'margin-top': '7px'}">
+                    Fecha Hasta
                 </label>
 
                 <div class="input-group date-picker-venc-hasta">
-                    <input (blur)="blurFechaVencHasta($event)" [(ngModel)]="filtros.fechaVtoHasta" class="form-control" placeholder="dd/mm/aaaa" name="dp" ngbDatepicker #dDesd="ngbDatepicker">
+                    <input [(ngModel)]="filtros.fechaHasta" (blur)="onBlurFechaHasta($event)" class="form-control" placeholder="dd/mm/aaaa" name="dp" ngbDatepicker #dDesd="ngbDatepicker">
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary" (click)="dDesd.toggle()" type="button" style="height: 100%;">
                             <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
                         </button>
                     </div>
                 </div>
-                
             </div>
-
-
         </div>
-    </div>
 
-    <div class="block-column column-reverse">
-        <div class="input-row">
+        <div class="input-row flex-end">
             <div class="item-input nro-cte">
                 <button id="btnConsultar"  
-                    [disabled]="!filtros.fechaVtoHasta" 
+                    [disabled]="false" 
                     (click)="onClickConsultar()" 
                     class="btn btn-primary">
                     <i class="fa fa-search" aria-hidden="true"></i>
@@ -118,11 +105,10 @@
             </div>
         </div>
     </div>
-
 </ba-card>
 
 <ba-card>
-    <table class="table table-striped" [mfData]="lotes | async" #mf="mfDataTable" mfRowsOnPage="10">
+    <table class="table table-striped" [mfData]="stockData | async" #mf="mfDataTable" mfRowsOnPage="10">
         <thead>
             <tr>
                 <th>Lote</th>

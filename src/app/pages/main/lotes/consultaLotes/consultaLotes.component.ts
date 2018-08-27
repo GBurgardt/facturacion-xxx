@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RecursoService } from '../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
 
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Lotes } from '../lotes.component';
 import { UtilsService } from 'app/services/utilsService';
 import { Padron } from 'app/models/padron';
@@ -137,6 +137,10 @@ export class ConsultaLotes {
         // Si existe actualizo el existente
         if (provExist && provExist.padronCodigo) {
             this.onSelectProveedor(provExist);
+        } else {
+            // Si no existe, borro el existente
+            this.filtros.idPadron = null;
+            this.info.nombreProv = null;
         }
 
         // Vacio filtrados
@@ -198,6 +202,9 @@ export class ConsultaLotes {
         // Si existe actualizo el existente
         if (prodExist && prodExist.idProductos) {
             this.onSelectProducto(prodExist);
+        } else {
+            this.filtros.codProducto = null;
+            this.info.nombreProd = null;
         }
         // Vacio filtrados
         this.productos.filtrados.next([]);
@@ -212,10 +219,14 @@ export class ConsultaLotes {
      * Evento click consultar
      */
     onClickConsultar = () => {
-
-        this.consultaLotesService.consultarLotes(this.filtros).subscribe(lotes => {
-            // debugger;
-            this.lotes.next(lotes)
-        })
+        // Si hay error, entonces mando un array vacio para que actualice la grilla
+        this.consultaLotesService.consultarLotes(this.filtros)
+            .catch(
+                err => Observable.of([])
+            )
+            .subscribe(
+                lotes => this.lotes.next(lotes)
+            )
+            
     }
 }
