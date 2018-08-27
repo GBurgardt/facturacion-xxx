@@ -45,7 +45,7 @@ export class ConsultaPorProducto {
     cteTipos = Observable.of([]);
     depositos = Observable.of([]);
 
-    // Indices 
+    // Indices
     productoEnfocadoIndex = -1;
 
     // Busquedas
@@ -65,23 +65,17 @@ export class ConsultaPorProducto {
         this.cteTipos = this.recursoService.getRecursoList(resourcesREST.cteTipo)()
         this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)()
     }
-    
-
 
     /**
      * Autocompletar fechaHasta
      */
     onBlurFechaHasta = (e) => (!this.filtros.fechaHasta || typeof this.filtros.fechaHasta !== 'string') ?
-        null : this.filtros.fechaHasta = this.utilsService.stringToDateLikePicker(this.filtros.fechaHasta);     
+        null : this.filtros.fechaHasta = this.utilsService.stringToDateLikePicker(this.filtros.fechaHasta);
 
 
     onClickConsultar = () => {
-        console.log(this.filtros);
-        this.consultaPorProductoService.consultarStock(this.filtros).subscribe(a=>{debugger})
-        debugger;
+        this.stockData = this.consultaPorProductoService.consultarStock(this.filtros);
     }
-
-
 
     ///// EVENTOS BUSQUEDA PRODUCTO /////
 
@@ -121,10 +115,10 @@ export class ConsultaPorProducto {
         // Reseteo el indice
         this.productoEnfocadoIndex = -1;
     }
-    
+
     onBlurInputProd = (evento) => {
-        
-        if (!evento.target.value || evento.target.value.toString().length <= 0) return;            
+
+        if (!evento.target.value || evento.target.value.toString().length <= 0) return;
 
         // Busco si existe
         const prodExist = this.productos.todos.find(

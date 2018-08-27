@@ -7,39 +7,42 @@
                     Producto
                 </label>
                 <input  [(ngModel)]="filtros.codProducto"
-                        type="text" 
-                        class="form-control text-right" 
-                        id="inputProducto" 
+                        type="text"
+                        class="form-control text-right"
+                        id="inputProducto"
                         placeholder=""
-                        (keydown.arrowdown)="keyPressInputTextoProd($event)('down')" 
+                        (keydown.arrowdown)="keyPressInputTextoProd($event)('down')"
                         (keydown.arrowup)="keyPressInputTextoProd($event)('up')"
-                        (keyup.enter)="onEnterInputProd($event)" 
-                        (ngModelChange)="onChangeInputProd($event)" 
+                        (keyup.enter)="onEnterInputProd($event)"
+                        (ngModelChange)="onChangeInputProd($event)"
                         (blur)="onBlurInputProd($event)"
                         >
 
-                <popup-lista    *ngIf="filtros.codProducto && filtros.codProducto.length > 0" 
-                                [items]="productos.filtrados.asObservable().distinctUntilChanged()" 
-                                [keysToShow]="['descripcion', 'codProducto']" 
+                <popup-lista    *ngIf="filtros.codProducto && filtros.codProducto.length > 0"
+                                [items]="productos.filtrados.asObservable().distinctUntilChanged()"
+                                [keysToShow]="['descripcion', 'codProducto']"
                                 [onClickItem]="onSelectProducto"
                                 [fatherPosition]="popupListaService.getOffsetOfInputCliente('inputProducto')">
                 </popup-lista>
 
                 <input  disabled
                         [(ngModel)]="info.nombreProd"
-                        type="text" 
-                        class="form-control text-right" 
-                        id="inputInfoProd" 
+                        type="text"
+                        class="form-control text-right"
+                        id="inputInfoProd"
                         placeholder="">
             </div>
         </div>
-    
+
         <div class="input-row">
             <div class="item-select">
                 <label for="selectComprobante">
                     Comprobante
                 </label>
                 <select [(ngModel)]="filtros.cteTipo" class="form-control" id="selectComprobante">
+                    <option [ngValue]="null">
+                        Todos
+                    </option>
                     <option *ngFor="let tipoCte of cteTipos | async" [ngValue]="tipoCte">
                         {{tipoCte.descCorta}}
                     </option>
@@ -53,9 +56,9 @@
         <!-- <div class="input-row">
             <div class="item-input">
                 <input  [(ngModel)]="info.nombreProd"
-                        type="text" 
-                        class="form-control text-right" 
-                        id="inputInfoProd" 
+                        type="text"
+                        class="form-control text-right"
+                        id="inputInfoProd"
                         placeholder="">
             </div>
         </div> -->
@@ -66,6 +69,9 @@
                     Deposito
                 </label>
                 <select [(ngModel)]="filtros.deposito" class="form-control" id="selectDeposito">
+                    <option [ngValue]="null">
+                        Todos
+                    </option>
                     <option *ngFor="let dep of depositos | async" [ngValue]="dep">
                         {{dep.descripcion}}
                     </option>
@@ -75,7 +81,7 @@
     </div>
 
     <div class="block-column">
-        
+
         <div class="input-row">
             <div class="item-input nro-cte">
                 <label for="desde" [ngStyle]="{'min-width': '117px', 'margin-top': '7px'}">
@@ -95,9 +101,9 @@
 
         <div class="input-row flex-end">
             <div class="item-input nro-cte">
-                <button id="btnConsultar"  
-                    [disabled]="false" 
-                    (click)="onClickConsultar()" 
+                <button id="btnConsultar"
+                    [disabled]="false"
+                    (click)="onClickConsultar()"
                     class="btn btn-primary">
                     <i class="fa fa-search" aria-hidden="true"></i>
                     Consultar
@@ -111,30 +117,28 @@
     <table class="table table-striped" [mfData]="stockData | async" #mf="mfDataTable" mfRowsOnPage="10">
         <thead>
             <tr>
-                <th>Lote</th>
-                <th class="td-right">Serie</th>
-                <th class="td-right">Cod</th>
-                <th>Producto</th>
-                <th>Vto</th>
-                <th class="td-right">Ingresos</th>
-                <th class="td-right">Egresos</th>
-                <th class="td-right">Stock</th>
-                <th>Tipo</th>
-                <th class="td-right">Nro Comp</th>
+                <th>Cte</th>
+                <th class="text-right">Numero</th>
+                <th>Fecha</th>
+                <th class="text-right">Ingresos</th>
+                <th class="text-right">Egresos</th>
+
+                <th class="text-right">Stock</th>
+                <th class="text-right">Pendiente</th>
+                <th class="text-right">Virtual</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let lote of mf.data">
-                <td>{{ lote.nroLote }}</td>
-                <td class="td-right">{{ lote.serie }}</td>
-                <td class="td-right">{{ lote.codProducto }}</td>
-                <td class="td-nowrap">{{ lote.descripcionProd }}</td>
-                <td>{{ utilsService.formatearFecha('DD/MM/YYYY')(lote.fechaVto) }}</td>
-                <td class="td-right">{{ lote.ingresos }}</td>
-                <td class="td-right">{{ lote.egresos }}</td>
-                <td class="td-right">{{ lote.stock }}</td>
-                <td>{{ lote.comprobante }}</td>
-                <td class="td-right">{{ lote.numero }}</td>
+            <tr *ngFor="let stockElement of mf.data">
+                <td>{{ stockElement.comprobante }}</td>
+                <td class="text-right">{{ stockElement.numero }}</td>
+                <td>{{ utilsService.formatearFecha('DD/MM/YYYY')(stockElement.fechaEmision) }}</td>
+                <td class="text-right">{{ stockElement.ingresos }}</td>
+                <td class="text-right">{{ stockElement.egresos }}</td>
+
+                <td class="text-right">0</td>
+                <td class="text-right">{{ stockElement.pendiente }}</td>
+                <td class="text-right">0</td>
             </tr>
         </tbody>
         <tfoot>

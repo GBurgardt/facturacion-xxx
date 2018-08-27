@@ -2,15 +2,15 @@
 :host /deep/ .consulta-lotes {
 
     > .card > .card-body {
-        display: flex; 
+        display: flex;
         justify-content: space-between;
 
         .block-column {
-            display: flex; 
+            display: flex;
             flex-direction: column;
             padding: 10px;
         }
-        
+
         .column-reverse {
             flex-direction: column-reverse;
         }
@@ -59,7 +59,7 @@
         }
 
         .table-striped > tbody > tr > .td-right {
-            text-align: right;
+            text-align: right !important;
         }
         .table-striped > tbody > tr > .td-nowrap {
             white-space: nowrap;
@@ -73,7 +73,7 @@
         .table-consulta-comp thead tr th {
             padding: 7px 10px;
         }
-        
+
         .table-consulta-comp  thead td  {
             padding: 7px 5px;
         }
@@ -83,7 +83,7 @@
                 cursor: pointer;
             }
         }
-        
+
 //     }
 
 // }

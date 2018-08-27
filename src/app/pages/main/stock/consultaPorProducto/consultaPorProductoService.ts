@@ -1,10 +1,9 @@
 import { Injectable } from "@angular/core";
-import { Padron } from "app/models/padron";
 import { Producto } from "app/models/producto";
 import { AuthService } from "../../../../services/authService";
 import { LocalStorageService } from "app/services/localStorageService";
 import { environment } from "environments/environment";
-import { Lote } from "../../../../models/lote";
+import { Stock } from "../../../../models/stock";
 
 @Injectable()
 export class ConsultaPorProductoService {
@@ -13,29 +12,23 @@ export class ConsultaPorProductoService {
         private localStorageService: LocalStorageService
     ) { }
 
-    filtrarProductos = (lista, textoBuscado) => 
+    filtrarProductos = (lista, textoBuscado) =>
         lista.filter(
             (prov: Producto) =>   prov.codProducto.toString().includes(textoBuscado) ||
                                 prov.descripcion.toString().toLowerCase().includes(textoBuscado)
-        );    
+        );
 
 
-    consultarStock = (filtros: any) => 
+    consultarStock = (filtros: any) =>
 
         this.authService.getBuscaStock(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
             filtros
         )('producto').map(
-            resp => {
-                debugger;
-                return resp.arraydatos.map(
-                    lot => new Lote(lot)
-                )
-
-            }
+            resp => resp.arraydatos.map(
+                (stockItem) => new Stock(stockItem)
+            )
         )
-
-    
 
 }

@@ -124,13 +124,13 @@
         <div class="input-row flex-end-row">
 
             <div class="btn-container item-input">
-                <button id="btnBuscar"  
-                        [disabled]="!fechasFiltro.desde || 
-                                    !fechasFiltro.desde.day || 
-                                    !fechasFiltro.hasta || 
+                <button id="btnBuscar"
+                        [disabled]="!fechasFiltro.desde ||
+                                    !fechasFiltro.desde.day ||
+                                    !fechasFiltro.hasta ||
                                     !fechasFiltro.hasta.day ||
-                                    !sisModuloSelec || !sisModuloSelec.idSisModulos" 
-                        (click)="onClickBuscar()" 
+                                    !sisModuloSelec || !sisModuloSelec.idSisModulos"
+                        (click)="onClickBuscar()"
                         class="btn btn-primary">
                     <i class="fa fa-search" aria-hidden="true"></i>
                     Buscar
@@ -150,12 +150,12 @@
                 <thead>
                     <tr>
                         <th>Comprobante</th>
-                        <th>Numero</th>
+                        <th class="text-right">Numero</th>
                         <th>Fecha Emision</th>
-                        <th>Cli/Pro</th>
+                        <th class="text-right">Cli/Pro</th>
                         <th>Nombre</th>
-                        <th>Cuit</th>
-                        <th>Dolar</th>
+                        <th class="text-right">Cuit</th>
+                        <th class="text-right">Dolar</th>
                         <th>Moneda</th>
                         <th>Imputada</th>
                         <th>Modulo</th>
@@ -165,12 +165,12 @@
                     <!-- <tr *ngFor="let compBusc of compEncabezados | async"> -->
                     <tr *ngFor="let compBusc of mf.data">
                         <td>{{ compBusc.comprobante }}</td>
-                        <td class="td-right td-nowrap">{{ formatNumero(compBusc.numero) }}</td>
+                        <td class="text-right td-nowrap">{{ formatNumero(compBusc.numero) }}</td>
                         <td>{{ utilsService.formatearFecha('DD/MM/YYYY')(compBusc.fechaEmi) }}</td>
-                        <td class="td-right">{{ compBusc.idPadron }}</td>
+                        <td class="text-right">{{ compBusc.idPadron }}</td>
                         <td>{{ compBusc.nombre }}</td>
-                        <td class="td-right">{{ compBusc.cuit }}</td>
-                        <td class="td-right">{{ utilsService.parseDecimal(compBusc.cotDolar) }}</td>
+                        <td class="text-right">{{ compBusc.cuit }}</td>
+                        <td class="text-right">{{ utilsService.parseDecimal(compBusc.cotDolar) }}</td>
                         <td>{{ compBusc.moneda }}</td>
                         <td>{{ compBusc.imputada }}</td>
                         <td>{{ compBusc.modulo }}</td>
@@ -219,10 +219,10 @@
                         <td>{{ utilsService.formatearFecha('DD/MM/YYYY')(compDet.fechaEmision) }}</td>
                         <td>{{ compDet.codProducto }}</td>
                         <td>{{ compDet.articulo }}</td>
-                        <td class="td-right">{{ utilsService.parseDecimal(compDet.original) }}</td>
-                        <td class="td-right">{{ utilsService.parseDecimal(compDet.pendiente) }}</td>
-                        <td class="td-right">{{ utilsService.parseDecimal(compDet.precio) }}</td>
-                        <td class="td-right">{{ compDet.deposito }}</td>
+                        <td class="text-right">{{ utilsService.parseDecimal(compDet.original) }}</td>
+                        <td class="text-right">{{ utilsService.parseDecimal(compDet.pendiente) }}</td>
+                        <td class="text-right">{{ utilsService.parseDecimal(compDet.precio) }}</td>
+                        <td class="text-right">{{ compDet.deposito }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
