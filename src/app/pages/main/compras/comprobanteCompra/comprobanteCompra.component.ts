@@ -35,7 +35,7 @@ import { DetalleFormaPago } from 'app/models/detalleFormaPago';
  */
 export class ComprobanteCompra {
     @Input() titulo = '';
-    
+
 
     /////////////////////////////////////////////
     /////////// Modelos Comprobante /////////////
@@ -67,7 +67,7 @@ export class ComprobanteCompra {
     tiposOperacion: Observable<SisTipoOperacion[]>;
     monedas: Observable<Moneda[]>;
     depositos: Observable<Deposito[]>;
-    
+
     tiposComprobantesRel: Observable<TipoComprobante[]>;
 
     // Lista de proveedores completa (necesaria para filtrar) y filtrada
@@ -99,14 +99,14 @@ export class ComprobanteCompra {
             onClickEdit: any;
             onClickConfirmEdit: any;
         }
-    } = { 
-        columnas: { 
+    } = {
+        columnas: {
             columnasProductos: [],
             columnasTrazabilidad: [],
             columnasFactura: [],
             columnasDetallesFp: []
-        }, 
-        datos: { 
+        },
+        datos: {
             productosPend: [],
             modelosFactura: [],
             detallesFormaPago: []
@@ -118,37 +118,37 @@ export class ComprobanteCompra {
                     return prod.producto.idProductos === prodSelect.producto.idProductos && prod.numero === prodSelect.numero;
                 });
             },
-            onClickEdit: (tipoColumnas) => (itemSelect: any) => { 
+            onClickEdit: (tipoColumnas) => (itemSelect: any) => {
 
                 this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
                     let newTabla = tabla;
                     if (newTabla.enEdicion !== undefined) {
-                        
+
                         // tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = itemSelect.producto.idProductos :
                         tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = `${itemSelect.producto.idProductos}-${itemSelect.numero}` :
                         tipoColumnas === 'columnasTrazabilidad' ? newTabla.enEdicion = `${itemSelect.producto.idProductos}-${itemSelect.numero}` :
-                        tipoColumnas === 'columnasFactura' ? newTabla.enEdicion = itemSelect.cuentaContable : 
+                        tipoColumnas === 'columnasFactura' ? newTabla.enEdicion = itemSelect.cuentaContable :
                         tipoColumnas === 'columnasDetallesFp' ? newTabla.enEdicion = itemSelect.idFormaPagoDet : null
                     }
                     return newTabla;
                 });
-        
+
                 // Hago focus en el select de imputacion
                 setTimeout(() => {
-        
-                    const idItem =  itemSelect.cuentaContable ? itemSelect.cuentaContable : 
-                                    itemSelect.idFormaPagoDet ? itemSelect.idFormaPagoDet : 
+
+                    const idItem =  itemSelect.cuentaContable ? itemSelect.cuentaContable :
+                                    itemSelect.idFormaPagoDet ? itemSelect.idFormaPagoDet :
                                     // itemSelect.producto && itemSelect.producto.idProductos ? itemSelect.producto.idProductos : '000';
                                     itemSelect.producto && itemSelect.producto.idProductos ? `${itemSelect.producto.idProductos}-${itemSelect.numero}` : '000';
-        
+
                     const inputFocusClass = 'editar-focus-'+idItem;
-        
+
                     const elementFocus: any = document.getElementsByClassName(inputFocusClass);
                     elementFocus && elementFocus[0] ? elementFocus[0].focus() : null
                 });
             },
-            onClickConfirmEdit: (tipoColumnas) => (itemSelect: any) => { 
-                
+            onClickConfirmEdit: (tipoColumnas) => (itemSelect: any) => {
+
 
                 // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
                 this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
@@ -162,7 +162,7 @@ export class ComprobanteCompra {
 
                 // Hago la sumatoria de los subtotales de la factura
                 if (tipoColumnas === 'columnasFactura') {
-                    
+
                     // Actualizo el Total Comprobante sumando todos los precios nuevamente (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
                     this.sumatoriaSubtotales = Math.round(
                         _.sumBy(
@@ -195,7 +195,7 @@ export class ComprobanteCompra {
            }
         }
     };
-    
+
 
     /////////////////////////////////////////////
     //////////////// PopupLista /////////////////
@@ -249,14 +249,14 @@ export class ComprobanteCompra {
     /**
      * Busca los productos pendientes de acuerdo al comprobante relacionado
      */
-    onClickBuscarPendientes = () => 
+    onClickBuscarPendientes = () =>
         this.comprobanteCompraService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado)
             .subscribe(
                 prodsPend => {
                     // Agrego los productos
                     this.tablas.datos.productosPend = _.uniqWith(
                         this.tablas.datos.productosPend.concat(prodsPend),
-                        (a:ProductoPendiente,b:ProductoPendiente) =>    a.producto.idProductos === b.producto.idProductos && 
+                        (a:ProductoPendiente,b:ProductoPendiente) =>    a.producto.idProductos === b.producto.idProductos &&
                                                                         a.numero === b.numero
                     );
 
@@ -265,17 +265,17 @@ export class ComprobanteCompra {
                 },
                 error => this.utilsService.decodeErrorResponse(error)
             );
-    
+
 
     /**
      * Agrega el producto seleccionado a la lista de productosPendientes
      */
     onClickProductoLista = (prodSelec: ProductoPendiente) => {
-        
+
         // Le seteo el nroComprobante
         const auxProdSelect = Object.assign({}, prodSelec);
         auxProdSelect.numero = Number(this.comprobante.puntoVenta + this.comprobante.numero).toString();
-        
+
 
 
         // Checkeo que no exista
@@ -299,7 +299,7 @@ export class ComprobanteCompra {
         'Aviso'
     )(
         '¿Cancelar comprobante?'
-    )(  
+    )(
         () => {
             // Blanqueo los campos
             const auxFecha = this.comprobante.fechaComprobante;
@@ -312,7 +312,7 @@ export class ComprobanteCompra {
             this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
             this.depositoSelec = new Deposito()
             this.tablas.datos.detallesFormaPago = [];
-        }   
+        }
     )({
         tipoModal: 'confirmation'
     });
@@ -324,7 +324,7 @@ export class ComprobanteCompra {
         'Aviso'
     )(
         '¿Confirmar comprobante?'
-    )(  
+    )(
         () => this.comprobanteCompraService.confirmarYGrabarComprobante(this.comprobante)
             (this.comprobanteRelacionado)
             (this.proveedorSeleccionado)
@@ -352,15 +352,15 @@ export class ComprobanteCompra {
                 // Focus en input proveedor (TODO SET TIME OUT)
                 document.getElementById('inputProveedor') ? document.getElementById('inputProveedor').focus() : null
             })
-     
+
     )({
         tipoModal: 'confirmation'
     });
-    
-    
+
+
 
     ///////////////////////////////// Eventos (Distintos de onclick) /////////////////////////////////
-    
+
     /**
      * Actualiza el total en cotizacion y los modelosFactura
      */
@@ -406,8 +406,8 @@ export class ComprobanteCompra {
         // Reseteo el indice
         this.proveedorEnfocadoIndex = -1;
     }
-    
-    
+
+
     /**
      * El blur es cuando se hace un leave del input (caundo se apreta click afuera por ejemplo).
      * Acá lo que hago es poner un array vacio como próx valor de los filtrados, cosa que la lista desaparezca porque no hay nada
@@ -438,17 +438,17 @@ export class ComprobanteCompra {
      */
     onCalculateFecha = (e) => (keyFecha) => (objetoContenedor) => {
         if (!this[objetoContenedor][keyFecha] || typeof this[objetoContenedor][keyFecha] !== 'string') return;
-        
+
         this[objetoContenedor][keyFecha] = this.utilsService.stringToDateLikePicker(this[objetoContenedor][keyFecha]);
 
         // Obtengo las formas de pago
         if(this.comprobante.fechaComprobante) {
             this.dataTablaFormasPago = this.comprobanteCompraService.getFormasPago(this.comprobante.fechaComprobante);
-            
+
         }
 
         // Hago focus en el prox input
-        (keyFecha==='fechaComprobante') || (keyFecha==='fechaContable') ? 
+        (keyFecha==='fechaComprobante') || (keyFecha==='fechaContable') ?
             document.getElementById(`fechaVto${this.utilsService.upperFirstLetter(objetoContenedor)}`).focus() : null;
 
     }
@@ -458,9 +458,9 @@ export class ComprobanteCompra {
      * tipo: puntoVenta o numero
      * keyTipoe: comprobante, comprobanteRelacionado
      */
-    onBlurNumeroAutocomp = (e) => (tipo: string) => (keyTipo: string) => 
+    onBlurNumeroAutocomp = (e) => (tipo: string) => (keyTipo: string) =>
         this[keyTipo][tipo] = this.comprobanteCompraService.autocompNroComp(tipo)(this[keyTipo]);
-    
+
 
     /**
      * Actualizo el deposito seleccionado que me viene de tablaIngreso
@@ -495,7 +495,7 @@ export class ComprobanteCompra {
         })
     }
 
-    
+
 
     /**
      * Agrega o elimina una forma pago de las seleccionadas. Tambien muestra detalle de la lista correspondiente
@@ -534,14 +534,14 @@ export class ComprobanteCompra {
             this.tablas.datos.detallesFormaPago,
             (fPago) => Number(fPago.monto) ? Number(fPago.monto) : 0
         )
-        
+
         return this.cotizacionDatos.total - sumMontos
     }
 
     /**
      * Evento cuando cambio cteTipo en comprobante
      */
-    onChangeCteTipo = (cteTipoSelect: TipoComprobante) => {  
+    onChangeCteTipo = (cteTipoSelect: TipoComprobante) => {
         this.tiposComprobantesRel = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
             'sisModulo': 1,
             'idCteTipo': cteTipoSelect.idCteTipo

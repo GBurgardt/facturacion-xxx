@@ -97,7 +97,7 @@ export class UtilsService {
         // Obtengo la primer key de la clase del objeto recibido
         const idRecurso = Object.keys(objeto)[0];
 
-        
+
         // Recorro las keys y checkeo que NO sean null (excepto ignoradas)
         const someKeyIsNull = Object.keys(objeto).some((key) => {
             // Si la key NO está incluida en las ignoradas, la evaluo
@@ -172,7 +172,7 @@ export class UtilsService {
 
     upperFirstLetter = (rrr) => `${rrr[0].toUpperCase()}${rrr.substring(1)}`
 
-    
+
     /**
      * Se usa en las listas desplegables, te agarra el item definido en el recurso cuando se edita un recurso
      * @param item1
@@ -197,7 +197,7 @@ export class UtilsService {
     // }
 
     /**
-     * 
+     *
      */
     dateToString = (fechaDate) => {
         return `${fechaDate.year}-${fechaDate.month}-${fechaDate.day}`
@@ -205,7 +205,7 @@ export class UtilsService {
 
     /**
      * Retorna la posicion de un elemento dom dado
-     * @param el 
+     * @param el
      */
     getOffset( el ) {
         var _x = 0;
@@ -215,7 +215,7 @@ export class UtilsService {
             _y += el.offsetTop - el.scrollTop;
             el = el.offsetParent;
         }
-        
+
         // Le resto el scrolltop de la ventana completa
         _y -= document.documentElement.scrollTop;
 
@@ -225,29 +225,29 @@ export class UtilsService {
     /**
      * Retorna el tipo de datos
      */
-    getTipoDato = (dato) => (dato && dato.constructor && dato.constructor.name) ? 
+    getTipoDato = (dato) => (dato && dato.constructor && dato.constructor.name) ?
         dato.constructor.name : null;
-    
+
 
     /**
      * Dado un string en formato ddmm retorna dd/mm/aaaa en typeData DateLikePicker, o null en caso de formato incorrecto
      * Si es formato dd/mm/aaaa, tambien retoron un datelikepicker
      */
-    stringToDateLikePicker = (valueFecha) => 
+    stringToDateLikePicker = (valueFecha) =>
         valueFecha.length === 4 ?
             new DateLikePicker(null, {
                 day: Number(valueFecha.substring(0, 2)),
                 month: Number(valueFecha.substring(2)),
                 year: (new Date()).getFullYear()
-            }) : 
+            }) :
             new DateLikePicker(null, valueFecha);
-    
+
     /**
      * Decodifica la respuesta del error (scando el _body) y muestra el mensaje
      */
     showErrorWithBody = (err: any) => {
-        const theBody = 
-            err && err['_body'] ? 
+        const theBody =
+            err && err['_body'] ?
                 JSON.parse(err['_body']) : null;
 
         this.showModal(theBody.control.codigo)(theBody.control.descripcion)()();
@@ -282,7 +282,7 @@ export class UtilsService {
 
 
     // Flatmap para arrays
-    flatMap = (f, arr) => 
+    flatMap = (f, arr) =>
         arr.reduce((x, y) => [...x, ...f(y)], [])
 
     parseDecimal = (key) => Number(key).toFixed(2)
@@ -311,4 +311,13 @@ export class UtilsService {
             tipo === 'puntoVenta' ? 4 : 8,
             0
         ) : '';
+
+    /**
+     * Check if document element has a determinate class
+     * @param ele
+     * @param cls
+     */
+    hasClass(ele,cls) {
+        return ele.className.match(new RegExp('(\\s|^)'+cls+'(\\s|$)'));
+    }
 }

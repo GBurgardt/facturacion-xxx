@@ -37,6 +37,7 @@ export class NuevoModeloImputacion {
     contPlanCuentaList: Observable<PlanCuenta[]> = Observable.of([]);
     sisTipoModeloList: Observable<SisTipoModelo[]> = Observable.of([]);
 
+
     constructor(
         private recursoService: RecursoService,
         private utilsService: UtilsService,
@@ -44,13 +45,21 @@ export class NuevoModeloImputacion {
     ) {
         this.contPlanCuentaList = this.recursoService.getRecursoList(resourcesREST.contPlanCuenta)();
         this.sisTipoModeloList = this.recursoService.getRecursoList(resourcesREST.sisTipoModelo)();
+
     }
+
+    onSelectModImpuTest = (modImpu) => {
+        debugger;
+    }
+
+
+
 
     onClickCrear = async () => {
         try {
             // Agrego los detalles
             this.recurso.modeloDetalle = Object.assign([], this.detalles);
-            
+
             const resp: any = await this.recursoService.setRecurso(this.recurso)();
 
             this.utilsService.showModal(
@@ -69,7 +78,7 @@ export class NuevoModeloImputacion {
     onClickConfirmarDetalle = () => {
         if (this.editandoDetalle) {
             let copiaDetalles = Object.assign(
-                [], 
+                [],
                 this.detalles
             );
 

@@ -22,7 +22,7 @@ import { SisTipoModelo } from 'app/models/sisTipoModelo';
 
 export class EditarModeloImputacion {
     recurso: ModeloCab = new ModeloCab();
-    
+
     // detalles: ModeloDetalle[] = [];
     detalleEnEdicion: ModeloDetalle = new ModeloDetalle();
 
@@ -53,6 +53,7 @@ export class EditarModeloImputacion {
                 )
                 .subscribe(recurso =>{
                     this.recurso = recurso;
+                    // debugger;
                 })
         );
     }
@@ -78,7 +79,7 @@ export class EditarModeloImputacion {
     onClickConfirmarDetalle = () => {
         if (this.editandoDetalle) {
             let copiaDetalles = Object.assign(
-                [], 
+                [],
                 this.recurso.modeloDetalle
             );
 
@@ -123,11 +124,11 @@ export class EditarModeloImputacion {
         this.editandoDetalle = !this.editandoDetalle;
 
         this.detalleEnEdicion = Object.assign({}, det);
-        debugger;
+        // debugger;
     }
 
-    compareWithCtaContable = (item1: any, item2: any) => {
-        if (item2) debugger;
+    compareWithGeneric = (item1: any, item2: any) => {
+        // if (item2 && item2 !== '21012200') debugger;
         return item1 && item2 && (
             item1 === item2 ||
             item1.toString() === item2

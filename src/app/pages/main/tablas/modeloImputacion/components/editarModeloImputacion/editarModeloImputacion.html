@@ -7,7 +7,7 @@
                     <input [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion">
                 </div>
             </div>
-            
+
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="detalles">Detalles</label>
@@ -51,7 +51,7 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="selectCtaCont">Cta Contable *</label>
-                    <select [compareWith]="compareWithCtaContable" [(ngModel)]="detalleEnEdicion.ctaContable" class="form-control" id="selectCtaCont">
+                    <select [compareWith]="compareWithGeneric" [(ngModel)]="detalleEnEdicion.ctaContable" class="form-control" id="selectCtaCont">
                         <option *ngFor="let ctaCont of contPlanCuentaList | async" [ngValue]="ctaCont.planCuentas">
                             {{ctaCont.planDescripcion}} ({{ctaCont.planCuentas}})
                         </option>
@@ -65,7 +65,7 @@
                     <input [(ngModel)]="detalleEnEdicion.descripcion" type="text" class="form-control" id="descripcion">
                 </div>
             </div>
-            
+
             <div class="col-sm-2">
                 <div class="form-group">
                     <label for="descripcion">Orden *</label>
@@ -96,7 +96,7 @@
             <div class="col-sm-2">
                 <div class="form-group">
                     <label for="selectCtaCont">Operador *</label>
-                    <select [(ngModel)]="detalleEnEdicion.operador" class="form-control" id="selectCtaCont">
+                    <select [compareWith]="compareWithGeneric" [(ngModel)]="detalleEnEdicion.operador" class="form-control" id="selectCtaCont">
                         <option *ngFor="let sig of signos" [value]="sig">
                             {{ sig }}
                         </option>
@@ -107,7 +107,7 @@
             <div class="col-sm-2">
                 <div class="form-group">
                     <label for="selectCtaCont">Tipo Modelo *</label>
-                    <select [(ngModel)]="detalleEnEdicion.idSisTipoModelo" class="form-control" id="selectSisTipoModelo">
+                    <select [compareWith]="compareWithGeneric" [(ngModel)]="detalleEnEdicion.idSisTipoModelo" class="form-control" id="selectSisTipoModelo">
                         <option *ngFor="let stm of sisTipoModeloList | async" [value]="stm.idTipoModelo">
                             {{ stm.descripcion }}
                         </option>
@@ -115,7 +115,7 @@
                 </div>
             </div>
 
-            <div class="col-sm-2 checkbox-container">                
+            <div class="col-sm-2 checkbox-container">
                 <ba-checkbox [(ngModel)]="detalleEnEdicion.prioritario" [label]="'Prioritario'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
             </div>
 
@@ -138,4 +138,3 @@
     </ba-card>
 
 </div>
-    

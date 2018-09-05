@@ -220,14 +220,14 @@ export class AuthService {
     /**
      * Graba un comprobante de comprobanteCompra
      */
-    grabaComprobante =  (token) => 
-                        (comprobante: Comprobante) => 
+    grabaComprobante =  (token) =>
+                        (comprobante: Comprobante) =>
                         (comproRelac: ComprobanteRelacionado) =>
-                        (provSelec: Padron) => 
-                        (productosPend: ProductoPendiente[]) => 
+                        (provSelec: Padron) =>
+                        (productosPend: ProductoPendiente[]) =>
                         (modelosFactura: ModeloFactura[]) =>
-                        (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
-                        (depositoSelec: Deposito) => 
+                        (cotizacionDatos: { cotizacion: Cotizacion, total: number }) =>
+                        (depositoSelec: Deposito) =>
                         (detallesFormaPago: DetalleFormaPago[]) => {
 
 
@@ -259,7 +259,7 @@ export class AuthService {
                 cuit: provSelec.cuit.toString(),
                 sisSitIva: provSelec.condIva.descCorta,
                 codigoPostal: ' ',
-                listaPrecio: ' ',   
+                listaPrecio: ' ',
                 cotDolar: cotizacionDatos.cotizacion.cotizacion,
                 fechaDolar: `2018-01-01`,
                 observaciones: comprobante.observaciones,
@@ -326,27 +326,27 @@ export class AuthService {
                         observaciones: mod.observaciones ? mod.observaciones : ' '
                     }
                 }),
-                    
-                
+
+
             },
             {}
         );
     }
-        
+
 
     /**
      * Emitir remito
      */
-    emitirRemito =  (token) => 
-                        (comprobante: Comprobante) => 
+    emitirRemito =  (token) =>
+                        (comprobante: Comprobante) =>
                         (comproRelac: ComprobanteRelacionado) =>
-                        (clienteSelect: Padron) => 
-                        (productosPend: ProductoPendiente[]) => 
+                        (clienteSelect: Padron) =>
+                        (productosPend: ProductoPendiente[]) =>
                         (modelosFactura: ModeloFactura[]) =>
-                        (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
-                        (depositoSelec: Deposito) => 
-                        (sisCanje: SisCanje) => 
-                        (formasPagoSeleccionadas: FormaPago[]) => 
+                        (cotizacionDatos: { cotizacion: Cotizacion, total: number }) =>
+                        (depositoSelec: Deposito) =>
+                        (sisCanje: SisCanje) =>
+                        (formasPagoSeleccionadas: FormaPago[]) =>
         this.request(
             [],
             RequestMethod.Post,
@@ -375,7 +375,7 @@ export class AuthService {
                 cuit: clienteSelect.cuit.toString(),
                 sisSitIva: clienteSelect.condIva.descCorta,
                 codigoPostal: ' ',
-                listaPrecio: ' ',   
+                listaPrecio: ' ',
                 cotDolar: cotizacionDatos.cotizacion.cotizacion,
                 fechaDolar: `2018-01-01`,
                 observaciones: comprobante.observaciones,
@@ -441,7 +441,7 @@ export class AuthService {
                         }
                     })
 
-                
+
             },
             {}
         );
@@ -483,12 +483,12 @@ export class AuthService {
     * @argument token
     * @argument filtros Lo filtro
     */
-    getBuscaComprobantes = (token: string) =>   (comprobante: Comprobante) => 
-                                                (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker}) => 
-                                                (sisModuloSelec: SisModulo) => 
+    getBuscaComprobantes = (token: string) =>   (comprobante: Comprobante) =>
+                                                (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker}) =>
+                                                (sisModuloSelec: SisModulo) =>
                                                 (tipoComprobanteSelec: TipoComprobante) =>
                                                 (productoSelec: Producto) =>
-                                                (sisEstadoSelec: SisEstado) => 
+                                                (sisEstadoSelec: SisEstado) =>
                                                 (padronSelec: Padron) =>
                                                 (depositoSelec: Deposito) => {
         return this.request(
@@ -499,7 +499,7 @@ export class AuthService {
             },
             resourcesREST.buscaComprobantes.nombre,
             {
-                comprobanteModulo : sisModuloSelec && sisModuloSelec.idSisModulos ? sisModuloSelec.idSisModulos : 0, 
+                comprobanteModulo : sisModuloSelec && sisModuloSelec.idSisModulos ? sisModuloSelec.idSisModulos : 0,
                 comprobanteTipo : tipoComprobanteSelec && tipoComprobanteSelec.idCteTipo ? tipoComprobanteSelec.idCteTipo : 0,
                 comprobanteNumero : comprobante && comprobante.puntoVenta && comprobante.numero ? `${comprobante.puntoVenta}${comprobante.numero}` : 0,
                 fechaDesde : this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.desde),
@@ -538,7 +538,7 @@ export class AuthService {
     }
 
     /**
-    * @description 
+    * @description
     * @argument token
     */
     getBuscaCteFecha = (token: string) => (comprobante: Comprobante) => {
@@ -692,9 +692,9 @@ export class AuthService {
     * @argument resource Ejemplos: 'cteTipo', 'rubros'
     * @argument queryParams Query params para setearle a la consulta
     */
-    getResourceList = (token: string) => (nombreRecurso: string) => (params?) => (tipoParam?) => 
+    getResourceList = (token: string) => (nombreRecurso: string) => (params?) => (tipoParam?) =>
         this.request(
-            params && tipoParam && tipoParam === 'path' ? 
+            params && tipoParam && tipoParam === 'path' ?
                 params : [],
             RequestMethod.Get,
             {
@@ -702,10 +702,10 @@ export class AuthService {
             },
             nombreRecurso,
             {},
-            params && tipoParam && tipoParam === 'query' ? 
-                params : {} 
+            params && tipoParam && tipoParam === 'query' ?
+                params : {}
         )
-    
+
 
     /**
     * @description Borrar un recurso a partir de us id
@@ -886,7 +886,7 @@ export class AuthService {
                     idSisTipoModelo: det.idSisTipoModelo
                 }))
             }
-        
+
         }
 
 
@@ -1012,15 +1012,15 @@ export class AuthService {
                     descripcionDetalle: det.descripcion,
                     dh: det.dh,
                     prioritario: det.prioritario ? true : false,
-                    valor: det.valor,
+                    valor: det.valor ? det.valor : 0,
                     operador: det.operador,
                     idSisTipoModelo: det.idSisTipoModelo
                 }))
             }
-        
+
         }
 
-        
+
     }
 
 }

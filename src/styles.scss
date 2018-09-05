@@ -6,3 +6,11 @@
 .text-right {
     text-align: right;
 }
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    min-width: 35px;
+//    background-image: url(...);   /* add custom arrow */
+}

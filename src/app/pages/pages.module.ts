@@ -10,12 +10,13 @@ import { ConfirmationModal } from './reusable/modals/confirmation-modal/confirma
 import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
 import { ComprobanteService } from '../services/comprobanteService';
 import { UtilsService } from '../services/utilsService';
+import { ListPopupService } from './reusable/otros/listFinder/components/listPopup/listPopupService';
 
 @NgModule({
     imports: [
-        CommonModule, 
-        AppTranslationModule, 
-        NgaModule, 
+        CommonModule,
+        AppTranslationModule,
+        NgaModule,
         routing
     ],
     declarations: [
@@ -31,7 +32,8 @@ import { UtilsService } from '../services/utilsService';
         LocalStorageService,
         PopupListaService,
         ComprobanteService,
-        UtilsService
+        UtilsService,
+        ListPopupService
     ],
     exports: [
     ]

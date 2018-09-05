@@ -7,7 +7,7 @@
                     <input [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion">
                 </div>
             </div>
-            
+
             <div class="col-sm-5">
                 <div class="form-group">
                     <label for="detalles">Detalles</label>
@@ -56,6 +56,13 @@
                             {{ctaCont.planDescripcion}} ({{ctaCont.planCuentas}})
                         </option>
                     </select>
+
+                    <list-finder    title="test"
+                                    [items]="contPlanCuentaList"
+                                    [keysToShow]="['planCuentas', 'planDescripcion']"
+                                    (onSelectItem)="onSelectModImpuTest($event)">
+
+                    </list-finder>
                 </div>
             </div>
 
@@ -65,7 +72,7 @@
                     <input [(ngModel)]="detalleEnEdicion.descripcion" type="text" class="form-control" id="descripcion">
                 </div>
             </div>
-            
+
             <div class="col-sm-2">
                 <div class="form-group">
                     <label for="descripcion">Orden *</label>
@@ -115,11 +122,11 @@
                 </div>
             </div>
 
-            <div class="col-sm-2 checkbox-container">                
+            <div class="col-sm-2 checkbox-container">
                 <ba-checkbox [(ngModel)]="detalleEnEdicion.prioritario" [label]="'Prioritario'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
             </div>
 
-            
+
             <div class="col-sm-4 btn-container-det">
                 <button (click)="onClickCancelarDetalle()" class="btn btn-secondary btn-detalle">Cancelar</button>
                 <button [disabled]="

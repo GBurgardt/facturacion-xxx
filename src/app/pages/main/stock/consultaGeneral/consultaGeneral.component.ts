@@ -218,7 +218,7 @@ export class ConsultaGeneral {
     }
 
     //////////////////////////////////////////////////////////////////////
-    
+
     /**
      * Cuanbdo cambia Rubro, actualizo SubRubros
      */

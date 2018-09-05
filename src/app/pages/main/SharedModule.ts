@@ -9,6 +9,8 @@ import { DataTableModule } from 'angular2-datatable';
 import { NgaModule } from 'app/theme/nga.module';
 import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { PopupLista } from 'app/pages/reusable/otros/popup-lista/popup-lista.component';
+import { ListFinder } from '../reusable/otros/listFinder/listFinder';
+import { ListPopup } from 'app/pages/reusable/otros/listFinder/components/listPopup/listPopup';
 
 
 
@@ -25,7 +27,9 @@ import { PopupLista } from 'app/pages/reusable/otros/popup-lista/popup-lista.com
         CustomCard,
         DataTables,
         DataFilterPipe,
-        PopupLista
+        PopupLista,
+        ListFinder,
+        ListPopup
     ],
     providers: [
     ],
@@ -38,7 +42,9 @@ import { PopupLista } from 'app/pages/reusable/otros/popup-lista/popup-lista.com
         DataTableModule,
         NgaModule,
         NgbDatepickerModule,
-        PopupLista
+        PopupLista,
+        ListFinder,
+        ListPopup
     ]
 })
 export class SharedModule {}
