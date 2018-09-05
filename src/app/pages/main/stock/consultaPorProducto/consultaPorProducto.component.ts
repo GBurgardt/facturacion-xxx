@@ -92,17 +92,18 @@ export class ConsultaPorProducto {
      */
     onEnterInputProd = (e: any) => {
         e.preventDefault();
-        this.productos.filtrados.subscribe(prodsLista => {
-            // Busco el producto
-            const prodSelect: any = prodsLista && prodsLista.length ? prodsLista[this.productoEnfocadoIndex] : null;
-            // Lo selecciono
-            prodSelect ? this.onSelectProducto(prodSelect) : null;
-            // Reseteo el index
-            this.productoEnfocadoIndex = -1;
-            // Vacio filtrados y focus lote input
-            this.productos.filtrados.next([]);
-            document.getElementById('inputLoteNro') ? document.getElementById('inputLoteNro').focus() : null
-        })
+        
+        const prodsLista = this.productos.filtrados.value;
+        // Busco el producto
+        const prodSelect: any = prodsLista && prodsLista.length ? prodsLista[this.productoEnfocadoIndex] : null;
+        // Lo selecciono
+        prodSelect ? this.onSelectProducto(prodSelect) : null;
+        // Reseteo el index
+        this.productoEnfocadoIndex = -1;
+        // Vacio filtrados y focus lote input
+        this.productos.filtrados.next([]);
+        document.getElementById('inputLoteNro') ? document.getElementById('inputLoteNro').focus() : null
+        
     }
 
     /**

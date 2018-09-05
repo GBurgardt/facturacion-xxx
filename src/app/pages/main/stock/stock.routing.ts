@@ -4,6 +4,7 @@ import { Productos } from './productos';
 import { NuevoProducto } from 'app/pages/main/stock/productos/components/nuevoProducto';
 import { EditarProducto } from 'app/pages/main/stock/productos/components/editarProducto';
 import { ConsultaPorProducto } from './consultaPorProducto';
+import { ConsultaGeneral } from 'app/pages/main/stock/consultaGeneral';
 
 
 // noinspection TypeScriptValidateTypes
@@ -16,6 +17,7 @@ const routes: Routes = [
             { path: 'productos/nuevo', component: NuevoProducto },
             { path: 'productos/editar/:idProductos', component: EditarProducto },
             { path: 'consulta-producto', component: ConsultaPorProducto },
+            { path: 'consulta-general', component: ConsultaGeneral },
         ]
     }
 ];

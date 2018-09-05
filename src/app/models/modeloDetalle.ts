@@ -1,3 +1,5 @@
+import { SisTipoModelo } from "./sisTipoModelo";
+
 export class ModeloDetalle {
     idModeloDetalle: number;
     ctaContable: number;
@@ -5,6 +7,10 @@ export class ModeloDetalle {
     descripcion: string;
     dh: string;
     prioritario: boolean;
+
+    operador: string;
+    valor: number;
+    idSisTipoModelo: number;
 
     constructor (modeloDetalle?: {
         idModeloDetalle: number;

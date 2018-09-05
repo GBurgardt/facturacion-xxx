@@ -34,7 +34,7 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="rubro">Rubro</label>
-                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.subRubro.rubro" class="form-control" id="rubro">
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.subRubro.rubro" (ngModelChange)="onChangeRubro($event)" class="form-control" id="rubro">
                         <option *ngFor="let rub of rubros | async" [ngValue]="rub">
                             {{rub.descripcion}}
                         </option>

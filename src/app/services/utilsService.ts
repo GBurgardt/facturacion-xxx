@@ -246,10 +246,9 @@ export class UtilsService {
      * Decodifica la respuesta del error (scando el _body) y muestra el mensaje
      */
     showErrorWithBody = (err: any) => {
-
-        const theBody = err && err['_body'] ? JSON.parse(err['_body']) : null;
-
-        // debugger;
+        const theBody = 
+            err && err['_body'] ? 
+                JSON.parse(err['_body']) : null;
 
         this.showModal(theBody.control.codigo)(theBody.control.descripcion)()();
     }

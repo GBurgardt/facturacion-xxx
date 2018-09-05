@@ -27,6 +27,9 @@ import { EditarListaPrecio } from './listaPrecios/components/editarListaPrecio';
 import { Productos } from 'app/pages/main/stock/productos';
 import { NuevoProducto } from '../stock/productos/components/nuevoProducto';
 import { EditarProducto } from 'app/pages/main/stock/productos/components/editarProducto';
+import { ModeloImputacion } from './modeloImputacion';
+import { NuevoModeloImputacion } from './modeloImputacion/components/nuevoModeloImputacion';
+import { EditarModeloImputacion } from 'app/pages/main/tablas/modeloImputacion/components/editarModeloImputacion';
 
 // noinspection TypeScriptValidateTypes
 const routes: Routes = [
@@ -58,6 +61,9 @@ const routes: Routes = [
             { path: 'lista-precios', component: ListaPrecios },
             { path: 'lista-precios/nuevo', component: NuevoListaPrecio },
             { path: 'lista-precios/editar/:idListaPrecio', component: EditarListaPrecio },
+            { path: 'modelo-imputacion', component: ModeloImputacion },
+            { path: 'modelo-imputacion/nuevo', component: NuevoModeloImputacion },
+            { path: 'modelo-imputacion/editar/:idModeloCab', component: EditarModeloImputacion },
         ]
     }
 ];

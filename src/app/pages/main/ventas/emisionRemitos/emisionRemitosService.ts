@@ -18,6 +18,7 @@ import { FormaPago } from "app/models/formaPago";
 import { CteFechas } from "../../../../models/cteFechas";
 import { Lote } from "../../../../models/lote";
 import { SisCanje } from "../../../../models/sisCanje";
+import { DetalleFormaPago } from "app/models/detalleFormaPago";
 
 @Injectable()
 export class EmisionRemitosService {
@@ -263,7 +264,23 @@ export class EmisionRemitosService {
         return this.authService.getProductosPendientes(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(cliente)(comprobanteRel)
-            .map(respuesta => respuesta.arraydatos.map(prodPend => new ProductoPendiente(prodPend)));
+            .catch(
+                err => {
+                    const respErr = 
+                        err && err['_body'] && err['_body'].control ? 
+                            err['_body'].control : null;
+
+                    this.utilsService.showModal(respErr.codigo)(respErr.descripcion)()();
+                    return Observable.throw(
+                        this.utilsService.showErrorWithBody(err)
+                    )
+                }
+            )
+            .map(
+                respuesta => respuesta.arraydatos.map(
+                    prodPend => new ProductoPendiente(prodPend)
+                )
+            );
     }
 
     /**
@@ -310,34 +327,37 @@ export class EmisionRemitosService {
     /**
      * 
      */
-    confirmarYEmitirRemito = (comprobante: Comprobante) =>
-        (comproRelac: ComprobanteRelacionado) =>
-            (clienteSelec: Padron) =>
-                (productosPend: ProductoPendiente[]) =>
-                    (cotizacionDatos: { cotizacion: Cotizacion, total: number }) =>
-                        (sisCanje: SisCanje) =>
-                        this.authService.emitirRemito(
-                            this.localStorageService.getObject(environment.localStorage.acceso).token
-                        )(
-                            comprobante
-                        )(
-                            comproRelac
-                        )(
-                            clienteSelec
-                        )(
-                            productosPend
-                        )(
-                            null
-                        )(
-                            cotizacionDatos
-                        )(
-                            null
-                        )(
-                            sisCanje
-                        )
-                            .catch(err => Observable.throw(
-                                this.utilsService.showErrorWithBody(err)
-                            ))
+    confirmarYEmitirRemito =    (comprobante: Comprobante) =>
+                                (comproRelac: ComprobanteRelacionado) =>
+                                (clienteSelec: Padron) =>
+                                (productosPend: ProductoPendiente[]) =>
+                                (cotizacionDatos: { cotizacion: Cotizacion, total: number }) =>
+                                (sisCanje: SisCanje) =>
+                                (formasPagoSeleccionadas: FormaPago[]) =>
+        this.authService.emitirRemito(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            comprobante
+        )(
+            comproRelac
+        )(
+            clienteSelec
+        )(
+            productosPend
+        )(
+            null
+        )(
+            cotizacionDatos
+        )(
+            null
+        )(
+            sisCanje
+        )(
+            formasPagoSeleccionadas
+        )
+            .catch(err => Observable.throw(
+                this.utilsService.showErrorWithBody(err)
+            ))
 
     /**
      * Valida que los datos estén correctos
@@ -462,7 +482,24 @@ export class EmisionRemitosService {
         this.authService.getBuscaLotes(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(productos)(comprobante).map(resp => resp.arraydatos.map(lote => new Lote(lote)))
-    
+ 
+    validarAntesDeConfirmar = (tipoColumnas) => (itemSelect: any) => {
+        if (
+            tipoColumnas === 'columnasTrazabilidad' && 
+            itemSelect && 
+            itemSelect.cantidad && 
+            itemSelect.stockNegativo
+        ) {
+            if (itemSelect.stockNegativo === 0) {
+
+                if (itemSelect.cantidad > itemSelect.stock) {
+                    return 'Cantidad debe ser menor o igual a stock'
+                }
+
+            }
+        } 
+        return 'ok';
+    }
 
 
 }

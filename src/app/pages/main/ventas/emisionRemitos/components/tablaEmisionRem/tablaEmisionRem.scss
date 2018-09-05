@@ -99,6 +99,19 @@
                 }
             }
 
+            .tooltip-add-prod {
+                position: fixed;
+                background: #c3c5d4;
+                padding: 5px 10px;
+                text-align: center;
+                border-radius: 24px;
+                opacity: 0.8;
+                left: 222px;
+                top: 87px;
+                font-size: 11px;
+                transition: width 2s;
+            }
+
             .row-agregar-producto {
                 td {
                     padding: 3px 0px;

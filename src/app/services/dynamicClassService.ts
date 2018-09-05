@@ -14,6 +14,7 @@ import { Unidad } from "app/models/unidad";
 import { Deposito } from "app/models/deposito";
 import { ListaPrecio } from "app/models/listaPrecio";
 import { Moneda } from "app/models/moneda";
+import { ModeloCab } from "app/models/modeloCab";
 
 const classes = {
     Usuario,
@@ -31,7 +32,8 @@ const classes = {
     Unidad,
     Deposito,
     ListaPrecio,
-    Moneda
+    Moneda,
+    ModeloCab
 };
 
 export default function dynamicClass (name) {

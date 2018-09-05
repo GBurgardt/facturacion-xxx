@@ -1,0 +1,141 @@
+<div class="editar-modelo-imputacion">
+    <ba-card class="creando-cabecera" cardTitle="Nuevo Modelo Imputacion" baCardClass="with-scroll">
+        <div class="row main-row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="descripcion">Descripcion</label>
+                    <input [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion">
+                </div>
+            </div>
+            
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="detalles">Detalles</label>
+                    <div class="detalles-container">
+                        <ul class="detalles-list">
+                            <li *ngIf="!recurso || !recurso.modeloDetalle || recurso.modeloDetalle.length <= 0" class="no-detalles">
+                                Sin Detalles
+                            </li>
+                            <li class="detalle-li" *ngFor="let det of recurso.modeloDetalle" [value]="det">
+                                <label>
+                                    {{ det.descripcion }}
+                                </label>
+
+                                <div class="btn-container">
+                                    <div (click)="onEditDetalle(det)" class="btn-accion btn-edit">
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                    </div>
+                                    <div (click)="onRemoveDetalle(det)" class="btn-accion btn-delete">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="btn-container">
+                            <button (click)="agregandoDetalle = !agregandoDetalle" class="btn btn-secondary btn-agregar">Agregar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="btn-container">
+            <button routerLink="/pages/tablas/modelo-imputacion" class="btn btn-secondary btn-mod-imp">Cancelar</button>
+            <button (click)="onClickEditar()" type="submit" class="btn btn-primary btn-mod-imp">Confirmar</button>
+        </div>
+    </ba-card>
+
+    <ba-card *ngIf="agregandoDetalle || editandoDetalle" class="agregar-detalle" [cardTitle]="addDetalleTitle" baCardClass="with-scroll">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="selectCtaCont">Cta Contable *</label>
+                    <select [compareWith]="compareWithCtaContable" [(ngModel)]="detalleEnEdicion.ctaContable" class="form-control" id="selectCtaCont">
+                        <option *ngFor="let ctaCont of contPlanCuentaList | async" [ngValue]="ctaCont.planCuentas">
+                            {{ctaCont.planDescripcion}} ({{ctaCont.planCuentas}})
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="descripcion">Descripcion *</label>
+                    <input [(ngModel)]="detalleEnEdicion.descripcion" type="text" class="form-control" id="descripcion">
+                </div>
+            </div>
+            
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="descripcion">Orden *</label>
+                    <input [(ngModel)]="detalleEnEdicion.orden" type="text" class="form-control" id="descripcion">
+                </div>
+            </div>
+
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="descripcion">Valor</label>
+                    <input [(ngModel)]="detalleEnEdicion.valor" type="text" class="form-control" id="descripcion">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="selectDh">D/H *</label>
+                    <select [(ngModel)]="detalleEnEdicion.dh" class="form-control" id="selectDh">
+                        <option *ngFor="let dh of debeHaber" [value]="dh">
+                            {{ dh }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="selectCtaCont">Operador *</label>
+                    <select [(ngModel)]="detalleEnEdicion.operador" class="form-control" id="selectCtaCont">
+                        <option *ngFor="let sig of signos" [value]="sig">
+                            {{ sig }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="selectCtaCont">Tipo Modelo *</label>
+                    <select [(ngModel)]="detalleEnEdicion.idSisTipoModelo" class="form-control" id="selectSisTipoModelo">
+                        <option *ngFor="let stm of sisTipoModeloList | async" [value]="stm.idTipoModelo">
+                            {{ stm.descripcion }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm-2 checkbox-container">                
+                <ba-checkbox [(ngModel)]="detalleEnEdicion.prioritario" [label]="'Prioritario'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+            </div>
+
+            <div class="col-sm-4 btn-container-det">
+                <button (click)="onClickCancelarDetalle()" class="btn btn-secondary btn-detalle">Cancelar</button>
+                <button [disabled]="
+                    !detalleEnEdicion ||
+                    !detalleEnEdicion.descripcion ||
+                    !detalleEnEdicion.dh ||
+                    !detalleEnEdicion.ctaContable ||
+                    !detalleEnEdicion.orden ||
+                    !detalleEnEdicion.operador ||
+                    !detalleEnEdicion.idSisTipoModelo
+                "
+                    (click)="onClickConfirmarDetalle()" type="submit" class="btn btn-primary btn-detalle">Confirmar</button>
+            </div>
+
+        </div>
+
+    </ba-card>
+
+</div>
+    

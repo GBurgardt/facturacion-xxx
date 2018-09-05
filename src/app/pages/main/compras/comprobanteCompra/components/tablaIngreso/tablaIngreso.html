@@ -123,7 +123,6 @@
 
             </tr>
 
-            <!-- <div class="tooltip-add-prod" *ngIf="true" [ngStyle]="getPositionTooltip()"> -->
             <div class="tooltip-add-prod" *ngIf="showTooltip && (!comprobante || !comprobante.puntoVenta || !comprobante.numero)" [ngStyle]="getPositionTooltip()">
                 <span>
                     Debe completar el nro de comprobante antes de agregar productos
@@ -152,15 +151,6 @@
                                     [fatherPosition]="getOffsetOfAddInput()">
                     </popup-lista>
                 </td>
-                <!-- <td class="tooltip-add-prod" *ngIf="showTooltip && (!comprobante || !comprobante.puntoVenta || !comprobante.numero)"> -->
-                <!-- <td class="tooltip-add-prod" *ngIf="true">
-                    <span>
-                        Debe completar el nro de comprobante antes de agregar productos
-                    </span>
-                </td> -->
-                <!-- <td *ngIf="!(showTooltip && (!comprobante || !comprobante.puntoVenta || !comprobante.numero))"></td> -->
-                <td></td>
-
                 <td></td>
                 <td></td>
                 <td></td>
@@ -168,30 +158,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <!-- <td>
-                    {{parseKey(productoSeleccionado.producto.descripcion)}}
-                </td>
-                <td>
-                    <select id="select-new-prod-impu" [(ngModel)]="productoSeleccionado.imputacion.seleccionada" class="form-control without-padding" >
-                        <option *ngFor="let impu of productoSeleccionado.imputacion.todas" [ngValue]="impu">
-                            {{impu.descripcion}}
-                        </option>
-                    </select>
-                </td>
-                <td>
-                    <input [(ngModel)]="productoSeleccionado.precio"  style="margin: 4px 6px;" type="text" 
-                            class="form-control edit-input" id="inputSubKeyPrecio" placeholder="">
-                </td>
-                <td>
-                    {{parseKey(productoSeleccionado.ivaPorc)}}
-                </td>
-                <td>
-                    <input [(ngModel)]="productoSeleccionado.pendiente"  style="margin: 4px 6px;" type="text" 
-                            class="form-control edit-input" id="inputSubKeyPendiente" placeholder="">
-                </td>
-                <td>
-                    {{parseKey(productoSeleccionado.producto.trazable)}}
-                </td> -->
+                <td></td>
             </tr>
             <!-- FIN ROW PARA AGREGAR UN PRODUCTO -->
 

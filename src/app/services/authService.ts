@@ -31,6 +31,9 @@ import { DateLikePicker } from 'app/models/dateLikePicker';
 import { UtilsService } from './utilsService';
 import { SisCanje } from '../models/sisCanje';
 import { DetalleFormaPago } from 'app/models/detalleFormaPago';
+import { Rubro } from '../models/rubro';
+import { SubRubro } from '../models/subRubro';
+import { FormaPago } from 'app/models/formaPago';
 
 @Injectable()
 export class AuthService {
@@ -343,6 +346,7 @@ export class AuthService {
                         (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
                         (depositoSelec: Deposito) => 
                         (sisCanje: SisCanje) => 
+                        (formasPagoSeleccionadas: FormaPago[]) => 
         this.request(
             [],
             RequestMethod.Post,
@@ -382,11 +386,11 @@ export class AuthService {
                 idFactCab: null,
                 factCabecera: true,
                 factDet: true,
-                factFormaPago: false,
+                factFormaPago: true,
                 factImputa: true,
-                factPie: modelosFactura.length > 0,
+                factPie: true,
                 produmo: true,
-                lote: productosPend.every(prodPend => prodPend.producto.trazable),
+                lote: true,
                 grillaArticulos: productosPend.map(prod => {
                     return {
                         idProducto: prod.producto.idProductos,
@@ -427,6 +431,14 @@ export class AuthService {
                             vigencia: true,
                             idProducto: prodTraza.producto.idProductos
                         }
+                    }),
+                grillaFormaPago: formasPagoSeleccionadas
+                    .map(fPago => {
+                        return {
+                            descripcion: fPago.descripcion,
+                            idSisFormaPago: fPago.tipo.idSisFormaPago
+
+                        }
                     })
 
                 
@@ -436,7 +448,6 @@ export class AuthService {
 
 
     descargarComprobante = (token) => (idFactCab) => {
-        // debugger;
         return this.request(
             [],
             RequestMethod.Post,
@@ -642,8 +653,11 @@ export class AuthService {
         fechaHasta: any,
         codProducto: any,
         productoSelect: Producto,
-        cteTipo: TipoComprobante,
-        deposito: Deposito
+        productoSelect2?: Producto,
+        cteTipo?: TipoComprobante,
+        deposito?: Deposito,
+        rubro?: Rubro,
+        subRubro: SubRubro
     }) => (tipo: string) => {
         return this.request(
             [tipo],
@@ -654,13 +668,13 @@ export class AuthService {
             resourcesREST.buscaStock.nombre,
             {
                 fechaHasta: this.utilsService.formatearFecha('yyyy-mm-dd')(filtros.fechaHasta),
-                idProductoDesde: 0,
-                idProductoHasta: 0,
-                idProducto: filtros.productoSelect ? filtros.productoSelect.idProductos : 0,
-                idDeposito: filtros.deposito ? filtros.deposito.idDeposito : 0,
+                idProductoDesde: (filtros.productoSelect && tipo === 'general') ? filtros.productoSelect.idProductos : 0,
+                idProductoHasta: filtros.productoSelect2 ? filtros.productoSelect2.idProductos : 0,
+                idProducto: (filtros.productoSelect && tipo === 'producto') ? filtros.productoSelect.idProductos : 0,
+                idDeposito: 0,
                 idCteTipo: filtros.cteTipo ? filtros.cteTipo.idCteTipo : 0,
-                idRubro: 0,
-                idSubRubro: 0,
+                idRubro: filtros.rubro ? filtros.rubro.idRubro : 0,
+                idSubRubro: filtros.subRubro ? filtros.subRubro.idSubRubro : 0,
                 tipoEstado: 0
             },
             {}
@@ -858,6 +872,23 @@ export class AuthService {
             }
         }
 
+        if (nombreRecurso === resourcesREST.modeloImputacion.nombre) {
+            return {
+                descripcion: recurso.descripcion,
+                modeloDetalle: recurso.modeloDetalle.map(det => ({
+                    ctaContable: det.ctaContable,
+                    orden: det.orden,
+                    descripcionDetalle: det.descripcion,
+                    dh: det.dh,
+                    prioritario: det.prioritario ? true : false,
+                    valor: det.valor,
+                    operador: det.operador,
+                    idSisTipoModelo: det.idSisTipoModelo
+                }))
+            }
+        
+        }
+
 
     }
 
@@ -969,6 +1000,24 @@ export class AuthService {
                 idPadronRepresentante: recurso.idPadronRepresentante,
                 porc1: recurso.porc1,
             }
+        }
+
+        if (nombreRecurso === resourcesREST.modeloImputacion.nombre) {
+            return {
+                idModeloCab: recurso.idModeloCab,
+                descripcion: recurso.descripcion,
+                modeloDetalle: recurso.modeloDetalle.map(det => ({
+                    ctaContable: det.ctaContable,
+                    orden: det.orden,
+                    descripcionDetalle: det.descripcion,
+                    dh: det.dh,
+                    prioritario: det.prioritario ? true : false,
+                    valor: det.valor,
+                    operador: det.operador,
+                    idSisTipoModelo: det.idSisTipoModelo
+                }))
+            }
+        
         }
 
         

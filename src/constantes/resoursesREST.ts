@@ -26,6 +26,10 @@ import { CteFechas } from "app/models/cteFechas";
 import { SisCanje } from "app/models/sisCanje";
 import { Lote } from "app/models/lote";
 import { ModeloCab } from "app/models/modeloCab";
+import { Stock } from "app/pages/main/stock";
+import { PlanCuenta } from "app/models/planCuenta";
+import { SisTipoModelo } from "app/models/sisTipoModelo";
+import { ModeloCabSinDetalles } from "app/models/modeloCabSinDetalles";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -161,11 +165,23 @@ export const resourcesREST = {
     },
     modeloCab: {
         nombre: 'modeloCab',
-        Clase: ModeloCab
+        Clase: ModeloCabSinDetalles
     },
     buscaStock: {
         nombre: 'buscaStock',
+        Clase: Stock
+    },
+    modeloImputacion: {
+        nombre: 'modeloImputacion',
         Clase: ModeloCab
+    },
+    contPlanCuenta: {
+        nombre: 'contPlanCuenta',
+        Clase: PlanCuenta
+    },
+    sisTipoModelo: {
+        nombre: 'sisTipoModelo',
+        Clase: SisTipoModelo
     }
 
 };

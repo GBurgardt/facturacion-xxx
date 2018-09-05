@@ -12,6 +12,8 @@ import { UtilsService } from "../../../services/utilsService";
 import { TablaProductos } from "./productos/components/tablaProductos";
 import { ConsultaPorProducto } from "./consultaPorProducto";
 import { ConsultaPorProductoService } from "./consultaPorProducto/consultaPorProductoService";
+import { ConsultaGeneralService } from "./consultaGeneral/consultaGeneralService";
+import { ConsultaGeneral } from "./consultaGeneral";
 
 @NgModule({
     imports: [
@@ -24,13 +26,15 @@ import { ConsultaPorProductoService } from "./consultaPorProducto/consultaPorPro
         NuevoProducto,
         EditarProducto,
         TablaProductos,
-        ConsultaPorProducto
+        ConsultaPorProducto,
+        ConsultaGeneral
     ],
     providers: [
         RecursoService,
         AuthService,
         UtilsService,
-        ConsultaPorProductoService
+        ConsultaPorProductoService,
+        ConsultaGeneralService
     ],
     exports: [
         TablaProductos

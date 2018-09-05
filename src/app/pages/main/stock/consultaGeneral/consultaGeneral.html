@@ -1,8 +1,8 @@
-<ba-card cardTitle="Filtros" class="consulta-por-producto" toggleBtn="true">
+<ba-card cardTitle="Filtros" class="consulta-general" toggleBtn="true">
 
     <div class="block-column">
         <div class="input-row">
-            <div class="item-input nro-cte">
+            <div class="item-input">
                 <label  for="desde">
                     Producto *
                 </label>
@@ -25,49 +25,66 @@
                                 [fatherPosition]="popupListaService.getOffsetOfInputCliente('inputProducto')">
                 </popup-lista>
 
-                <input  disabled
-                        [(ngModel)]="info.nombreProd"
+            </div>
+
+            <div class="item-input">
+                <label  for="hasta">
+                    Hasta *
+                </label>
+                <input  [(ngModel)]="filtros.codProducto2"
                         type="text"
                         class="form-control text-right"
-                        id="inputInfoProd"
-                        placeholder="">
+                        id="inputProducto2"
+                        placeholder=""
+                        (keydown.arrowdown)="keyPressInputTextoProd2($event)('down')"
+                        (keydown.arrowup)="keyPressInputTextoProd2($event)('up')"
+                        (keyup.enter)="onEnterInputProd2($event)"
+                        (ngModelChange)="onChangeInputProd2($event)"
+                        (blur)="onBlurInputProd2($event)"
+                        >
+
+                <popup-lista    *ngIf="filtros.codProducto2 && filtros.codProducto2.length > 0"
+                                [items]="productos2.filtrados.asObservable().distinctUntilChanged()"
+                                [keysToShow]="['descripcion', 'codProducto']"
+                                [onClickItem]="onSelectProducto2"
+                                [fatherPosition]="popupListaService.getOffsetOfInputCliente('inputProducto2')">
+                </popup-lista>
+
             </div>
+
         </div>
 
         <div class="input-row">
             <div class="item-select">
-                <label for="selectComprobante">
-                    Comprobante
+                <label for="selectRubro">
+                    Rubro
                 </label>
-                <select [(ngModel)]="filtros.cteTipo" class="form-control" id="selectComprobante">
+                <select [(ngModel)]="filtros.rubro" (ngModelChange)="onChangeRubro($event)" class="form-control" id="selectRubro">
                     <option [ngValue]="null">
                         Todos
                     </option>
-                    <option *ngFor="let tipoCte of cteTipos | async" [ngValue]="tipoCte">
-                        {{tipoCte.descCorta}}
+                    <option *ngFor="let rub of rubros | async" [ngValue]="rub">
+                        {{rub.descripcion}}
+                    </option>
+                </select>
+            </div>
+            <div class="item-select">
+                <label for="selectSubRubro">
+                    Sub Rubro
+                </label>
+                <select [(ngModel)]="filtros.subRubro" class="form-control" id="selectSubRubro">
+                    <option [ngValue]="null">
+                        Todos
+                    </option>
+                    <option *ngFor="let subrub of subRubros | async" [ngValue]="subrub">
+                        {{subrub.descripcion}}
                     </option>
                 </select>
             </div>
         </div>
     </div>
 
-    <div class="block-column">
-        <div class="input-row">
-            <div class="item-select">
-                <label for="selectComprobante">
-                    Deposito
-                </label>
-                <select [(ngModel)]="filtros.deposito" class="form-control" id="selectDeposito">
-                    <option [ngValue]="null">
-                        Todos
-                    </option>
-                    <option *ngFor="let dep of depositos | async" [ngValue]="dep">
-                        {{dep.descripcion}}
-                    </option>
-                </select>
-            </div>
-        </div>
-    </div>
+    
 
     <div class="block-column">
 
@@ -91,7 +108,7 @@
         <div class="input-row flex-end">
             <div class="item-input nro-cte">
                 <button id="btnConsultar"
-                    [disabled]="!filtros.codProducto || !filtros.fechaHasta"
+                    [disabled]="!filtros.codProducto || !filtros.codProducto2 || !filtros.fechaHasta"
                     (click)="onClickConsultar()"
                     class="btn btn-primary">
                     <i class="fa fa-search" aria-hidden="true"></i>
@@ -106,12 +123,11 @@
     <table class="table table-striped" [mfData]="stockData | async" #mf="mfDataTable" mfRowsOnPage="10">
         <thead>
             <tr>
-                <th>Cte</th>
-                <th class="text-right">Numero</th>
-                <th>Fecha</th>
+                <th>Codigo</th>
+                <th>Descripcion</th>
+                <!-- <th>Fecha</th> -->
                 <th class="text-right">Ingresos</th>
                 <th class="text-right">Egresos</th>
-
                 <th class="text-right">Stock</th>
                 <th class="text-right">Pendiente</th>
                 <th class="text-right">Virtual</th>
@@ -119,12 +135,11 @@
         </thead>
         <tbody>
             <tr *ngFor="let stockElement of mf.data">
-                <td>{{ stockElement.comprobante }}</td>
-                <td class="text-right">{{ stockElement.numero }}</td>
-                <td>{{ utilsService.formatearFecha('DD/MM/YYYY')(stockElement.fechaEmision) }}</td>
+                <td>{{ stockElement.codProducto }}</td>
+                <td>{{ stockElement.descripcion }}</td>
+                <!-- <td>{{ utilsService.formatearFecha('DD/MM/YYYY')(stockElement.fechaEmision) }}</td> -->
                 <td class="text-right">{{ stockElement.ingresos }}</td>
                 <td class="text-right">{{ stockElement.egresos }}</td>
-
                 <td class="text-right">0</td>
                 <td class="text-right">{{ stockElement.pendiente }}</td>
                 <td class="text-right">0</td>
@@ -138,4 +153,6 @@
             </tr>
         </tfoot>
     </table>
+
+    
 </ba-card>

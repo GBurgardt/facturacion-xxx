@@ -39,7 +39,7 @@ export class EditarProducto {
     ) {
         // Inicializo los valores de los desplegables
         this.rubros = this.recursoService.getRecursoList(resourcesREST.rubros)();
-        this.subRubros = this.recursoService.getRecursoList(resourcesREST.subRubros)();
+        // this.subRubros = this.recursoService.getRecursoList(resourcesREST.subRubros)();
         this.unidadesCompra = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.unidadesVenta = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.ivas = this.recursoService.getRecursoList(resourcesREST.sisIVA)();
@@ -57,8 +57,6 @@ export class EditarProducto {
         );
 
     }
-
-
 
     onClickEditar = async () => {
         try {
@@ -82,5 +80,13 @@ export class EditarProducto {
 
     compareWithModeloImpu = (mod1: ModeloCab, mod2: ModeloCab) => mod1 && mod2 ? mod1.idModeloCab === mod2.idModeloCab : mod1 === mod2
     
+    /**
+     * Cuanbdo cambia Rubro, actualizo SubRubros
+     */
+    onChangeRubro = (rubroSelect: Rubro) => {
+        this.subRubros = this.recursoService.getRecursoList(resourcesREST.subRubros)({
+            'idRubro': rubroSelect.idRubro
+        })
+    }
 
 }

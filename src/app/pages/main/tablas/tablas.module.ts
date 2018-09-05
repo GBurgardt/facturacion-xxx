@@ -31,6 +31,9 @@ import { ListaPrecios } from './listaPrecios';
 import { NuevoListaPrecio } from './listaPrecios/components/nuevoListaPrecio';
 import { EditarListaPrecio } from './listaPrecios/components/editarListaPrecio';
 import { SharedModule } from '../SharedModule';
+import { ModeloImputacion } from './modeloImputacion';
+import { NuevoModeloImputacion } from './modeloImputacion/components/nuevoModeloImputacion';
+import { EditarModeloImputacion } from './modeloImputacion/components/editarModeloImputacion';
 
 @NgModule({
     imports: [
@@ -60,7 +63,10 @@ import { SharedModule } from '../SharedModule';
         EditarDeposito,
         ListaPrecios,
         NuevoListaPrecio,
-        EditarListaPrecio
+        EditarListaPrecio,
+        ModeloImputacion,
+        NuevoModeloImputacion,
+        EditarModeloImputacion
     ],
     providers: [
         DataTablesService,

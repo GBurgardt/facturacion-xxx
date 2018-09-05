@@ -133,8 +133,46 @@
 
             </tr>
 
+            <div *ngIf="showTooltip && (!comprobante || !comprobante.fechaComprobante || !comprobante.fechaComprobante.year)" class="tooltip-add-prod" [ngStyle]="getPositionTooltip()">
+                <span>
+                    Debe completar la fecha del comprobante antes de agregar productos
+                </span>
+            </div>
+
             <!-- ROW PARA AGREGAR UN PRODUCTO -->
             <tr class="row-agregar-producto" *ngIf="enableAddItem">
+                <td></td>
+                <td (mouseenter) = "showTooltip = true"  (mouseleave) = "showTooltip = false">
+                    <input  [(ngModel)]="textoBusqueda" type="text" class="form-control input-new-prod" id="addInput" placeholder="" 
+                            (blur)="onBlurInputItemAdd()" 
+                            (ngModelChange)="onChangeInputItemAdd($event)" 
+                            (keydown.arrowdown)="keyPressInputTexto($event)('down')" 
+                            (keydown.arrowup)="keyPressInputTexto($event)('up')" 
+                            (keydown.enter)="onEnterInputBuscProd($event)" 
+                            [disabled]="!comprobante.fechaComprobante || !comprobante.fechaComprobante.year">
+
+                    <popup-lista *ngIf="textoBusqueda && textoBusqueda.length > 0"
+                                    [items]="productosBusqueda.filtrados" 
+                                    [keysToShow]="['producto.descripcion', 'producto.codProducto']" 
+                                    [onClickItem]="onClickProductoListaLocal" 
+                                    [fatherPosition]="getOffsetOfAddInput()">
+                    </popup-lista>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <!-- FIN ROW PARA AGREGAR UN PRODUCTO -->
+            
+            <!-- <tr class="row-agregar-producto" *ngIf="enableAddItem">
                 <td></td>
                 <td *ngFor="let col of columns">
                     <div *ngIf="col.nombre === 'articulo'">
@@ -153,12 +191,8 @@
                                         [fatherPosition]="getOffsetOfAddInput()">
                         </popup-lista>
                     </div>
-
-                    <!-- <input *ngIf="col.nombre !== 'articulo'" type="text" 
-                        class="form-control edit-input"> -->
                 </td>
-            </tr>
-            <!-- FIN ROW PARA AGREGAR UN PRODUCTO -->
+            </tr> -->
 
         </tbody>
 

@@ -6,6 +6,8 @@ export class ModeloCab {
     descripcion: string;
     modeloDetalle: ModeloDetalle[];
 
+    detalleInfo: string;
+
     constructor (modeloCab?: {
         idModeloCab: number;
         idEmpresa: number;
@@ -17,6 +19,11 @@ export class ModeloCab {
             this.idEmpresa = modeloCab.idEmpresa;
             this.descripcion = modeloCab.descripcion;
             this.modeloDetalle = modeloCab.modeloDetalle.map(modD => new ModeloDetalle(modD));
+
+            this.detalleInfo = this.modeloDetalle
+                .map(modD => modD.descripcion)
+                .join(', ');
+
         } else {
             this.idModeloCab = null;
             this.idEmpresa = null;

@@ -215,23 +215,31 @@ export class EmisionRemitos {
     }
 
     onClickConfirmEdit = (tipoColumnas) => (itemSelect: any) => { 
-        // Actualizo datos dle producto
-        this.actualizarDatosProductos();
+        // Me fijo si es valida la data ignresada
+        const estado = this.emisionRemitosService.validarAntesDeConfirmar(tipoColumnas)(itemSelect);
 
-        // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
-        this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
-            let newTabla = tabla;
-            if (newTabla.enEdicion !== undefined && newTabla.enEdicion) {
-                // Seteo en false asi sale de edicion
-                newTabla.enEdicion = false;
-            }
-            return newTabla;
-        })
-
-        // Actualizo subtotales
-        this.actualizarSubtotales(itemSelect);
+        if (estado === 'ok') {
+            // Actualizo datos dle producto
+            this.actualizarDatosProductos();
+    
+            // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
+            this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
+                let newTabla = tabla;
+                if (newTabla.enEdicion !== undefined && newTabla.enEdicion) {
+                    // Seteo en false asi sale de edicion
+                    newTabla.enEdicion = false;
+                }
+                return newTabla;
+            })
+    
+            // Actualizo subtotales
+            this.actualizarSubtotales(itemSelect);
+        } else {
+            // Si NO es valida, entonces muestro mensajito
+            this.utilsService.showModal('Error')(estado)
+        }
     }
-
+    
     /**
      * Agrega el producto seleccionado a la lista de productosPendientes
      */
@@ -259,55 +267,53 @@ export class EmisionRemitos {
     /**
      * Valida y graba el comprobante
      */
-    onClickConfirmar = () => {
-        const keys = Object.keys(this);
-        debugger;
-        // keys.forEach(a => 
-        //     typeof a !== 'function' ?
-        //         console.log(this[a]) :
-        //         null
-        // );
+    onClickConfirmar = () => this.utilsService.showModal('Aviso')('¿Cancelar emision de remito?')(
+        () => {
+            this.emisionRemitosService.confirmarYEmitirRemito(this.comprobante)
+                (this.comprobanteRelacionado)
+                (this.cliente)
+                (this.tablas.datos.productosPend)
+                (this.cotizacionDatos)
+                (this.sisCanje)
+                (this.formasPagoSeleccionadas)
+                    .subscribe((respuesta: any) => {
+                        this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
 
-        this.emisionRemitosService.confirmarYEmitirRemito(this.comprobante)
-            (this.comprobanteRelacionado)
-            (this.cliente)
-            (this.tablas.datos.productosPend)
-            (this.cotizacionDatos)
-            (this.sisCanje)
-            .subscribe((respuesta: any) => {
-                this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
-
-                // Blanqueo los campos
-                const auxFecha = this.comprobante.fechaComprobante;
-                this.comprobante = new Comprobante();
-                this.comprobante.fechaComprobante = auxFecha;
-                this.comprobanteRelacionado = new ComprobanteRelacionado();
-                this.cliente = new Padron();
-                this.tablas.datos.productosPend = [];
-                // this.tablas.datos.modelosFactura = [];
-                this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
-                // this.depositoSelec = new Deposito()
-                
-
-                // Focus en input proveedor (TODO SET TIME OUT)
-                document.getElementById('inputProveedor') ? document.getElementById('inputProveedor').focus() : null
-            })
-    };
+                        // Blanqueo los campos
+                        const auxFecha = this.comprobante.fechaComprobante;
+                        this.comprobante = new Comprobante();
+                        this.comprobante.fechaComprobante = auxFecha;
+                        this.comprobanteRelacionado = new ComprobanteRelacionado();
+                        this.cliente = new Padron();
+                        this.tablas.datos.productosPend = [];
+                        // this.tablas.datos.modelosFactura = [];
+                        this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
+                        // this.depositoSelec = new Deposito()
+                        
+                        // Focus en input proveedor (TODO SET TIME OUT)
+                        document.getElementById('inputProveedor') ? document.getElementById('inputProveedor').focus() : null
+                    })
+        }
+    )({
+        tipoModal: 'confirmation'
+    });
 
     /**
      * Busca los productos pendientes de acuerdo al comprobante relacionado
      */
     onClickBuscarPendientes = () => 
-        this.emisionRemitosService.buscarPendientes(this.cliente)(this.comprobanteRelacionado).subscribe(prodsPend=>{
-            // Agrego los productos
-            this.tablas.datos.productosPend = _.uniqWith(
-                this.tablas.datos.productosPend.concat(prodsPend),
-                (a:ProductoPendiente,b:ProductoPendiente) => a.producto.codProducto === b.producto.codProducto
-            );
+        this.emisionRemitosService.buscarPendientes(this.cliente)(this.comprobanteRelacionado)
 
-            // Actualizo datos de los productos
-            this.actualizarDatosProductos();
-        });
+            .subscribe(prodsPend=>{
+                // Agrego los productos
+                this.tablas.datos.productosPend = _.uniqWith(
+                    this.tablas.datos.productosPend.concat(prodsPend),
+                    (a:ProductoPendiente,b:ProductoPendiente) => a.producto.codProducto === b.producto.codProducto
+                );
+
+                // Actualizo datos de los productos
+                this.actualizarDatosProductos();
+            });
 
     /**
      * Event on click en la lista del popup de cliente
@@ -538,6 +544,10 @@ export class EmisionRemitos {
         tipoOperacion === 'add' ?
             this.formasPagoSeleccionadas.push(fp) :
             this.formasPagoSeleccionadas = this.formasPagoSeleccionadas.filter(fpSelec => fpSelec.idFormaPago !== fp.idFormaPago);
+
+        // Guardo la moneda de la lista de precio actual
+        this.comprobante.moneda = this.formasPagoSeleccionadas && this.formasPagoSeleccionadas.length > 0 ? 
+            this.formasPagoSeleccionadas[0].listaPrecio.idMoneda : null;
 
         // Detalle de lista correspondiente
         this.detalleListaFpsSeleccionadas = this.formasPagoSeleccionadas

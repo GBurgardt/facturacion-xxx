@@ -254,4 +254,13 @@ export class TablaEmisionRem {
             return `form-control edit-input${col.editarFocus ? ` editar-focus-${idItem}` : '' }`
         }    
     }
+
+    getPositionTooltip = () => {
+        const fatherPosition = this.getOffsetOfAddInput();
+
+        return {
+            top: (fatherPosition.top - 3) + 'px', 
+            left: (fatherPosition.left + 60) + 'px'
+        }
+    }
 }

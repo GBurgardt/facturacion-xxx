@@ -1,41 +1,56 @@
 export class Stock {
-    comprobante: string;
-    numero: number;
-    fechaEmision: string;
     ingresos: number;
     egresos: number;
-    pendiente: number;
-    deposito: string;
     trazable: boolean;
     rubro: string;
     subRubro: string;
+
+    // Estos son por producto
+    comprobante: string;
+    numero: number;
+    fechaEmision: string;
+    pendiente: number;
+    deposito: string;
     idFactCab: number;
 
+    // Estos por general
+    codProducto: string;
+    descripcion: string;
+
     constructor(stock?: {
-        comprobante: string;
-        numero: number;
-        fechaEmision: string;
         ingresos: number;
         egresos: number;
-        pendiente: number;
-        deposito: string;
         trazable: boolean;
         rubro: string;
         subRubro: string;
-        idFactCab: number;
+
+        comprobante?: string;
+        numero?: number;
+        fechaEmision?: string;
+        pendiente?: number;
+        deposito?: string;
+        idFactCab?: number;
+
+        codProducto?: string;
+        descripcion?: string;
     }) {
         if (stock) {
-            this.comprobante = stock.comprobante;
-            this.numero = stock.numero;
-            this.fechaEmision = stock.fechaEmision;
             this.ingresos = stock.ingresos;
             this.egresos = stock.egresos;
-            this.pendiente = stock.pendiente;
-            this.deposito = stock.deposito;
             this.trazable = stock.trazable;
             this.rubro = stock.rubro;
             this.subRubro = stock.subRubro;
+
+            this.comprobante = stock.comprobante;
+            this.numero = stock.numero;
+            this.fechaEmision = stock.fechaEmision;
+            this.pendiente = stock.pendiente;
+            this.deposito = stock.deposito;
             this.idFactCab = stock.idFactCab;
+            
+            this.codProducto = stock.codProducto;
+            this.descripcion = stock.descripcion;
+
         } else {
             this.comprobante = null;
             this.numero = null;
@@ -48,6 +63,9 @@ export class Stock {
             this.rubro = null;
             this.subRubro = null;
             this.idFactCab = null;
+
+            this.codProducto = null;
+            this.descripcion = null;
         }
     }
 }
