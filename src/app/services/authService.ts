@@ -518,24 +518,23 @@ export class AuthService {
     * @description Obtiene las formas de pago
     * @argument token
     */
-    getBuscaFormaPago = (token: string) => (cliente?: Padron) => (fecha: any) => {
-        return this.request(
-            [],
-            RequestMethod.Post,
-            {
-                token: token,
-            },
-            resourcesREST.buscaFormaPago.nombre,
-            {
-                activa: true,
-                todas: true,
-                fecha: this.utilsService.formatearFecha('yyyy-mm-dd')(fecha),
-                idPadronDesde: cliente ? cliente.padronCodigo : null,
-                idPadronHasta: cliente ? cliente.padronCodigo : null
-            },
-            {}
-        );
-    }
+    getBuscaFormaPago = (token: string) => (cliente?: Padron) => (fecha: any) => this.request(
+        [],
+        RequestMethod.Post,
+        {
+            token: token,
+        },
+        resourcesREST.buscaFormaPago.nombre,
+        {
+            activa: true,
+            todas: true,
+            fecha: this.utilsService.formatearFecha('yyyy-mm-dd')(fecha),
+            idPadronDesde: cliente ? cliente.padronCodigo : null,
+            idPadronHasta: cliente ? cliente.padronCodigo : null
+        },
+        {}
+    );
+    
 
     /**
     * @description
@@ -822,7 +821,13 @@ export class AuthService {
             return {
                 tipo: recurso.tipo.idSisFormaPago,
                 descripcion: recurso.descripcion,
-                idListaPrecio: recurso.listaPrecio.idListaPrecio
+                idListaPrecio: recurso.listaPrecio.idListaPrecio,
+                formaPagoDet: recurso.detalles.map((det: DetalleFormaPago) => ({
+                    cantDias: det.cantDias ? det.cantDias : 0,
+                    porcentaje: det.porcentaje ? det.porcentaje : 0,
+                    detalle: det.detalle ? det.detalle : '',
+                    ctaContable: det.planCuenta ? det.planCuenta.planCuentas : ''
+                }))
             }
         }
 
@@ -948,12 +953,26 @@ export class AuthService {
         }
 
         if (nombreRecurso === resourcesREST.formaPago.nombre) {
+            console.log(recurso);
+            debugger;
             return {
                 idFormaPago: recurso.idFormaPago,
                 tipo: recurso.tipo.idSisFormaPago,
                 descripcion: recurso.descripcion,
-                idListaPrecio: recurso.listaPrecio.idListaPrecio
+                idListaPrecio: recurso.listaPrecio.idListaPrecio,
+                formaPagoDet: recurso.detalles.map((det: DetalleFormaPago) => ({
+                    cantDias: det.cantDias ? det.cantDias : 0,
+                    porcentaje: det.porcentaje ? det.porcentaje : 0,
+                    detalle: det.detalle ? det.detalle : '',
+                    ctaContable: det.planCuenta ? det.planCuenta.planCuentas : ''
+                }))
             }
+            // return {
+            //     idFormaPago: recurso.idFormaPago,
+            //     tipo: recurso.tipo.idSisFormaPago,
+            //     descripcion: recurso.descripcion,
+            //     idListaPrecio: recurso.listaPrecio.idListaPrecio
+            // }
         }
 
         if (nombreRecurso === resourcesREST.productos.nombre) {

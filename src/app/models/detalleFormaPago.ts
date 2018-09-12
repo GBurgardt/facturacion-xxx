@@ -1,3 +1,5 @@
+import { PlanCuenta } from "app/models/planCuenta";
+
 export class DetalleFormaPago {
     idFormaPagoDet: number;
     cantDias: number;
@@ -8,11 +10,15 @@ export class DetalleFormaPago {
 
     formaPagoDescrip: string;
 
+    planCuenta: PlanCuenta;
+
     constructor(detalleFormaPago?: {
         idFormaPagoDet: number;
         cantDias: number;
         porcentaje: number;
-        detalle: string
+        detalle: string;
+
+        planCuenta: any;
     }) {
         if (detalleFormaPago) {
             this.idFormaPagoDet = detalleFormaPago.idFormaPagoDet;
@@ -23,6 +29,8 @@ export class DetalleFormaPago {
             this.monto = 0;
             this.observaciones = '';
             this.formaPagoDescrip = '';
+
+            this.planCuenta = new PlanCuenta(detalleFormaPago.planCuenta);
         } else {
             this.idFormaPagoDet = null;
             this.cantDias = null;
@@ -31,6 +39,8 @@ export class DetalleFormaPago {
             this.monto = null;
             this.observaciones = null;
             this.formaPagoDescrip = null;
+
+            this.planCuenta = new PlanCuenta();
         }
     }
 }

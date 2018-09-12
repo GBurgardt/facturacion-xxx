@@ -322,5 +322,12 @@ export class UtilsService {
     }
 
 
+    compareWithGeneric = (item1: any, item2: any) => {
+        // if (item2 && item2 !== '21012200') debugger;
+        return item1 && item2 && (
+            item1 === item2 ||
+            item1.toString() === item2
+        )
+    }
 
 }
