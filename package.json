@@ -18,7 +18,7 @@
     "wintersmith": "wintersmith",
     "changelog": "standard-changelog",
     "start": "ng serve",
-    "start:remote": " ng serve --port 8081 --host 0.0.0.0",
+    "start:remote": " ng serve --port 8082 --host 0.0.0.0",
     "start:hmr": "ng serve --hmr",
     "start:aot": "ng serve --aot",
     "start:prod": "ng serve --prod",

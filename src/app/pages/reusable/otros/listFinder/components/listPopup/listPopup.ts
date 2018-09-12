@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { ListPopupService } from './listPopupService';
 
 @Component({
     selector: 'list-popup',
@@ -21,26 +22,13 @@ export class ListPopup {
     // Posicion padre
     @Input() fatherPosition: {top: number, left: number};
 
-    constructor() { }
+    constructor(private listPopupService: ListPopupService) { }
 
     _onClickItem(item) {
         this.onClickItem.emit(item);
     }
 
-    /**
-     * Muestra el item de acuerdo a las keys pasadas
-     */
-    parseItem = (item) => {
-        return this.keysToShow
-                    .map(key => {
-                        const deepKey = key.includes('.') ? key.split('.') : null;
 
-                        // Si tiene deepKey entonces voy profundo en el json (ejemplo: producto.descripcion)
-                        return deepKey ? item[deepKey[0]][deepKey[1]] : item[key];
-                        //return item[key];
-                    })
-                    .join(', ');
-    }
 
     getPosicionLista = () => {
         return {top: (this.fatherPosition.top + 22) + 'px', left: this.fatherPosition.left + 'px'}

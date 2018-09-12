@@ -14,6 +14,7 @@ import { Unidad } from '../../../../../../models/unidad';
 import { resourcesREST } from 'constantes/resoursesREST';
 import { Rubro } from 'app/models/rubro';
 import { ModeloCab } from 'app/models/modeloCab';
+import { AuthService } from '../../../../../../services/authService';
 
 @Component({
     selector: 'nuevo-producto',
@@ -30,6 +31,8 @@ export class NuevoProducto {
     unidadesVenta: Observable<Unidad[]>;
     modelosCab: Observable<ModeloCab[]>;
 
+    sugerenciaProxCodigo: string = '';
+
     constructor(
         private recursoService: RecursoService,
         private utilsService: UtilsService,
@@ -42,6 +45,10 @@ export class NuevoProducto {
         this.unidadesVenta = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.ivas = this.recursoService.getRecursoList(resourcesREST.sisIVA)();
         this.modelosCab = this.recursoService.getRecursoList(resourcesREST.modeloCab)();
+
+        this.recursoService.getProximoCodigoProducto().subscribe(
+            proxCodigo => this.sugerenciaProxCodigo = proxCodigo ? proxCodigo : '0'
+        );
     }
 
     onClickCrear = async () => {
@@ -50,7 +57,7 @@ export class NuevoProducto {
             const resp: any = await this.recursoService.setRecurso(
                 this.recurso
             )();
-    
+
 
             this.utilsService.showModal(
                 resp.control.codigo

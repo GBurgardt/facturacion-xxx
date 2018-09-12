@@ -6,6 +6,8 @@ export class DetalleFormaPago {
     monto: number;
     observaciones: string;
 
+    formaPagoDescrip: string;
+
     constructor(detalleFormaPago?: {
         idFormaPagoDet: number;
         cantDias: number;
@@ -20,6 +22,7 @@ export class DetalleFormaPago {
 
             this.monto = 0;
             this.observaciones = '';
+            this.formaPagoDescrip = '';
         } else {
             this.idFormaPagoDet = null;
             this.cantDias = null;
@@ -27,6 +30,7 @@ export class DetalleFormaPago {
             this.detalle = null
             this.monto = null;
             this.observaciones = null;
+            this.formaPagoDescrip = null;
         }
     }
 }

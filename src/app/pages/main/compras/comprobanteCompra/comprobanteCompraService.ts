@@ -30,7 +30,7 @@ export class ComprobanteCompraService {
         return listaProveedores.filter(
             (prov: Padron) =>   prov.padronCodigo.toString().includes(textoBuscado) ||
                                 prov.padronApelli.toString().toLowerCase().includes(textoBuscado)
-        );              
+        );
     }
 
     getProveFormated = (prove) => `${prove.padronNombre} (${prove.padronCodigo})`;
@@ -42,13 +42,6 @@ export class ComprobanteCompraService {
             subkey: 'codProducto',
             ancho: '15%'
         },
-        // {
-        //     nombre: 'Codigo',
-        //     key: 'producto',
-        //     subkey: 'codProducto',
-        //     ancho: '20%',
-        //     customClass: 'text-right'
-        // },
         {
             nombre: 'descripcion',
             key: 'producto',
@@ -70,7 +63,8 @@ export class ComprobanteCompraService {
             ancho: '10%',
             enEdicion: null,
             decimal: true,
-            customClass: 'text-right'
+            customClass: 'text-right',
+            customBlur: 'calculateImporte'
         },
         {
             nombre: 'ivaPorc',
@@ -85,7 +79,8 @@ export class ComprobanteCompraService {
             ancho: '10%',
             enEdicion: null,
             decimal: true,
-            customClass: 'text-right'
+            customClass: 'text-right',
+            customBlur: 'calculateImporte'
         },
         {
             nombre: 'importe',
@@ -192,20 +187,20 @@ export class ComprobanteCompraService {
     /**
      * Buscar los productos pendientes
      */
-    buscarPendientes = (proveedor: Padron) => (comprobanteRel: ComprobanteRelacionado) => 
+    buscarPendientes = (proveedor: Padron) => (comprobanteRel: ComprobanteRelacionado) =>
         this.authService.getProductosPendientes(this.localStorageService.getObject(environment.localStorage.acceso).token)(proveedor)(comprobanteRel)
             .map(
                 respuesta => respuesta.arraydatos.map(
                     prodPend => new ProductoPendiente(prodPend)
                 )
             );
-    
+
 
     /**
      * Retorna todos los productos de la empresa actual
      */
     getAllProductos = () => this.recursoService.getRecursoList(resourcesREST.productos)();
-    
+
 
     /**
      * Retorna un array de solo los prodPendientes que son trazables
@@ -248,16 +243,16 @@ export class ComprobanteCompraService {
     }
 
     /**
-     * 
+     *
      */
-    confirmarYGrabarComprobante = (comprobante: Comprobante) => 
+    confirmarYGrabarComprobante = (comprobante: Comprobante) =>
         (comproRelac: ComprobanteRelacionado) =>
-        (provSelec: Padron) => 
-        (productosPend: ProductoPendiente[]) => 
+        (provSelec: Padron) =>
+        (productosPend: ProductoPendiente[]) =>
         (modelosFactura: ModeloFactura[]) =>
-        (cotizacionDatos: { cotizacion: Cotizacion, total: number }) => 
-        (depositoSelec: Deposito) => 
-        (detallesFormaPago: DetalleFormaPago[]) => 
+        (cotizacionDatos: { cotizacion: Cotizacion, total: number }) =>
+        (depositoSelec: Deposito) =>
+        (detallesFormaPago: DetalleFormaPago[]) =>
             this.authService.grabaComprobante(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec)(detallesFormaPago)
                 .catch(err => Observable.throw(
                     this.utilsService.showErrorWithBody(err)
@@ -266,9 +261,9 @@ export class ComprobanteCompraService {
     /**
      * Valida que los datos estén correctos
      */
-    checkIfDatosValidosComprobante =   (comprobante: Comprobante) => 
-                                (provSelec: Padron) => 
-                                (productosPend: ProductoPendiente[]) => 
+    checkIfDatosValidosComprobante =   (comprobante: Comprobante) =>
+                                (provSelec: Padron) =>
+                                (productosPend: ProductoPendiente[]) =>
                                 (modelosFactura: ModeloFactura[]) =>
                                 (depositoSelec: Deposito) => {
         // Primero checkeo nulos
@@ -291,7 +286,7 @@ export class ComprobanteCompraService {
     checkIfTrazabilidadCargada = (productosPend: ProductoPendiente[]) => productosPend
         .filter(prodPend => prodPend.producto.trazable)
         .every(
-            prod => (prod.trazabilidad && prod.trazabilidad.lote && prod.trazabilidad.serie && prod.trazabilidad.fechaVto && prod.trazabilidad.fechaElab) 
+            prod => (prod.trazabilidad && prod.trazabilidad.lote && prod.trazabilidad.serie && prod.trazabilidad.fechaVto && prod.trazabilidad.fechaElab)
                 ? true: false
         )
 
@@ -299,7 +294,7 @@ export class ComprobanteCompraService {
      * Me fijo si hay productos agregados
      */
     checkIfExistenProductos = (productosPend: ProductoPendiente[]) => (modelosFactura: ModeloFactura[]) => (
-        productosPend.length > 0 && 
+        productosPend.length > 0 &&
         modelosFactura.length > 0
     )
 
@@ -307,25 +302,25 @@ export class ComprobanteCompraService {
      * Checkea si existen nulos
      * @return TRUE si NO hay nulos
      */
-    checkIfNulosDatosComprobantes =   (comprobante: Comprobante) => 
-                                    (provSelec: Padron) => 
-                                    (productosPend: ProductoPendiente[]) => 
-                                    (modelosFactura: ModeloFactura[]) => 
+    checkIfNulosDatosComprobantes =   (comprobante: Comprobante) =>
+                                    (provSelec: Padron) =>
+                                    (productosPend: ProductoPendiente[]) =>
+                                    (modelosFactura: ModeloFactura[]) =>
                                     (depositoSelec: Deposito) => (
         provSelec.padronCodigo &&
-        comprobante.tipo.idCteTipo && 
-        comprobante.letra && 
+        comprobante.tipo.idCteTipo &&
+        comprobante.letra &&
         comprobante.puntoVenta &&
         comprobante.numero &&
-        comprobante.moneda.idMoneda && 
+        comprobante.moneda.idMoneda &&
         comprobante.fechaComprobante &&
-        comprobante.fechaVto && 
-        productosPend && 
-        modelosFactura && 
+        comprobante.fechaVto &&
+        productosPend &&
+        modelosFactura &&
         depositoSelec
     )
 
-   
+
     // throw({
     //     nombreError: 'Error',
     //     descripcionError: 'Debe ingresar 4 caracteres o menos'
@@ -338,14 +333,14 @@ export class ComprobanteCompraService {
             tipo === 'puntoVenta' ? 4 : 8,
             0
         ) : '';
-       
+
 
     seleccionarProveedor = (todos: Padron[]) => (seleccionado: Padron) => {
         // Primero busco si el ingresado existe
         const provBuscado = new Padron({...todos.find(
             prove => prove.padronCodigo === Number(seleccionado.padronCodigo)
         )});
-        
+
         // Si existe, lo seteo como seleccionado
         if (provBuscado) {
             return provBuscado;
@@ -369,7 +364,7 @@ export class ComprobanteCompraService {
                     nombre: 'Codigo incorrecto',
                     descripcion: 'El codigo no existe'
                 })
-                
+
             }
         }
     }
@@ -378,7 +373,7 @@ export class ComprobanteCompraService {
     /**
      * Get formas pago apra la tabla de forma pago emisiuon remito
      */
-    getFormasPago = (fecha: any) => 
+    getFormasPago = (fecha: any) =>
         this.authService.getBuscaFormaPago(this.localStorageService.getObject(environment.localStorage.acceso).token)()(fecha)
             .map(resp => resp.arraydatos.map(fp => new FormaPago(fp)))
             .catch((err, caught) => {
@@ -388,6 +383,11 @@ export class ComprobanteCompraService {
 
 
     getColumnsDetallesFp = () => [
+        {
+            nombre: 'forma pago',
+            key: 'formaPagoDescrip',
+            ancho: '15%'
+        },
         {
             nombre: 'plazo',
             key: 'cantDias',

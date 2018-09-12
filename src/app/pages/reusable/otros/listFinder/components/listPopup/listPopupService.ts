@@ -63,4 +63,21 @@ export class ListPopupService {
                             item[keysToShow[1]].toString().toLowerCase().includes(textoBuscado.toLowerCase())
         );
 
+
+    /**
+     * Muestra el item de acuerdo a las keys pasadas
+     */
+    parseItem = (item) => (keysToShow) => {
+        const val = keysToShow
+            .map(key => {
+                const deepKey = key.includes('.') ? key.split('.') : null;
+                return  deepKey ? item[deepKey[0]][deepKey[1]] ? item[deepKey[0]][deepKey[1]] : ''
+                        :
+                        item[key] ? item[key] : ''
+            })
+            .join(', ');
+
+        return val && val !== ', ' ? val : ''
+    }
+
 }

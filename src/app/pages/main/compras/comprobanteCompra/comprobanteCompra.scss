@@ -1,5 +1,5 @@
 .comprobante-compra {
-    
+
     // .inline-group {
     //     display: flex;
     //     label {
@@ -68,10 +68,10 @@
             }
 
             .text-area-observaciones {
-                
+
             }
         }
-        
+
     }
 
     .custom-card-container {
@@ -92,7 +92,7 @@
             }
 
         }
-        
+
         .deposito {
             display: flex;
             justify-content: flex-end;
@@ -113,10 +113,10 @@
             :host /deep/.custom-card {
                 // height: 100% !important;
                 height: auto !important;
-                
+
             }
         }
-        
+
     }
 
     .btn-container {
@@ -194,4 +194,23 @@
 
 .inline-flex {
     display: inline-flex
+}
+
+.spinner-container {
+    position: absolute;
+    top: 40%;
+    left: 23%;
+    display: block;
+    min-width: 47%;
+    z-index: 9999;
+    background: #d4d4dede;
+    padding: 3%;
+    border-radius: 12px;
+
+    .title {
+        text-align: center;
+        font-size: 1rem;
+        padding-bottom: 3px;
+        font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
 }

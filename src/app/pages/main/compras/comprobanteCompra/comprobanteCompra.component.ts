@@ -23,11 +23,13 @@ import { ComprobanteCompraService } from './comprobanteCompraService';
 import { FormaPago } from 'app/models/formaPago';
 
 import { DetalleFormaPago } from 'app/models/detalleFormaPago';
+import { NgbProgressbarConfig } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'comprobante-compra',
     templateUrl: './comprobanteCompra.html',
-    styleUrls: ['./comprobanteCompra.scss']
+    styleUrls: ['./comprobanteCompra.scss'],
+    providers: [NgbProgressbarConfig]
 })
 
 /**
@@ -77,6 +79,16 @@ export class ComprobanteCompra {
     } = {todos: [], filtrados: new BehaviorSubject([])}
 
     letras: string[] = [];
+
+    // Si es 0, no se muestra el 'cargando'.
+    valueGuardandoCompro = 0;
+
+    /**
+     * Blurs customs
+     */
+    customsBlurProduct = {
+        calculateImporte: (item) => item.importe = item.pendiente * item.precio
+    }
 
     /////////////////////////////////////////////
     ////////////////// Tablas ///////////////////
@@ -216,8 +228,17 @@ export class ComprobanteCompra {
         private recursoService: RecursoService,
         private comprobanteCompraService: ComprobanteCompraService,
         private utilsService: UtilsService,
-        private popupListaService: PopupListaService
+        private popupListaService: PopupListaService,
+        configProgressBar: NgbProgressbarConfig
     ) {
+
+        ////////// Configuraciones ///////////
+        // customize default values of progress bars used by this component tree
+        configProgressBar.max = 100;
+        configProgressBar.striped = true;
+        configProgressBar.animated = true;
+        configProgressBar.type = 'success';
+
         ////////// Listas desplegables  //////////
         // Trae los tipoComprobante solamente del modulo 1 (Modulo Compra)
         this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
@@ -325,33 +346,43 @@ export class ComprobanteCompra {
     )(
         '¿Confirmar comprobante?'
     )(
-        () => this.comprobanteCompraService.confirmarYGrabarComprobante(this.comprobante)
-            (this.comprobanteRelacionado)
-            (this.proveedorSeleccionado)
-            (this.tablas.datos.productosPend)
-            (this.tablas.datos.modelosFactura)
-            (this.cotizacionDatos)
-            (this.depositoSelec)
-            (this.tablas.datos.detallesFormaPago)
-            .subscribe((respuesta: any) => {
-                this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
+        () => {
+            // Con este código pedorro simulo una carga..
+            this.valueGuardandoCompro = 50;
 
-                // Blanqueo los campos
-                const auxFecha = this.comprobante.fechaComprobante;
-                this.comprobante = new Comprobante();
-                this.comprobante.fechaComprobante = auxFecha;
-                this.comprobanteRelacionado = new ComprobanteRelacionado();
-                this.proveedorSeleccionado = new Padron();
-                this.tablas.datos.productosPend = [];
-                this.tablas.datos.modelosFactura = [];
-                this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
-                this.depositoSelec = new Deposito()
-                this.tablas.datos.detallesFormaPago = [];
-                this.dataTablaFormasPago = Observable.of([]);
+            return this.comprobanteCompraService.confirmarYGrabarComprobante(this.comprobante)
+                (this.comprobanteRelacionado)
+                (this.proveedorSeleccionado)
+                (this.tablas.datos.productosPend)
+                (this.tablas.datos.modelosFactura)
+                (this.cotizacionDatos)
+                (this.depositoSelec)
+                (this.tablas.datos.detallesFormaPago)
+                .subscribe((respuesta: any) => {
+                    // Saco spinner
+                    this.valueGuardandoCompro = 0;
 
-                // Focus en input proveedor (TODO SET TIME OUT)
-                document.getElementById('inputProveedor') ? document.getElementById('inputProveedor').focus() : null
-            })
+                    this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
+
+                    // Blanqueo los campos
+                    const auxFecha = this.comprobante.fechaComprobante;
+                    this.comprobante = new Comprobante();
+                    this.comprobante.fechaComprobante = auxFecha;
+                    this.comprobanteRelacionado = new ComprobanteRelacionado();
+                    this.proveedorSeleccionado = new Padron();
+                    this.tablas.datos.productosPend = [];
+                    this.tablas.datos.modelosFactura = [];
+                    this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
+                    this.depositoSelec = new Deposito()
+                    this.tablas.datos.detallesFormaPago = [];
+                    this.dataTablaFormasPago = Observable.of([]);
+
+                    // Focus en input proveedor (TODO SET TIME OUT)
+                    document.getElementById('inputProveedor') ? document.getElementById('inputProveedor').focus() : null
+
+
+                })
+        }
 
     )({
         tipoModal: 'confirmation'
@@ -506,24 +537,17 @@ export class ComprobanteCompra {
             this.formasPagoSeleccionadas.push(fp) :
             this.formasPagoSeleccionadas = this.formasPagoSeleccionadas.filter(fpSelec => fpSelec.idFormaPago !== fp.idFormaPago);
 
-        // Detalle de lista correspondiente
-        // this.detalleListaFpsSeleccionadas = this.formasPagoSeleccionadas
-        //     .map(fpSelec => fp.listaPrecio)
-        //     .filter(
-        //         (lista, index, self) => index === self.findIndex(l => l.idListaPrecio === lista.idListaPrecio)
-        //     )
-        //     .map(lista => `Lista ${lista.idListaPrecio} \nDesde: ${lista.vigenciaDesde.getFechaFormateada()}, Hasta: ${lista.vigenciaHasta.getFechaFormateada()}, ${lista.idMoneda.descripcion}`)
-        //     .join('\n');
-
-
         // Ahora mappeo los detalles de las formas de pago seleccionadas para mostrarlos en la grilla de el medio
         this.tablas.datos.detallesFormaPago = this.formasPagoSeleccionadas
             .map(
-                fp => fp.detalles
+                fp => Object.assign([], fp.detalles)
+                    .map(det => {
+                        const auxDet: DetalleFormaPago = Object.assign({}, det);
+                        auxDet.formaPagoDescrip = fp.descripcion;
+                        return auxDet;
+                    })
             )
-            .reduce((a, b) => [...a].concat([...b]), []); // Aca aplasto el array bidimensional a uno de una dimensión
-
-        // debugger;
+            .reduce((a, b) => [...a].concat([...b]), []) // Aca aplasto el array bidimensional a uno de una dimensión
     }
 
     /**

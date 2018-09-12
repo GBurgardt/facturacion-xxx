@@ -45,15 +45,7 @@ export class NuevoModeloImputacion {
     ) {
         this.contPlanCuentaList = this.recursoService.getRecursoList(resourcesREST.contPlanCuenta)();
         this.sisTipoModeloList = this.recursoService.getRecursoList(resourcesREST.sisTipoModelo)();
-
     }
-
-    onSelectModImpuTest = (modImpu) => {
-        debugger;
-    }
-
-
-
 
     onClickCrear = async () => {
         try {
@@ -121,9 +113,7 @@ export class NuevoModeloImputacion {
 
     onEditDetalle = (det) => {
         this.addDetalleTitle = 'Editar Detalle';
-
-        this.editandoDetalle = !this.editandoDetalle;
-
+        this.editandoDetalle = true;
         this.detalleEnEdicion = Object.assign({}, det);
     }
 
@@ -131,5 +121,12 @@ export class NuevoModeloImputacion {
         this.detalleEnEdicion = new ModeloDetalle();
         this.editandoDetalle = false;
         this.agregandoDetalle = false;
+    }
+
+    onClickAgregarDetalle = () => {
+        this.addDetalleTitle = 'Agregar Detalle';
+        this.editandoDetalle = false;
+        this.agregandoDetalle = true;
+        this.detalleEnEdicion = new ModeloDetalle();
     }
 }

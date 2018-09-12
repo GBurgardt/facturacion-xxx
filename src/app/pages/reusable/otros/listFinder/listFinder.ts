@@ -14,11 +14,13 @@ export class ListFinder {
     @Input() title = '';
     @Input() items = Observable.of([])
     @Input() keysToShow = [];
+    @Input() defectValue = '';
+    @Input() idToFocusLater = '';
 
     @Output() onSelectItem = new EventEmitter<any>();
 
 
-    search = '';
+    searchedText = '';
 
     itemsPlain = {
         all: [],
@@ -27,18 +29,28 @@ export class ListFinder {
 
     focusIndex = -1;
 
+    isOpenList = false;
+
     constructor(
         private listPopupService: ListPopupService
     ) {
 
     }
 
-    ngOnChanges() {
+    ngOnInit() {
         this.items.subscribe(observedItems => {
             this.itemsPlain.all = observedItems;
             this.itemsPlain.filtered.next(observedItems);
-            debugger;
-        })
+        });
+
+
+    }
+
+    ngOnChanges() {
+        // Muestro el valor por defecto
+        if (this.defectValue) {
+            this.searchedText = this.listPopupService.parseItem(this.defectValue)(this.keysToShow);
+        }
     }
 
     /**
@@ -79,54 +91,31 @@ export class ListFinder {
     }
 
     _onSelectItemList = (item) => {
+        // Emito el evento click del componente padre
         this.onSelectItem.emit(item);
         // Vacio filtrados y focus lote input
         this.itemsPlain.filtered.next([]);
+        // Muestro el elemento seleccionado
+        this.searchedText = this.listPopupService.parseItem(item)(this.keysToShow);
+        // Hago focus en el elemento siguiente
+        this.idToFocusLater && this.idToFocusLater.length > 0 && document.getElementById(this.idToFocusLater) ?
+            document.getElementById(this.idToFocusLater).focus() : null;
+
     }
 
     /**
      * Evento on enter en el input de buscar cliente
      */
-    // onEnterInputProd = (e: any) => {
-    //     e.preventDefault();
-
-    //     // Busco el producto
-    //     const prodsLista = this.items.filtrados;
-    //     const prodSelect: any = prodsLista && prodsLista.length ? prodsLista[this.focusIndex] : null;
-    //     // Lo selecciono
-    //     prodSelect ? this.onSelectProducto(prodSelect) : null;
-    //     // Reseteo el index
-    //     this.focusIndex = -1;
-    //     // Vacio filtrados y focus lote input
-    //     this.items.filtrados = [];
-    //     document.getElementById('inputLoteNro') ? document.getElementById('inputLoteNro').focus() : null
-    // }
-
-
-
-
-    // onBlurInputProd = (evento) => {
-    //     if (!evento.target.value || evento.target.value.toString().length <= 0) return;
-
-    //     // Busco si existe
-    //     const prodExist = this.items.todos.find(
-    //         p => p.codProducto.toString() === evento.target.value.toString()
-    //     )
-
-    //     // Si existe actualizo el existente
-    //     if (prodExist && prodExist.idProductos) {
-    //         this.onSelectProducto(prodExist);
-    //     } else {
-    //         this.filtros.codProducto = null;
-    //         this.filtros.productoSelect = null;
-    //         // this.info.nombreProd = null;
-    //     }
-    //     // Vacio filtrados
-    //     this.items.filtrados = [];
-    //     // Hago focus en input producto
-    //     document.getElementById('inputLoteNro') ? document.getElementById('inputLoteNro').focus() : null
-
-    // }
-
-
+    onEnterInput = (e: any) => {
+        e.preventDefault();
+        // Busco el producto
+        const itemList = this.itemsPlain.filtered.value;
+        const itemSelect: any = itemList && itemList.length ? itemList[this.focusIndex] : null;
+        // Lo selecciono
+        itemSelect ? this._onSelectItemList(itemSelect) : null;
+        // Reseteo el index
+        this.focusIndex = -1;
+        // Vacio filtrados y focus lote input
+        this.itemsPlain.filtered.next([])
+    }
 }

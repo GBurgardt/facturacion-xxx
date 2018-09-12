@@ -73,7 +73,7 @@
                     .checkbox-traza {
                         margin-top: 6px;
                     }
-                    
+
 
                 }
             }
@@ -102,11 +102,11 @@
                 border-radius: 24px;
                 opacity: 0.8;
                 left: 222px;
-                top: 87px;
+                top: 90px;
                 font-size: 11px;
                 transition: width 2s;
             }
-            
+
         }
 
         tfoot {
@@ -127,13 +127,13 @@
     //     display: inline-table;
     //     table-layout: fixed;
     //     }
-        
+
     //     table{
     //      height:300px;              // <-- Select the height of the table
     //      display: -moz-groupbox;    // Firefox Bad Effect
     //     }
     //     tbody{
-    //       overflow-y: scroll;      
+    //       overflow-y: scroll;
     //       height: 200px;            //  <-- Select the height of the body
     //       width: 100%;
     //       position: absolute;
@@ -147,7 +147,7 @@
             text-transform: capitalize;
         }
     }
-    
+
     .footer-table {
         display: flex;
         justify-content: space-between;

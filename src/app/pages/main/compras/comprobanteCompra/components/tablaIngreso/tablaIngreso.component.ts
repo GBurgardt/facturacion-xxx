@@ -14,7 +14,7 @@ import { PopupListaService } from '../../../../../reusable/otros/popup-lista/pop
     templateUrl: './tablaIngreso.html',
     styleUrls: ['./tablaIngreso.scss']
 })
-    
+
 export class TablaIngreso {
     // Datos de mierda que me da paja sacar por miedo a romper todo
     sortBy = 'nombre';
@@ -35,7 +35,7 @@ export class TablaIngreso {
 
     // Lo uso para habilitar/deshabilitar input de ingerso new prod
     @Input() comprobante;
-    
+
 
     /////////// BUSQUEDA ///////////
     textoBusqueda: string;
@@ -50,8 +50,7 @@ export class TablaIngreso {
 
     @Input() onClickProductoLista;
 
-    // Sumatoria de los subtotales
-    // @Input() sumatoriaSubtotales;
+    @Input() customsBlur = null;
 
     constructor(
         private utilsService: UtilsService,
@@ -65,14 +64,9 @@ export class TablaIngreso {
             this.productosBusqueda.todos = prodsPendPosibles;
             this.productosBusqueda.filtrados.next(prodsPendPosibles);
         });
-
-        // Obtengo depositos
-        // recursoService.getRecursoList(resourcesREST.depositos)().subscribe(
-        //     depositos => this.depositos = depositos
-        // )
     }
 
-    
+
     toInt(num: string) {
         return +num;
     }
@@ -105,7 +99,7 @@ export class TablaIngreso {
         } else if (tipoDato === 'object'){
             // Me fijo el nombre de la clase del objeto
             if (
-                key && 
+                key &&
                 (
                     key.constructor.name === 'DateLikePicker' ||
                     key.year && key.month && key.day
@@ -114,31 +108,11 @@ export class TablaIngreso {
                 return `${key.day<10 ? '0' : ''}${key.day}/${key.month<10 ? '0' : ''}${key.month}/${key.year}`
             }
         };
-        
+
         return key;
     }
 
-    
-    
-    
 
-    // Checkea si pongo el 'tick' para finalizar la edicion. Osea, si está en edición.
-    // checkIfEditOn(item) {
-    //     if (this.columns) {
-    //         return this.columns.some(col=>{
-    //             // Lo hago específico porque esta talba es específica, casi que no la reutilizo
-    //             return col.enEdicion && col.enEdicion === item.producto.idProductos
-    //             // if (!col.subkey) {
-    //             //     return col.enEdicion && col.enEdicion === item[this.utilsService.getNameIdKeyOfResource(item)];
-    //             // } else if (col.subkey && !col.subsubkey) {
-    //             //     return col.enEdicion && col.enEdicion === (item[col.key])[this.utilsService.getNameIdKeyOfResource(item[col.key])];
-    //             // } 
-
-    //         });
-    //     };
-    // }
-
-    
 
     /**
      * Evento change del input de codProducto
@@ -146,12 +120,12 @@ export class TablaIngreso {
     onChangeInputItemAdd = (textoBuscado) => {
         this.productosBusqueda.filtrados.next(
             this.productosBusqueda.todos.filter(
-                prodPend => prodPend.producto.codProducto.toString().includes(textoBuscado) || 
+                prodPend => prodPend.producto.codProducto.toString().includes(textoBuscado) ||
                             prodPend.producto.descripcion.toString().toLowerCase().includes(textoBuscado)
             )
         );
     }
-    
+
     /**
      * El blur es cuando se hace un leave del input (caundo se apreta click afuera por ejemplo).
      * Acá lo que hago es poner un array vacio como próx valor de los filtrados, cosa que la lista desaparezca porque no hay nada
@@ -166,7 +140,7 @@ export class TablaIngreso {
      * Retorna el offset del input add
      */
     getOffsetOfAddInput = () => {
-        return this.utilsService.getOffset(document.getElementById('addInput')); 
+        return this.utilsService.getOffset(document.getElementById('addInput'));
     }
 
 
@@ -175,7 +149,7 @@ export class TablaIngreso {
      */
     onCalculateFecha = (e) => (key) => (subkey) => (item) => {
         if (!item[key][subkey] || typeof item[key][subkey] !== 'string') return;
-        
+
         item[key][subkey] = this.utilsService.stringToDateLikePicker(item[key][subkey]);
 
         // Hago focus en el prox input
@@ -225,23 +199,23 @@ export class TablaIngreso {
      */
     getClassInputEditable = (item) => (col) => {
         if (item){
-            const idItem =  item.cuentaContable ? item.cuentaContable : 
-                            item.idFormaPagoDet ? item.idFormaPagoDet : 
-                            // item.producto && item.producto.idProductos ? item.producto.idProductos : '000';
-                            item.producto && item.producto.idProductos ? `${item.producto.idProductos}-${item.numero}` : '000';
+            const idItem =  item.cuentaContable ? item.cuentaContable :
+                            item.idFormaPagoDet ? item.idFormaPagoDet :
+
+                            item.producto && item.producto.idProductos ? `${item.producto.idProductos}-${item.numero}` : '000'
 
             // if(item.producto && item.producto.idProductos ) debugger;
 
             // 'form-control edit-input input-edit-' + item.producto.idProductos
             return `form-control edit-input${col.editarFocus ? ` editar-focus-${idItem}` : '' }`
-        }    
+        }
     }
 
     // Checkea si pongo el 'tick' para finalizar la edicion.
     checkIfShowTick(item) {
         if (this.columns) {
             return this.columns.some(col=>{
-                
+
                 return col.enEdicion && (
                     (item.cuentaContable && col.enEdicion === item.cuentaContable) ||
                     (item.idFormaPagoDet && col.enEdicion === item.idFormaPagoDet)
@@ -255,7 +229,7 @@ export class TablaIngreso {
     checkIfEditOn = (item) => (col) => col.enEdicion && (
         // (item.producto && item.producto.idProductos && col.enEdicion === item.producto.idProductos) ||
         (item.producto && item.producto.idProductos && col.enEdicion === `${item.producto.idProductos}-${item.numero}`) ||
-        (item.cuentaContable && col.enEdicion === item.cuentaContable) || 
+        (item.cuentaContable && col.enEdicion === item.cuentaContable) ||
         (item.idFormaPagoDet && col.enEdicion === item.idFormaPagoDet)
     )
 
@@ -264,12 +238,26 @@ export class TablaIngreso {
         const fatherPosition = this.getOffsetOfAddInput();
 
         return {
-            top: (fatherPosition.top - 3) + 'px', 
+            top: (fatherPosition.top - 2) + 'px',
             left: (fatherPosition.left + 115) + 'px'
         }
     }
 
 
+    /**
+     * Retorna la function blur de una columna dada (si esta tiene custom blur)
+     */
+    getFunctionBlurOfColumn = (col) => {
+        if (col && col.customBlur) {
+            return this.customsBlur[col.customBlur];
+        }
+    }
+
+
+    // force2decimals = (event) => event.target.value = parseFloat(event.target.value).toFixed(2);
+
+    force2decimals = (item) => (col) => item && col && col.decimal ?
+        item[col.key] = parseFloat(item[col.key]).toFixed(2) : item[col.key]
 
 }
 

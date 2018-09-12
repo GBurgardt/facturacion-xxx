@@ -4,7 +4,7 @@
             (mousedown)="_onClickItem(item)"
             [ngClass]="'list-group-item listElement li-popup-' + i"
             >
-            {{parseItem(item)}}
+            {{listPopupService.parseItem(item)(keysToShow)}}
         </li>
     </ul>
 </div>

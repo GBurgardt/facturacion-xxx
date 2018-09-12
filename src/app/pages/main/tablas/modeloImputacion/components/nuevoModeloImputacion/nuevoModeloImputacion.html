@@ -32,7 +32,7 @@
                             </li>
                         </ul>
                         <div class="btn-container">
-                            <button (click)="agregandoDetalle = !agregandoDetalle" class="btn btn-secondary btn-agregar">Agregar</button>
+                            <button (click)="onClickAgregarDetalle()" class="btn btn-secondary btn-agregar">Agregar</button>
                         </div>
                     </div>
                 </div>
@@ -50,18 +50,12 @@
         <div class="row">
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label for="selectCtaCont">Cta Contable *</label>
-                    <select [(ngModel)]="detalleEnEdicion.ctaContable" class="form-control" id="selectCtaCont">
-                        <option *ngFor="let ctaCont of contPlanCuentaList | async" [ngValue]="ctaCont.planCuentas">
-                            {{ctaCont.planDescripcion}} ({{ctaCont.planCuentas}})
-                        </option>
-                    </select>
-
-                    <list-finder    title="test"
+                    <list-finder    title="Cta Contable *"
                                     [items]="contPlanCuentaList"
-                                    [keysToShow]="['planCuentas', 'planDescripcion']"
-                                    (onSelectItem)="onSelectModImpuTest($event)">
-
+                                    [keysToShow]="['planDescripcion', 'planCuentas']"
+                                    (onSelectItem)="detalleEnEdicion.planCuenta = $event"
+                                    [defectValue]="detalleEnEdicion.planCuenta"
+                                    idToFocusLater="inputDescripcion">
                     </list-finder>
                 </div>
             </div>
@@ -69,7 +63,7 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="descripcion">Descripcion *</label>
-                    <input [(ngModel)]="detalleEnEdicion.descripcion" type="text" class="form-control" id="descripcion">
+                    <input [(ngModel)]="detalleEnEdicion.descripcion" type="text" class="form-control" id="inputDescripcion">
                 </div>
             </div>
 
@@ -133,7 +127,7 @@
                     !detalleEnEdicion ||
                     !detalleEnEdicion.descripcion ||
                     !detalleEnEdicion.dh ||
-                    !detalleEnEdicion.ctaContable ||
+                    !detalleEnEdicion.planCuenta ||
                     !detalleEnEdicion.orden ||
                     !detalleEnEdicion.operador ||
                     !detalleEnEdicion.idSisTipoModelo

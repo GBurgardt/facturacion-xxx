@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { routing } from './compras.routing';
 import { Compras } from ".";
-import { NgbTabsetModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbTabsetModule, NgbProgressbarModule } from "@ng-bootstrap/ng-bootstrap";
 import { SharedModule } from "../SharedModule";
 import { RecursoService } from "app/services/recursoService";
 import { AuthService } from "../../../services/authService";
@@ -16,7 +16,8 @@ import { EmisionRemitosService } from "../ventas/emisionRemitos/emisionRemitosSe
     imports: [
         routing,
         NgbTabsetModule,
-        SharedModule
+        SharedModule,
+        NgbProgressbarModule
     ],
     declarations: [
         Compras,

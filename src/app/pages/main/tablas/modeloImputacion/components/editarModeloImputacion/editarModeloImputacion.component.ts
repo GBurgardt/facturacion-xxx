@@ -120,11 +120,8 @@ export class EditarModeloImputacion {
 
     onEditDetalle = (det) => {
         this.addDetalleTitle = 'Editar Detalle';
-
-        this.editandoDetalle = !this.editandoDetalle;
-
+        this.editandoDetalle = true;
         this.detalleEnEdicion = Object.assign({}, det);
-        // debugger;
     }
 
     compareWithGeneric = (item1: any, item2: any) => {
@@ -139,5 +136,12 @@ export class EditarModeloImputacion {
         this.detalleEnEdicion = new ModeloDetalle();
         this.editandoDetalle = false;
         this.agregandoDetalle = false;
+    }
+
+    onClickAgregarDetalle = () => {
+        this.addDetalleTitle = 'Agregar Detalle';
+        this.editandoDetalle = false;
+        this.agregandoDetalle = true;
+        this.detalleEnEdicion = new ModeloDetalle();
     }
 }

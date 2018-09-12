@@ -182,6 +182,10 @@ export const resourcesREST = {
     sisTipoModelo: {
         nombre: 'sisTipoModelo',
         Clase: SisTipoModelo
+    },
+    proximoCodigo: {
+        nombre: 'proximoCodigo',
+        Clase: String
     }
 
 };

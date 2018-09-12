@@ -28,7 +28,7 @@ export class RecursoService {
     getRecursoList = (recursoRest) => (queryOrPathParams?) => {
         // Si es un object (json), es queryParam, sino es pathParam
         const tipoParam = Array.isArray(queryOrPathParams) ? 'path' : 'query';
-        
+
         const lista: Observable<any[]> = this.authService.getResourceList(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
@@ -109,6 +109,12 @@ export class RecursoService {
                 return Observable.throw(err)
             });
     }
+
+    getProximoCodigoProducto = () => this.authService
+        .getProximoCodigoProducto(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )
+        .map(resp => resp.datos.proximoCodigo)
 
 
 }

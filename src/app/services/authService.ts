@@ -682,6 +682,17 @@ export class AuthService {
     }
 
 
+    getProximoCodigoProducto = (token) => this.request(
+        [],
+        RequestMethod.Get,
+        {
+            token: token
+        },
+        resourcesREST.proximoCodigo.nombre,
+        {},
+        {}
+    );
+
     ///////////////////////////////////////////////////////////////////////////////////
     ///////////////////              MÉTODOS REUTILIZABLES          ///////////////////
     ///////////////////////////////////////////////////////////////////////////////////
@@ -876,7 +887,7 @@ export class AuthService {
             return {
                 descripcion: recurso.descripcion,
                 modeloDetalle: recurso.modeloDetalle.map(det => ({
-                    ctaContable: det.ctaContable,
+                    ctaContable: det.planCuenta ? det.planCuenta.planCuentas : null,
                     orden: det.orden,
                     descripcionDetalle: det.descripcion,
                     dh: det.dh,
@@ -1007,7 +1018,7 @@ export class AuthService {
                 idModeloCab: recurso.idModeloCab,
                 descripcion: recurso.descripcion,
                 modeloDetalle: recurso.modeloDetalle.map(det => ({
-                    ctaContable: det.ctaContable,
+                    ctaContable: det.planCuenta ? det.planCuenta.planCuentas : null,
                     orden: det.orden,
                     descripcionDetalle: det.descripcion,
                     dh: det.dh,
