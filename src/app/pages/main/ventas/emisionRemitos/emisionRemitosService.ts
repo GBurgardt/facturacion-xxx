@@ -321,7 +321,7 @@ export class EmisionRemitosService {
 
         return this.authService.buscaModelos(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(prodsModel).map(responBuscMod => responBuscMod.arraydatos.map(respModFact => new ModeloFactura(respModFact)));
+        )(prodsModel)(2).map(responBuscMod => responBuscMod.arraydatos.map(respModFact => new ModeloFactura(respModFact)));
     }
 
     /**

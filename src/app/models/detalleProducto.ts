@@ -7,6 +7,9 @@ export class DetalleProducto {
     precio: number;
     producto: Producto;
     observaciones: string;
+    
+    porcentajeInf: number;
+    porcentajeSup: number;
 
     constructor (detalleProducto?: {
         cotaInf: number;

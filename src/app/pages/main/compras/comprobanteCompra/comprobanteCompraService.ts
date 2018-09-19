@@ -239,7 +239,7 @@ export class ComprobanteCompraService {
 
         return this.authService.buscaModelos(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(prodsModel).map(responBuscMod => responBuscMod.arraydatos.map(respModFact => new ModeloFactura(respModFact)));
+        )(prodsModel)(1).map(responBuscMod => responBuscMod.arraydatos.map(respModFact => new ModeloFactura(respModFact)));
     }
 
     /**
@@ -272,8 +272,11 @@ export class ComprobanteCompraService {
         // Checkeo que haya productos agregados
         const existenProductos = this.checkIfExistenProductos(productosPend)(modelosFactura);
 
-        /// Checkeo que hayan cargado los datos de la trazabilidad
-        const trazabilidadCargada = this.checkIfTrazabilidadCargada(productosPend);
+        /// Checkeo que hayan cargado los datos de la trazabilidad (y que el tipo comprobatne NO sea Ordencompra)
+        const trazabilidadCargada = 
+            comprobante.tipo.comprobante.idSisComprobantes === 4 ||
+            this.checkIfTrazabilidadCargada(productosPend);
+        
 
         // Si no existen nulos y si existen productos, los datos son validos
         return noExistenNulos && existenProductos && trazabilidadCargada

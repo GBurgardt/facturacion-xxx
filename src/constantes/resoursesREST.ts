@@ -30,6 +30,8 @@ import { Stock } from "app/pages/main/stock";
 import { PlanCuenta } from "app/models/planCuenta";
 import { SisTipoModelo } from "app/models/sisTipoModelo";
 import { ModeloCabSinDetalles } from "app/models/modeloCabSinDetalles";
+import { CodigoAfip } from "app/models/codigoAfip";
+import { Marca } from "app/models/marca";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -186,6 +188,14 @@ export const resourcesREST = {
     proximoCodigo: {
         nombre: 'proximoCodigo',
         Clase: String
+    },
+    compGest: {
+        nombre: 'compGest',
+        Clase: CodigoAfip
+    },
+    marcas: {
+        nombre: 'marcas',
+        Clase: Marca
     }
 
 };

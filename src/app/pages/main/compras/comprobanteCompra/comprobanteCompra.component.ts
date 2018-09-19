@@ -24,6 +24,7 @@ import { FormaPago } from 'app/models/formaPago';
 
 import { DetalleFormaPago } from 'app/models/detalleFormaPago';
 import { NgbProgressbarConfig } from '@ng-bootstrap/ng-bootstrap';
+import { DateLikePicker } from '../../../../models/dateLikePicker';
 
 @Component({
     selector: 'comprobante-compra',
@@ -244,7 +245,9 @@ export class ComprobanteCompra {
         this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
             'sisModulo': 1
         });
-        this.tiposOperacion = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)();
+        this.tiposOperacion = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)({
+            'sisModulo': 1
+        });
         this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
         this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
 
@@ -572,5 +575,16 @@ export class ComprobanteCompra {
         });
     }
 
+    /**
+     * Cuando selecciona en el datepicker
+     */
+    onSelectDate = (fechaSeleccionada) => {
+        const fechaLikePicker = new DateLikePicker(null, fechaSeleccionada);
+
+        // Obtengo las formas de pago
+        if(fechaLikePicker) {
+            this.dataTablaFormasPago = this.comprobanteCompraService.getFormasPago(fechaLikePicker);
+        }
+    }
 
 }

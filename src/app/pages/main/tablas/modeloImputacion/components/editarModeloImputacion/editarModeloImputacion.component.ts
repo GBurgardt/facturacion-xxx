@@ -12,6 +12,7 @@ import { ModeloCab } from 'app/models/modeloCab';
 import { ModeloDetalle } from 'app/models/modeloDetalle';
 import { PlanCuenta } from 'app/models/planCuenta';
 import { SisTipoModelo } from 'app/models/sisTipoModelo';
+import { SisModulo } from 'app/models/sisModulo';
 
 
 @Component({
@@ -33,9 +34,10 @@ export class EditarModeloImputacion {
 
     // Desplegables
     signos = ['+', '-', '*', '/', '%'];
-    debeHaber = ['D', 'H', '-'];
+    debeHaber = ['S', 'R', '-'];
     contPlanCuentaList: Observable<PlanCuenta[]> = Observable.of([]);
     sisTipoModeloList: Observable<SisTipoModelo[]> = Observable.of([]);
+    sisModulos: Observable<SisModulo[]> = Observable.of([]);
 
     constructor(
         private utilsService: UtilsService,
@@ -45,6 +47,7 @@ export class EditarModeloImputacion {
     ) {
         this.contPlanCuentaList = this.recursoService.getRecursoList(resourcesREST.contPlanCuenta)();
         this.sisTipoModeloList = this.recursoService.getRecursoList(resourcesREST.sisTipoModelo)();
+        this.sisModulos = this.recursoService.getRecursoList(resourcesREST.sisModulos)();
 
         this.route.params.subscribe(params =>
             this.recursoService.getRecursoList(resourcesREST.modeloImputacion)()
@@ -143,5 +146,20 @@ export class EditarModeloImputacion {
         this.editandoDetalle = false;
         this.agregandoDetalle = true;
         this.detalleEnEdicion = new ModeloDetalle();
+    }
+
+    // Detalles
+    checkIfExisteDetallesCompra = () => this.recurso.modeloDetalle && this.recurso.modeloDetalle.filter(det => Number(det.idSisModulo) === 1).length > 0 
+    
+    checkIfExisteDetallesVenta = () => 
+        this.recurso.modeloDetalle && this.recurso.modeloDetalle.filter(det => Number(det.idSisModulo) === 2).length > 0 
+
+    checkIfShowLiCompra = (liDet: ModeloDetalle) => {
+        return Number(liDet.idSisModulo) === 2 ? 
+            `detalle-li hiddenLi` : 'detalle-li'
+    }
+    checkIfShowLiVenta = (liDet: ModeloDetalle) => {
+        return Number(liDet.idSisModulo) === 1 ? 
+            `detalle-li hiddenLi` : 'detalle-li'
     }
 }

@@ -202,7 +202,7 @@ export class AuthService {
     /**
      * Busca los modelos de la tab facutracion
      */
-    buscaModelos = (token) => (productos: ProductoBuscaModelo[] ) => {
+    buscaModelos = (token) => (productos: ProductoBuscaModelo[]) => (idSisModulo) => {
         return this.request(
             [],
             RequestMethod.Post,
@@ -211,6 +211,7 @@ export class AuthService {
             },
             resourcesREST.buscaModelo.nombre,
             {
+                modulo: idSisModulo,
                 productos: productos
             },
             {}
@@ -242,7 +243,6 @@ export class AuthService {
                 idCteTipo: comprobante.tipo.idCteTipo,
                 letra: comprobante.letra,
                 numero: Number(comprobante.puntoVenta + comprobante.numero),
-
                 fechaEmision: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
                 fechaVencimiento: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
                 fechaConta: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
@@ -250,7 +250,6 @@ export class AuthService {
                 caiVto: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
                 codBarra: ' ',
                 idPadron: provSelec.padronCodigo,
-                idFormaPago: 5,
                 productoCanje: ' ',
                 precioReferenciaCanje: 0,
                 interesCanje: 0,
@@ -275,7 +274,7 @@ export class AuthService {
                 factPie: modelosFactura.length > 0,
                 produmo: true,
                 lote:   productosPend.some(prodPend => prodPend.producto.trazable) &&
-                        comprobante.tipo.descCorta !== 'OC',
+                        comprobante.tipo.comprobante.idSisComprobantes !== 4,
                 grillaArticulos: productosPend.map(prod => {
                     return {
                         idProducto: prod.producto.idProductos,
@@ -317,13 +316,15 @@ export class AuthService {
                                 idProducto: prodTraza.producto.idProductos
                             }
                         }),
-                grillaFormaPago: detallesFormaPago.map(mod => {
+                grillaFormaPago: detallesFormaPago.map(detFp => {
                     return {
-                        plazo: mod.cantDias ? mod.cantDias : 0,
-                        interes: mod.porcentaje ? mod.porcentaje : 0,
-                        monto: mod.monto ? Number(mod.monto) : 0,
-                        detalle: mod.detalle ? mod.detalle : ' ',
-                        observaciones: mod.observaciones ? mod.observaciones : ' '
+                        plazo: detFp.cantDias ? detFp.cantDias : 0,
+                        interes: detFp.porcentaje ? detFp.porcentaje : 0,
+                        monto: detFp.monto ? Number(detFp.monto) : 0,
+                        detalle: detFp.detalle ? detFp.detalle : ' ',
+                        observaciones: detFp.observaciones ? detFp.observaciones : ' ',
+                        cuentaContable: detFp.planCuenta ? detFp.planCuenta.planCuentas : ' ',
+                        idFormaPagoDet: detFp.idFormaPagoDet
                     }
                 }),
 
@@ -375,15 +376,15 @@ export class AuthService {
                 cuit: clienteSelect.cuit.toString(),
                 sisSitIva: clienteSelect.condIva.descCorta,
                 codigoPostal: ' ',
-                listaPrecio: ' ',
+                listaPrecio: formasPagoSeleccionadas && formasPagoSeleccionadas.length > 0 ? 
+                    formasPagoSeleccionadas[0].listaPrecio.idListaPrecio : null,
                 cotDolar: cotizacionDatos.cotizacion.cotizacion,
-                fechaDolar: `2018-01-01`,
+                fechaDolar: cotizacionDatos.cotizacion.fechaCotizacion,
                 observaciones: comprobante.observaciones,
-                idModeloCab: null,
+
                 relComprobante: comproRelac.tipo.idCteTipo,
                 relPuntoVenta: comproRelac.puntoVenta,
                 relNumero: comproRelac.numero,
-                idFactCab: null,
                 factCabecera: true,
                 factDet: true,
                 factFormaPago: true,
@@ -403,7 +404,7 @@ export class AuthService {
                         cantidadBulto: prod.cantBultos,
                         despacho: prod.despacho ? prod.despacho : ' ',
                         trazable: prod.producto.trazable,
-                        idDeposito: depositoSelec.idDeposito,
+                        idDeposito: depositoSelec? depositoSelec.idDeposito : null,
                         observacionDetalle: prod.producto.observaciones ? prod.producto.observaciones : ' ',
                         imputacion: prod.imputacion.seleccionada.ctaContable,
                         idFactCabImputa: prod.idFactCabImputada ? prod.idFactCabImputada : null,
@@ -411,15 +412,7 @@ export class AuthService {
                         importe: prod.importe
                     }
                 }),
-                grillaSubTotales: modelosFactura.map(mod => {
-                    return {
-                        cuenta: mod.cuentaContable,
-                        descripcionPie: mod.descripcion,
-                        importe: mod.importeTotal,
-                        totalComprobante: cotizacionDatos.total,
-                        porcentaje: 0
-                    }
-                }),
+                grillaSubTotales: [],
                 grillaTrazabilidad: productosPend
                     .filter(prodPend => prodPend.producto.trazable)
                     .map(prodTraza => {
@@ -851,7 +844,8 @@ export class AuthService {
                 idSubRubro: recurso.subRubro.idSubRubro,
                 idIva: recurso.IVA.idIVA,
                 idUnidadCompra: recurso.unidadCompra.idUnidad,
-                idUnidadVenta: recurso.unidadVenta.idUnidad
+                idUnidadVenta: recurso.unidadVenta.idUnidad,
+                idMarca: recurso.marca ? recurso.marca.idMarcas : null
             }
         }
 
@@ -882,7 +876,9 @@ export class AuthService {
                         cotaInf: detalle.cotaInf,
                         cotaSup: detalle.cotaSup,
                         observaciones: detalle.observaciones ? detalle.observaciones : null,
-                        idProducto: detalle.producto.idProductos
+                        idProducto: detalle.producto.idProductos,
+                        cotaInfPorc: detalle.porcentajeInf ? detalle.porcentajeInf : 0,
+                        cotaSupPorc: detalle.porcentajeSup ? detalle.porcentajeSup : 0
                     }
                 })
             }
@@ -899,7 +895,8 @@ export class AuthService {
                     prioritario: det.prioritario ? true : false,
                     valor: det.valor,
                     operador: det.operador,
-                    idSisTipoModelo: det.idSisTipoModelo
+                    idSisTipoModelo: det.idSisTipoModelo,
+                    modulo: det.idSisModulo ? det.idSisModulo : null
                 }))
             }
 
@@ -953,8 +950,6 @@ export class AuthService {
         }
 
         if (nombreRecurso === resourcesREST.formaPago.nombre) {
-            console.log(recurso);
-            debugger;
             return {
                 idFormaPago: recurso.idFormaPago,
                 tipo: recurso.tipo.idSisFormaPago,
@@ -967,12 +962,6 @@ export class AuthService {
                     ctaContable: det.planCuenta ? det.planCuenta.planCuentas : ''
                 }))
             }
-            // return {
-            //     idFormaPago: recurso.idFormaPago,
-            //     tipo: recurso.tipo.idSisFormaPago,
-            //     descripcion: recurso.descripcion,
-            //     idListaPrecio: recurso.listaPrecio.idListaPrecio
-            // }
         }
 
         if (nombreRecurso === resourcesREST.productos.nombre) {
@@ -996,7 +985,8 @@ export class AuthService {
                 idSubRubro: recurso.subRubro.idSubRubro,
                 idIva: recurso.IVA.idIVA,
                 idUnidadCompra: recurso.unidadCompra.idUnidad,
-                idUnidadVenta: recurso.unidadVenta.idUnidad
+                idUnidadVenta: recurso.unidadVenta.idUnidad,
+                idMarca: recurso.marca ? recurso.marca.idMarcas : null
             }
         }
 
@@ -1023,7 +1013,9 @@ export class AuthService {
                         cotaInf: detalle.cotaInf,
                         cotaSup: detalle.cotaSup,
                         observaciones: detalle.observaciones ? detalle.observaciones : null,
-                        idProducto: detalle.producto.idProductos
+                        idProducto: detalle.producto.idProductos,
+                        cotaInfPorc: detalle.porcentajeInf ? detalle.porcentajeInf : 0,
+                        cotaSupPorc: detalle.porcentajeSup ? detalle.porcentajeInf : 0
                     }
                 }),
                 idPadronCliente: recurso.idPadronCliente,
@@ -1044,7 +1036,8 @@ export class AuthService {
                     prioritario: det.prioritario ? true : false,
                     valor: det.valor ? det.valor : 0,
                     operador: det.operador,
-                    idSisTipoModelo: det.idSisTipoModelo
+                    idSisTipoModelo: det.idSisTipoModelo,
+                    modulo: det.idSisModulo ? det.idSisModulo : null
                 }))
             }
 

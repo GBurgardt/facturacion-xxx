@@ -15,6 +15,7 @@ import { resourcesREST } from 'constantes/resoursesREST';
 import { Rubro } from 'app/models/rubro';
 import { ModeloCab } from 'app/models/modeloCab';
 import { AuthService } from '../../../../../../services/authService';
+import { Marca } from 'app/models/marca';
 
 @Component({
     selector: 'nuevo-producto',
@@ -30,8 +31,9 @@ export class NuevoProducto {
     unidadesCompra: Observable<Unidad[]>;
     unidadesVenta: Observable<Unidad[]>;
     modelosCab: Observable<ModeloCab[]>;
+    marcas: Observable<Marca[]>;
 
-    sugerenciaProxCodigo: string = '';
+    // sugerenciaProxCodigo: string = '';
 
     constructor(
         private recursoService: RecursoService,
@@ -45,9 +47,13 @@ export class NuevoProducto {
         this.unidadesVenta = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.ivas = this.recursoService.getRecursoList(resourcesREST.sisIVA)();
         this.modelosCab = this.recursoService.getRecursoList(resourcesREST.modeloCab)();
+        this.marcas = this.recursoService.getRecursoList(resourcesREST.marcas)();
 
+    }
+    
+    ngOnInit() {
         this.recursoService.getProximoCodigoProducto().subscribe(
-            proxCodigo => this.sugerenciaProxCodigo = proxCodigo ? proxCodigo : '0'
+            proxCodigo => this.recurso.codProducto = proxCodigo
         );
     }
 
@@ -83,4 +89,17 @@ export class NuevoProducto {
         })
     }
 
+    // compareWithGeneric = (item1: any, item2: any) => {
+    //     // if (item2 && item2 !== '21012200') debugger;
+    //     return item1 && item2 && (
+    //         item1 === item2 ||
+    //         item1.toString() === item2
+    //     )
+    // }
+
+    /**
+     * Selecciona por defecto el primero
+     */
+    // compareWithMarca = (m1: Marca, m2: Marca) => this.marcas && this.marcas.length > 0 ? 
+    //     this.marcas[0].idMarcas === m2.idMarcas : false
 }

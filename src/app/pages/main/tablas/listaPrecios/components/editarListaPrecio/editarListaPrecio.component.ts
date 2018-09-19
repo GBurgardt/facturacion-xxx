@@ -74,27 +74,6 @@ export class EditarListaPrecio {
                 subkey: 'descripcion',
                 ancho: '20%'
             },
-            // {
-            //     nombre: 'precio',
-            //     key: 'producto',
-            //     subkey: 'precioVentaProv',
-            //     ancho: '10%',
-            //     enEdicion: null
-            // },
-            // {
-            //     nombre: 'inferior',
-            //     key: 'producto',
-            //     subkey: 'precioVentaProv',
-            //     ancho: '10%',
-            //     enEdicion: null
-            // },
-            // {
-            //     nombre: 'superior',
-            //     key: 'producto',
-            //     subkey: 'precioVentaProv',
-            //     ancho: '10%',
-            //     enEdicion: null
-            // },
             {
                 nombre: 'precio',
                 key: 'precio',
@@ -111,6 +90,18 @@ export class EditarListaPrecio {
                 nombre: 'superior',
                 key: 'cotaSup',
                 ancho: '10%',
+                enEdicion: null
+            },
+            {
+                nombre: '% inferior',
+                key: 'porcentajeInf',
+                ancho: '5%',
+                enEdicion: null
+            },
+            {
+                nombre: '% superior',
+                key: 'porcentajeSup',
+                ancho: '5%',
                 enEdicion: null
             },
             {
@@ -178,8 +169,19 @@ export class EditarListaPrecio {
         try {
             // Agrego los detalles a la lista de detalles de la lista de precios
             this.recursoService.getProductosByFiltro(this.filtroListaPrecios).subscribe(listaDetalles => {
+                // Agrego los porcentaje a cada detalle
+                const cloneListaDet = listaDetalles.map(det => {
+                    const cloneDet = Object.assign({}, det);
+
+                    cloneDet.porcentajeInf = this.filtroListaPrecios.porcentajeInf;
+                    cloneDet.porcentajeSup = this.filtroListaPrecios.porcentajeSup;
+
+                    return cloneDet;
+                })
+
+                // Remuevo duplicados y guardo en el recurso
                 this.recurso.listaPrecioDetCollection = _.uniqWith(
-                    this.recurso.listaPrecioDetCollection.concat(listaDetalles),
+                    this.recurso.listaPrecioDetCollection.concat(cloneListaDet),
                     (a:DetalleProducto,b:DetalleProducto) => a.producto.idProductos === b.producto.idProductos
                 );
             })

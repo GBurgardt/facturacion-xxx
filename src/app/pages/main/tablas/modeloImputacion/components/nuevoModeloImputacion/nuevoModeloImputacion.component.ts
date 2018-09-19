@@ -12,6 +12,7 @@ import { ModeloCab } from '../../../../../../models/modeloCab';
 import { ModeloDetalle } from '../../../../../../models/modeloDetalle';
 import { PlanCuenta } from '../../../../../../models/planCuenta';
 import { SisTipoModelo } from '../../../../../../models/sisTipoModelo';
+import { SisModulo } from '../../../../../../models/sisModulo';
 
 
 @Component({
@@ -24,6 +25,7 @@ export class NuevoModeloImputacion {
     recurso: ModeloCab = new ModeloCab();
 
     detalles: ModeloDetalle[] = [];
+
     detalleEnEdicion: ModeloDetalle = new ModeloDetalle();
 
     agregandoDetalle: boolean = false;
@@ -33,10 +35,10 @@ export class NuevoModeloImputacion {
 
     // Desplegables
     signos = ['+', '-', '*', '/', '%'];
-    debeHaber = ['D', 'H', '-'];
+    debeHaber = ['S', 'R', '-'];
     contPlanCuentaList: Observable<PlanCuenta[]> = Observable.of([]);
     sisTipoModeloList: Observable<SisTipoModelo[]> = Observable.of([]);
-
+    sisModulos: Observable<SisModulo[]> = Observable.of([]);
 
     constructor(
         private recursoService: RecursoService,
@@ -45,6 +47,7 @@ export class NuevoModeloImputacion {
     ) {
         this.contPlanCuentaList = this.recursoService.getRecursoList(resourcesREST.contPlanCuenta)();
         this.sisTipoModeloList = this.recursoService.getRecursoList(resourcesREST.sisTipoModelo)();
+        this.sisModulos = this.recursoService.getRecursoList(resourcesREST.sisModulos)();
     }
 
     onClickCrear = async () => {
@@ -68,6 +71,7 @@ export class NuevoModeloImputacion {
     }
 
     onClickConfirmarDetalle = () => {
+        
         if (this.editandoDetalle) {
             let copiaDetalles = Object.assign(
                 [],
@@ -124,9 +128,23 @@ export class NuevoModeloImputacion {
     }
 
     onClickAgregarDetalle = () => {
+        
         this.addDetalleTitle = 'Agregar Detalle';
         this.editandoDetalle = false;
         this.agregandoDetalle = true;
         this.detalleEnEdicion = new ModeloDetalle();
+    }
+
+    // Detalles
+    checkIfExisteDetallesCompra = () => this.detalles.filter(det => Number(det.idSisModulo) === 1).length > 0 
+    checkIfExisteDetallesVenta = () => this.detalles.filter(det => Number(det.idSisModulo) === 2).length > 0 
+
+    checkIfShowLiCompra = (liDet: ModeloDetalle) => {
+        return Number(liDet.idSisModulo) === 2 ? 
+            `detalle-li hiddenLi` : 'detalle-li'
+    }
+    checkIfShowLiVenta = (liDet: ModeloDetalle) => {
+        return Number(liDet.idSisModulo) === 1 ? 
+            `detalle-li hiddenLi` : 'detalle-li'
     }
 }

@@ -4,7 +4,7 @@
             <div class="col-sm-2">
                 <div class="form-group">
                     <label for="codProducto">Codigo *</label>
-                    <input [(ngModel)]="recurso.codProducto" type="text" class="form-control" id="codProducto" [placeholder]="sugerenciaProxCodigo">
+                    <input [(ngModel)]="recurso.codProducto" type="text" class="form-control" id="codProducto">
                 </div>
             </div>
 
@@ -84,6 +84,19 @@
                     <select [(ngModel)]="recurso.IVA" class="form-control text-right-select" id="IVA">
                         <option *ngFor="let iva of ivas | async" [ngValue]="iva">
                             {{utilsService.parseDecimal(iva.porcIVA)}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="marca">Marca *</label>
+                    <select [(ngModel)]="recurso.marca" class="form-control text-right-select" id="marca">
+                        <option *ngFor="let mar of marcas | async; let i = index" 
+                                [ngValue]="mar"
+                                [attr.selected]="i == 0 ? true : null">
+                            {{ mar.descripcion }}
                         </option>
                     </select>
                 </div>

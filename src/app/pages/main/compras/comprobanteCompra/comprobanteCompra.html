@@ -107,7 +107,8 @@
                     <div class="form-group inline-group last-child-custom-card">
                         <label for="fechaComprobante">Fecha: </label>
                         <div class="input-group">
-                            <input  (blur)="onCalculateFecha($event)('fechaComprobante')('comprobante')"
+                            <input  (ngModelChange)="onSelectDate($event)"
+                                    (blur)="onCalculateFecha($event)('fechaComprobante')('comprobante')"
                                     (keyup.enter)="onCalculateFecha($event)('fechaComprobante')('comprobante')"
                                     class="form-control"
                                     placeholder="dd/mm/aaaa"
@@ -226,7 +227,7 @@
 
                 </ng-template>
             </ngb-tab>
-            <ngb-tab title="Trazabilidad">
+            <ngb-tab title="Trazabilidad" [disabled]="comprobante.tipo.comprobante.idSisComprobantes === 4">
                 <ng-template ngbTabContent>
 
                     <tabla-ingreso  [data]="comprobanteCompraService.getOnlyTrazables(tablas.datos.productosPend)"
@@ -269,7 +270,8 @@
                                 <label for="fechaComprobante">Fecha Contable</label>
                                 <div class="input-group">
 
-                                    <input  (blur)="onCalculateFecha($event)('fechaContable')('factura')"
+                                    <input  
+                                            (blur)="onCalculateFecha($event)('fechaContable')('factura')"
                                             (keyup.enter)="onCalculateFecha($event)('fechaContable')('factura')"
                                             class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="factura.fechaContable" ngbDatepicker #dComp="ngbDatepicker">
                                     <!-- <input class="form-control" placeholder="dd/mm/aaaa" name="dp" [(ngModel)]="factura.fechaContable" ngbDatepicker #dComp="ngbDatepicker"> -->

@@ -267,7 +267,7 @@ export class EmisionRemitos {
     /**
      * Valida y graba el comprobante
      */
-    onClickConfirmar = () => this.utilsService.showModal('Aviso')('¿Cancelar emision de remito?')(
+    onClickConfirmar = () => this.utilsService.showModal('Confirmar')('¿Confirmar emision de remito?')(
         () => {
             this.emisionRemitosService.confirmarYEmitirRemito(this.comprobante)
                 (this.comprobanteRelacionado)
@@ -277,6 +277,7 @@ export class EmisionRemitos {
                 (this.sisCanje)
                 (this.formasPagoSeleccionadas)
                     .subscribe((respuesta: any) => {
+                        debugger;
                         this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
 
                         // Blanqueo los campos
