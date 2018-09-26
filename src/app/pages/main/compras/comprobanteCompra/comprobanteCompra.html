@@ -94,7 +94,7 @@
                 <div class="col-sm-3">
                     <div class="form-group inline-group">
                         <label for="cteMoneda">Moneda:</label>
-                        <select [(ngModel)]="comprobante.moneda" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteMoneda">
+                        <select [compareWith]="compareFnMonedas" [(ngModel)]="comprobante.moneda" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteMoneda">
                             <option *ngFor="let mon of monedas | async" [ngValue]="mon">
                                 {{mon.descripcion}}
                             </option>
@@ -241,7 +241,7 @@
             </ngb-tab>
             <ngb-tab title="">
                 <ng-template ngbTabTitle>
-                    <div>Factura</div>
+                    <div (click)="fetchFacturas()">Factura</div>
                 </ng-template>
                 <ng-template ngbTabContent>
 
@@ -250,13 +250,25 @@
                             <div class="form-group inline-group">
                                 <label for="cteTipo">Cte:</label>
                                 <select [(ngModel)]="factura.tipo" class="form-control without-padding" [ngStyle]="{padding: '1px 8px 0px 8px'}" id="cteTipo">
-                                    <option *ngFor="let tipoComp of tiposComprobantes | async">
+                                    <option *ngFor="let tipoComp of tiposComprobantes | async" [ngValue]="tipoComp">
                                         {{tipoComp.descCorta}}
                                     </option>
                                 </select>
                             </div>
                         </div>
-                        <div class="col-sm-3">
+
+                        <div class="col-sm-1">
+                            <div class="form-group inline-group">
+                                <!-- [ngStyle]="{padding: '1px 2px 0px 8px'}" without-padding -->
+                                <select [(ngModel)]="factura.letra" class="form-control" id="cteTipoFactura">
+                                    <option *ngFor="let letra of letras" [ngValue]="letra">
+                                        {{letra}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2">
                             <div class="form-group inline-group">
                                 <label for="cteNro">Nro:</label>
 
@@ -310,7 +322,7 @@
                                             [columns]="tablas.columnas.columnasFactura"
                                             [edit]="tablas.funciones.onClickEdit('columnasFactura')"
                                             [confirmEdit]="tablas.funciones.onClickConfirmEdit('columnasFactura')"
-                                            [onClickProductoLista]="onClickProductoLista">
+                                            >
                             </tabla-ingreso>
                         </div>
                     </div>
@@ -381,7 +393,13 @@
         <custom-card class="col-sm-2 card-flex-column" title="">
             <div class="col-sm-12 btn-container">
                 <button [disabled]="!comprobanteCompraService.checkIfDatosValidosComprobante(comprobante)
-                    (proveedorSeleccionado)(tablas.datos.productosPend)(tablas.datos.modelosFactura)(depositoSelec)"
+                    (proveedorSeleccionado)
+                    (tablas.datos.productosPend)
+                    (tablas.datos.modelosFactura)
+                    (depositoSelec)
+                    ||
+                    calcRestoPagar() !== 0
+                    "
 
                         (click)="onClickConfirmar()" class="btn btn-primary btn-ingreso-from">
                     Confirmar

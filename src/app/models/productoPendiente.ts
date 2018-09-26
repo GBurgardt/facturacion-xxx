@@ -91,7 +91,7 @@ export class ProductoPendiente {
             // Imputacion
             this.imputacion.todas = this.producto.modeloCab.modeloDetalle;
             // Busco el seleccionado por defecto
-            if (this.imputacion.todas.length > 0) {
+            if (this.imputacion && this.imputacion.todas && this.imputacion.todas.length > 0) {
                 const impuSelect = this.imputacion.todas.find(modelD => modelD.prioritario);
                 this.imputacion.seleccionada = impuSelect ? impuSelect : new ModeloDetalle();
             }

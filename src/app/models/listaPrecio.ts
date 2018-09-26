@@ -48,9 +48,9 @@ export class ListaPrecio {
         } else {
             this.idListaPrecio = null;
             this.codigoLista = null;
-            this.fechaAlta = null;
-            this.vigenciaDesde = null;
-            this.vigenciaHasta = null;
+            this.fechaAlta = new DateLikePicker();
+            this.vigenciaDesde = new DateLikePicker();
+            this.vigenciaHasta = new DateLikePicker();
             this.activa = null;
             this.idPadronCliente = null;
             this.idPadronRepresentante = null;

@@ -29,6 +29,7 @@ export class Comprobante {
             this.letra = comprobante.letra
             this.moneda = new Moneda(comprobante.moneda)
             this.fechaComprobante = comprobante.fechaComprobante
+            debugger;
             this.fechaVto = comprobante.fechaVto
             this.observaciones = comprobante.observaciones
         } else {
@@ -37,8 +38,8 @@ export class Comprobante {
             this.numero = null
             this.letra = null
             this.moneda = new Moneda()
-            this.fechaComprobante = null
-            this.fechaVto = null
+            this.fechaComprobante = new DateLikePicker()
+            this.fechaVto = new DateLikePicker()
             this.observaciones = null
         }
     }

@@ -7,6 +7,7 @@ export class Factura {
     numero: number;
     fechaContable: DateLikePicker;
     fechaVto: DateLikePicker;
+    letra: string;
 
     constructor(factura?: {
         tipo: any;
@@ -14,6 +15,8 @@ export class Factura {
         numero: number;
         fechaContable: any;
         fechaVto: any;
+
+        letra?: string;
     }) {
         if (factura) {
             this.tipo = new TipoComprobante(factura.tipo)
@@ -21,12 +24,14 @@ export class Factura {
             this.numero = factura.numero
             this.fechaContable = factura.fechaContable
             this.fechaVto = factura.fechaVto
+            this.letra = factura.letra;
         } else {
             this.tipo = new TipoComprobante()
             this.puntoVenta = null
             this.numero = null
-            this.fechaContable = null
-            this.fechaVto = null
+            this.fechaContable = new DateLikePicker()
+            this.fechaVto = new DateLikePicker()
+            this.letra = null;
         }
     }
 

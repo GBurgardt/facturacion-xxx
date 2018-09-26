@@ -177,12 +177,11 @@ export class ComprobanteCompra {
                 if (tipoColumnas === 'columnasFactura') {
 
                     // Actualizo el Total Comprobante sumando todos los precios nuevamente (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
-                    this.sumatoriaSubtotales = Math.round(
+                    this.sumatoriaSubtotales = 
                         _.sumBy(
                             this.tablas.datos.modelosFactura,
                             (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
                         )
-                    );
 
                 }
 
@@ -218,6 +217,12 @@ export class ComprobanteCompra {
         onClickListProv: (prove: Padron) => {
             this.proveedorSeleccionado = new Padron({...prove});
             this.comprobanteCompraService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
+
+            // Intento obtener las formas de pago
+            if(this.comprobante.fechaComprobante) {
+                this.dataTablaFormasPago = this.comprobanteCompraService.getFormasPago(this.comprobante.fechaComprobante);
+            }
+
         },
         getOffsetOfInputProveedor: () => this.utilsService.getOffset(document.getElementById('inputProveedor'))
     }
@@ -278,11 +283,14 @@ export class ComprobanteCompra {
             .subscribe(
                 prodsPend => {
                     // Agrego los productos
-                    this.tablas.datos.productosPend = _.uniqWith(
-                        this.tablas.datos.productosPend.concat(prodsPend),
-                        (a:ProductoPendiente,b:ProductoPendiente) =>    a.producto.idProductos === b.producto.idProductos &&
-                                                                        a.numero === b.numero
-                    );
+                    // this.tablas.datos.productosPend = _.uniqWith(
+                    //     this.tablas.datos.productosPend.concat(prodsPend),
+                    //     (a:ProductoPendiente,b:ProductoPendiente) =>    a.producto.idProductos === b.producto.idProductos &&
+                    //                                                     a.numero === b.numero
+                    // );
+
+                    // Borro los prods agregados anteriormente y los remplazo por estos que vienen acá
+                    this.tablas.datos.productosPend = prodsPend;
 
                     // Actualizo datos de los productos
                     this.actualizarDatosProductos();
@@ -333,7 +341,7 @@ export class ComprobanteCompra {
             this.proveedorSeleccionado = new Padron();
             this.tablas.datos.productosPend = [];
             this.tablas.datos.modelosFactura = [];
-            this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
+            // this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
             this.depositoSelec = new Deposito()
             this.tablas.datos.detallesFormaPago = [];
         }
@@ -353,38 +361,57 @@ export class ComprobanteCompra {
             // Con este código pedorro simulo una carga..
             this.valueGuardandoCompro = 50;
 
-            return this.comprobanteCompraService.confirmarYGrabarComprobante(this.comprobante)
-                (this.comprobanteRelacionado)
-                (this.proveedorSeleccionado)
-                (this.tablas.datos.productosPend)
-                (this.tablas.datos.modelosFactura)
-                (this.cotizacionDatos)
-                (this.depositoSelec)
-                (this.tablas.datos.detallesFormaPago)
-                .subscribe((respuesta: any) => {
-                    // Saco spinner
-                    this.valueGuardandoCompro = 0;
+            // Actualizo las facturas antes de confirmar
+            this.comprobanteCompraService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
+                this.tablas.datos.modelosFactura = modelProds;
+    
+                this.sumatoriaSubtotales = 
+                    _.sumBy(
+                        this.tablas.datos.modelosFactura,
+                        (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
+                    );
 
-                    this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
+                this.comprobanteCompraService.confirmarYGrabarComprobante(this.comprobante)
+                    (this.comprobanteRelacionado)
+                    (this.proveedorSeleccionado)
+                    (this.tablas.datos.productosPend)
+                    (this.tablas.datos.modelosFactura)
+                    (this.cotizacionDatos)
+                    (this.depositoSelec)
+                    (this.tablas.datos.detallesFormaPago)
+                    (this.factura)
+                    .subscribe((respuesta: any) => {
+                        // Saco spinner
+                        this.valueGuardandoCompro = 0;
+    
+                        this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
+    
+                        // Blanqueo los campos
+                        const auxFecha = this.comprobante.fechaComprobante;
+                        this.comprobante = new Comprobante();
+                        this.comprobante.fechaComprobante = auxFecha;
+                        this.comprobanteRelacionado = new ComprobanteRelacionado();
+                        this.proveedorSeleccionado = new Padron();
+                        this.tablas.datos.productosPend = [];
+                        this.tablas.datos.modelosFactura = [];
+                        // this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
+                        this.depositoSelec = new Deposito()
+                        this.tablas.datos.detallesFormaPago = [];
+                        this.dataTablaFormasPago = Observable.of([]);
+    
+                        // Limpio formas pago
+                        this.dataTablaFormasPago = null;
+                        this.formasPagoSeleccionadas = [];
+                        
+    
+                        // Focus en input proveedor (TODO SET TIME OUT)
+                        document.getElementById('inputProveedor') ? document.getElementById('inputProveedor').focus() : null
+    
+    
+                    })
+            })
 
-                    // Blanqueo los campos
-                    const auxFecha = this.comprobante.fechaComprobante;
-                    this.comprobante = new Comprobante();
-                    this.comprobante.fechaComprobante = auxFecha;
-                    this.comprobanteRelacionado = new ComprobanteRelacionado();
-                    this.proveedorSeleccionado = new Padron();
-                    this.tablas.datos.productosPend = [];
-                    this.tablas.datos.modelosFactura = [];
-                    this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
-                    this.depositoSelec = new Deposito()
-                    this.tablas.datos.detallesFormaPago = [];
-                    this.dataTablaFormasPago = Observable.of([]);
-
-                    // Focus en input proveedor (TODO SET TIME OUT)
-                    document.getElementById('inputProveedor') ? document.getElementById('inputProveedor').focus() : null
-
-
-                })
+        
         }
 
     )({
@@ -399,33 +426,23 @@ export class ComprobanteCompra {
      * Actualiza el total en cotizacion y los modelosFactura
      */
     actualizarDatosProductos = () => {
-        // Actualizo el Total Comprobante sumando todos los precios nuevamente (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
-        // this.cotizacionDatos.total = Math.round(
-        //     _.sumBy(
-        //         this.tablas.datos.productosPend,
-        //         (prod) => Number(prod.precio) ? Number(prod.precio) * Number(prod.pendiente) : 0
-        //     )
-        // );
-        // Actualizo el Total Comprobante sumando todos los importes nuevamente
-        this.cotizacionDatos.total = Math.round(
+        
+        this.cotizacionDatos.total = 
             _.sumBy(
                 this.tablas.datos.productosPend,
                 (prod) => Number(prod.importe) ? Number(prod.importe) : 0
             )
-        );
 
-        // debugger;
+        // // Busco las facturas de los productos
+        // this.comprobanteCompraService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
+        //     this.tablas.datos.modelosFactura = modelProds;
 
-        this.comprobanteCompraService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
-            this.tablas.datos.modelosFactura = modelProds;
-
-            this.sumatoriaSubtotales = Math.round(
-                _.sumBy(
-                    this.tablas.datos.modelosFactura,
-                    (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
-                )
-            );
-        })
+        //     this.sumatoriaSubtotales = 
+        //         _.sumBy(
+        //             this.tablas.datos.modelosFactura,
+        //             (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
+        //         )
+        // })
 
 
     }
@@ -455,6 +472,11 @@ export class ComprobanteCompra {
         try {
             this.proveedorSeleccionado = this.comprobanteCompraService.seleccionarProveedor(this.proveedores.todos)(this.proveedorSeleccionado);
             this.comprobanteCompraService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
+
+            // Intento obtener las formas de pago
+            if(this.comprobante.fechaComprobante) {
+                this.dataTablaFormasPago = this.comprobanteCompraService.getFormasPago(this.comprobante.fechaComprobante);
+            }
         }
         catch(err) {
             // Muestro error
@@ -478,7 +500,6 @@ export class ComprobanteCompra {
         // Obtengo las formas de pago
         if(this.comprobante.fechaComprobante) {
             this.dataTablaFormasPago = this.comprobanteCompraService.getFormasPago(this.comprobante.fechaComprobante);
-
         }
 
         // Hago focus en el prox input
@@ -526,6 +547,11 @@ export class ComprobanteCompra {
             provSelect ? this.popupLista.onClickListProv(provSelect) : null;
             // Reseteo el index
             this.proveedorEnfocadoIndex = -1;
+
+            // Intento obtener las formas de pago
+            if(this.comprobante.fechaComprobante) {
+                this.dataTablaFormasPago = this.comprobanteCompraService.getFormasPago(this.comprobante.fechaComprobante);
+            }
         })
     }
 
@@ -562,7 +588,8 @@ export class ComprobanteCompra {
             (fPago) => Number(fPago.monto) ? Number(fPago.monto) : 0
         )
 
-        return this.cotizacionDatos.total - sumMontos
+        // return this.cotizacionDatos.total - sumMontos
+        return (this.cotizacionDatos.total + this.sumatoriaSubtotales) - sumMontos
     }
 
     /**
@@ -587,4 +614,25 @@ export class ComprobanteCompra {
         }
     }
 
+    // HARD Codign Exxxxtreme
+    compareFnMonedas = (m1: Moneda, m2: Moneda) =>
+        m1 && m2 ? m1.idMoneda === m2.idMoneda : m1 === m2
+        // m1 ? m1.idMoneda === 1 : false
+
+
+    /**
+     * Busca facturas
+     */
+    fetchFacturas = () => {
+        // Busco las facturas de los productos
+        this.comprobanteCompraService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
+            this.tablas.datos.modelosFactura = modelProds;
+
+            this.sumatoriaSubtotales = 
+                _.sumBy(
+                    this.tablas.datos.modelosFactura,
+                    (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
+                )
+        })
+    }
 }

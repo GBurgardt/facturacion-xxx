@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { Injectable } from "@angular/core";
 import { Padron } from "../../../../models/padron";
 import { AuthService } from "app/services/authService";
@@ -16,6 +17,7 @@ import { Deposito } from '../../../../models/deposito';
 import { UtilsService } from '../../../../services/utilsService';
 import { FormaPago } from "app/models/formaPago";
 import { DetalleFormaPago } from "app/models/detalleFormaPago";
+import { Factura } from '../../../../models/factura';
 
 @Injectable()
 export class ComprobanteCompraService {
@@ -46,13 +48,13 @@ export class ComprobanteCompraService {
             nombre: 'descripcion',
             key: 'producto',
             subkey: 'descripcion',
-            ancho: '20%',
+            ancho: '17%',
             customClass: 'text-left'
         },
         {
             nombre: 'imputacion',
             key: 'imputacion',
-            ancho: '15%',
+            ancho: '8%',
             enEdicion: null,
             customClass: 'text-left',
             editarFocus: true
@@ -85,7 +87,7 @@ export class ComprobanteCompraService {
         {
             nombre: 'importe',
             key: 'importe',
-            ancho: '5%',
+            ancho: '15%',
             enEdicion: null,
             decimal: true,
             customClass: 'text-right',
@@ -239,7 +241,11 @@ export class ComprobanteCompraService {
 
         return this.authService.buscaModelos(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(prodsModel)(1).map(responBuscMod => responBuscMod.arraydatos.map(respModFact => new ModeloFactura(respModFact)));
+        )(prodsModel)(1).map(responBuscMod => responBuscMod.arraydatos.map(respModFact => {
+            // const auxModFact = Object.assign({}, respModFact);
+            // auxModFact.idProducto = prod
+            return new ModeloFactura(respModFact)
+        }));
     }
 
     /**
@@ -252,11 +258,19 @@ export class ComprobanteCompraService {
         (modelosFactura: ModeloFactura[]) =>
         (cotizacionDatos: { cotizacion: Cotizacion, total: number }) =>
         (depositoSelec: Deposito) =>
-        (detallesFormaPago: DetalleFormaPago[]) =>
-            this.authService.grabaComprobante(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec)(detallesFormaPago)
-                .catch(err => Observable.throw(
-                    this.utilsService.showErrorWithBody(err)
-            ))
+        (detallesFormaPago: DetalleFormaPago[]) => 
+        (factura: Factura) => 
+            this.authService.grabaComprobante(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec)(detallesFormaPago)(factura)
+                .catch(err => {
+                    debugger;
+                    this.utilsService.decodeErrorResponse(err);
+                    return Observable.throw(null)
+                    // return Observable.throw(
+                    //     this.utilsService.showErrorWithBody(err)
+                    // )
+                }
+            )
+        
 
     /**
      * Valida que los datos estén correctos
@@ -277,12 +291,34 @@ export class ComprobanteCompraService {
             comprobante.tipo.comprobante.idSisComprobantes === 4 ||
             this.checkIfTrazabilidadCargada(productosPend);
         
+        // Si se seleccionó alguna forma de pago, entonces checkeo que los importes estén seteados y totalicen el total del comprobante
+        // const impFpTotalizanTotalComp = this.checkIfImpFpTotalizanTotalComp(detallesFormaPago)(totalCotizacion)(sumatoriaSubtotales);
+
 
         // Si no existen nulos y si existen productos, los datos son validos
+        // return noExistenNulos && existenProductos && trazabilidadCargada && impFpTotalizanTotalComp
         return noExistenNulos && existenProductos && trazabilidadCargada
 
     }
 
+    /**
+     * Si se seleccionó alguna forma de pago, entonces checkeo que los importes estén seteados y totalicen el total del comprobante
+     */
+    checkIfImpFpTotalizanTotalComp = (detallesFormaPago: DetalleFormaPago[]) => (totalCotizacion: number) => (sumatoriaSubtotales: number) => {
+        if (detallesFormaPago && detallesFormaPago.length > 0) {
+            const sumMontos = _.sumBy(
+                detallesFormaPago,
+                (fPago) => Number(fPago.monto) ? Number(fPago.monto) : 0
+            )
+    
+            const restoPagar = (totalCotizacion + sumatoriaSubtotales) - sumMontos
+
+            return (restoPagar && restoPagar === 0)
+        } else {
+            return false
+        }
+    }
+    
     /**
      * Checkeo que lso datos de trazabilidad esten cargados en los productos trazables
      */
@@ -376,10 +412,11 @@ export class ComprobanteCompraService {
     /**
      * Get formas pago apra la tabla de forma pago emisiuon remito
      */
-    getFormasPago = (fecha: any) =>
+    getFormasPago = (fecha: any) => 
         this.authService.getBuscaFormaPago(this.localStorageService.getObject(environment.localStorage.acceso).token)()(fecha)
             .map(resp => resp.arraydatos.map(fp => new FormaPago(fp)))
             .catch((err, caught) => {
+                debugger;
                 this.utilsService.showErrorWithBody(err);
                 return Observable.of([]);
             })

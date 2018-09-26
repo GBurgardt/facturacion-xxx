@@ -34,6 +34,9 @@ import { DetalleFormaPago } from 'app/models/detalleFormaPago';
 import { Rubro } from '../models/rubro';
 import { SubRubro } from '../models/subRubro';
 import { FormaPago } from 'app/models/formaPago';
+import { Factura } from 'app/models/factura';
+import { ModeloDetalle } from '../models/modeloDetalle';
+import sisModulos from 'constantes/sisModulos';
 
 @Injectable()
 export class AuthService {
@@ -229,8 +232,8 @@ export class AuthService {
                         (modelosFactura: ModeloFactura[]) =>
                         (cotizacionDatos: { cotizacion: Cotizacion, total: number }) =>
                         (depositoSelec: Deposito) =>
-                        (detallesFormaPago: DetalleFormaPago[]) => {
-
+                        (detallesFormaPago: DetalleFormaPago[]) => 
+                        (factura: Factura) => {
 
         return this.request(
             [],
@@ -240,41 +243,24 @@ export class AuthService {
             },
             'grabaComprobante',
             {
-                idCteTipo: comprobante.tipo.idCteTipo,
-                letra: comprobante.letra,
-                numero: Number(comprobante.puntoVenta + comprobante.numero),
-                fechaEmision: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
-                fechaVencimiento: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
-                fechaConta: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
                 cai: ' ',
                 caiVto: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
                 codBarra: ' ',
-                idPadron: provSelec.padronCodigo,
-                productoCanje: ' ',
-                precioReferenciaCanje: 0,
-                interesCanje: 0,
-                idMoneda: comprobante.moneda.idMoneda,
-                nombre: provSelec.padronApelli,
-                cuit: provSelec.cuit.toString(),
-                sisSitIva: provSelec.condIva.descCorta,
                 codigoPostal: ' ',
-                listaPrecio: ' ',
                 cotDolar: cotizacionDatos.cotizacion.cotizacion,
-                fechaDolar: `2018-01-01`,
-                observaciones: comprobante.observaciones,
-                idModeloCab: null,
-                relComprobante: comproRelac.tipo.idCteTipo,
-                relPuntoVenta: comproRelac.puntoVenta,
-                relNumero: comproRelac.numero,
-                idFactCab: null,
+                cuit: provSelec.cuit.toString(),
                 factCabecera: true,
                 factDet: true,
                 factFormaPago: true,
                 factImputa: true,
                 factPie: modelosFactura.length > 0,
-                produmo: true,
-                lote:   productosPend.some(prodPend => prodPend.producto.trazable) &&
-                        comprobante.tipo.comprobante.idSisComprobantes !== 4,
+                fechaEmision: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
+                fechaVencimiento: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
+                fechaConta: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
+                fechaDolar: cotizacionDatos.cotizacion.fechaCotizacion,
+                fechaVencimientoFact: factura ? this.utilsService.formatearFecha('yyyy-mm-dd')(factura.fechaVto) : null,
+                fechaContaFact: factura ? this.utilsService.formatearFecha('yyyy-mm-dd')(factura.fechaContable) : null,
+                grabaFactura: factura && factura.tipo && factura.tipo.idCteTipo ? true : false,
                 grillaArticulos: productosPend.map(prod => {
                     return {
                         idProducto: prod.producto.idProductos,
@@ -301,7 +287,7 @@ export class AuthService {
                         descripcionPie: mod.descripcion,
                         importe: mod.importeTotal,
                         totalComprobante: cotizacionDatos.total,
-                        porcentaje: 0
+                        porcentaje: mod.porcentaje ? mod.porcentaje : 0
                     }
                 }),
                 grillaTrazabilidad: productosPend
@@ -328,7 +314,30 @@ export class AuthService {
                     }
                 }),
 
-
+                idCteTipo: comprobante.tipo.idCteTipo,
+                idPadron: provSelec.padronCodigo,
+                idMoneda: comprobante.moneda.idMoneda,
+                idModeloCab: null,
+                idFactCab: null,
+                idModulo: sisModulos.compra,
+                listaPrecio: ' ',
+                letraFact: factura ? 'A' : null,
+                letra: comprobante.letra,
+                lote:   productosPend.some(prodPend => prodPend.producto.trazable) &&
+                        comprobante.tipo.comprobante.idSisComprobantes !== 4,
+                nombre: provSelec.padronApelli,
+                numero: Number(comprobante.puntoVenta + comprobante.numero),
+                numeroFact: factura ? Number(factura.puntoVenta + factura.numero) : null,
+                observaciones: comprobante.observaciones,
+                precioReferenciaCanje: 0,
+                productoCanje: ' ',
+                produmo: true,
+                relComprobante: comproRelac.tipo.idCteTipo,
+                relPuntoVenta: comproRelac.puntoVenta,
+                relNumero: comproRelac.numero,
+                sisSitIva: provSelec.condIva.descCorta,
+                interesCanje: 0,
+                tipoFact: factura && factura.tipo ? factura.tipo.idCteTipo : null
             },
             {}
         );
@@ -348,7 +357,13 @@ export class AuthService {
                         (depositoSelec: Deposito) =>
                         (sisCanje: SisCanje) =>
                         (formasPagoSeleccionadas: FormaPago[]) =>
-        this.request(
+                        (factura: Factura) => 
+                        (detallesFormaPago: DetalleFormaPago[]) => 
+    {
+
+        // debugger;
+
+        return this.request(
             [],
             RequestMethod.Post,
             {
@@ -368,9 +383,9 @@ export class AuthService {
                 codBarra: ' ',
                 idPadron: clienteSelect.padronCodigo,
                 idFormaPago: 0,
-                productoCanje: sisCanje.descripcion,
-                precioReferenciaCanje: sisCanje.precio,
-                interesCanje: sisCanje.interes,
+                productoCanje: sisCanje ? sisCanje.descripcion : " ",
+                precioReferenciaCanje: sisCanje ? sisCanje.precio : 0,
+                interesCanje: sisCanje ? sisCanje.interes : 0,
                 idMoneda: comprobante.moneda.idMoneda,
                 nombre: clienteSelect.padronApelli,
                 cuit: clienteSelect.cuit.toString(),
@@ -412,7 +427,15 @@ export class AuthService {
                         importe: prod.importe
                     }
                 }),
-                grillaSubTotales: [],
+                grillaSubTotales: modelosFactura ? modelosFactura.map(mod => {
+                    return {
+                        cuenta: mod.cuentaContable,
+                        descripcionPie: mod.descripcion,
+                        importe: mod.importeTotal,
+                        totalComprobante: cotizacionDatos.total,
+                        porcentaje: 0
+                    }
+                }) : [],
                 grillaTrazabilidad: productosPend
                     .filter(prodPend => prodPend.producto.trazable)
                     .map(prodTraza => {
@@ -425,19 +448,38 @@ export class AuthService {
                             idProducto: prodTraza.producto.idProductos
                         }
                     }),
-                grillaFormaPago: formasPagoSeleccionadas
-                    .map(fPago => {
-                        return {
-                            descripcion: fPago.descripcion,
-                            idSisFormaPago: fPago.tipo.idSisFormaPago
+                grillaFormaPago: detallesFormaPago.map(detFp => {
+                    return {
+                        plazo: detFp.cantDias ? detFp.cantDias : 0,
+                        interes: detFp.porcentaje ? detFp.porcentaje : 0,
+                        monto: detFp.monto ? Number(detFp.monto) : 0,
+                        detalle: detFp.detalle ? detFp.detalle : ' ',
+                        observaciones: detFp.observaciones ? detFp.observaciones : ' ',
+                        cuentaContable: detFp.planCuenta ? detFp.planCuenta.planCuentas : ' ',
+                        idFormaPagoDet: detFp.idFormaPagoDet
+                    }
+                }),
+                // grillaFormaPago: formasPagoSeleccionadas
+                //     .map(fPago => {
+                //         return {
+                //             descripcion: fPago.descripcion,
+                //             idSisFormaPago: fPago.tipo.idSisFormaPago
 
-                        }
-                    })
-
+                //         }
+                //     }),
+                grabaFactura: factura && factura.tipo && factura.tipo.idCteTipo ? true : false,
+                tipoFact: factura && factura.tipo ? factura.tipo.idCteTipo : null,
+                letraFact: factura ? 'A' : null,
+                numeroFact: factura ? Number(factura.puntoVenta + factura.numero) : null,
+                fechaVencimientoFact: factura ? this.utilsService.formatearFecha('yyyy-mm-dd')(factura.fechaVto) : null,
+                fechaContaFact: factura ? this.utilsService.formatearFecha('yyyy-mm-dd')(factura.fechaContable) : null,
+                idModulo: sisModulos.venta
 
             },
             {}
         );
+    }
+        
 
 
     descargarComprobante = (token) => (idFactCab) => {
@@ -499,7 +541,8 @@ export class AuthService {
                 fechaHasta : this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.hasta),
                 idProducto : productoSelec && productoSelec.idProductos ? productoSelec.idProductos : 0,
                 padCodigo : padronSelec && padronSelec.padronCodigo ? padronSelec.padronCodigo : 0,
-                codigoDep : depositoSelec && depositoSelec.codigoDep ? depositoSelec.codigoDep : 0,
+                // codigoDep : depositoSelec && depositoSelec.codigoDep ? depositoSelec.codigoDep : 0,
+                idDeposito : depositoSelec && depositoSelec.idDeposito ? depositoSelec.idDeposito : 0,
                 idEstado : sisEstadoSelec && sisEstadoSelec.idSisEstados ? sisEstadoSelec.idSisEstados : 0
             },
             {}
@@ -965,13 +1008,14 @@ export class AuthService {
         }
 
         if (nombreRecurso === resourcesREST.productos.nombre) {
+            // debugger;
             return {
                 idProducto: recurso.idProductos,
                 codProducto: recurso.codProducto,
                 codigoBarra: recurso.codigoBarra,
                 descripcionCorta: recurso.descripcionCorta,
                 descripcion: recurso.descripcion,
-                modeloImputacion: recurso.modeloImputacion,
+                modeloImputacion: recurso.modeloCab.idModeloCab,
                 aptoCanje: recurso.aptoCanje,
                 stock:  recurso.stock,
                 trazable: recurso.trazable,

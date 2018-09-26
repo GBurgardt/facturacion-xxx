@@ -285,7 +285,9 @@ export class UtilsService {
     flatMap = (f, arr) =>
         arr.reduce((x, y) => [...x, ...f(y)], [])
 
-    parseDecimal = (key) => Number(key).toFixed(2)
+    parseDecimal = (key) => {
+        return Number(key).toFixed(2);
+    }
 
     /**
      * Pasa de datelikepiker a Date

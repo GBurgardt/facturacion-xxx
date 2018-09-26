@@ -31,6 +31,8 @@ import { DetalleFormaPago } from 'app/models/detalleFormaPago';
 import { GlobalState } from 'app/global.state';
 import { Numerador } from 'app/models/numerador';
 import { Numero } from '../../../../models/numero';
+import { Factura } from '../../../../models/factura';
+import { ModeloFactura } from 'app/models/modeloFactura';
 
 
 @Component({
@@ -53,8 +55,9 @@ export class EmisionRemitos {
     tipoOperacion: SisTipoOperacion = new SisTipoOperacion();
     sisCanje: SisCanje = new SisCanje();
     formasPagoSeleccionadas: FormaPago[] = [];
-
     numeroCteSelec: Numero = new Numero();
+
+    factura: Factura = new Factura();
 
     /////////////////////////////////////////////
     //////////// Listas desplegables ////////////
@@ -89,6 +92,9 @@ export class EmisionRemitos {
 
     disabledClienteCustom: boolean = false;
 
+    // Suma de todos los subtotales
+    sumatoriaSubtotales: number = 0;
+
     /////////////////////////////////////////////
     ////////////////// Tablas ///////////////////
     /////////////////////////////////////////////
@@ -100,6 +106,7 @@ export class EmisionRemitos {
             columnasTrazabilidad: any[];
             columnasCanje: any[];
             columnasDetallesFp: any[];
+            columnasFactura: any[];
         },
         datos: {
             productosPend: ProductoPendiente[];
@@ -110,21 +117,24 @@ export class EmisionRemitos {
             }[];
             productosCanje: ProductoPendiente[];
             lotesTraza: Lote[];
-            detallesFormaPago: DetalleFormaPago[]
+            detallesFormaPago: DetalleFormaPago[];
+            modelosFactura: ModeloFactura[];
         }
     } = { 
         columnas: { 
             columnasProductos: [],
             columnasTrazabilidad: [],
             columnasCanje: [],
-            columnasDetallesFp: []
+            columnasDetallesFp: [],
+            columnasFactura: []
         }, 
         datos: { 
             productosPend: [],
             subtotalesProductos: [],
             productosCanje: [],
             lotesTraza: [],
-            detallesFormaPago: []
+            detallesFormaPago: [],
+            modelosFactura: [],
         }
     };
     
@@ -147,7 +157,9 @@ export class EmisionRemitos {
             'sisComprobante': 6
         });
 
-        this.tiposOperacion = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)([2]);
+        this.tiposOperacion = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)({
+            sisModulo: 2
+        });
         this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
         this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
 
@@ -169,6 +181,7 @@ export class EmisionRemitos {
         this.tablas.columnas.columnasTrazabilidad = emisionRemitosService.getColumnsTrazabilidad();
         this.tablas.columnas.columnasCanje = emisionRemitosService.getColumnsCanje();
         this.tablas.columnas.columnasDetallesFp = emisionRemitosService.getColumnsDetallesFp();
+        this.tablas.columnas.columnasFactura = emisionRemitosService.getColumnsFactura();
 
         ////////// Otros //////////
         this.emisionRemitosService.getCotizacionDatos().subscribe(cotizDatos => this.cotizacionDatos.cotizacion = cotizDatos);
@@ -194,6 +207,7 @@ export class EmisionRemitos {
                 
                 tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = itemSelect.producto.idProductos :
                 tipoColumnas === 'columnasTrazabilidad' ? newTabla.enEdicion = itemSelect.nroLote :
+                tipoColumnas === 'columnasFactura' ? newTabla.enEdicion = itemSelect.cuentaContable :
                 tipoColumnas === 'columnasDetallesFp' ? newTabla.enEdicion = itemSelect.idFormaPagoDet : null
             }
             return newTabla;
@@ -218,9 +232,19 @@ export class EmisionRemitos {
         // Me fijo si es valida la data ignresada
         const estado = this.emisionRemitosService.validarAntesDeConfirmar(tipoColumnas)(itemSelect);
 
+        // Hago la sumatoria de los subtotales de la factura
+        if (tipoColumnas === 'columnasFactura') {
+            // Actualizo el Total Comprobante sumando todos los precios nuevamente (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
+            this.sumatoriaSubtotales = 
+                _.sumBy(
+                    this.tablas.datos.modelosFactura,
+                    (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
+                )
+        }
+
         if (estado === 'ok') {
-            // Actualizo datos dle producto
-            this.actualizarDatosProductos();
+            // Actualizo datos dle producto (si NO son las facturas lo que se edita)
+            if (tipoColumnas !== 'columnasFactura') this.actualizarDatosProductos();
     
             // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
             this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
@@ -238,6 +262,9 @@ export class EmisionRemitos {
             // Si NO es valida, entonces muestro mensajito
             this.utilsService.showModal('Error')(estado)
         }
+
+
+        
     }
     
     /**
@@ -269,15 +296,33 @@ export class EmisionRemitos {
      */
     onClickConfirmar = () => this.utilsService.showModal('Confirmar')('¿Confirmar emision de remito?')(
         () => {
-            this.emisionRemitosService.confirmarYEmitirRemito(this.comprobante)
-                (this.comprobanteRelacionado)
-                (this.cliente)
-                (this.tablas.datos.productosPend)
-                (this.cotizacionDatos)
-                (this.sisCanje)
-                (this.formasPagoSeleccionadas)
+
+            console.log(this);
+            // debugger;
+
+            // Actualizo facturas antes de confirmar
+            this.emisionRemitosService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
+                this.tablas.datos.modelosFactura = modelProds;
+
+                this.sumatoriaSubtotales = 
+                    _.sumBy(
+                        this.tablas.datos.modelosFactura,
+                        (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
+                    );
+
+                this.emisionRemitosService.confirmarYEmitirRemito(this.comprobante)
+                    (this.comprobanteRelacionado)
+                    (this.cliente)
+                    (this.tablas.datos.productosPend)
+                    (this.cotizacionDatos)
+                    (this.sisCanje)
+                    (this.formasPagoSeleccionadas)
+                    (this.factura)
+                    (this.tablas.datos.modelosFactura)
+                    (this.tablas.datos.detallesFormaPago)
                     .subscribe((respuesta: any) => {
-                        debugger;
+                        console.log('subscribe')
+                        // debugger;
                         this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
 
                         // Blanqueo los campos
@@ -294,6 +339,9 @@ export class EmisionRemitos {
                         // Focus en input proveedor (TODO SET TIME OUT)
                         document.getElementById('inputProveedor') ? document.getElementById('inputProveedor').focus() : null
                     })
+            })
+
+            
         }
     )({
         tipoModal: 'confirmation'
@@ -636,6 +684,36 @@ export class EmisionRemitos {
             // debugger
         })
     }
+
     
+    /**
+     * Calcula el resto pagar
+     */
+    calcRestoPagar = () => {
+        const sumMontos = _.sumBy(
+            this.tablas.datos.detallesFormaPago,
+            (fPago) => Number(fPago.monto) ? Number(fPago.monto) : 0
+        )
+
+        // return this.cotizacionDatos.total - sumMontos
+        return (this.cotizacionDatos.total + this.sumatoriaSubtotales) - sumMontos
+    }
+
+    /**
+     * Busca facturas
+     */
+    fetchFacturas = () => {
+        // Busco las facturas de los productos
+        this.emisionRemitosService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
+            this.tablas.datos.modelosFactura = modelProds;
+
+            this.sumatoriaSubtotales = 
+                _.sumBy(
+                    this.tablas.datos.modelosFactura,
+                    (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
+                )
+        })
+    }
+
 }
 

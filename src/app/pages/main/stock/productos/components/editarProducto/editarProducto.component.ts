@@ -14,6 +14,7 @@ import { Unidad } from '../../../../../../models/unidad';
 import { resourcesREST } from 'constantes/resoursesREST';
 import { Rubro } from 'app/models/rubro';
 import { ModeloCab } from '../../../../../../models/modeloCab';
+import { Marca } from '../../../../../../models/marca';
 
 @Component({
     selector: 'editar-producto',
@@ -30,6 +31,8 @@ export class EditarProducto {
     unidadesCompra: Observable<Unidad[]>;
     unidadesVenta: Observable<Unidad[]>;
     modelosCab: Observable<ModeloCab[]>;
+    marcas: Observable<Marca[]>;
+    
 
     constructor(
         private recursoService: RecursoService,
@@ -39,11 +42,12 @@ export class EditarProducto {
     ) {
         // Inicializo los valores de los desplegables
         this.rubros = this.recursoService.getRecursoList(resourcesREST.rubros)();
-        // this.subRubros = this.recursoService.getRecursoList(resourcesREST.subRubros)();
+        
         this.unidadesCompra = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.unidadesVenta = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.ivas = this.recursoService.getRecursoList(resourcesREST.sisIVA)();
         this.modelosCab = this.recursoService.getRecursoList(resourcesREST.modeloCab)();
+        this.marcas = this.recursoService.getRecursoList(resourcesREST.marcas)();
 
         // Busco el recurso por id
         this.route.params.subscribe(params =>
@@ -53,8 +57,13 @@ export class EditarProducto {
                 )
                 .subscribe(recurso =>{
                     this.recurso = recurso;
+
+                    this.subRubros = this.recursoService.getRecursoList(resourcesREST.subRubros)({
+                        idRubro: this.recurso.subRubro.rubro.idRubro
+                    });
                 })
         );
+
 
     }
 
@@ -87,6 +96,12 @@ export class EditarProducto {
         this.subRubros = this.recursoService.getRecursoList(resourcesREST.subRubros)({
             'idRubro': rubroSelect.idRubro
         })
+    }
+
+    compareWithSubRubro = (r1, r2: SubRubro) => {
+        if (r1 && r2 && this.recurso && this.recurso.subRubro) {
+            return r2.idSubRubro === this.recurso.subRubro.idSubRubro
+        };
     }
 
 }

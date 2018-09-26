@@ -26,7 +26,7 @@ export class SisCanje {
             this.idSisCanje = null;
             this.descripcion = null;
             this.precio = null;
-            this.fechaVto = null;
+            this.fechaVto = new DateLikePicker();
             this.interes = null
         }
     }

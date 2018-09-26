@@ -55,8 +55,8 @@ export class Lote {
             this.nroLote = null;
             this.item = null;
             this.serie = null;
-            this.fechaElab = null;
-            this.fechaVto = null;
+            this.fechaElab = new DateLikePicker();
+            this.fechaVto = new DateLikePicker();
             this.vigencia = null;
             this.codProducto = null;
             this.descripcionProd = null;

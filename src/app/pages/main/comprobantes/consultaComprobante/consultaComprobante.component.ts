@@ -62,6 +62,9 @@ export class ConsultaComprobante {
         this.sisModulos = this.recursoService.getRecursoList(resourcesREST.sisModulos)();
         this.productos = this.recursoService.getRecursoList(resourcesREST.productos)();
         this.sisEstados = this.recursoService.getRecursoList(resourcesREST.sisEstados)();
+
+        
+
         this.padrones = this.recursoService.getRecursoList(resourcesREST.proveedores)();
         this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
     }

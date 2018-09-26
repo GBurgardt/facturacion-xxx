@@ -12,6 +12,18 @@ export class DateLikePicker {
             this.day = dataLikePicker.day;
             this.month = dataLikePicker.month;
             this.year = dataLikePicker.year;
+        } else {
+            const todayDate = new Date();
+
+            this.day = todayDate.getDate();
+            this.month = todayDate.getMonth() + 1;
+            this.year = todayDate.getFullYear();
+
+            // const todayNgbDate = new NgbDate(
+            //     todayDate.getFullYear(),
+            //     todayDate.getMonth() + 1,
+            //     todayDate.getDate()
+            // );
         }
     }
 

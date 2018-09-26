@@ -10,7 +10,8 @@ export class Moneda {
             this.idMoneda = moneda.idMoneda
             this.descripcion = moneda.descripcion
         } else {
-            this.idMoneda = null
+            // Selecciono por defecto la id = 1 (primera de la lista)
+            this.idMoneda = 1
             this.descripcion = null
         }
     }

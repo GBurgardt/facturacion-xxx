@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { NgbDateParserFormatter, NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
 import { DateLikePicker } from "../../../models/dateLikePicker";
+import { NgbDate } from "../../../../../node_modules/@ng-bootstrap/ng-bootstrap/datepicker/ngb-date";
 
 function padNumber(value: number) {
     if (isNumber(value)) {
@@ -22,7 +23,6 @@ function toInteger(value: any): number {
 @Injectable()
 export class NgbDateFRParserFormatter extends NgbDateParserFormatter {
     parse(value: string): NgbDateStruct {
-        // debugger;
         if (value) {
             const dateParts = value.trim().split('/');
             if (dateParts.length === 1 && isNumber(dateParts[0])) {
@@ -41,14 +41,25 @@ export class NgbDateFRParserFormatter extends NgbDateParserFormatter {
     }
 
     format(date: NgbDateStruct): string {
-        // if (date)
-        //     debugger;
         let stringDate: string = ""; 
         if(date) {
             stringDate += isNumber(date.day) ? padNumber(date.day) + "/" : "";
             stringDate += isNumber(date.month) ? padNumber(date.month) + "/" : "";
             stringDate += date.year;
-        }
+        } 
+        // else {
+        //     // Si NO viene ninguna fecha entonces seteo por defecto la fecha de hoy
+        //     const todayDate = new Date();
+        //     const todayNgbDate = new NgbDate(
+        //         todayDate.getFullYear(),
+        //         todayDate.getMonth() + 1,
+        //         todayDate.getDate()
+        //     );
+
+        //     stringDate += isNumber(todayNgbDate.day) ? padNumber(todayNgbDate.day) + "/" : "";
+        //     stringDate += isNumber(todayNgbDate.month) ? padNumber(todayNgbDate.month) + "/" : "";
+        //     stringDate += todayNgbDate.year;
+        // }
         return stringDate;
     }
 }

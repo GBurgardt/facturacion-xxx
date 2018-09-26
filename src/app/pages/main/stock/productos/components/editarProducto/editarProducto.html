@@ -44,7 +44,7 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="subRubro">Sub Rubro</label>
-                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.subRubro" class="form-control" id="subRubro">
+                    <select [compareWith]="compareWithSubRubro" [(ngModel)]="recurso.subRubro" class="form-control" id="subRubro">
                         <option *ngFor="let subRubro of subRubros | async" [ngValue]="subRubro">
                             {{subRubro.descripcion}}
                         </option>
@@ -84,6 +84,19 @@
                     <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.IVA" class="form-control text-right-select" id="IVA">
                         <option *ngFor="let iva of ivas | async" [ngValue]="iva">
                             {{utilsService.parseDecimal(iva.porcIVA)}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="marca">Marca</label>
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.marca" class="form-control text-right-select" id="marca">
+                        <option *ngFor="let mar of marcas | async; let i = index" 
+                                [ngValue]="mar"
+                                [attr.selected]="i == 0 ? true : null">
+                            {{ mar.descripcion }}
                         </option>
                     </select>
                 </div>
@@ -136,7 +149,7 @@
             <div class="col-sm-6">
                 <div class="form-group gtin-group">
                     <label for="gtin">GTIN</label>
-                    <input [disabled]="!recurso.trazable" [(ngModel)]="recurso.gtin" type="text" class="form-control" id="gtin" placeholder="">
+                    <input [disabled]="!recurso.trazable" [(ngModel)]="recurso.gtin" type="text" class="form-control gtin-only" id="gtin" placeholder="">
                 </div>
             </div>
         </div>

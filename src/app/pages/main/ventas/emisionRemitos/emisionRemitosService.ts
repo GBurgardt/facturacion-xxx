@@ -19,6 +19,8 @@ import { CteFechas } from "../../../../models/cteFechas";
 import { Lote } from "../../../../models/lote";
 import { SisCanje } from "../../../../models/sisCanje";
 import { DetalleFormaPago } from "app/models/detalleFormaPago";
+import { DateLikePicker } from "app/models/dateLikePicker";
+import { Factura } from "../../../../models/factura";
 
 @Injectable()
 export class EmisionRemitosService {
@@ -334,6 +336,9 @@ export class EmisionRemitosService {
                                 (cotizacionDatos: { cotizacion: Cotizacion, total: number }) =>
                                 (sisCanje: SisCanje) =>
                                 (formasPagoSeleccionadas: FormaPago[]) =>
+                                (factura: Factura) =>
+                                (modelosFactura: ModeloFactura[]) =>
+                                (detallesFormaPago: DetalleFormaPago[]) => 
         this.authService.emitirRemito(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
@@ -345,7 +350,7 @@ export class EmisionRemitosService {
         )(
             productosPend
         )(
-            null
+            modelosFactura
         )(
             cotizacionDatos
         )(
@@ -354,10 +359,17 @@ export class EmisionRemitosService {
             sisCanje
         )(
             formasPagoSeleccionadas
+        )(
+            factura
+        )(
+            detallesFormaPago
         )
-            .catch(err => Observable.throw(
-                this.utilsService.showErrorWithBody(err)
-            ))
+            .catch(err => {
+                console.log('errrrrr')
+                return Observable.throw(
+                    this.utilsService.showErrorWithBody(err)
+                )
+            })
 
     /**
      * Valida que los datos estén correctos
@@ -500,6 +512,29 @@ export class EmisionRemitosService {
         } 
         return 'ok';
     }
+
+    getColumnsFactura = () => [
+        {
+            nombre: 'cuenta',
+            key: 'cuentaContable',
+            ancho: '30%'
+        },
+        {
+            nombre: 'descripción',
+            key: 'descripcion',
+            ancho: '30%'
+        },
+        {
+            nombre: 'importe',
+            key: 'importeTotal',
+            ancho: '30%',
+            decimal: true,
+            enEdicion: null,
+            customClass: 'text-right',
+            editarFocus: true,
+            elementoFinalBlur: true
+        }
+    ]
 
 
 }

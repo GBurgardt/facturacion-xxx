@@ -31,18 +31,18 @@ export class ComprobanteService {
     /**
      * Busca los comprobantes dado los filtros dados
      */
-    buscarComprobantes =    (comprobante: Comprobante) => 
-                            (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker}) => 
-                            (sisModuloSelec: SisModulo) => 
-                            (tipoComprobanteSelec: TipoComprobante) =>
-                            (productoSelec: Producto) =>
-                            (sisEstadoSelec: SisEstado) => 
+    buscarComprobantes = (comprobante: Comprobante) =>
+        (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker }) =>
+            (sisModuloSelec: SisModulo) =>
+                (tipoComprobanteSelec: TipoComprobante) =>
+                    (productoSelec: Producto) =>
+                        (sisEstadoSelec: SisEstado) =>
                             (padronSelec: Padron) =>
-                            (depositoSelec: Deposito) => 
-        this.authService.getBuscaComprobantes(
-            this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(comprobante)(fechasFiltro)(sisModuloSelec)(tipoComprobanteSelec)(productoSelec)(sisEstadoSelec)(padronSelec)(depositoSelec)
-            .map(respuesta => respuesta.arraydatos.map(compEnca => new ComprobanteEncabezado(compEnca)))
+                                (depositoSelec: Deposito) =>
+                                    this.authService.getBuscaComprobantes(
+                                        this.localStorageService.getObject(environment.localStorage.acceso).token
+                                    )(comprobante)(fechasFiltro)(sisModuloSelec)(tipoComprobanteSelec)(productoSelec)(sisEstadoSelec)(padronSelec)(depositoSelec)
+                                        .map(respuesta => respuesta.arraydatos.map(compEnca => new ComprobanteEncabezado(compEnca)))
 
 
     descargarPdf = (compBusc) => {
