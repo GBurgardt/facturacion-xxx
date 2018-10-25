@@ -7,7 +7,8 @@ export class FiltroListaPrecios {
     codProvedor: number;
     rubro: Rubro;
     subRubro: SubRubro;
-    porcentajeCabecera: number;
+    // porcentajeCabecera: number;
+    porcentajeCabecera: string;
     porcentajeInf: number;
     porcentajeSup: number;
 
@@ -17,7 +18,8 @@ export class FiltroListaPrecios {
         codProvedor: number;
         rubro: any;
         subRubro: any;
-        porcentajeCabecera: number;
+        // porcentajeCabecera: number;
+        porcentajeCabecera: string;
         porcentajeInf: number;
         porcentajeSup: number;
     }) {
@@ -36,7 +38,8 @@ export class FiltroListaPrecios {
             this.codProvedor = null;
             this.rubro = new Rubro();
             this.subRubro = new SubRubro();
-            this.porcentajeCabecera = null;
+            // this.porcentajeCabecera = null;
+            this.porcentajeCabecera = Number(0).toFixed(2);
             this.porcentajeInf = null;
             this.porcentajeSup = null;
         }

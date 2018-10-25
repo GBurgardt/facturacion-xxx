@@ -30,6 +30,10 @@ import { EditarProducto } from 'app/pages/main/stock/productos/components/editar
 import { ModeloImputacion } from './modeloImputacion';
 import { NuevoModeloImputacion } from './modeloImputacion/components/nuevoModeloImputacion';
 import { EditarModeloImputacion } from 'app/pages/main/tablas/modeloImputacion/components/editarModeloImputacion';
+import { PendingChangesGuard } from 'app/guards/PendingChangesGuard';
+import { CteFecha } from './cteFecha';
+import { NuevoCteFecha } from './cteFecha/components/nuevoCteFecha';
+import { EditarCteFecha } from './cteFecha/components/editarCteFecha';
 
 // noinspection TypeScriptValidateTypes
 const routes: Routes = [
@@ -38,32 +42,32 @@ const routes: Routes = [
         component: Tablas,
         children: [
             { path: 'usuarios', component: Usuarios },
-            { path: 'usuarios/nuevo', component: NuevoUsuario },
-            { path: 'usuarios/editar/:idUsuario', component: EditarUsuario },
+            { path: 'usuarios/nuevo', component: NuevoUsuario, canDeactivate: [PendingChangesGuard] },
+            { path: 'usuarios/editar/:idUsuario', component: EditarUsuario, canDeactivate: [PendingChangesGuard] },
             { path: 'tipos-comprobantes', component: TipoComprobantes },
-            { path: 'tipos-comprobantes/nuevo', component: NuevoTipoComprobante },
-            { path: 'tipos-comprobantes/editar/:idTipoComprobante', component: EditarTipoComprobante },
+            { path: 'tipos-comprobantes/nuevo', component: NuevoTipoComprobante, canDeactivate: [PendingChangesGuard] },
+            { path: 'tipos-comprobantes/editar/:idTipoComprobante', component: EditarTipoComprobante, canDeactivate: [PendingChangesGuard] },
             { path: 'rubros', component: Rubros },
-            { path: 'rubros/nuevo', component: NuevoRubro },
-            { path: 'rubros/editar/:idRubro', component: EditarRubro },
+            { path: 'rubros/nuevo', component: NuevoRubro, canDeactivate: [PendingChangesGuard] },
+            { path: 'rubros/editar/:idRubro', component: EditarRubro, canDeactivate: [PendingChangesGuard] },
             { path: 'sub-rubros', component: SubRubros },
-            { path: 'sub-rubros/nuevo', component: NuevoSubRubro },
-            { path: 'sub-rubros/editar/:idSubRubro', component: EditarSubRubro },
+            { path: 'sub-rubros/nuevo', component: NuevoSubRubro, canDeactivate: [PendingChangesGuard] },
+            { path: 'sub-rubros/editar/:idSubRubro', component: EditarSubRubro, canDeactivate: [PendingChangesGuard] },
             { path: 'formas-pago', component: FormasPago },
-            { path: 'formas-pago/nuevo', component: NuevaFormaPago },
-            { path: 'formas-pago/editar/:idFormaPago', component: EditarFormaPago },
-            // { path: 'productos', component: Productos },
-            // { path: 'productos/nuevo', component: NuevoProducto },
-            // { path: 'productos/editar/:idProductos', component: EditarProducto },
+            { path: 'formas-pago/nuevo', component: NuevaFormaPago, canDeactivate: [PendingChangesGuard] },
+            { path: 'formas-pago/editar/:idFormaPago', component: EditarFormaPago, canDeactivate: [PendingChangesGuard] },
             { path: 'depositos', component: Depositos },
-            { path: 'depositos/nuevo', component: NuevoDeposito },
-            { path: 'depositos/editar/:idDeposito', component: EditarDeposito },
+            { path: 'depositos/nuevo', component: NuevoDeposito, canDeactivate: [PendingChangesGuard] },
+            { path: 'depositos/editar/:idDeposito', component: EditarDeposito, canDeactivate: [PendingChangesGuard] },
             { path: 'lista-precios', component: ListaPrecios },
-            { path: 'lista-precios/nuevo', component: NuevoListaPrecio },
-            { path: 'lista-precios/editar/:idListaPrecio', component: EditarListaPrecio },
+            { path: 'lista-precios/nuevo', component: NuevoListaPrecio, canDeactivate: [PendingChangesGuard] },
+            { path: 'lista-precios/editar/:idListaPrecio', component: EditarListaPrecio, canDeactivate: [PendingChangesGuard] },
             { path: 'modelo-imputacion', component: ModeloImputacion },
-            { path: 'modelo-imputacion/nuevo', component: NuevoModeloImputacion },
-            { path: 'modelo-imputacion/editar/:idModeloCab', component: EditarModeloImputacion },
+            { path: 'modelo-imputacion/nuevo', component: NuevoModeloImputacion, canDeactivate: [PendingChangesGuard] },
+            { path: 'modelo-imputacion/editar/:idModeloCab', component: EditarModeloImputacion, canDeactivate: [PendingChangesGuard] },
+            { path: 'cte-fecha', component: CteFecha },
+            { path: 'cte-fecha/nuevo', component: NuevoCteFecha, canDeactivate: [PendingChangesGuard] },
+            { path: 'cte-fecha/editar/:idCteFechas', component: EditarCteFecha, canDeactivate: [PendingChangesGuard] },
         ]
     }
 ];

@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
 import { AuthService } from 'app/services/authService';
 
@@ -10,15 +11,32 @@ import { resourcesREST } from 'constantes/resoursesREST';
 import dynamicClass from 'app/services/dynamicClassService';
 import { FiltroListaPrecios } from '../models/filtroListaPrecio';
 import { DetalleProducto } from '../models/detalleProducto';
+import { BehaviorSubject } from '../../../node_modules/rxjs';
+import { ProductoPendiente } from 'app/models/productoPendiente';
 
 @Injectable()
 export class RecursoService {
 
+    private edicionFinalizada: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    
     constructor(
         private authService: AuthService,
         private localStorageService: LocalStorageService,
         private utilsService: UtilsService
-    ) { }
+    ) {
+        // Inicializo en false cada vez que ingresa
+        // this.edicionFinalizada.next(false);
+    }
+    
+    /**
+     * Cambia el estado de la edicion finalizada
+     */
+    setEdicionFinalizada = (val) => this.edicionFinalizada.next(val);
+
+    /**
+     * Retorna el valor de la edicion, si finalizó o no para este recurso
+     */
+    getEdicionFinalizada = () => this.edicionFinalizada.value
 
     /**
      * Obtiene la lista de un recurso mappeada a su clase
@@ -48,8 +66,8 @@ export class RecursoService {
      * @param recurso El recurso a registrar
      * @param headers Opcionalmente se le pueden setear los headers que se quiera
      */
-    setRecurso = (recurso: any) => (headers?) => {
-        return this.authService.registrarRecurso(
+    setRecurso = (recurso: any) => (headers?) => 
+        this.authService.registrarRecurso(
             recurso
         )(
             headers ? headers : {
@@ -58,7 +76,7 @@ export class RecursoService {
         )(
             this.utilsService.getNameRestOfResource(recurso)
         );
-    }
+    
 
     /**
      * Edita un recurso existente
@@ -74,7 +92,8 @@ export class RecursoService {
             }
         )(
             this.utilsService.getNameRestOfResource(recurso)
-        );
+        )
+        // .then(() => this.toggleEdicionFinalizada()) // Finaliza la edición
     }
 
     /**
@@ -116,5 +135,20 @@ export class RecursoService {
         )
         .map(resp => resp.datos.proximoCodigo)
 
+    /**
+     * Checkea si edito un recurso
+     */
+    checkIfEquals = (recurso, recursoOriginal) => {
+        const t1 = Object.assign({}, recurso)
+        const t2 = Object.assign({}, recursoOriginal)
+        debugger
+        return _.isEqual(
+            Object.assign({}, recurso),
+            Object.assign({}, recursoOriginal)
+        )
+    }
+
+
+    
 
 }

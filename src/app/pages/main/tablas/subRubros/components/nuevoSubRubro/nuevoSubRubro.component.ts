@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 
 import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
@@ -31,6 +31,15 @@ export class NuevoSubRubro {
         this.rubros = this.recursoService.getRecursoList(resourcesREST.rubros)();
     }
 
+    ngOnInit() {
+        this.recursoService.setEdicionFinalizada(false);
+    }
+
+    @HostListener('window:beforeunload')
+    canDeactivate = () => 
+        this.recursoService.checkIfEquals(this.recurso, new SubRubro()) || 
+        this.recursoService.getEdicionFinalizada();
+
     onClickCrearRubro = async () => {
         try {
 
@@ -41,7 +50,10 @@ export class NuevoSubRubro {
             )(
                 respRubroCreado.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/sub-rubros'])
+                () => {
+                    this.router.navigate(['/pages/tablas/sub-rubros']);
+                    this.recursoService.setEdicionFinalizada(true);
+                }
             )();
         }
         catch(ex) {

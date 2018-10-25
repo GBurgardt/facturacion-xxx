@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -17,6 +17,7 @@ import { resourcesREST } from 'constantes/resoursesREST';
 })
 export class EditarSubRubro {
     recurso: SubRubro = new SubRubro();
+    recursoOriginal: SubRubro = new SubRubro();
 
     constructor(
         private utilsService: UtilsService,
@@ -31,9 +32,21 @@ export class EditarSubRubro {
                 )
                 .subscribe(recurso =>{
                     this.recurso = recurso;
+                    this.recursoOriginal = Object.assign({}, recurso);
                 })
         );
     }
+
+    
+    ngOnInit() {
+        this.recursoService.setEdicionFinalizada(false);
+    }
+
+    // Si NO finalizó la edición, y SI editó el recurso..
+    @HostListener('window:beforeunload')
+    canDeactivate = () => 
+        this.recursoService.getEdicionFinalizada() ||
+        this.recursoService.checkIfEquals(this.recurso, this.recursoOriginal);
 
     onClickEditar = async() => {
         try {
@@ -44,7 +57,10 @@ export class EditarSubRubro {
             )(
                 respuestaEdicion.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/sub-rubros'])
+                () => {
+                    this.router.navigate(['/pages/tablas/sub-rubros']);
+                    this.recursoService.setEdicionFinalizada(true);
+                }
             )();
         }
         catch(ex) {

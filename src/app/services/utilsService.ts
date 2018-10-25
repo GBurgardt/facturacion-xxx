@@ -30,6 +30,12 @@ export class UtilsService {
             activeModal = this.modalService.open(ConfirmationModal, { size: 'sm' });
             activeModal.componentInstance.modalHeader = titulo;
             activeModal.componentInstance.modalContent = descripcion;
+
+            // Textos custom
+            if (datos.textos) {
+                activeModal.componentInstance.afirmativeText = datos.textos.afirmativeText;
+                activeModal.componentInstance.negativeText = datos.textos.negativeText;
+            }
         } else {
             // Default
             activeModal = this.modalService.open(DefaultModal, { size: 'sm' });
@@ -37,12 +43,14 @@ export class UtilsService {
             activeModal.componentInstance.modalContent = descripcion;
         }
         if (onClick) {
-            activeModal.result.then(result => {
+            return activeModal.result.then(result => {
                 // Si hizo click en 'Si', entonces ejecuto la acción.
                 if (result) {
                     onClick();
                 }
             });
+        } else {
+            return activeModal.result;
         }
     }
 
@@ -149,7 +157,7 @@ export class UtilsService {
         if (id !== 'id' && cod !== 'cod' && !idRecurso.toLowerCase().includes('codigo')) {
             const realIdOrCod = Object.keys(recurso).find(key => {
                 // descarto casos particulares
-                if (key === 'idFactCabImputada' || key === 'idFactDetalleImputada') {
+                if (key === 'idFactCabImputada' || key === 'idFactDetalleImputa') {
                     return false;
                 }
 
@@ -246,11 +254,14 @@ export class UtilsService {
      * Decodifica la respuesta del error (scando el _body) y muestra el mensaje
      */
     showErrorWithBody = (err: any) => {
+        
         const theBody =
             err && err['_body'] ?
-                JSON.parse(err['_body']) : null;
+                (typeof err['_body'] === 'object') ?
+                    err['_body'] : JSON.parse(err['_body']) : 
+                null;
 
-        this.showModal(theBody.control.codigo)(theBody.control.descripcion)()();
+        this.showModal(theBody.control.codigo)(theBody.control.descripcion)()()
     }
 
     /**
@@ -332,4 +343,22 @@ export class UtilsService {
         )
     }
 
+
+    validarCuit = (inputValor) => {
+        
+        var inputString = inputValor.toString()
+        if (inputString.length == 11) {
+            var Caracters_1_2 = inputString.charAt(0) + inputString.charAt(1)
+            if (Caracters_1_2 == "20" || Caracters_1_2 == "23" || Caracters_1_2 == "24" || Caracters_1_2 == "27" || Caracters_1_2 == "30" || Caracters_1_2 == "33" || Caracters_1_2 == "34") {
+                var Count = inputString.charAt(0) * 5 + inputString.charAt(1) * 4 + inputString.charAt(2) * 3 + inputString.charAt(3) * 2 + inputString.charAt(4) * 7 + inputString.charAt(5) * 6 + inputString.charAt(6) * 5 + inputString.charAt(7) * 4 + inputString.charAt(8) * 3 + inputString.charAt(9) * 2 + inputString.charAt(10) * 1;
+                var Division = Count / 11;
+                if (Division == Math.floor(Division)) {
+                    return true
+                }
+            }
+        }
+        return false 
+    }
+
+    auxStringify = (obj) => JSON.stringify(obj);
 }

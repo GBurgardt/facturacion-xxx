@@ -189,7 +189,8 @@
 
 
 .without-padding {
-    padding: 0;
+    padding: 0 !important;
+    padding-left: 2px !important;
 }
 
 .inline-flex {

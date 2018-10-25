@@ -29,6 +29,14 @@
                 }
             }
         }
+
+        .resto-pagar {
+            display: flex;
+            justify-content: flex-end;
+            .resto-pagar-content {
+                padding: 5px 3px 3px;
+            }
+        }
     }
 
     .lista-filtrada-proveedores {

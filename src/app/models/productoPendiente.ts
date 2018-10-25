@@ -13,7 +13,7 @@ export class ProductoPendiente {
     porCalc: number;
     ivaPorc: number;
     deposito: number;
-    idFactDetalleImputada: number;
+    idFactDetalleImputa: number;
     idFactCabImputada: number;
     descuento: number;
     tipoDescuento: string;
@@ -56,7 +56,7 @@ export class ProductoPendiente {
         porCalc: number;
         ivaPorc: number;
         deposito: number;
-        idFactDetalleImputada: number;
+        idFactDetalleImputa: number;
         idFactCabImputada: number;
         descuento: number;
         tipoDescuento: string;
@@ -65,6 +65,7 @@ export class ProductoPendiente {
         observaciones: string;
         itemImputada: number;
         producto: any;
+        importe?: number;
     }) {
         if (productoPendiente) {
             this.comprobante = productoPendiente.comprobante;
@@ -77,7 +78,7 @@ export class ProductoPendiente {
             this.porCalc = productoPendiente.porCalc;
             this.ivaPorc = productoPendiente.ivaPorc;
             this.deposito = productoPendiente.deposito;
-            this.idFactDetalleImputada = productoPendiente.idFactDetalleImputada;
+            this.idFactDetalleImputa = productoPendiente.idFactDetalleImputa;
             this.idFactCabImputada = productoPendiente.idFactCabImputada;
             this.descuento = productoPendiente.descuento;
             this.tipoDescuento = productoPendiente.tipoDescuento;
@@ -104,7 +105,7 @@ export class ProductoPendiente {
                 fechaVto: null
             };
 
-            this.importe = 0;
+            this.importe = productoPendiente.importe ? productoPendiente.importe : 0;
             this.auxPreviusImporte = 0;
 
             // this.nroComprobante = '';
@@ -121,7 +122,7 @@ export class ProductoPendiente {
             this.porCalc = null;
             this.ivaPorc = null;
             this.deposito = null;
-            this.idFactDetalleImputada = null;
+            this.idFactDetalleImputa = null;
             this.idFactCabImputada = null;
             this.descuento = null;
             this.tipoDescuento = null;

@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+
+import { Component, Input, HostListener, OnChanges, DoCheck } from '@angular/core';
 import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -21,6 +22,7 @@ import { THIS_EXPR } from '../../../../../../../../node_modules/@angular/compile
 
 export class EditarFormaPago {
     recurso: FormaPago = new FormaPago();
+    recursoOriginal: FormaPago = new FormaPago();
 
     tiposFormaPago: Observable<TipoFormaPago[]>;
     listasPrecios: Observable<ListaPrecio[]>;
@@ -36,16 +38,16 @@ export class EditarFormaPago {
         private recursoService: RecursoService,
         private utilsService: UtilsService,
         private router: Router,
-        private route: ActivatedRoute,
+        private route: ActivatedRoute
     ) {
         this.route.params.subscribe(params => 
             this.recursoService.getRecursoList(resourcesREST.formaPago)()
                 .map((recursoList: FormaPago[]) =>
                     recursoList.find(recurso => recurso.idFormaPago === parseInt(params.idFormaPago))
                 )
-                .subscribe(recurso =>{
-                    debugger;
+                .subscribe(recurso => {
                     this.recurso = recurso;
+                    this.recursoOriginal = Object.assign({}, recurso);
                 })
         );
 
@@ -54,6 +56,17 @@ export class EditarFormaPago {
         this.contPlanCuentaList = this.recursoService.getRecursoList(resourcesREST.contPlanCuenta)();
     }
 
+    
+    ngOnInit() {
+        this.recursoService.setEdicionFinalizada(false);
+    }
+
+    // Si NO finalizó la edición, y SI editó el recurso..
+    @HostListener('window:beforeunload')
+    canDeactivate = () => 
+        this.recursoService.getEdicionFinalizada() ||
+        this.recursoService.checkIfEquals(this.recurso, this.recursoOriginal);
+    
     onClickCrear = async () => {
         try {
             const resp: any = await this.recursoService.editarRecurso(this.recurso)();
@@ -63,7 +76,10 @@ export class EditarFormaPago {
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/formas-pago'])
+                () => {
+                    this.router.navigate(['/pages/tablas/formas-pago']);
+                    this.recursoService.setEdicionFinalizada(true);
+                }
             )();
         }
         catch(ex) {

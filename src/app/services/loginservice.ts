@@ -28,7 +28,7 @@ export class LoginService {
      */
     completeLogin = (respLogin) => {
         // Guardo datos importantes del login (TODO: Cambiar por LocalStorage)
-        this.localStorageService.setObject(environment.localStorage.usuario)(respLogin.datos.cuenta);
+        // this.localStorageService.setObject(environment.localStorage.usuario)(respLogin.datos.cuenta);
         this.localStorageService.setObject(environment.localStorage.acceso)(respLogin.datos.acceso);
         this.localStorageService.setObject(environment.localStorage.perfil)(respLogin.datos.perfil);
         // Guardo los menus PARSEADOS en el localStorage

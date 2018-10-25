@@ -4,6 +4,7 @@ import { UtilsService } from 'app/services/utilsService';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
 import { ProductoPendiente } from '../../../../../../models/productoPendiente';
+import { ProductoReducido } from '../../../../../../models/productoReducido';
 
 @Component({
     selector: 'tabla-emision-rem',
@@ -37,13 +38,15 @@ export class TablaEmisionRem {
 
     /////////// BUSQUEDA ///////////
     textoBusqueda: string;
-    @Input() productosObservable: Observable<ProductoPendiente[]>;
+    // @Input() productosObservable: Observable<ProductoPendiente[]>;
+    @Input() productosObservable: BehaviorSubject<ProductoReducido[]>;
+
     productosBusqueda: {
-        todos: ProductoPendiente[];
-        filtrados: BehaviorSubject<ProductoPendiente[]>;
+        todos: ProductoReducido[];
+        filtrados: BehaviorSubject<ProductoReducido[]>;
     } = {todos: [], filtrados: new BehaviorSubject([])}
 
-    productoSeleccionado: ProductoPendiente = new ProductoPendiente();
+    productoSeleccionado: ProductoReducido = new ProductoReducido();
     // Inhdice del producto enfocado del popup
     productoEnfocadoIndex: number = -1;
 
@@ -120,8 +123,8 @@ export class TablaEmisionRem {
     onChangeInputItemAdd = (textoBuscado) => {
         this.productosBusqueda.filtrados.next(
             this.productosBusqueda.todos.filter(
-                prodPend => prodPend.producto.codProducto.toString().includes(textoBuscado) || 
-                            prodPend.producto.descripcion.toString().toLowerCase().includes(textoBuscado)
+                prodPend => prodPend.codProducto.toString().includes(textoBuscado) || 
+                            prodPend.descripcion.toString().toLowerCase().includes(textoBuscado)
             )
         );
     }
@@ -157,6 +160,22 @@ export class TablaEmisionRem {
 
         // Confirmo edicion despues de hacer blur en el último campo
         (subkey === 'fechaVto') ? this.confirmEdit(item) : null;
+    }
+
+    /**
+     * 
+     */
+    onCalculateFechaPago = (e) => (key) => (item) => {
+        // debugger;
+        if (!item[key] || typeof item[key] !== 'string') return;
+        
+        item[key] = this.utilsService.stringToDateLikePicker(item[key]);
+
+        // Hago focus en el prox input
+        // const t=  document.getElementsByClassName('monto-element');
+        // debugger;
+        // // Confirmo edicion despues de hacer blur en el último campo
+        // (subkey === 'fechaVto') ? this.confirmEdit(item) : null;
     }
 
 
@@ -263,4 +282,14 @@ export class TablaEmisionRem {
             left: (fatherPosition.left + 60) + 'px'
         }
     }
+
+    /**
+     * Retorna true si PUEDE agregar un producto. 
+     * Retorna false si NO PUEDE agregar un producto.
+     */
+    canAddProduct = () => 
+        this.comprobante.fechaComprobante && 
+        this.comprobante.fechaComprobante.year && 
+        this.productosObservable.value && 
+        this.productosObservable.value.length > 0
 }

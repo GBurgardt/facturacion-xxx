@@ -9,6 +9,7 @@ import { Padron } from 'app/models/padron';
 import { Producto } from '../../../../models/producto';
 import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
 import { ConsultaLotesService } from 'app/pages/main/lotes/consultaLotes/consultaLotesService';
+import gruposParametros from 'constantes/gruposParametros';
 
 @Component({
     selector: 'consulta-lotes',
@@ -58,7 +59,9 @@ export class ConsultaLotes {
         private recursoService: RecursoService,
         private consultaLotesService: ConsultaLotesService
     ) {
-        this.recursoService.getRecursoList(resourcesREST.proveedores)().subscribe(proveedores => {
+        this.recursoService.getRecursoList(resourcesREST.padron)({
+            grupo: gruposParametros.cliente
+        }).subscribe(proveedores => {
             this.proveedores.todos = proveedores;
             this.proveedores.filtrados.next(proveedores);
         });

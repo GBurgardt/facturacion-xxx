@@ -219,11 +219,63 @@ export class EmisionRemitosService {
         }
     ]
 
+    // getColumnsDetallesFp = () => [
+    //     {
+    //         nombre: 'plazo',
+    //         key: 'cantDias',
+    //         ancho: '15%',
+    //         customClass: 'text-right'
+    //     },
+    //     {
+    //         nombre: 'int',
+    //         key: 'porcentaje',
+    //         ancho: '15%',
+    //         decimal: true,
+    //         customClass: 'text-right'
+    //     },
+    //     {
+    //         nombre: 'detalle',
+    //         key: 'detalle',
+    //         ancho: '15%',
+    //         customClass: 'text-left'
+    //     },
+    //     {
+    //         nombre: 'monto',
+    //         key: 'monto',
+    //         ancho: '15%',
+    //         enEdicion: null,
+    //         editarFocus: true,
+    //         decimal: true,
+    //         customClass: 'text-right'
+    //     },
+    //     {
+    //         nombre: 'observaciones',
+    //         key: 'observaciones',
+    //         ancho: '30%',
+    //         enEdicion: null,
+    //         elementoFinalBlur: true,
+    //         customClass: 'text-left'
+    //     }
+    // ]
+
     getColumnsDetallesFp = () => [
+        {
+            nombre: 'forma pago',
+            key: 'formaPagoDescrip',
+            ancho: '15%'
+        },
         {
             nombre: 'plazo',
             key: 'cantDias',
             ancho: '15%',
+            customClass: 'text-right'
+        },
+        {
+            nombre: 'fecha pago',
+            key: 'fechaPago',
+            ancho: '15%',
+            enEdicion: null,
+            editarFocus: true,
             customClass: 'text-right'
         },
         {
@@ -244,9 +296,8 @@ export class EmisionRemitosService {
             key: 'monto',
             ancho: '15%',
             enEdicion: null,
-            editarFocus: true,
             decimal: true,
-            customClass: 'text-right'
+            customClass: 'text-right monto-element'
         },
         {
             nombre: 'observaciones',
@@ -311,15 +362,23 @@ export class EmisionRemitosService {
 
     /**
      * Busca modelos para tab facturacion
+     * 
      */
-    buscaModelos = (prodsPend: ProductoPendiente[]) => {
-        const prodsModel = prodsPend.map(prodP => new ProductoBuscaModelo(
-            {
-                idProducto: prodP.producto.idProductos,
-                precio: prodP.precio,
-                cantidad: prodP.pendiente
-            }
-        ));
+    buscaModelos = (prodsPend: ProductoPendiente[]) => (subtotales: any[]) => {
+        const prodsModel = prodsPend.map(prodP => {
+
+            const subtotalProd = subtotales.find(st => st.idProducto === prodP.producto.idProductos)
+
+            return new ProductoBuscaModelo(
+                {
+                    idProducto: prodP.producto.idProductos,
+                    // precio: prodP.precio,
+                    precio: Number(prodP.producto.costoReposicion),
+                    cantidad: prodP.pendiente,
+                    subTotal: subtotalProd ? subtotalProd.subtotal : null
+                }
+            )
+        });
 
         return this.authService.buscaModelos(
             this.localStorageService.getObject(environment.localStorage.acceso).token
@@ -339,6 +398,8 @@ export class EmisionRemitosService {
                                 (factura: Factura) =>
                                 (modelosFactura: ModeloFactura[]) =>
                                 (detallesFormaPago: DetalleFormaPago[]) => 
+                                (depositoSelec: Deposito) => 
+                                (lotesTraza: Lote[]) => 
         this.authService.emitirRemito(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
@@ -354,7 +415,7 @@ export class EmisionRemitosService {
         )(
             cotizacionDatos
         )(
-            null
+            depositoSelec
         )(
             sisCanje
         )(
@@ -363,24 +424,24 @@ export class EmisionRemitosService {
             factura
         )(
             detallesFormaPago
+        )(
+            lotesTraza
         )
             .catch(err => {
-                console.log('errrrrr')
-                return Observable.throw(
-                    this.utilsService.showErrorWithBody(err)
-                )
+                this.utilsService.showErrorWithBody(err)
+                return Observable.throw(null)
             })
 
     /**
      * Valida que los datos estén correctos
      */
-    checkIfDatosValidosComprobante =   (comprobante: Comprobante) => 
-                                (provSelec: Padron) => 
-                                (productosPend: ProductoPendiente[]) => 
-                                (modelosFactura: ModeloFactura[]) =>
-                                (depositoSelec: Deposito) => {
+    checkIfDatosValidosComprobante =    (comprobante: Comprobante) => 
+                                        (clienteSelect: Padron) => 
+                                        (productosPend: ProductoPendiente[]) => 
+                                        (modelosFactura: ModeloFactura[]) =>
+                                        (depositoSelec: Deposito) => {
         // Primero checkeo nulos
-        const noExistenNulos = this.checkIfNulosDatosComprobantes(comprobante)(provSelec)(productosPend)(modelosFactura)(depositoSelec);
+        const noExistenNulos = this.checkIfNulosDatosComprobantes(comprobante)(clienteSelect)(productosPend)(modelosFactura)(depositoSelec);
 
         // Checkeo que haya productos agregados
         const existenProductos = this.checkIfExistenProductos(productosPend)(modelosFactura);
@@ -388,10 +449,42 @@ export class EmisionRemitosService {
         /// Checkeo que hayan cargado los datos de la trazabilidad
         const trazabilidadCargada = this.checkIfTrazabilidadCargada(productosPend);
 
+        // console.log('noExistenNulos');
+        // console.log(noExistenNulos);
+        // console.log('existenProductos');
+        // console.log(existenProductos);
+        // console.log('trazabilidadCargada');
+        // console.log(trazabilidadCargada);
+
         // Si no existen nulos y si existen productos, los datos son validos
         return noExistenNulos && existenProductos && trazabilidadCargada
 
     }
+
+    
+    /**
+     * Checkea si existen nulos
+     * @return TRUE si NO hay nulos
+     */
+    checkIfNulosDatosComprobantes =   (comprobante: Comprobante) => 
+                                    (provSelec: Padron) => 
+                                    (productosPend: ProductoPendiente[]) => 
+                                    (modelosFactura: ModeloFactura[]) => 
+                                    (depositoSelec: Deposito) =>  
+        (
+            provSelec.padronCodigo &&
+            comprobante.tipo.idCteTipo && 
+            // comprobante.letra && 
+            comprobante.puntoVenta &&
+            comprobante.numero &&
+            comprobante.moneda && comprobante.moneda.idMoneda && 
+            comprobante.fechaComprobante &&
+            comprobante.fechaVto && 
+            productosPend && 
+            modelosFactura && 
+            depositoSelec
+        ) ? true : false
+    
 
     /**
      * Checkeo que lso datos de trazabilidad esten cargados en los productos trazables
@@ -411,27 +504,6 @@ export class EmisionRemitosService {
         modelosFactura.length > 0
     )
 
-    /**
-     * Checkea si existen nulos
-     * @return TRUE si NO hay nulos
-     */
-    checkIfNulosDatosComprobantes =   (comprobante: Comprobante) => 
-                                    (provSelec: Padron) => 
-                                    (productosPend: ProductoPendiente[]) => 
-                                    (modelosFactura: ModeloFactura[]) => 
-                                    (depositoSelec: Deposito) => (
-        provSelec.padronCodigo &&
-        comprobante.tipo.idCteTipo && 
-        comprobante.letra && 
-        comprobante.puntoVenta &&
-        comprobante.numero &&
-        comprobante.moneda.idMoneda && 
-        comprobante.fechaComprobante &&
-        comprobante.fechaVto && 
-        productosPend && 
-        modelosFactura && 
-        depositoSelec
-    )
 
    
     // throw({
@@ -535,6 +607,18 @@ export class EmisionRemitosService {
             elementoFinalBlur: true
         }
     ]
+
+    /**
+     * Busca un producto en la base, por su ID
+     */
+    buscarProducto = (idProducto) => (idListaPrecio) =>
+        this.authService.getBuscarProducto(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(idProducto)(idListaPrecio)
+            .map(
+                respProdEnc => respProdEnc && respProdEnc.arraydatos && respProdEnc.arraydatos.length > 0 ?
+                    new ProductoPendiente(respProdEnc.arraydatos[0]) : null
+            )
 
 
 }

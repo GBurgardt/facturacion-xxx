@@ -44,5 +44,12 @@ export class TablaFormaPagoComp {
         }
     }
 
+    /**
+     * Focusea el input de buscar producto, si y solo si es el último checkbox el bluseado
+     */
+    onBlurCheckbox = (isLast) => 
+        isLast && document.getElementById('addInput') ? 
+            document.getElementById('addInput').focus() : null
+
     
 }

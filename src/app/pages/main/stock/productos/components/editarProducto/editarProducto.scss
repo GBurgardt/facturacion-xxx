@@ -51,4 +51,12 @@
         margin: 7px 2px -1px;
     }
 
+    .btn-container {
+        display: flex;
+        justify-content: flex-end;
+
+        button {
+            margin-left: 5px;
+        }
+    } 
 }

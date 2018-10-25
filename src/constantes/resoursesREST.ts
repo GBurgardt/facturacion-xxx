@@ -32,6 +32,7 @@ import { SisTipoModelo } from "app/models/sisTipoModelo";
 import { ModeloCabSinDetalles } from "app/models/modeloCabSinDetalles";
 import { CodigoAfip } from "app/models/codigoAfip";
 import { Marca } from "app/models/marca";
+import { ProductoReducido } from "app/models/productoReducido";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -73,6 +74,10 @@ export const resourcesREST = {
         nombre: 'productos',
         Clase: Producto
     },
+    productosReducidos: {
+        nombre: 'productos',
+        Clase: ProductoReducido
+    },
     sisIVA: {
         nombre: 'sisIVA',
         Clase: IVA
@@ -101,8 +106,8 @@ export const resourcesREST = {
         nombre: 'sisComprobantes',
         Clase: SisComprobante
     },
-    proveedores: {
-        nombre: 'proveedores',
+    padron: {
+        nombre: 'padron',
         Clase: Padron
     },
     sisTipoOperacion: {
@@ -147,7 +152,7 @@ export const resourcesREST = {
     },
     buscaCteFecha: {
         nombre: 'buscaCteFecha',
-        Clase: CteFechas
+        Clase: null
     },
     calculoSubtotales: {
         nombre: 'calculoSubtotales',
@@ -196,6 +201,10 @@ export const resourcesREST = {
     marcas: {
         nombre: 'marcas',
         Clase: Marca
+    },
+    cteFecha: {
+        nombre: 'cteFecha',
+        Clase: CteFechas
     }
 
 };

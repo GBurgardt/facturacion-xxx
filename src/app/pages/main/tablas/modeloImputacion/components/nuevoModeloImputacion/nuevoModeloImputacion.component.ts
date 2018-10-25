@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
 import { Router } from '@angular/router';
@@ -13,6 +13,7 @@ import { ModeloDetalle } from '../../../../../../models/modeloDetalle';
 import { PlanCuenta } from '../../../../../../models/planCuenta';
 import { SisTipoModelo } from '../../../../../../models/sisTipoModelo';
 import { SisModulo } from '../../../../../../models/sisModulo';
+import { ModeloImputacion } from '../../modeloImputacion.component';
 
 
 @Component({
@@ -50,6 +51,15 @@ export class NuevoModeloImputacion {
         this.sisModulos = this.recursoService.getRecursoList(resourcesREST.sisModulos)();
     }
 
+    ngOnInit() {
+        this.recursoService.setEdicionFinalizada(false);
+    }
+
+    @HostListener('window:beforeunload')
+    canDeactivate = () => 
+        this.recursoService.checkIfEquals(this.recurso, new ModeloCab()) || 
+        this.recursoService.getEdicionFinalizada();
+
     onClickCrear = async () => {
         try {
             // Agrego los detalles
@@ -62,7 +72,10 @@ export class NuevoModeloImputacion {
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/modelo-imputacion'])
+                () => {
+                    this.router.navigate(['/pages/tablas/modelo-imputacion']);
+                    this.recursoService.setEdicionFinalizada(true);
+                }
             )();
         }
         catch(ex) {

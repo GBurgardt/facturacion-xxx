@@ -14,6 +14,9 @@ export class ComprobanteEncabezado {
     fechaEmi: string;
     detalle: ComprobanteDetalle[];
 
+    // Desplegable de detalles
+    showDetalles: boolean;
+
     constructor(comprobanteEncabezado?: {
         idFactCab: number;
         numero: number;
@@ -41,6 +44,8 @@ export class ComprobanteEncabezado {
             this.imputada = comprobanteEncabezado.imputada;
             this.fechaEmi = comprobanteEncabezado.fechaEmi;
             this.detalle = comprobanteEncabezado.detalle.map(det => new ComprobanteDetalle(det));
+
+            this.showDetalles = false;
         } else {
             this.idFactCab = null;
             this.numero = null;
@@ -53,7 +58,9 @@ export class ComprobanteEncabezado {
             this.moneda = null;
             this.imputada = null;
             this.fechaEmi = null;
-            this.detalle = null
+            this.detalle = null;
+            
+            this.showDetalles = false;
         }
     }
 

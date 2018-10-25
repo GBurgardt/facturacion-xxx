@@ -18,6 +18,7 @@ import { UtilsService } from '../../../../services/utilsService';
 import { FormaPago } from "app/models/formaPago";
 import { DetalleFormaPago } from "app/models/detalleFormaPago";
 import { Factura } from '../../../../models/factura';
+import { SisTipoOperacion } from '../../../../models/sisTipoOperacion';
 
 @Injectable()
 export class ComprobanteCompraService {
@@ -61,7 +62,8 @@ export class ComprobanteCompraService {
         },
         {
             nombre: 'precio',
-            key: 'precio',
+            key: 'producto',
+            subkey: 'costoReposicion',
             ancho: '10%',
             enEdicion: null,
             decimal: true,
@@ -234,7 +236,7 @@ export class ComprobanteCompraService {
         const prodsModel = prodsPend.map(prodP => new ProductoBuscaModelo(
             {
                 idProducto: prodP.producto.idProductos,
-                precio: prodP.precio,
+                precio: Number(prodP.producto.costoReposicion),
                 cantidad: prodP.pendiente
             }
         ));
@@ -260,9 +262,10 @@ export class ComprobanteCompraService {
         (depositoSelec: Deposito) =>
         (detallesFormaPago: DetalleFormaPago[]) => 
         (factura: Factura) => 
-            this.authService.grabaComprobante(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec)(detallesFormaPago)(factura)
+        (tipoOpSelect: SisTipoOperacion) => 
+            this.authService.grabaComprobante(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec)(detallesFormaPago)(factura)(tipoOpSelect)
                 .catch(err => {
-                    debugger;
+                    // debugger;
                     this.utilsService.decodeErrorResponse(err);
                     return Observable.throw(null)
                     // return Observable.throw(
@@ -416,7 +419,7 @@ export class ComprobanteCompraService {
         this.authService.getBuscaFormaPago(this.localStorageService.getObject(environment.localStorage.acceso).token)()(fecha)
             .map(resp => resp.arraydatos.map(fp => new FormaPago(fp)))
             .catch((err, caught) => {
-                debugger;
+                // debugger;
                 this.utilsService.showErrorWithBody(err);
                 return Observable.of([]);
             })
@@ -465,5 +468,81 @@ export class ComprobanteCompraService {
             customClass: 'text-left'
         }
     ]
+
+    /**
+     * Checkea si hay cambios cuando intenta salir del componente
+     */
+    checkPendingChanges = (comprobante) => (factura) => (proveedorSeleccionado) => (comprobanteRelacionado) => {    
+        // En el comprobante y la factura no checkeo la fecha porque complica mucho el procezo de isEqual
+        const compEdit = _.omit(
+            Object.assign({}, comprobante),
+            ['fechaComprobante', 'fechaVto']
+        )
+        const compOrigi = _.omit(
+            Object.assign({}, new Comprobante()),
+            ['fechaComprobante', 'fechaVto']
+        )
+        
+        
+        const factEdit = _.omit(
+            Object.assign({}, factura),
+            ['fechaContable', 'fechaVto']
+        )
+        const factOrigi = _.omit(
+            Object.assign({}, new Factura()),
+            ['fechaContable', 'fechaVto']
+        )
+
+        // const t = _.omit(
+        //     Object.assign({}, new Padron()),
+        //     ['padronCodigo']
+        // );
+        // const t0 = _.omit(
+        //     Object.assign({}, proveedorSeleccionado),
+        //     ['padronCodigo']
+        // )
+
+        return (
+            _.isEqual(
+                _.omit(
+                    Object.assign({}, proveedorSeleccionado),
+                    ['padronCodigo']
+                ),
+                _.omit(
+                    Object.assign({}, new Padron()),
+                    ['padronCodigo']
+                )
+            ) && 
+            _.isEqual(
+                compEdit, 
+                compOrigi
+            ) &&
+            _.isEqual(
+                Object.assign({}, comprobanteRelacionado),
+                Object.assign({}, new ComprobanteRelacionado())
+            ) &&
+            _.isEqual(
+                factEdit, 
+                factOrigi
+            )
+        )
+    }
+
+
+    
+    /**
+     * Busca un producto en la base, por su ID
+     */
+    buscarProducto = (idProducto) =>
+        this.authService.getBuscarProducto(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(idProducto)()
+            .map(
+                respProdEnc => respProdEnc && respProdEnc.arraydatos && respProdEnc.arraydatos.length > 0 ?
+                    new ProductoPendiente(respProdEnc.arraydatos[0]) : null
+            )    
+
+
+
 
 }

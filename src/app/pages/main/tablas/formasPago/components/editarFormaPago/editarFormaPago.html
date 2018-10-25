@@ -4,7 +4,7 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="descripcion">Descripcion</label>
-                    <input [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion" placeholder="Descripcion de la forma de pago">
+                    <input (ngModelChange)="recursoEditado = true" [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion" placeholder="Descripcion de la forma de pago">
                 </div>
             </div>
 
@@ -43,7 +43,7 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="listaPrecio">Lista precio</label>
-                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.listaPrecio" class="form-control" id="listaPrecio">
+                    <select [compareWith]="utilsService.dropdownCompareWith" (ngModelChange)="recursoEditado = true" [(ngModel)]="recurso.listaPrecio" class="form-control" id="listaPrecio">
                         <option *ngFor="let lista of listasPrecios | async" [ngValue]="lista">
                             {{lista.condiciones}}
                         </option>
@@ -54,7 +54,7 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="tipoFormaPago">Tipo forma pago</label>
-                    <select [compareWith]="compareWithTipoFormaPago" [(ngModel)]="recurso.tipo" class="form-control" id="rubro">
+                    <select [compareWith]="compareWithTipoFormaPago" (ngModelChange)="recursoEditado = true" [(ngModel)]="recurso.tipo" class="form-control" id="rubro">
                         <option *ngFor="let tipo of tiposFormaPago | async" [ngValue]="tipo">
                             {{tipo.descripcion}}
                         </option>
@@ -89,14 +89,14 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="detalles">Detalle *</label>
-                    <input [(ngModel)]="detalleEnEdicion.detalle" type="text" class="form-control" id="inputDetalles">
+                    <input (ngModelChange)="recursoEditado = true" [(ngModel)]="detalleEnEdicion.detalle" type="text" class="form-control" id="inputDetalles">
                 </div>
             </div>
 
             <!-- <div class="col-sm-2">
                 <div class="form-group">
                     <label for="monto">Monto *</label>
-                    <input [(ngModel)]="detalleEnEdicion.monto" type="text" class="form-control" id="inputMonto">
+                    <input (ngModelChange)="recursoEditado = true" [(ngModel)]="detalleEnEdicion.monto" type="text" class="form-control" id="inputMonto">
                 </div>
             </div> -->
             
@@ -107,13 +107,13 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="porcentaje">Porcentaje *</label>
-                    <input [(ngModel)]="detalleEnEdicion.porcentaje" type="text" class="form-control" id="porcentaje">
+                    <input (ngModelChange)="recursoEditado = true" [(ngModel)]="detalleEnEdicion.porcentaje" type="text" class="form-control" id="porcentaje">
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="cantDias">Cant Dias *</label>
-                    <input [(ngModel)]="detalleEnEdicion.cantDias" type="text" class="form-control" id="inputCantDias">
+                    <input (ngModelChange)="recursoEditado = true" [(ngModel)]="detalleEnEdicion.cantDias" type="text" class="form-control" id="inputCantDias">
                 </div>
             </div>
             <div class="col-sm-6 btn-container-det">

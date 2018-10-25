@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 
 import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
@@ -101,6 +101,15 @@ export class NuevoListaPrecio {
             }
         ];
     }
+
+    ngOnInit() {
+        this.recursoService.setEdicionFinalizada(false);
+    }
+
+    @HostListener('window:beforeunload')
+    canDeactivate = () => 
+        this.recursoService.checkIfEquals(this.recurso, new ListaPrecio()) || 
+        this.recursoService.getEdicionFinalizada();
 
     /**
      * En realidad 'enEdicion' tiene siempre el mismo valor. Lo seteo en varias columnas para saber cual se puede editar
@@ -216,7 +225,10 @@ export class NuevoListaPrecio {
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/lista-precios'])
+                () => {
+                    this.router.navigate(['/pages/tablas/lista-precios']);
+                    this.recursoService.setEdicionFinalizada(true);
+                }
             )();
         }
         catch(ex) {

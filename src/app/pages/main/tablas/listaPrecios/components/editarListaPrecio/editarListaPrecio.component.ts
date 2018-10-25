@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 
 import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
@@ -27,6 +27,8 @@ import * as _ from 'lodash';
 
 export class EditarListaPrecio {
     recurso: ListaPrecio = new ListaPrecio();
+    recursoOriginal: ListaPrecio = new ListaPrecio();
+
     monedas: Observable<Moneda[]>;
     rubros: Observable<Rubro[]>;
     subRubros: Observable<SubRubro[]>;
@@ -57,7 +59,10 @@ export class EditarListaPrecio {
                 .map((recursoList: ListaPrecio[]) =>
                     recursoList.find(recurso => recurso.idListaPrecio === parseInt(params.idListaPrecio))
                 )
-                .subscribe(recurso => this.recurso = recurso)
+                .subscribe(recurso => {
+                    this.recurso = recurso;
+                    this.recursoOriginal = Object.assign({}, recurso);
+                })
         );
 
         // 'enEdicion' alverga el id del recurso actualmente en edicion
@@ -112,6 +117,17 @@ export class EditarListaPrecio {
             }
         ];
     }
+
+    
+    ngOnInit() {
+        this.recursoService.setEdicionFinalizada(false);
+    }
+
+    // Si NO finalizó la edición, y SI editó el recurso..
+    @HostListener('window:beforeunload')
+    canDeactivate = () => 
+        this.recursoService.getEdicionFinalizada() ||
+        this.recursoService.checkIfEquals(this.recurso, this.recursoOriginal);
 
     /**
      * En realidad 'enEdicion' tiene siempre el mismo valor. Lo seteo en varias columnas para saber cual se puede editar
@@ -227,7 +243,10 @@ export class EditarListaPrecio {
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/lista-precios'])
+                () => {
+                    this.router.navigate(['/pages/tablas/lista-precios']);
+                    this.recursoService.setEdicionFinalizada(true);
+                }
             )();
         }
         catch(ex) {

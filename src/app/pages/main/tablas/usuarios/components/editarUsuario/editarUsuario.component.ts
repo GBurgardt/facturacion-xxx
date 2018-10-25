@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 
 import { LocalStorageService } from '../../../../../../services/localStorageService';
 import { Usuario } from '../../../../../../models/usuario';
@@ -21,6 +21,7 @@ import * as crypto from 'crypto-js';
 export class EditarUsuario {
     // Usuario que se va a editar
     recurso: Usuario = new Usuario();
+    recursoOriginal: Usuario = new Usuario();
 
     // Sucursales de la empresa
     sucursales: Observable<Sucursal[]>;
@@ -48,6 +49,7 @@ export class EditarUsuario {
                 )
                 .subscribe(usuario =>{
                     this.recurso = usuario;
+                    this.recursoOriginal = usuario;
         
                     // Obtengo los perfiles disponibles de la sucursal del usuario
                     this.perfiles = this.recursoService.getRecursoList(
@@ -59,6 +61,17 @@ export class EditarUsuario {
         });
         
     }
+
+    
+    ngOnInit() {
+        this.recursoService.setEdicionFinalizada(false);
+    }
+
+    // Si NO finalizó la edición, y SI editó el recurso..
+    @HostListener('window:beforeunload')
+    canDeactivate = () => 
+        this.recursoService.getEdicionFinalizada() ||
+        this.recursoService.checkIfEquals(this.recurso, this.recursoOriginal);
 
     /**
      * Se dispara cuando se cambia la sucursal en el dropdown
@@ -95,7 +108,10 @@ export class EditarUsuario {
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/usuarios']) 
+                () => {
+                    this.router.navigate(['/pages/tablas/usuarios']);
+                    this.recursoService.setEdicionFinalizada(true);
+                }
             )();
         }
         catch(ex) {

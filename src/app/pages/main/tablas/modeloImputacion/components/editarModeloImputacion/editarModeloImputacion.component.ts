@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -23,7 +23,8 @@ import { SisModulo } from 'app/models/sisModulo';
 
 export class EditarModeloImputacion {
     recurso: ModeloCab = new ModeloCab();
-
+    recursoOriginal: ModeloCab = new ModeloCab();
+    
     // detalles: ModeloDetalle[] = [];
     detalleEnEdicion: ModeloDetalle = new ModeloDetalle();
 
@@ -56,10 +57,21 @@ export class EditarModeloImputacion {
                 )
                 .subscribe(recurso =>{
                     this.recurso = recurso;
-                    // debugger;
+                    this.recursoOriginal = Object.assign({}, recurso);
                 })
         );
     }
+
+    
+    ngOnInit() {
+        this.recursoService.setEdicionFinalizada(false);
+    }
+
+    // Si NO finalizó la edición, y SI editó el recurso..
+    @HostListener('window:beforeunload')
+    canDeactivate = () => 
+        this.recursoService.getEdicionFinalizada() ||
+        this.recursoService.checkIfEquals(this.recurso, this.recursoOriginal);
 
     onClickEditar = async() => {
         try {
@@ -70,7 +82,10 @@ export class EditarModeloImputacion {
             )(
                 respuestaEdicion.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/modelo-imputacion'])
+                () => {
+                    this.router.navigate(['/pages/tablas/modelo-imputacion']);
+                    this.recursoService.setEdicionFinalizada(true);
+                }
             )();
         }
         catch(ex) {

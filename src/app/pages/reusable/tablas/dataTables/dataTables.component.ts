@@ -72,7 +72,8 @@ export class DataTables {
         } else if (tipoDato === 'object'){
             // Me fijo el nombre de la clase del objeto
             if (key.constructor.name === 'DateLikePicker') {
-                return `${key.year}/${key.month<10 ? '0' : ''}${key.month}/${key.day<10 ? '0' : ''}${key.day}`
+                // return /${key.month<10 ? '0' : ''}${key.month}/${key.day<10 ? '0' : ''}${key.day}`
+                return `${key.day<10 ? '0' : ''}${key.day}/${key.month<10 ? '0' : ''}${key.month}/${key.year}`
             }
         };
         

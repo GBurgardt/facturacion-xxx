@@ -15,6 +15,7 @@ import { ComprobanteEncabezado } from '../../../../models/comprobanteEncabezado'
 import { ComprobanteDetalle } from '../../../../models/comprobanteDetalle';
 
 import { Observable, BehaviorSubject } from 'rxjs';
+import gruposParametros from 'constantes/gruposParametros';
 
 @Component({
     selector: 'consulta-comprobante',
@@ -65,7 +66,9 @@ export class ConsultaComprobante {
 
         
 
-        this.padrones = this.recursoService.getRecursoList(resourcesREST.proveedores)();
+        this.padrones = this.recursoService.getRecursoList(resourcesREST.padron)({
+            grupo: gruposParametros.cliente
+        });
         this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
     }
 

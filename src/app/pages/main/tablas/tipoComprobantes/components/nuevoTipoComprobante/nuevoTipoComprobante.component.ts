@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 
 import { LocalStorageService } from '../../../../../../services/localStorageService';
 import { Usuario } from '../../../../../../models/usuario';
@@ -32,6 +32,15 @@ export class NuevoTipoComprobante {
         this.sisComprobantes = this.recursoService.getRecursoList(resourcesREST.sisComprobantes)();
     }
 
+    ngOnInit() {
+        this.recursoService.setEdicionFinalizada(false);
+    }
+
+    @HostListener('window:beforeunload')
+    canDeactivate = () => 
+        this.recursoService.checkIfEquals(this.recurso, new TipoComprobante()) || 
+        this.recursoService.getEdicionFinalizada();
+
     /**
      * Crear
      */
@@ -45,7 +54,10 @@ export class NuevoTipoComprobante {
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/tipos-comprobantes'])
+                () => {
+                    this.router.navigate(['/pages/tablas/tipos-comprobantes']);
+                    this.recursoService.setEdicionFinalizada(true);
+                }
             )();
 
             

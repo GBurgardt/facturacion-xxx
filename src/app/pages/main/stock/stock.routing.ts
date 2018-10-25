@@ -5,6 +5,7 @@ import { NuevoProducto } from 'app/pages/main/stock/productos/components/nuevoPr
 import { EditarProducto } from 'app/pages/main/stock/productos/components/editarProducto';
 import { ConsultaPorProducto } from './consultaPorProducto';
 import { ConsultaGeneral } from 'app/pages/main/stock/consultaGeneral';
+import { PendingChangesGuard } from 'app/guards/PendingChangesGuard';
 
 
 // noinspection TypeScriptValidateTypes
@@ -15,7 +16,7 @@ const routes: Routes = [
         children: [
             { path: 'productos', component: Productos },
             { path: 'productos/nuevo', component: NuevoProducto },
-            { path: 'productos/editar/:idProductos', component: EditarProducto },
+            { path: 'productos/editar/:idProductos', component: EditarProducto, canDeactivate: [PendingChangesGuard] },
             { path: 'consulta-producto', component: ConsultaPorProducto },
             { path: 'consulta-general', component: ConsultaGeneral },
         ]

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 
 import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
@@ -22,6 +22,15 @@ export class NuevoRubro {
         private router: Router
     ) { }
 
+    ngOnInit() {
+        this.recursoService.setEdicionFinalizada(false);
+    }
+
+    @HostListener('window:beforeunload')
+    canDeactivate = () => 
+        this.recursoService.checkIfEquals(this.recurso, new Rubro()) || 
+        this.recursoService.getEdicionFinalizada();
+
     onClickCrear = async () => {
         try {
             const respRubroCreado: any = await this.recursoService.setRecurso(this.recurso)();
@@ -31,7 +40,10 @@ export class NuevoRubro {
             )(
                 respRubroCreado.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/rubros']) 
+                () => {
+                    this.router.navigate(['/pages/tablas/rubros']);
+                    this.recursoService.setEdicionFinalizada(true);
+                }
             )();
         }
         catch(ex) {

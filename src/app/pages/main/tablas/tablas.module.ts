@@ -34,6 +34,10 @@ import { SharedModule } from '../SharedModule';
 import { ModeloImputacion } from './modeloImputacion';
 import { NuevoModeloImputacion } from './modeloImputacion/components/nuevoModeloImputacion';
 import { EditarModeloImputacion } from './modeloImputacion/components/editarModeloImputacion';
+import { PendingChangesGuard } from 'app/guards/PendingChangesGuard';
+import { CteFecha } from './cteFecha';
+import { EditarCteFecha } from './cteFecha/components/editarCteFecha';
+import { NuevoCteFecha } from './cteFecha/components/nuevoCteFecha';
 
 @NgModule({
     imports: [
@@ -66,14 +70,18 @@ import { EditarModeloImputacion } from './modeloImputacion/components/editarMode
         EditarListaPrecio,
         ModeloImputacion,
         NuevoModeloImputacion,
-        EditarModeloImputacion
+        EditarModeloImputacion,
+        CteFecha,
+        EditarCteFecha,
+        NuevoCteFecha
     ],
     providers: [
         DataTablesService,
         AuthService,
         LocalStorageService,
         UtilsService,
-        RecursoService
+        RecursoService,
+        PendingChangesGuard
     ]
 })
 export class TablasModule {

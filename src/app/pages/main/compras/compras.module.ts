@@ -11,6 +11,7 @@ import { ComprobanteCompra } from "app/pages/main/compras/comprobanteCompra";
 import { ComprobanteCompraService } from "app/pages/main/compras/comprobanteCompra/comprobanteCompraService";
 import { TablaFormaPagoComp } from "app/pages/main/compras/comprobanteCompra/components/tablaFormaPagoComp";
 import { EmisionRemitosService } from "../ventas/emisionRemitos/emisionRemitosService";
+import { PendingChangesGuard } from "app/guards/PendingChangesGuard";
 
 @NgModule({
     imports: [
@@ -30,7 +31,8 @@ import { EmisionRemitosService } from "../ventas/emisionRemitos/emisionRemitosSe
         AuthService,
         UtilsService,
         ComprobanteCompraService,
-        EmisionRemitosService
+        EmisionRemitosService,
+        PendingChangesGuard
     ],
     exports: [
         TablaIngreso,

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 
 import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
@@ -24,6 +24,7 @@ import { Marca } from '../../../../../../models/marca';
 
 export class EditarProducto {
     recurso: Producto = new Producto();
+    recursoOriginal: Producto = new Producto();
 
     ivas: Observable<IVA[]>;
     rubros: Observable<Rubro[]>;
@@ -33,6 +34,8 @@ export class EditarProducto {
     modelosCab: Observable<ModeloCab[]>;
     marcas: Observable<Marca[]>;
     
+    // Bandera que avisa si el recurso ya se editó
+    // recursoEditado: boolean = false;
 
     constructor(
         private recursoService: RecursoService,
@@ -57,15 +60,25 @@ export class EditarProducto {
                 )
                 .subscribe(recurso =>{
                     this.recurso = recurso;
+                    this.recursoOriginal = Object.assign({}, recurso);
 
                     this.subRubros = this.recursoService.getRecursoList(resourcesREST.subRubros)({
                         idRubro: this.recurso.subRubro.rubro.idRubro
                     });
                 })
         );
-
-
     }
+
+    ngOnInit() {
+        this.recursoService.setEdicionFinalizada(false);
+    }
+
+    // Si NO finalizó la edición, y SI editó el recurso..
+    @HostListener('window:beforeunload')
+    canDeactivate = () => 
+        this.recursoService.getEdicionFinalizada() ||
+        this.recursoService.checkIfEquals(this.recurso, this.recursoOriginal);
+    
 
     onClickEditar = async () => {
         try {
@@ -79,7 +92,10 @@ export class EditarProducto {
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/stock/productos'])
+                () => {
+                    this.router.navigate(['/pages/stock/productos']);
+                    this.recursoService.setEdicionFinalizada(true);
+                }
             )();
         }
         catch(ex) {
@@ -95,7 +111,9 @@ export class EditarProducto {
     onChangeRubro = (rubroSelect: Rubro) => {
         this.subRubros = this.recursoService.getRecursoList(resourcesREST.subRubros)({
             'idRubro': rubroSelect.idRubro
-        })
+        });
+
+        // this.recursoEditado = true;
     }
 
     compareWithSubRubro = (r1, r2: SubRubro) => {

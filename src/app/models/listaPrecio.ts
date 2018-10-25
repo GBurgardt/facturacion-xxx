@@ -11,7 +11,8 @@ export class ListaPrecio {
     activa: boolean;
     idPadronCliente: number;
     idPadronRepresentante: number;
-    porc1: number;
+    // porc1: number;
+    porc1: string;
     condiciones: string;
     idMoneda: Moneda;
     listaPrecioDetCollection: DetalleProducto[];
@@ -41,7 +42,8 @@ export class ListaPrecio {
             this.activa = listaPrecio.activa;
             this.idPadronCliente = listaPrecio.idPadronCliente;
             this.idPadronRepresentante = listaPrecio.idPadronRepresentante;
-            this.porc1 = listaPrecio.porc1;
+            // this.porc1 = listaPrecio.porc1;
+            this.porc1 = Number(listaPrecio.porc1).toFixed(2);
             this.condiciones = listaPrecio.condiciones;
             this.idMoneda = new Moneda(listaPrecio.idMoneda);
             this.listaPrecioDetCollection = listaPrecio.listaPrecioDetCollection.map(detalle => new DetalleProducto(detalle));
@@ -54,7 +56,8 @@ export class ListaPrecio {
             this.activa = null;
             this.idPadronCliente = null;
             this.idPadronRepresentante = null;
-            this.porc1 = null;
+            // this.porc1 = null;
+            this.porc1 = Number(0).toFixed(2);
             this.condiciones = null;
             this.idMoneda = new Moneda();
             this.listaPrecioDetCollection = [];

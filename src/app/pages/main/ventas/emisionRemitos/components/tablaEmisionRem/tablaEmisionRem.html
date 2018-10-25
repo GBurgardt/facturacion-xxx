@@ -51,9 +51,10 @@
                                 )}} -->
                         </div>
 
+                        <!-- (col.key === 'trazabilidad' && col.subkey !== 'fechaElab' && col.subkey !== 'fechaVto') ||  -->
                         <div *ngIf="checkIfEditOn(item)(col)">
-                            <input *ngIf=" (col.nombre !== 'trazable' && col.key !== 'trazabilidad') ||
-                                            (col.key === 'trazabilidad' && col.subkey !== 'fechaElab' && col.subkey !== 'fechaVto')"
+                            <input *ngIf="(col.nombre !== 'trazable' && col.key !== 'trazabilidad')"
+                                            
                                     [(ngModel)]="item[col.key][col.subkey]" 
                                     style="margin: 4px 6px;" 
                                     type="text" 
@@ -63,14 +64,16 @@
                                     placeholder="">
 
                             <!-- Datepicker para fecha -->
-                            <div *ngIf="col.key === 'trazabilidad' && (col.subkey === 'fechaElab' || col.subkey === 'fechaVto')" class="datepicker-datelikepicker">
+                            <!-- <div *ngIf="col.key === 'trazabilidad' && (col.subkey === 'fechaElab' || col.subkey === 'fechaVto')" class="datepicker-datelikepicker">
                                 <input [attr.id]="'fecha-' + col.subkey" (blur)="onCalculateFecha($event)(col.key)(col.subkey)(item)" (keyup.enter)="onCalculateFecha($event)(col.key)(col.subkey)(item)" class="form-control" placeholder="dd-mm-yyyy" name="dp" [(ngModel)]="item[col.key][col.subkey]" ngbDatepicker #dComp="ngbDatepicker">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button" style="height: 100%;">
                                         <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
                                     </button>
                                 </div>
-                            </div>
+                            </div> -->
+
+                            
 
                         </div>
                         
@@ -100,7 +103,12 @@
                         </div>
                         <div *ngIf="checkIfEditOn(item)(col)">
 
-                            <input  *ngIf=" (col.nombre !== 'imputacion' && col.key !== 'trazabilidad' && !col.elementoFinalBlur)"
+                            <input  *ngIf="(
+                                        col.nombre !== 'imputacion' &&
+                                        col.key !== 'trazabilidad' &&
+                                        !col.elementoFinalBlur && 
+                                        (col.key !== 'fechaPago')
+                                    )"
                                     [(ngModel)]="item[col.key]" 
                                     style="margin: 4px 6px; text-align: end;" 
                                     type="text" 
@@ -108,11 +116,44 @@
                                     id="inputSubKey" 
                                     placeholder="">
 
+                                <!-- Datepicker para fechaPago -->
+                            <div *ngIf="col.key === 'fechaPago'" class="datepicker-datelikepicker">
+                                <input  [attr.id]="'fecha-pago'" (blur)="onCalculateFechaPago($event)(col.key)(item)" 
+                                        (keyup.enter)="onCalculateFechaPago($event)(col.key)(item)" 
+                                        class="form-control" 
+                                        placeholder="dd-mm-yyyy" 
+                                        name="dp" 
+                                        [(ngModel)]="item[col.key]" 
+                                        ngbDatepicker #dComp2="ngbDatepicker">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" (click)="dComp2.toggle()" type="button" style="height: 100%;">
+                                        <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                    </button>
+                                </div>
+                            </div>
+
                             <!-- ULTIMO INPUT EDITABLE. CAPTURO EL BLUR -->
-                            <input  *ngIf="col.elementoFinalBlur"
+                            <input  *ngIf="col.elementoFinalBlur && col.key !== 'tipoDescuento'"
                                 [(ngModel)]="item[col.key]"  style="margin: 4px 6px; text-align: end;" type="text" 
                                 class="form-control edit-input" id="inputSubKey" placeholder="" 
                                 (blur)="confirmEdit(item)">
+
+                                <!-- CASO ESPECIAL EN ULTIMO IPUT EDITABLE -->
+                                <select *ngIf="col.elementoFinalBlur && col.key === 'tipoDescuento'" 
+                                        [(ngModel)]="item[col.key]"
+                                        class="form-control edit-input"
+                                        (blur)="confirmEdit(item)"
+                                        >
+                                    <option>
+                                        %
+                                    </option>
+                                    <option>
+                                        $
+                                    </option>
+                                </select>
+
+                                <!-- FIN CASO ESPECIAL EN ULTIMO IPUT EDITABLE -->
+
                             <!-- FIN ULTIMO INPUT EDITABLE -->
 
 
@@ -133,9 +174,13 @@
 
             </tr>
 
-            <div *ngIf="showTooltip && (!comprobante || !comprobante.fechaComprobante || !comprobante.fechaComprobante.year)" class="tooltip-add-prod" [ngStyle]="getPositionTooltip()">
-                <span>
+            <!-- <div *ngIf="showTooltip && (!comprobante || !comprobante.fechaComprobante || !comprobante.fechaComprobante.year)" class="tooltip-add-prod" [ngStyle]="getPositionTooltip()"> -->
+            <div *ngIf="showTooltip && !canAddProduct()" class="tooltip-add-prod" [ngStyle]="getPositionTooltip()">
+                <span *ngIf="productosObservable.value && productosObservable.value.length > 0">
                     Debe completar la fecha del comprobante antes de agregar productos
+                </span>
+                <span *ngIf="!(productosObservable.value && productosObservable.value.length > 0)">
+                    Debe seleccionar una forma de pago para poder agregar productos
                 </span>
             </div>
 
@@ -149,11 +194,11 @@
                             (keydown.arrowdown)="keyPressInputTexto($event)('down')" 
                             (keydown.arrowup)="keyPressInputTexto($event)('up')" 
                             (keydown.enter)="onEnterInputBuscProd($event)" 
-                            [disabled]="!comprobante.fechaComprobante || !comprobante.fechaComprobante.year">
+                            [disabled]="!canAddProduct()">
 
                     <popup-lista *ngIf="textoBusqueda && textoBusqueda.length > 0"
                                     [items]="productosBusqueda.filtrados" 
-                                    [keysToShow]="['producto.descripcion', 'producto.codProducto']" 
+                                    [keysToShow]="['descripcion', 'codProducto']" 
                                     [onClickItem]="onClickProductoListaLocal" 
                                     [fatherPosition]="getOffsetOfAddInput()">
                     </popup-lista>

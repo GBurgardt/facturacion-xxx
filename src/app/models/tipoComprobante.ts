@@ -23,7 +23,7 @@ export class TipoComprobante {
         surenu: string;
         observaciones: string;
         comprobante: any;
-        numerador: any[];
+        numerador: Numerador[];
     }) {
         if (tipoComprobante) {
             this.idCteTipo = tipoComprobante.idCteTipo;

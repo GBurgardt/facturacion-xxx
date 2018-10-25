@@ -4,28 +4,28 @@
             <div class="col-sm-2">
                 <div class="form-group">
                     <label for="codProducto">Codigo</label>
-                    <input disabled [(ngModel)]="recurso.codProducto" type="text" class="form-control" id="codProducto" placeholder="">
+                    <input disabled  [(ngModel)]="recurso.codProducto" type="text" class="form-control" id="codProducto" placeholder="">
                 </div>
             </div>
 
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="codigoBarra">Codigo Barra</label>
-                    <input [(ngModel)]="recurso.codigoBarra" type="text" class="form-control" id="codigoBarra" placeholder="">
+                    <input  [(ngModel)]="recurso.codigoBarra" type="text" class="form-control" id="codigoBarra" placeholder="">
                 </div>
             </div>
 
             <div class="col-sm-5">
                 <div class="form-group">
                     <label for="descripcion">Descripcion</label>
-                    <input [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion" placeholder="">
+                    <input  [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion" placeholder="">
                 </div>
             </div>
 
             <div class="col-sm-2">
                 <div class="form-group">
                     <label for="descripcionCorta">Desc Corta</label>
-                    <input [(ngModel)]="recurso.descripcionCorta" type="text" class="form-control" id="descripcionCorta" placeholder="">
+                    <input  [(ngModel)]="recurso.descripcionCorta" type="text" class="form-control" id="descripcionCorta" placeholder="">
                 </div>
             </div>
         </div>
@@ -44,7 +44,7 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="subRubro">Sub Rubro</label>
-                    <select [compareWith]="compareWithSubRubro" [(ngModel)]="recurso.subRubro" class="form-control" id="subRubro">
+                    <select [compareWith]="compareWithSubRubro"  [(ngModel)]="recurso.subRubro" class="form-control" id="subRubro">
                         <option *ngFor="let subRubro of subRubros | async" [ngValue]="subRubro">
                             {{subRubro.descripcion}}
                         </option>
@@ -54,7 +54,7 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="unidadCompra">Unidad Compra</label>
-                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.unidadCompra" class="form-control" id="unidadCompra">
+                    <select [compareWith]="utilsService.dropdownCompareWith"  [(ngModel)]="recurso.unidadCompra" class="form-control" id="unidadCompra">
                         <option *ngFor="let uniCompra of unidadesCompra | async" [ngValue]="uniCompra">
                             {{uniCompra.descripcion}}
                         </option>
@@ -64,7 +64,7 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="unidadVenta">Unidad Venta</label>
-                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.unidadVenta" class="form-control" id="unidadVenta">
+                    <select [compareWith]="utilsService.dropdownCompareWith"  [(ngModel)]="recurso.unidadVenta" class="form-control" id="unidadVenta">
                         <option *ngFor="let uniVenta of unidadesVenta | async" [ngValue]="uniVenta">
                             {{uniVenta.descripcion}}
                         </option>
@@ -74,14 +74,14 @@
 
             <div class="col-sm-3">
                 <div class="checkbox-categ"> 
-                    <ba-checkbox [(ngModel)]="recurso.stock" [label]="'Stock'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                    <ba-checkbox  [(ngModel)]="recurso.stock" [label]="'Stock'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
                 </div>
             </div>
 
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="IVA">IVA</label>
-                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.IVA" class="form-control text-right-select" id="IVA">
+                    <select [compareWith]="utilsService.dropdownCompareWith"  [(ngModel)]="recurso.IVA" class="form-control text-right-select" id="IVA">
                         <option *ngFor="let iva of ivas | async" [ngValue]="iva">
                             {{utilsService.parseDecimal(iva.porcIVA)}}
                         </option>
@@ -92,7 +92,7 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="marca">Marca</label>
-                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.marca" class="form-control text-right-select" id="marca">
+                    <select [compareWith]="utilsService.dropdownCompareWith"  [(ngModel)]="recurso.marca" class="form-control text-right-select" id="marca">
                         <option *ngFor="let mar of marcas | async; let i = index" 
                                 [ngValue]="mar"
                                 [attr.selected]="i == 0 ? true : null">
@@ -108,24 +108,24 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="precioVentaProv">Precio Venta Prov</label>
-                    <input [(ngModel)]="recurso.precioVentaProv" type="text" class="form-control text-right" id="precioVentaProv" placeholder="">
+                    <input  [(ngModel)]="recurso.precioVentaProv" type="text" class="form-control text-right" id="precioVentaProv" placeholder="">
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="costoReposicion">Costo Reposicion</label>
-                    <input [(ngModel)]="recurso.costoReposicion" type="text" class="form-control text-right" id="costoReposicion" placeholder="">
+                    <input  [(ngModel)]="recurso.costoReposicion" type="text" class="form-control text-right" id="costoReposicion" placeholder="">
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="puntoPedido">Punto Pedido</label>
-                    <input [(ngModel)]="recurso.puntoPedido" type="text" class="form-control text-right" id="puntoPedido" placeholder="">
+                    <input  [(ngModel)]="recurso.puntoPedido" type="text" class="form-control text-right" id="puntoPedido" placeholder="">
                 </div>
             </div>
             <div class="col-sm-2">
                 <div class="checkbox-apto-canje">
-                    <ba-checkbox [(ngModel)]="recurso.aptoCanje" [label]="'Apto Canje'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                    <ba-checkbox  [(ngModel)]="recurso.aptoCanje" [label]="'Apto Canje'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
                 </div>
             </div>
         </div>
@@ -133,23 +133,23 @@
         <div class="row custom-card">
             <div class="col-sm-2">
                 <div class="checkbox-traza">
-                    <ba-checkbox [disabled]="recurso.trazable" [(ngModel)]="recurso.trazable" [label]="'Trazable'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                    <ba-checkbox [disabled]="recurso.trazable"  [(ngModel)]="recurso.trazable" [label]="'Trazable'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
                 </div>
             </div>
             <div class="col-sm-2">
                 <div class="checkbox-traza">
-                    <ba-checkbox [disabled]="!recurso.trazable" [(ngModel)]="recurso.traReceta" [label]="'Receta'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                    <ba-checkbox [disabled]="!recurso.trazable"  [(ngModel)]="recurso.traReceta" [label]="'Receta'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
                 </div>
             </div>
             <div class="col-sm-2">
                 <div class="checkbox-traza">
-                    <ba-checkbox [disabled]="!recurso.trazable" [(ngModel)]="recurso.traInforma" [label]="'Informa'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                    <ba-checkbox [disabled]="!recurso.trazable"  [(ngModel)]="recurso.traInforma" [label]="'Informa'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="form-group gtin-group">
                     <label for="gtin">GTIN</label>
-                    <input [disabled]="!recurso.trazable" [(ngModel)]="recurso.gtin" type="text" class="form-control gtin-only" id="gtin" placeholder="">
+                    <input [disabled]="!recurso.trazable"  [(ngModel)]="recurso.gtin" type="text" class="form-control gtin-only" id="gtin" placeholder="">
                 </div>
             </div>
         </div>
@@ -159,43 +159,42 @@
             <div class="col-sm-7">
                 <div class="form-group">
                     <label for="observaciones">Observaciones</label>
-                    <textarea [(ngModel)]="recurso.observaciones" class="form-control" placeholder="" id="observaciones"></textarea>
+                    <textarea  [(ngModel)]="recurso.observaciones" class="form-control" placeholder="" id="observaciones"></textarea>
                 </div>
             </div>
 
             <div class="offset-sm-2 col-sm-3">
                 <div class="form-group">
                     <label for="modeloInputacion">Modelo inputacion</label>
-                    <select [compareWith]="compareWithModeloImpu" [(ngModel)]="recurso.modeloCab" class="form-control" id="modeloCab">
+                    <select [compareWith]="compareWithModeloImpu"  [(ngModel)]="recurso.modeloCab" class="form-control" id="modeloCab">
                         <option *ngFor="let modCab of modelosCab | async" [ngValue]="modCab">
                             {{modCab.descripcion}}
                         </option>
                     </select>
                 </div>
             </div>
-
-            <!-- <div class="offset-sm-2 col-sm-3">
-                <div class="form-group">
-                    <label for="modeloImputacion">Modelo inputacion</label>
-                    <input [(ngModel)]="recurso.modeloImputacion" type="text" class="form-control" id="modeloImputacion" placeholder="">
-                </div>
-            </div> -->
         </div>
 
-        <button [disabled]="utilsService.checkIfIncomplete(recurso)([
-                                'aptoCanje', 
-                                'stock', 
-                                'trazable', 
-                                'traReceta', 
-                                'traInforma',
-                                'codigoBarra',
-                                'descripcionCorta',
-                                'descripcion',
-                                'modeloImputacion',
-                                'gtin',
-                                'observaciones'
-                            ])()"
-                (click)="onClickEditar()" type="submit" class="btn btn-primary">Confirmar</button>
+        <div class="btn-container">
+            <button class="btn btn-secondary" routerLink="/pages/stock/productos">
+                Cancelar
+            </button>
+            <button [disabled]="utilsService.checkIfIncomplete(recurso)([
+                                    'aptoCanje', 
+                                    'stock', 
+                                    'trazable', 
+                                    'traReceta', 
+                                    'traInforma',
+                                    'codigoBarra',
+                                    'descripcionCorta',
+                                    'descripcion',
+                                    'modeloImputacion',
+                                    'gtin',
+                                    'observaciones'
+                                ])()"
+                    (click)="onClickEditar()" type="submit" class="btn btn-primary">Confirmar</button>
+            
+        </div>
     </ba-card>
 
 </div>

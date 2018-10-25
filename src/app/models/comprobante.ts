@@ -12,6 +12,8 @@ export class Comprobante {
     fechaVto: DateLikePicker;
     observaciones: string;
 
+    // numero: 
+
     constructor(comprobante?: {
         tipo: any;
         puntoVenta: string;
@@ -29,7 +31,7 @@ export class Comprobante {
             this.letra = comprobante.letra
             this.moneda = new Moneda(comprobante.moneda)
             this.fechaComprobante = comprobante.fechaComprobante
-            debugger;
+            // debugger;
             this.fechaVto = comprobante.fechaVto
             this.observaciones = comprobante.observaciones
         } else {

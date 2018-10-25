@@ -16,6 +16,13 @@ export class Stock {
     // Estos por general
     codProducto: string;
     descripcion: string;
+    // Nuevos del general
+    fisicoImputado: number;
+    stockFisico: number;
+    ingresoVirtual: number;
+    egresoVirtual: number;
+    virtualImputado: number;
+    stockVirtual: number;
 
     constructor(stock?: {
         ingresos: number;
@@ -33,6 +40,13 @@ export class Stock {
 
         codProducto?: string;
         descripcion?: string;
+
+        fisicoImputado?: number;
+        stockFisico?: number;
+        ingresoVirtual?: number;
+        egresoVirtual?: number;
+        virtualImputado?: number;
+        stockVirtual?: number;
     }) {
         if (stock) {
             this.ingresos = stock.ingresos;
@@ -51,6 +65,13 @@ export class Stock {
             this.codProducto = stock.codProducto;
             this.descripcion = stock.descripcion;
 
+            this.fisicoImputado = stock.fisicoImputado;
+            this.stockFisico = stock.stockFisico;
+            this.ingresoVirtual = stock.ingresoVirtual;
+            this.egresoVirtual = stock.egresoVirtual;
+            this.virtualImputado = stock.virtualImputado;
+            this.stockVirtual = stock.stockVirtual;
+
         } else {
             this.comprobante = null;
             this.numero = null;
@@ -66,6 +87,13 @@ export class Stock {
 
             this.codProducto = null;
             this.descripcion = null;
+
+            this.fisicoImputado = null;
+            this.virtualImputado = null;
+            this.stockFisico = null;
+            this.stockVirtual = null;
+            this.ingresoVirtual = null;
+            this.egresoVirtual = null;
         }
     }
 }

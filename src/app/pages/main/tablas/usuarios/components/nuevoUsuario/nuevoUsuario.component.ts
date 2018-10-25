@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 
 import { LocalStorageService } from '../../../../../../services/localStorageService';
 import { Usuario } from '../../../../../../models/usuario';
@@ -20,6 +20,7 @@ import { Observable } from 'rxjs/Observable';
     styleUrls: ['./nuevoUsuario.scss'],
     templateUrl: './nuevoUsuario.html',
 })
+// export class NuevoUsuario implements PendingChangeComponent {
 export class NuevoUsuario {
     // Sucursales de la empresa
     sucursales: Observable<Sucursal[]>;
@@ -37,11 +38,17 @@ export class NuevoUsuario {
         private localStorageService: LocalStorageService
     ) {
         this.sucursales = recursoService.getRecursoList(resourcesREST.sucursales)();
-        // this.perfiles = recursoService.getRecursoList(resourcesREST.perfiles)({
-        //     sucursal: this.usuarioNuevo.perfil.sucursal.idSucursal
-        // });
     }
 
+    ngOnInit() {
+        this.recursoService.setEdicionFinalizada(false);
+    }
+
+    @HostListener('window:beforeunload')
+    canDeactivate = () => 
+        this.recursoService.checkIfEquals(this.usuarioNuevo, new Usuario()) || 
+        this.recursoService.getEdicionFinalizada();
+    
     /**
      * Se dispara cuando se cambia la sucursal en el dropdown
      * @param event 
@@ -74,7 +81,10 @@ export class NuevoUsuario {
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/usuarios']) 
+                () => {
+                    this.router.navigate(['/pages/tablas/usuarios']);
+                    this.recursoService.setEdicionFinalizada(true);
+                }
             )();
         }
         catch(ex) {

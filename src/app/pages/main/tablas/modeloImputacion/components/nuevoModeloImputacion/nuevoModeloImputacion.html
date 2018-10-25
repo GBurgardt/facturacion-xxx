@@ -144,7 +144,7 @@
                                 <ng-container *ngIf="checkIfExisteDetallesCompra()">
                                     <li [ngClass]="checkIfShowLiCompra(det)" *ngFor="let det of detalles" [value]="det">
                                         <label>
-                                            {{ det.descripcion }}
+                                            {{ det.planCuenta.planDescripcion }}, {{ det.planCuenta.planCuentas }} ({{ det.descripcion }})
                                         </label>
             
                                         <div class="btn-container">
@@ -174,7 +174,7 @@
                                 <ng-container *ngIf="checkIfExisteDetallesVenta()">
                                     <li [ngClass]="checkIfShowLiVenta(det)" *ngFor="let det of detalles" [value]="det">
                                         <label>
-                                            {{ det.descripcion }}
+                                            {{ det.planCuenta.planDescripcion }}, {{ det.planCuenta.planCuentas }} ({{ det.descripcion }})
                                         </label>
             
                                         <div class="btn-container">

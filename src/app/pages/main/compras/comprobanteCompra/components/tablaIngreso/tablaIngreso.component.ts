@@ -7,6 +7,9 @@ import { RecursoService } from '../../../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
 
 import { PopupListaService } from '../../../../../reusable/otros/popup-lista/popup-lista-service';
+import sisModulos from 'constantes/sisModulos';
+import sisTipoModelos from 'constantes/sisTipoModelos';
+import { ProductoReducido } from '../../../../../../models/productoReducido';
 
 
 @Component({
@@ -40,11 +43,11 @@ export class TablaIngreso {
     /////////// BUSQUEDA ///////////
     textoBusqueda: string;
     productosBusqueda: {
-        todos: ProductoPendiente[];
-        filtrados: BehaviorSubject<ProductoPendiente[]>;
+        todos: ProductoReducido[];
+        filtrados: BehaviorSubject<ProductoReducido[]>;
     } = {todos: [], filtrados: new BehaviorSubject([])}
 
-    productoSeleccionado: ProductoPendiente = new ProductoPendiente();
+    productoSeleccionado: ProductoReducido = new ProductoReducido();
     // Inhdice del producto enfocado del popup
     productoEnfocadoIndex: number = -1;
 
@@ -58,12 +61,22 @@ export class TablaIngreso {
         private popupListaService: PopupListaService
     ) {
         // Cargo todos los productos pendientes posibles
-        recursoService.getRecursoList(resourcesREST.buscaPendientes)({
-            'idSisTipoModelo': 2,
-            'modulo': 1
-        }).subscribe(prodsPendPosibles => {
-            this.productosBusqueda.todos = prodsPendPosibles;
-            this.productosBusqueda.filtrados.next(prodsPendPosibles);
+        // recursoService.getRecursoList(resourcesREST.buscaPendientes)({
+        //     'idSisTipoModelo': sisTipoModelos.neto,
+        //     'modulo': sisModulos.compra,
+        //     'tipo': 'reducida'
+        // }).subscribe(prodsPendPosibles => {
+        //     debugger;
+        //     this.productosBusqueda.todos = prodsPendPosibles;
+        //     this.productosBusqueda.filtrados.next(prodsPendPosibles);
+        // });
+
+        recursoService.getRecursoList(resourcesREST.productosReducidos)({
+            'tipo': 'reducida'
+        }).subscribe(prods => {
+            // debugger;
+            this.productosBusqueda.todos = prods;
+            this.productosBusqueda.filtrados.next(prods);
         });
     }
 
@@ -119,12 +132,24 @@ export class TablaIngreso {
      * Evento change del input de codProducto
      */
     onChangeInputItemAdd = (textoBuscado) => {
-        this.productosBusqueda.filtrados.next(
-            this.productosBusqueda.todos.filter(
-                prodPend => prodPend.producto.codProducto.toString().includes(textoBuscado) ||
-                            prodPend.producto.descripcion.toString().toLowerCase().includes(textoBuscado)
-            )
-        );
+        if (textoBuscado) {
+            this.productosBusqueda.filtrados.next(
+                this.productosBusqueda.todos.filter(
+                    prodPend => prodPend.codProducto.toString().includes(
+                        textoBuscado.toString().toLowerCase()
+                    ) ||
+                    prodPend.descripcion.toString().toLowerCase().includes(
+                        textoBuscado.toString().toLowerCase()
+                    )
+                    // prodPend => prodPend.producto.codProducto.toString().includes(
+                    //     textoBuscado.toString().toLowerCase()
+                    // ) ||
+                    // prodPend.producto.descripcion.toString().toLowerCase().includes(
+                    //     textoBuscado.toString().toLowerCase()
+                    // )
+                )
+            );
+        }
     }
 
     /**

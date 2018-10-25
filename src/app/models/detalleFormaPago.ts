@@ -1,4 +1,5 @@
 import { PlanCuenta } from "app/models/planCuenta";
+import { DateLikePicker } from "./dateLikePicker";
 
 export class DetalleFormaPago {
     idFormaPagoDet: number;
@@ -11,6 +12,9 @@ export class DetalleFormaPago {
     formaPagoDescrip: string;
 
     planCuenta: PlanCuenta;
+
+    // No está en el modelo, pero lo calculo acá y lo mando
+    fechaPago: DateLikePicker;
 
     constructor(detalleFormaPago?: {
         idFormaPagoDet: number;
@@ -31,6 +35,8 @@ export class DetalleFormaPago {
             this.formaPagoDescrip = '';
 
             this.planCuenta = new PlanCuenta(detalleFormaPago.planCuenta);
+
+            this.fechaPago = null;
         } else {
             this.idFormaPagoDet = null;
             this.cantDias = null;
@@ -41,6 +47,8 @@ export class DetalleFormaPago {
             this.formaPagoDescrip = null;
 
             this.planCuenta = new PlanCuenta();
+
+            this.fechaPago = null;
         }
     }
 }

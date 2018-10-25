@@ -24,11 +24,17 @@ export class Padron {
             this.cuit = padron.cuit;
             this.condIva = new CondIva(padron.condIva);
         } else {
-            this.padronCodigo = null;
-            this.padronApelli = null;
-            this.padronNombre = null;
-            this.codigoPostal = null;
-            this.cuit = null;
+            // this.padronCodigo = null;
+            // this.padronApelli = null;
+            // this.padronNombre = null;
+            // this.codigoPostal = null;
+            // this.cuit = null;
+            // this.condIva = new CondIva(null);
+            this.padronCodigo = undefined;
+            this.padronApelli = undefined;
+            this.padronNombre = undefined;
+            this.codigoPostal = undefined;
+            this.cuit = undefined;
             this.condIva = new CondIva(null);
         }
     }

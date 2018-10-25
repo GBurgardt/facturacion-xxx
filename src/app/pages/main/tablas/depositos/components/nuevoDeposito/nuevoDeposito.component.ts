@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 
 import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
@@ -27,6 +27,15 @@ export class NuevoDeposito {
         private router: Router
     ) { }
 
+    ngOnInit() {
+        this.recursoService.setEdicionFinalizada(false);
+    }
+
+    @HostListener('window:beforeunload')
+    canDeactivate = () => 
+        this.recursoService.checkIfEquals(this.recurso, new Deposito()) || 
+        this.recursoService.getEdicionFinalizada();
+
     onClickCrear = async (e) => {
         try {
 
@@ -39,7 +48,10 @@ export class NuevoDeposito {
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/depositos'])
+                () => {
+                    this.router.navigate(['/pages/tablas/depositos']);
+                    this.recursoService.setEdicionFinalizada(true);
+                }
             )();
         }
         catch(ex) {

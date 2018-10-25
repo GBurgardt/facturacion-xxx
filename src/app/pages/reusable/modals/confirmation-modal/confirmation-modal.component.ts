@@ -12,6 +12,9 @@ export class ConfirmationModal implements OnInit {
     modalHeader: string;
     modalContent: string;
 
+    afirmativeText = null;
+    negativeText = null;
+
     constructor(private activeModal: NgbActiveModal) {
     }
 

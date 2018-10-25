@@ -14,6 +14,7 @@ import { ConsultaPorProducto } from "./consultaPorProducto";
 import { ConsultaPorProductoService } from "./consultaPorProducto/consultaPorProductoService";
 import { ConsultaGeneralService } from "./consultaGeneral/consultaGeneralService";
 import { ConsultaGeneral } from "./consultaGeneral";
+import { PendingChangesGuard } from "app/guards/PendingChangesGuard";
 
 @NgModule({
     imports: [
@@ -34,7 +35,8 @@ import { ConsultaGeneral } from "./consultaGeneral";
         AuthService,
         UtilsService,
         ConsultaPorProductoService,
-        ConsultaGeneralService
+        ConsultaGeneralService,
+        PendingChangesGuard
     ],
     exports: [
         TablaProductos

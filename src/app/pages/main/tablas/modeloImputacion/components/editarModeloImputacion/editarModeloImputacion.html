@@ -138,7 +138,7 @@
                                         <ng-container *ngIf="checkIfExisteDetallesCompra()">
                                             <li [ngClass]="checkIfShowLiCompra(det)" *ngFor="let det of recurso.modeloDetalle" [value]="det">
                                                 <label>
-                                                    {{ det.descripcion }}
+                                                    {{ det.planCuenta.planDescripcion }}, {{ det.planCuenta.planCuentas }} ({{ det.descripcion }})
                                                 </label>
                     
                                                 <div class="btn-container">
@@ -168,7 +168,7 @@
                                         <ng-container *ngIf="checkIfExisteDetallesVenta()">
                                             <li [ngClass]="checkIfShowLiVenta(det)" *ngFor="let det of recurso.modeloDetalle" [value]="det">
                                                 <label>
-                                                    {{ det.descripcion }}
+                                                    {{ det.planCuenta.planDescripcion }}, {{ det.planCuenta.planCuentas }} ({{ det.descripcion }})
                                                 </label>
                     
                                                 <div class="btn-container">
@@ -190,53 +190,3 @@
     </div>
 
 </div>
-
-
-                
-                <!-- <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="detalles">Detalles</label>
-                        <div class="detalles-container">
-                            <ul class="detalles-list">
-                                <li *ngIf="!recurso || !recurso.modeloDetalle || recurso.modeloDetalle.length <= 0" class="no-detalles">
-                                    Sin Detalles
-                                </li>
-                                <li class="detalle-li" *ngFor="let det of recurso.modeloDetalle" [value]="det">
-                                    <label>
-                                        {{ det.descripcion }}
-                                    </label>
-
-                                    <div class="btn-container">
-                                        <div (click)="onEditDetalle(det)" class="btn-accion btn-edit">
-                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                        </div>
-                                        <div (click)="onRemoveDetalle(det)" class="btn-accion btn-delete">
-                                            <i class="fa fa-trash" aria-hidden="true"></i>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                            <div class="btn-container">
-                                <button (click)="onClickAgregarDetalle()" class="btn btn-secondary btn-agregar">Agregar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-
-
-
-
-                
-<!-- 
-                <div class="col-sm-4 btn-container-det">
-                    <button (click)="onClickCancelarDetalle()" class="btn btn-secondary btn-detalle">Cancelar</button>
-                    <button [disabled]="
-                            !detalleEnEdicion ||
-                            !detalleEnEdicion.descripcion ||
-                            !detalleEnEdicion.dh ||
-                            !detalleEnEdicion.planCuenta ||
-                            !detalleEnEdicion.orden ||
-                            !detalleEnEdicion.operador ||
-                            !detalleEnEdicion.idSisTipoModelo
-                        " (click)="onClickConfirmarDetalle()" type="submit" class="btn btn-primary btn-detalle">Confirmar</button>
-                </div> -->

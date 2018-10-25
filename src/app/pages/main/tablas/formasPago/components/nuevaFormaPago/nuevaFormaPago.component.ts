@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 import { environment } from 'environments/environment';
 import { UtilsService } from '../../../../../../services/utilsService';
 import { Router } from '@angular/router';
@@ -39,10 +39,17 @@ export class NuevaFormaPago {
     ) {
         this.tiposFormaPago = this.recursoService.getRecursoList(resourcesREST.sisFormaPago)();
         this.listasPrecios = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
-
-        this.contPlanCuentaList = this.recursoService.getRecursoList(resourcesREST.contPlanCuenta)();
-        
+        this.contPlanCuentaList = this.recursoService.getRecursoList(resourcesREST.contPlanCuenta)();    
     }
+
+    ngOnInit() {
+        this.recursoService.setEdicionFinalizada(false);
+    }
+
+    @HostListener('window:beforeunload')
+    canDeactivate = () => 
+        this.recursoService.checkIfEquals(this.recurso, new FormaPago()) || 
+        this.recursoService.getEdicionFinalizada();
 
     onClickCrear = async () => {
         try {
@@ -53,7 +60,10 @@ export class NuevaFormaPago {
             )(
                 resp.control.descripcion
             )(
-                () => this.router.navigate(['/pages/tablas/formas-pago'])
+                () => {
+                    this.router.navigate(['/pages/tablas/formas-pago']);
+                    this.recursoService.setEdicionFinalizada(true);
+                }
             )();
         }
         catch(ex) {
