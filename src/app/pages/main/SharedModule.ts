@@ -11,6 +11,8 @@ import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { PopupLista } from 'app/pages/reusable/otros/popup-lista/popup-lista.component';
 import { ListFinder } from '../reusable/otros/listFinder/listFinder';
 import { ListPopup } from 'app/pages/reusable/otros/listFinder/components/listPopup/listPopup';
+import { DateLickePicker } from 'app/pages/reusable/otros/dateLickePicker/dateLickePicker.component';
+import { SexiList } from '../reusable/listas/sexiList';
 
 
 
@@ -29,7 +31,9 @@ import { ListPopup } from 'app/pages/reusable/otros/listFinder/components/listPo
         DataFilterPipe,
         PopupLista,
         ListFinder,
-        ListPopup
+        ListPopup,
+        DateLickePicker,
+        SexiList
     ],
     providers: [
     ],
@@ -44,7 +48,9 @@ import { ListPopup } from 'app/pages/reusable/otros/listFinder/components/listPo
         NgbDatepickerModule,
         PopupLista,
         ListFinder,
-        ListPopup
+        ListPopup,
+        DateLickePicker,
+        SexiList
     ]
 })
 export class SharedModule {}

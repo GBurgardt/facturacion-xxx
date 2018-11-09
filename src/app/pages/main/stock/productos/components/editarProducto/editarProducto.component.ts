@@ -15,6 +15,7 @@ import { resourcesREST } from 'constantes/resoursesREST';
 import { Rubro } from 'app/models/rubro';
 import { ModeloCab } from '../../../../../../models/modeloCab';
 import { Marca } from '../../../../../../models/marca';
+import { Cultivo } from 'app/models/cultivo';
 
 @Component({
     selector: 'editar-producto',
@@ -34,8 +35,7 @@ export class EditarProducto {
     modelosCab: Observable<ModeloCab[]>;
     marcas: Observable<Marca[]>;
     
-    // Bandera que avisa si el recurso ya se editó
-    // recursoEditado: boolean = false;
+    cultivos: Cultivo[] = [];
 
     constructor(
         private recursoService: RecursoService,
@@ -51,6 +51,9 @@ export class EditarProducto {
         this.ivas = this.recursoService.getRecursoList(resourcesREST.sisIVA)();
         this.modelosCab = this.recursoService.getRecursoList(resourcesREST.modeloCab)();
         this.marcas = this.recursoService.getRecursoList(resourcesREST.marcas)();
+
+        this.recursoService.getRecursoList(resourcesREST.cultivo)().toPromise()
+            .then(cultivos => this.cultivos = cultivos)
 
         // Busco el recurso por id
         this.route.params.subscribe(params =>
@@ -121,5 +124,19 @@ export class EditarProducto {
             return r2.idSubRubro === this.recurso.subRubro.idSubRubro
         };
     }
+
+    
+    onConditionCultivo = (cult: Cultivo) => 
+        this.recurso.cultivos.length > 0 && 
+        this.recurso.cultivos.some(recCult => recCult.idCultivo === cult.idCultivo);
+    
+
+    /**
+     * Agrega/quita un cultivo de los cultivos del producto
+     */
+    onClickCultivo = (cult: Cultivo) => () =>
+        this.recurso.cultivos.some(recCult => recCult.idCultivo === cult.idCultivo) ?
+        this.recurso.cultivos = this.recurso.cultivos.filter(recCult => recCult.idCultivo !== cult.idCultivo) :
+        this.recurso.cultivos = this.recurso.cultivos.concat(cult)
 
 }

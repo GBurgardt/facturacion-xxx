@@ -3,6 +3,7 @@ import { Unidad } from "./unidad";
 import { SubRubro } from "./subRubro";
 import { ModeloCab } from "app/models/modeloCab";
 import { Marca } from "./marca";
+import { Cultivo } from "app/models/cultivo";
 
 export class Producto {
     idProductos: number;
@@ -30,6 +31,8 @@ export class Producto {
 
     marca: Marca;
 
+    cultivos: Cultivo[]
+
     constructor (producto?: {
         idProductos: number;
         codProducto: string;
@@ -55,6 +58,8 @@ export class Producto {
         modeloCab: any;
 
         marca: any;
+
+        cultivos: any[];
     }) {
         if (producto) {
             this.idProductos = producto.idProductos;
@@ -81,6 +86,8 @@ export class Producto {
             this.modeloCab = new ModeloCab(producto.modeloCab);
 
             this.marca = new Marca(producto.marca);
+
+            this.cultivos = producto.cultivos.map(cult => new Cultivo(cult));
         } else {
             this.idProductos = null;       
             this.codProducto = null;       
@@ -108,6 +115,8 @@ export class Producto {
             this.modeloCab = new ModeloCab();
 
             this.marca = new Marca();
+
+            this.cultivos = [];
         }
     }
 

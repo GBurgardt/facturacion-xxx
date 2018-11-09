@@ -45,6 +45,8 @@ export class ProductoPendiente {
 
     // nroComprobante: string;
 
+    // subtotal: number;
+
     constructor(productoPendiente?: {
         comprobante: string;
         numero: string;

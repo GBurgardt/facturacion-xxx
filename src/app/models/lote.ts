@@ -19,6 +19,10 @@ export class Lote {
 
     idProducto: number;
 
+    recetaN;
+
+    idLote: any;
+
     constructor(lote?: {
         nroLote: string;
         item: number;
@@ -37,6 +41,8 @@ export class Lote {
         comprobante: string;
 
         idProducto: number;
+
+        idLote: any;
     }) {
         if (lote) {
             this.nroLote = lote.nroLote;
@@ -57,6 +63,7 @@ export class Lote {
 
             this.idProducto = lote.idProducto;
 
+            this.idLote = lote.idLote;
         } else {
             this.nroLote = null;
             this.item = null;
@@ -76,6 +83,8 @@ export class Lote {
             this.comprobante = null;
 
             this.idProducto = null;
+
+            this.idLote = lote.idLote;
         }
     }
 }

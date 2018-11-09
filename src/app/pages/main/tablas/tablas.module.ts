@@ -38,6 +38,18 @@ import { PendingChangesGuard } from 'app/guards/PendingChangesGuard';
 import { CteFecha } from './cteFecha';
 import { EditarCteFecha } from './cteFecha/components/editarCteFecha';
 import { NuevoCteFecha } from './cteFecha/components/nuevoCteFecha';
+import { Numeradores } from './numeradores';
+import { NuevoNumeradores } from './numeradores/components/nuevoNumeradores';
+import { EditarNumeradores } from './numeradores/components/editarNumeradores';
+import { NuevoCategorias } from './categorias/components/nuevoCategorias';
+import { EditarCategorias } from 'app/pages/main/tablas/categorias/components/editarCategorias';
+import { Categorias } from 'app/pages/main/tablas/categorias';
+import { Clientes } from 'app/pages/main/tablas/clientes';
+import { NuevoClientes } from './clientes/components/nuevoClientes';
+import { EditarClientes } from './clientes/components/editarClientes';
+import { Cultivos } from './cultivos';
+import { NuevoCultivos } from './cultivos/components/nuevoCultivos';
+import { EditarCultivos } from './cultivos/components/editarCultivos';
 
 @NgModule({
     imports: [
@@ -73,7 +85,19 @@ import { NuevoCteFecha } from './cteFecha/components/nuevoCteFecha';
         EditarModeloImputacion,
         CteFecha,
         EditarCteFecha,
-        NuevoCteFecha
+        NuevoCteFecha,
+        Numeradores,
+        NuevoNumeradores,
+        EditarNumeradores,
+        Categorias,
+        EditarCategorias,
+        NuevoCategorias,
+        Clientes,
+        NuevoClientes,
+        EditarClientes,
+        Cultivos,
+        NuevoCultivos,
+        EditarCultivos
     ],
     providers: [
         DataTablesService,

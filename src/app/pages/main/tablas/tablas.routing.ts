@@ -34,6 +34,19 @@ import { PendingChangesGuard } from 'app/guards/PendingChangesGuard';
 import { CteFecha } from './cteFecha';
 import { NuevoCteFecha } from './cteFecha/components/nuevoCteFecha';
 import { EditarCteFecha } from './cteFecha/components/editarCteFecha';
+import { Numerador } from '../../../models/numerador';
+import { Numeradores } from './numeradores';
+import { NuevoNumeradores } from './numeradores/components/nuevoNumeradores';
+import { EditarNumeradores } from './numeradores/components/editarNumeradores';
+import { Categorias } from './categorias';
+import { NuevoCategorias } from './categorias/components/nuevoCategorias';
+import { EditarCategorias } from './categorias/components/editarCategorias';
+import { Clientes } from './clientes';
+import { NuevoClientes } from './clientes/components/nuevoClientes';
+import { EditarClientes } from 'app/pages/main/tablas/clientes/components/editarClientes';
+import { Cultivos } from './cultivos';
+import { NuevoCultivos } from 'app/pages/main/tablas/cultivos/components/nuevoCultivos';
+import { EditarCultivos } from './cultivos/components/editarCultivos';
 
 // noinspection TypeScriptValidateTypes
 const routes: Routes = [
@@ -68,6 +81,18 @@ const routes: Routes = [
             { path: 'cte-fecha', component: CteFecha },
             { path: 'cte-fecha/nuevo', component: NuevoCteFecha, canDeactivate: [PendingChangesGuard] },
             { path: 'cte-fecha/editar/:idCteFechas', component: EditarCteFecha, canDeactivate: [PendingChangesGuard] },
+            { path: 'numeradores', component: Numeradores },
+            { path: 'numeradores/nuevo', component: NuevoNumeradores, canDeactivate: [PendingChangesGuard] },
+            { path: 'numeradores/editar/:idCteNumerador', component: EditarNumeradores, canDeactivate: [PendingChangesGuard] },
+            { path: 'categorias', component: Categorias },
+            { path: 'categorias/nuevo', component: NuevoCategorias, canDeactivate: [PendingChangesGuard] },
+            { path: 'categorias/editar/:idCategoria', component: EditarCategorias, canDeactivate: [PendingChangesGuard] },
+            { path: 'clientes', component: Clientes },
+            { path: 'clientes/nuevo', component: NuevoClientes, canDeactivate: [PendingChangesGuard] },
+            { path: 'clientes/editar/:idCliente', component: EditarClientes, canDeactivate: [PendingChangesGuard] },
+            { path: 'cultivos', component: Cultivos },
+            { path: 'cultivos/nuevo', component: NuevoCultivos, canDeactivate: [PendingChangesGuard] },
+            { path: 'cultivos/editar/:idCultivo', component: EditarCultivos, canDeactivate: [PendingChangesGuard] },
         ]
     }
 ];

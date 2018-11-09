@@ -1,0 +1,86 @@
+<div class="editar-numeradores">
+    <ba-card cardTitle="Modificar numerador" baCardClass="with-scroll" class="numerador-card">
+
+        <div class="line">
+            <div class="form-group item">
+                <label for="descripcion">Descripcion:</label>
+                <input class="form-control" [(ngModel)]="recurso.descripcion" id="descripcion">
+            </div>
+
+            <div class="form-group item">
+                <label for="cteTipo">Tipo Comprobante</label>
+                <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.cteTipo" class="form-control" id="cteTipo">
+                    <option *ngFor="let ct of cteTipos | async" [ngValue]="ct">
+                        {{ ct.descripcion }}
+                    </option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="line">
+            <div class="form-group item">
+                <label for="fechaApertura">
+                    Fecha Apertura
+                </label>
+                <!-- [likePickerChanges]="recurso.fechaApertura = $event" -->
+                <date-licker-picker idLikePicker="idFechaApertura" idFocusBlur="idFechaCierre" (itemChanged)="recurso.fechaApertura = $event"
+                    [itemBinded]="recurso.fechaApertura"></date-licker-picker>
+            </div>
+
+            <div class="form-group item">
+                <label for="idFechaCierre">
+                    Fecha Cierre
+                </label>
+                <date-licker-picker idLikePicker="idFechaCierre" idFocusBlur="idNumero" (itemChanged)="recurso.fechaCierre = $event" [(itemBinded)]="recurso.fechaCierre"></date-licker-picker>
+            </div>
+        </div>
+
+        <div class="line">
+            <div class="form-group item numero-item">
+                <div class="numero-item-content">
+                    <label for="idNumero">Numero</label>
+                    <select [compareWith]="utilsService.dropdownCompareWith" (blur)="utilsService.focusElement('idBtnConfirmar')" [disabled]="addNewNumero" [(ngModel)]="recurso.numero" class="form-control"
+                        id="idNumero">
+                        <option *ngFor="let num of numeros | async" [ngValue]="num">
+                            {{ num.auxNumero }}
+                        </option>
+                    </select>
+                </div>
+                <div (click)="onClickAddNumero()" class="btn-add">
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button [disabled]="utilsService.checkIfIncomplete(recurso)(
+                            ['idCteNumerador', 'fechaApertura', 'fechaCierre', 'numero']
+                        )()" (click)="onClickEditar()" type="submit" class="btn btn-primary" id="idBtnConfirmar">Confirmar</button>
+            </div>
+
+        </div>
+
+        <div *ngIf="addNewNumero" class="nuevo-numerador">
+            <div class="line">
+                <p>Nuevo Numero</p>
+                <div class="toggle-btn" (click)="onClickAddNumero()">
+                    <i class="fa fa-caret-down" aria-hidden="true"></i>
+                </div>
+            </div>
+            <div class="line">
+                <div class="form-group item">
+                    <label for="idPtoVentaNro">Punto Venta:</label>
+                    <input (blur)="recurso.numero.ptoVenta = utilsService.autocompNroComp('ptoVenta')(recurso.numero)" maxlength="4" class="form-control"
+                        [(ngModel)]="recurso.numero.ptoVenta" id="idPtoVentaNro">
+                </div>
+                <div class="form-group item">
+                    <label for="idNroNro">Numero:</label>
+                    <input (blur)="recurso.numero.numero = utilsService.autocompNroComp('numero')(recurso.numero)" maxlength="8" class="form-control"
+                        [(ngModel)]="recurso.numero.numero" id="idNroNro">
+                </div>
+            </div>
+        </div>
+
+
+    </ba-card>
+</div>

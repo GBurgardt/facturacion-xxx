@@ -59,4 +59,32 @@
             margin-left: 5px;
         }
     } 
+
+    
+    
+    .badges-container {
+        display: flex;
+        // justify-content: space-between;
+        margin: 0 20px 0 9px;
+        min-height: 28px;
+
+        .badge-item {
+            // background: #dee0e0;
+            background: #d8efca;
+            border-radius: 12px;
+            color: #4d4d4d;
+            font-weight: 700;
+            height: 22px;
+            margin: 3px 11.7px 2px 0;
+            padding: 3px 8px 0;
+            text-transform: capitalize;
+        }
+    }
+
+    // Las inner-class van por fuera
+    .cultivos-list {
+        margin: 0 20px 0 9px !important;
+        max-height: 133px;
+        overflow: auto;
+    }
 }

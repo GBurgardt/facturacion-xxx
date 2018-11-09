@@ -261,7 +261,8 @@ export class ComprobanteCompraService {
         (cotizacionDatos: { cotizacion: Cotizacion, total: number }) =>
         (depositoSelec: Deposito) =>
         (detallesFormaPago: DetalleFormaPago[]) => 
-        (factura: Factura) => 
+        // (factura: Factura) => 
+        (factura: Comprobante) => 
         (tipoOpSelect: SisTipoOperacion) => 
             this.authService.grabaComprobante(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec)(detallesFormaPago)(factura)(tipoOpSelect)
                 .catch(err => {
@@ -291,7 +292,7 @@ export class ComprobanteCompraService {
 
         /// Checkeo que hayan cargado los datos de la trazabilidad (y que el tipo comprobatne NO sea Ordencompra)
         const trazabilidadCargada = 
-            comprobante.tipo.comprobante.idSisComprobantes === 4 ||
+            comprobante && comprobante.tipo && comprobante.tipo.comprobante && comprobante.tipo.comprobante.idSisComprobantes === 4 ||
             this.checkIfTrazabilidadCargada(productosPend);
         
         // Si se seleccionó alguna forma de pago, entonces checkeo que los importes estén seteados y totalicen el total del comprobante
@@ -350,10 +351,13 @@ export class ComprobanteCompraService {
                                     (modelosFactura: ModeloFactura[]) =>
                                     (depositoSelec: Deposito) => (
         provSelec.padronCodigo &&
+        comprobante &&
+        comprobante.tipo &&
         comprobante.tipo.idCteTipo &&
         comprobante.letra &&
-        comprobante.puntoVenta &&
-        comprobante.numero &&
+        comprobante.numerador.numero.ptoVenta &&
+        comprobante.numerador.numero.numero &&
+        comprobante.moneda &&
         comprobante.moneda.idMoneda &&
         comprobante.fechaComprobante &&
         comprobante.fechaVto &&

@@ -34,9 +34,12 @@ import { Numero } from '../../../../models/numero';
 import { Factura } from '../../../../models/factura';
 import { ModeloFactura } from 'app/models/modeloFactura';
 import gruposParametros from 'constantes/gruposParametros';
-import sisModulos from 'constantes/sisModulos';
-import sisTipoModelos from 'constantes/sisTipoModelos';
 import { ProductoReducido } from '../../../../models/productoReducido';
+import { Cliente } from '../../../../models/cliente';
+import { SisSitIVA } from '../../../../models/sisSitIva';
+import { Router } from '../../../../../../node_modules/@angular/router';
+import { Vendedor } from '../../../../models/vendedor';
+import sisModulos from 'constantes/sisModulos';
 
 
 @Component({
@@ -49,6 +52,8 @@ import { ProductoReducido } from '../../../../models/productoReducido';
  * Form reutilizable
  */
 export class EmisionRemitos {
+    
+
     /////////////////////////////////////////////
     /////////// Objetos Seleccionados ///////////
     /////////////////////////////////////////////
@@ -56,12 +61,19 @@ export class EmisionRemitos {
     comprobante: Comprobante = new Comprobante();
     comprobanteRelacionado: ComprobanteRelacionado = new ComprobanteRelacionado()
     deposito: Deposito;
-    tipoOperacion: SisTipoOperacion = new SisTipoOperacion();
+    tipoOperacion: SisTipoOperacion;
     sisCanje: SisCanje = new SisCanje();
     formasPagoSeleccionadas: FormaPago[] = [];
     numeroCteSelec: Numero = new Numero();
-
-    factura: Factura = new Factura();
+    // factura: Factura = new Factura();
+    factura: Comprobante = new Comprobante();
+    dataVendedor: {
+        vendedor: Vendedor,
+        incluir: boolean
+    } = {
+        vendedor: new Vendedor(),
+        incluir: false
+    };
 
     /////////////////////////////////////////////
     //////////// Listas desplegables ////////////
@@ -78,6 +90,9 @@ export class EmisionRemitos {
     letras: string[] = [];
     
     numerosCte: Numero[] = [];
+
+    tiposComprobantesRel: Observable<TipoComprobante[]>;
+    tiposComprobantesFactura: Observable<TipoComprobante[]>;
 
     /////////////////////////////////////////////
     ////////////////// Otros ////////////////////
@@ -152,25 +167,18 @@ export class EmisionRemitos {
         private emisionRemitosService: EmisionRemitosService,
         private utilsService: UtilsService,
         private popupListaService: PopupListaService,
-        private _state: GlobalState
+        private _state: GlobalState,
+        private router: Router
     ) {
 
         ////////// Listas desplegables //////////
         this.sisSitIvas = this.recursoService.getRecursoList(resourcesREST.sisSitIva)();
-
-        // this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
-        //     'sisComprobante': 6
-        // });
 
         this.tiposOperacion = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)({
             sisModulo: 2
         });
         this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
         this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
-
-        // this.productos = this.recursoService.getRecursoList(resourcesREST.buscaPendientes)({
-        //     'idSisTipoModelo': 1
-        // });
 
         this.sisCanjes = this.recursoService.getRecursoList(resourcesREST.sisCanjes)();
 
@@ -181,10 +189,6 @@ export class EmisionRemitos {
             this.clientes.todos = clientes;
             this.clientes.filtrados.next(clientes);
         });
-        // this.recursoService.getRecursoList(resourcesREST.proveedores)().subscribe(clientes => {
-        //     this.clientes.todos = clientes;
-        //     this.clientes.filtrados.next(clientes);
-        // });
 
         ////////// Tablas //////////
         this.tablas.columnas.columnasProductos = emisionRemitosService.getColumnsProductos();
@@ -196,8 +200,9 @@ export class EmisionRemitos {
         ////////// Otros //////////
         this.emisionRemitosService.getCotizacionDatos().subscribe(cotizDatos => this.cotizacionDatos.cotizacion = cotizDatos);
 
-        // Notifico el menu seleccionado
-        // this._state.notifyDataChanged('menu.isCollapsed', 'Emision Remito');
+        this.tiposComprobantesFactura = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
+            'sisComprobante': 3
+        });
     }
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -210,7 +215,7 @@ export class EmisionRemitos {
         });
 
         // Actualizo nuevamente la lista de trazables
-        this.actualizarTrazableLotes();
+        this.actualizarTrazableLotes(prodSelect);
 
         // Actualizo datos de producto (total neto)
         this.actualizarDatosProductos();
@@ -316,7 +321,7 @@ export class EmisionRemitos {
 
     }
 
-    limpiarFormulario = () => {
+    limpiarFormulario = (noBorrar?) => {
         // Blanqueo los campos
         const auxFecha = this.comprobante.fechaComprobante;
         this.comprobante = new Comprobante();
@@ -326,12 +331,18 @@ export class EmisionRemitos {
         this.tablas.datos.productosPend = [];
         this.tablas.datos.modelosFactura = [];
         // this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
-        this.deposito = new Deposito()
+        this.deposito = null
         this.tablas.datos.detallesFormaPago = [];
-        this.tipoOperacion = new SisTipoOperacion();
+        this.tipoOperacion = null;
 
         this.detalleListaFpsSeleccionadas = '';
-        this.cliente.condIva = new CondIva();
+        this.cliente.condIva = null
+
+        if (!noBorrar || !noBorrar.includes('cotizacion')) {
+            debugger;
+            this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0};
+        }
+        this.sumatoriaSubtotales = 0;
     }
 
     onClickCancelar = () => 
@@ -346,64 +357,86 @@ export class EmisionRemitos {
     /**
      * Valida y graba el comprobante
      */
-    onClickConfirmar = () => this.utilsService.showModal('Confirmar')('¿Confirmar emision de remito?')(
-        () => {
+    onClickConfirmar = () => 
+        this.emisionRemitosService.existsProductsWithoutCantidad(this.tablas.datos.productosPend) ?
+            this.utilsService.showModal('Problema')('Los productos deben tener una cantidad asignada')()()
+            :
+            this.utilsService.showModal('Confirmar')('¿Confirmar emision de remito?')(
+                () => {
 
-            // Actualizo facturas antes de confirmar
-            this.emisionRemitosService.buscaModelos(
-                this.tablas.datos.productosPend
-            )(
-                this.tablas.datos.subtotalesProductos
-            ).subscribe(modelProds => {
-                this.tablas.datos.modelosFactura = modelProds;
+                    // Actualizo facturas antes de confirmar
+                    this.emisionRemitosService.buscaModelos(
+                        this.tablas.datos.productosPend
+                    )(
+                        this.tablas.datos.subtotalesProductos
+                    ).subscribe(modelProds => {
+                        this.tablas.datos.modelosFactura = modelProds;
 
-                this.sumatoriaSubtotales = 
-                    _.sumBy(
-                        this.tablas.datos.modelosFactura,
-                        (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
-                    );
+                        this.sumatoriaSubtotales = 
+                            _.sumBy(
+                                this.tablas.datos.modelosFactura,
+                                (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
+                            );
 
-                this.emisionRemitosService.confirmarYEmitirRemito(this.comprobante)
-                    (this.comprobanteRelacionado)
-                    (this.cliente)
-                    (this.tablas.datos.productosPend)
-                    (this.cotizacionDatos)
-                    (this.sisCanje)
-                    (this.formasPagoSeleccionadas)
-                    (this.factura)
-                    (this.tablas.datos.modelosFactura)
-                    (this.tablas.datos.detallesFormaPago)
-                    (this.deposito)
-                    (this.tablas.datos.lotesTraza)
-                    .subscribe((respuesta: any) => {
-                        this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
+                        this.emisionRemitosService.confirmarYEmitirRemito(this.comprobante)
+                            (this.comprobanteRelacionado)
+                            (this.cliente)
+                            (this.tablas.datos.productosPend)
+                            (this.cotizacionDatos)
+                            (this.sisCanje)
+                            (this.formasPagoSeleccionadas)
+                            (this.factura)
+                            (this.tablas.datos.modelosFactura)
+                            (this.tablas.datos.detallesFormaPago)
+                            (this.deposito)
+                            (this.tablas.datos.lotesTraza)
+                            (this.tipoOperacion)
+                            (this.dataVendedor)
+                            (this.tablas.datos.subtotalesProductos)
+                            .subscribe((respuesta: any) => {
+                                // this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
+                                this.utilsService.showImprimirModal(
+                                    respuesta.control.codigo
+                                )(
+                                    respuesta.control.descripcion
+                                )(
+                                    () => null
+                                );
 
-                        // Blanqueo los campos
-                        const auxFecha = this.comprobante.fechaComprobante;
-                        this.comprobante = new Comprobante();
-                        this.comprobante.fechaComprobante = auxFecha;
-                        this.comprobanteRelacionado = new ComprobanteRelacionado();
-                        this.cliente = new Padron();
-                        this.tablas.datos.productosPend = [];
-                        this.tablas.datos.modelosFactura = [];
-                        this.deposito = new Deposito()
-                        this.tablas.datos.detallesFormaPago = [];
-                        this.dataTablaFormasPago = Observable.of([]);
-    
-                        // Limpio formas pago
-                        this.dataTablaFormasPago = null;
-                        this.formasPagoSeleccionadas = [];
-                        
-                        // Focus en input proveedor (TODO SET TIME OUT)
-                        document.getElementById('clienteSeleccionado') ? document.getElementById('clienteSeleccionado').focus() : null
-                    })
-            })
+                                // Blanqueo los campos
+                                const auxFecha = this.comprobante.fechaComprobante;
+                                this.comprobante = new Comprobante();
+                                this.comprobante.fechaComprobante = auxFecha;
+                                this.comprobanteRelacionado = new ComprobanteRelacionado();
+                                // this.cliente = new Padron();
+                                this.cliente = new Padron();
 
+                                this.cliente.condIva = new CondIva(); setTimeout(() => { this.cliente.condIva = new CondIva() }, 1000); // TODO: Fix horrible, sacar
+
+                                this.tablas.datos.productosPend = [];
+                                this.tablas.datos.modelosFactura = [];
+                                this.deposito = new Deposito()
+                                this.tablas.datos.detallesFormaPago = [];
+                                this.dataTablaFormasPago = Observable.of([]);
             
-        }
-    )({
-        tipoModal: 'confirmation'
-    });
+                                // Limpio formas pago
+                                this.dataTablaFormasPago = null;
+                                this.formasPagoSeleccionadas = [];
+
+                                // Limpio vendedor
+                                this.dataVendedor.vendedor = new Vendedor();
+                                this.dataVendedor.incluir = false;
+                                
+                                // Focus en input proveedor (TODO SET TIME OUT)
+                                document.getElementById('clienteSeleccionado') ? document.getElementById('clienteSeleccionado').focus() : null
+                            })
+                    })
+
+                    
+                }
+            )({
+                tipoModal: 'confirmation'
+            });
 
     /**
      * Busca los productos pendientes de acuerdo al comprobante relacionado
@@ -427,7 +460,7 @@ export class EmisionRemitos {
      */
     onClickPopupCliente = (prove: Padron) => {
         // Limpio primero el formulario
-        this.limpiarFormulario();
+        this.limpiarFormulario(['cotizacion']);
         // Despue sseteo el cliente seleccionado
         this.cliente = new Padron({...prove});
         this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
@@ -452,34 +485,63 @@ export class EmisionRemitos {
 
         // Actualizo cliente seleccionado
         try {
-            // Busco si existe
+            // Busco si existe (en el padron sybase)
             const clienteExistente = this.emisionRemitosService.seleccionarCliente(this.clientes.todos)(this.cliente);
 
             if (clienteExistente && clienteExistente.padronCodigo) {
                 // Limpio primero el formulario
-                this.limpiarFormulario();
+                this.limpiarFormulario(['cotizacion']);
                 // Despue sseteo el cliente seleccionado
                 this.cliente = clienteExistente;
     
-                this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
+                // Lo busco en la base de facturacion
+                this.emisionRemitosService.checkIfClientExistInFacturacion(clienteExistente).then(vendedorAsociado => {
+
+                    // Viene en un array pero siempre trae 1 (si lo encuetra, si no lo encuentra trae 0 o null)
+                    if (vendedorAsociado) {
+                        // Si lo encuentra todo ok, no le pido que lo cree. Solo me guardo el vendedor asociado
+                        this.dataVendedor = {
+                            vendedor: vendedorAsociado,
+                            incluir: true
+                        }
+                    } else {
+                        // Si NO lo encuentra, le pido que lo cree
+                        this.utilsService.showModal('Aviso')('Cliente no existente. ¿Desea crearlo?')(()=>{
+                            this.router.navigate(
+                                ['/pages/tablas/clientes/nuevo'],
+                                { 
+                                    queryParams: { 
+                                        codPadronCliente: clienteExistente.padronCodigo
+                                    } 
+                                }
+                            );
+                        })({tipoModal:'confirmation'}, () => {
+                            this.dataVendedor = {
+                                vendedor: new Vendedor(),
+                                incluir: false
+                            };
+                        })
+                    }
+                    this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
+        
+                    // Si están seteados los datos necesarios aprovecho a actualizar la data de la tabla de forma de pago
+                    this.comprobante && this.comprobante.fechaComprobante && this.comprobante.fechaComprobante.day ?
+                        this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante) :
+                        null;
     
-                // Si están seteados los datos necesarios aprovecho a actualizar la data de la tabla de forma de pago
-                this.comprobante && this.comprobante.fechaComprobante && this.comprobante.fechaComprobante.day ?
-                    this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante) :
-                    null;
-
-                // Deshabilito los input del customcliente
-                this.disabledClienteCustom = true;
-
-                // Hago foco en dropdown tipo
-                document.getElementById('tipoOperacionDropdown').focus();
+                    // Deshabilito los input del customcliente
+                    this.disabledClienteCustom = true;
+    
+                    // Hago foco en dropdown tipo
+                    document.getElementById('tipoOperacionDropdown').focus();
+                });
 
             } else {
                 // Caso contrario creo un nuevo cliente con el cod ingresado y habilito el custom client
                 const nuevoCliente = new Padron();
                 nuevoCliente.padronCodigo = this.cliente.padronCodigo;
                 // Limpio primero el formulario
-                this.limpiarFormulario();
+                this.limpiarFormulario(['cotizacion']);
                 // Despue sseteo el cliente seleccionado
                 this.cliente = nuevoCliente;
                 this.disabledClienteCustom = false;
@@ -565,7 +627,7 @@ export class EmisionRemitos {
                     null;
                 // Y le aviso
                 this.utilsService.showModal('Error')('Fecha inválida para este punto de venta')()();
-                debugger;
+                // debugger;
                
             } else {
                  // Actualizo las formas de pago de la tabla (solo si está seteado el cliente)
@@ -603,41 +665,41 @@ export class EmisionRemitos {
     /**
      * Se dispara cuando se selecciona el pto de venta, actualizando las formas de pago
      */
-    onSelectPtoVenta = (e) => {
+    onChangePtoVentaNro = (e) => {
         // Consulto el service y traigo el intevalo de fecha de cteTipo
-        this.emisionRemitosService.getBuscaCteFecha(
-            this.comprobante
-        ).catch((err, c) => {
-            // Null en intervalo fechas..
-            this.cteFechasIntervalo = null;
-            // Pongo fecha seleccionada por dfecto en HOY
-            this.comprobante.fechaComprobante = new DateLikePicker(new Date());
-            // Actualizo las formas de pago para la fecha de hoy (solo si está seteado el cliente y la fecha)
-            this.cliente && this.cliente.cuit && this.comprobante && this.comprobante.fechaComprobante ?
-                this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante) : 
-                null;
-            return Observable.from([]);
-        })
-        .subscribe((cteFechas: CteFechas[]) => {
-            // Agarro el primer objeto (viene en un array pero es único)
-            const intervaloFecha = cteFechas && cteFechas.length === 1 ? cteFechas[0] : new CteFechas();
-            if (cteFechas.length > 0) {
-                // Actualizo intervalo
-                this.cteFechasIntervalo = intervaloFecha
-                // Seteo fecha por defecto
-                // this.comprobante.fechaComprobante = new DateLikePicker(intervaloFecha.fechaApertura);
-                this.comprobante.fechaComprobante = intervaloFecha.fechaApertura;
-            } else {
-                // Null en intervalo fechas..
-                this.cteFechasIntervalo = null;
-                // Pongo fecha seleccionada por dfecto en HOY
-                this.comprobante.fechaComprobante = new DateLikePicker(new Date());
-            }
-            // Actualizo las formas de pago para la fechaApertura (solo si está seteado el cliente y la fecha)
-            this.cliente && this.cliente.cuit && this.comprobante && this.comprobante.fechaComprobante ?
-                this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante):
-                null;
-        });
+        // this.emisionRemitosService.getBuscaCteFecha(
+        //     this.comprobante
+        // ).catch((err, c) => {
+        //     // Null en intervalo fechas..
+        //     this.cteFechasIntervalo = null;
+        //     // Pongo fecha seleccionada por dfecto en HOY
+        //     this.comprobante.fechaComprobante = new DateLikePicker(new Date());
+        //     // Actualizo las formas de pago para la fecha de hoy (solo si está seteado el cliente y la fecha)
+        //     this.cliente && this.cliente.cuit && this.comprobante && this.comprobante.fechaComprobante ?
+        //         this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante) : 
+        //         null;
+        //     return Observable.from([]);
+        // })
+        // .subscribe((cteFechas: CteFechas[]) => {
+        //     // Agarro el primer objeto (viene en un array pero es único)
+        //     const intervaloFecha = cteFechas && cteFechas.length === 1 ? cteFechas[0] : new CteFechas();
+        //     if (cteFechas.length > 0) {
+        //         // Actualizo intervalo
+        //         this.cteFechasIntervalo = intervaloFecha
+        //         // Seteo fecha por defecto
+        //         // this.comprobante.fechaComprobante = new DateLikePicker(intervaloFecha.fechaApertura);
+        //         this.comprobante.fechaComprobante = intervaloFecha.fechaApertura;
+        //     } else {
+        //         // Null en intervalo fechas..
+        //         this.cteFechasIntervalo = null;
+        //         // Pongo fecha seleccionada por dfecto en HOY
+        //         this.comprobante.fechaComprobante = new DateLikePicker(new Date());
+        //     }
+            // // Actualizo las formas de pago para la fechaApertura (solo si está seteado el cliente y la fecha)
+            // this.cliente && this.cliente.cuit && this.comprobante && this.comprobante.fechaComprobante ?
+            //     this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante):
+            //     null;
+        // });
 
 
         // Hago el autocompletado de los nros
@@ -847,7 +909,7 @@ export class EmisionRemitos {
     /**
      * Actualiza la grilla de Trazable Lotes
      */
-    actualizarTrazableLotes = () => {
+    actualizarTrazableLotes = (prodToDelete?) => {
         // Agrego los lotes de los productos trazables a la grilla de trazabilidad lotes
         if (this.tablas.datos.productosPend.length > 0) {
             this.emisionRemitosService.buscaLotes(
@@ -855,7 +917,23 @@ export class EmisionRemitos {
             )(
                 this.comprobante
             ).subscribe(
-                lotes => this.tablas.datos.lotesTraza = lotes
+                // lotes => this.tablas.datos.lotesTraza = lotes
+                lotes => {
+                    const nuevosLotes = lotes.filter(
+                        lotNew => !this.tablas.datos.lotesTraza.some(  
+                            lotOld => lotOld.idLote === lotNew.idLote
+                        )
+                    );
+
+                    this.tablas.datos.lotesTraza = this.tablas.datos.lotesTraza.concat(nuevosLotes);
+
+                    // Si se borró algùn producto, borro sus lotes correspondientes
+                    if (prodToDelete) {
+                        this.tablas.datos.lotesTraza = this.tablas.datos.lotesTraza.filter(
+                            lot => lot.idProducto === prodToDelete.producto.idProducto
+                        )
+                    }
+                }
             )
         } else {
             this.tablas.datos.lotesTraza = [];
@@ -868,14 +946,20 @@ export class EmisionRemitos {
      * Cuando cambia el tipo comprobante lo que hago es agarrar todos los numeros (q inclyyen pto venta y numero) y mappearlos en un array
      */
     onChangeTipoComprobante = (cteTipoSelect) => {
-        this.recursoService.getRecursoList(resourcesREST.cteTipo)({
+        this.tiposComprobantesRel = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
+            'sisModulo': sisModulos.venta,
             'idCteTipo': cteTipoSelect.idCteTipo
-        }).subscribe(a=>{
-            const cteTipoEncontrado = new TipoComprobante(a[0]);
-            this.numerosCte = _.flatten(cteTipoEncontrado.numerador.map((num: Numerador) => num.numero));
-            // debugger
         })
+        this.tiposComprobantesRel.subscribe(a => console.log(a))
+
+        this.comprobante.numerador.fechaApertura = null;
+        this.comprobante.numerador.fechaCierre = null;
+
+        if (this.comprobante.tipo && this.comprobante.tipo.numerador && this.comprobante.tipo.numerador.length > 0) {
+            this.comprobante.numerador = this.comprobante.tipo.numerador[0];
+        }
     }
+    
 
    
 
@@ -939,8 +1023,8 @@ export class EmisionRemitos {
 
 
     compareIvaSelect = (i1, i2) => {
-        if (i1 & i2)
-            debugger;
+        // if (i1 & i2)
+        //     debugger;
     }
 
     onBlurCuit = (ev) => {
@@ -959,6 +1043,22 @@ export class EmisionRemitos {
                     }
                 )();
         }
+    }
+
+    test() {
+
+        return !this.emisionRemitosService.checkIfDatosValidosComprobante(this.comprobante)
+            (this.cliente)
+            (this.tablas.datos.productosPend)
+            (this.tablas.datos.modelosFactura)
+            (this.deposito)
+            (this.tablas.datos.lotesTraza)
+            ||
+            (
+                !this.tablas.datos.detallesFormaPago ||
+                this.tablas.datos.detallesFormaPago.length <= 0 ||
+                !this.isRestoPagarValid()
+            )
     }
 }
 

@@ -11,6 +11,8 @@ import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-li
 import { ComprobanteService } from '../services/comprobanteService';
 import { UtilsService } from '../services/utilsService';
 import { ListPopupService } from './reusable/otros/listFinder/components/listPopup/listPopupService';
+import { ImprimirModal } from './reusable/modals/imprimir-modal/imprimir-modal.component';
+
 
 @NgModule({
     imports: [
@@ -22,11 +24,13 @@ import { ListPopupService } from './reusable/otros/listFinder/components/listPop
     declarations: [
         Pages,
         DefaultModal,
-        ConfirmationModal
+        ConfirmationModal,
+        ImprimirModal
     ],
     entryComponents: [
         DefaultModal,
-        ConfirmationModal
+        ConfirmationModal,
+        ImprimirModal
     ],
     providers: [
         LocalStorageService,

@@ -23,6 +23,7 @@ function toInteger(value: any): number {
 @Injectable()
 export class NgbDateFRParserFormatter extends NgbDateParserFormatter {
     parse(value: string): NgbDateStruct {
+        // debugger;
         if (value) {
             const dateParts = value.trim().split('/');
             if (dateParts.length === 1 && isNumber(dateParts[0])) {
@@ -41,6 +42,7 @@ export class NgbDateFRParserFormatter extends NgbDateParserFormatter {
     }
 
     format(date: NgbDateStruct): string {
+        // debugger;
         let stringDate: string = ""; 
         if(date) {
             stringDate += isNumber(date.day) ? padNumber(date.day) + "/" : "";

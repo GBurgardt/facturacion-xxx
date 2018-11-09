@@ -21,6 +21,9 @@ import { SisCanje } from "../../../../models/sisCanje";
 import { DetalleFormaPago } from "app/models/detalleFormaPago";
 import { DateLikePicker } from "app/models/dateLikePicker";
 import { Factura } from "../../../../models/factura";
+import { SisTipoOperacion } from "app/models/sisTipoOperacion";
+import { Cliente } from "../../../../models/cliente";
+import { Vendedor } from "../../../../models/vendedor";
 
 @Injectable()
 export class EmisionRemitosService {
@@ -391,15 +394,20 @@ export class EmisionRemitosService {
     confirmarYEmitirRemito =    (comprobante: Comprobante) =>
                                 (comproRelac: ComprobanteRelacionado) =>
                                 (clienteSelec: Padron) =>
+                                // (clienteSelec: Cliente) =>
                                 (productosPend: ProductoPendiente[]) =>
                                 (cotizacionDatos: { cotizacion: Cotizacion, total: number }) =>
                                 (sisCanje: SisCanje) =>
                                 (formasPagoSeleccionadas: FormaPago[]) =>
-                                (factura: Factura) =>
+                                // (factura: Factura) =>
+                                (factura: Comprobante) =>
                                 (modelosFactura: ModeloFactura[]) =>
                                 (detallesFormaPago: DetalleFormaPago[]) => 
                                 (depositoSelec: Deposito) => 
                                 (lotesTraza: Lote[]) => 
+                                (tipoOpSelect: SisTipoOperacion) => 
+                                (dataVendedor: any) => 
+                                (subtotalesProductos: any) => 
         this.authService.emitirRemito(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
@@ -426,6 +434,12 @@ export class EmisionRemitosService {
             detallesFormaPago
         )(
             lotesTraza
+        )(
+            tipoOpSelect
+        )(
+            dataVendedor
+        )(
+            subtotalesProductos
         )
             .catch(err => {
                 this.utilsService.showErrorWithBody(err)
@@ -439,7 +453,8 @@ export class EmisionRemitosService {
                                         (clienteSelect: Padron) => 
                                         (productosPend: ProductoPendiente[]) => 
                                         (modelosFactura: ModeloFactura[]) =>
-                                        (depositoSelec: Deposito) => {
+                                        (depositoSelec: Deposito) => 
+                                        (lotesTraza: Lote[]) => {
         // Primero checkeo nulos
         const noExistenNulos = this.checkIfNulosDatosComprobantes(comprobante)(clienteSelect)(productosPend)(modelosFactura)(depositoSelec);
 
@@ -447,7 +462,13 @@ export class EmisionRemitosService {
         const existenProductos = this.checkIfExistenProductos(productosPend)(modelosFactura);
 
         /// Checkeo que hayan cargado los datos de la trazabilidad
-        const trazabilidadCargada = this.checkIfTrazabilidadCargada(productosPend);
+        // const trazabilidadCargada = this.checkIfTrazabilidadCargada(productosPend);
+
+        // Checkeo lotes trazabales
+        const lotesTrazablesValido = this.checkIfValidLotesTraza(lotesTraza);
+
+        // console.log('lotesTrazablesValido');
+        // console.log(lotesTrazablesValido);
 
         // console.log('noExistenNulos');
         // console.log(noExistenNulos);
@@ -457,10 +478,20 @@ export class EmisionRemitosService {
         // console.log(trazabilidadCargada);
 
         // Si no existen nulos y si existen productos, los datos son validos
-        return noExistenNulos && existenProductos && trazabilidadCargada
+        // return noExistenNulos && existenProductos && trazabilidadCargada
+        return noExistenNulos && existenProductos && lotesTrazablesValido
 
     }
 
+    checkIfValidLotesTraza = (lotesTraza: Lote[]) => 
+        lotesTraza && (
+            lotesTraza.length > 0 ? 
+                lotesTraza.every(
+                    (lot: Lote) => lot.cantidad && lot.recetaN
+                ) 
+                :
+                true
+        )
     
     /**
      * Checkea si existen nulos
@@ -470,20 +501,24 @@ export class EmisionRemitosService {
                                     (provSelec: Padron) => 
                                     (productosPend: ProductoPendiente[]) => 
                                     (modelosFactura: ModeloFactura[]) => 
-                                    (depositoSelec: Deposito) =>  
-        (
-            provSelec.padronCodigo &&
-            comprobante.tipo.idCteTipo && 
-            // comprobante.letra && 
-            comprobante.puntoVenta &&
-            comprobante.numero &&
-            comprobante.moneda && comprobante.moneda.idMoneda && 
-            comprobante.fechaComprobante &&
-            comprobante.fechaVto && 
-            productosPend && 
-            modelosFactura && 
-            depositoSelec
-        ) ? true : false
+                                    (depositoSelec: Deposito) =>  {
+
+        const result = provSelec !== null && 
+            provSelec.padronCodigo !== null && 
+            comprobante.tipo !== null && 
+            comprobante.tipo.idCteTipo !== null && 
+            comprobante.numerador !== null &&
+            comprobante.numerador.numero !== null &&
+            comprobante.moneda !== null && 
+            comprobante.moneda.idMoneda !== null && 
+            comprobante.fechaComprobante !== null &&
+            comprobante.fechaVto !== null && 
+            productosPend !== null && 
+            modelosFactura !== null && 
+            depositoSelec !== null;
+
+        return result;
+    }
     
 
     /**
@@ -620,5 +655,34 @@ export class EmisionRemitosService {
                     new ProductoPendiente(respProdEnc.arraydatos[0]) : null
             )
 
+
+    /**
+     * Checkea si el cliente existe en la db de facturación
+     */
+    checkIfClientExistInFacturacion = (cliente: Padron) => 
+        this.authService.getResourceList(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            resourcesREST.cliente.nombre
+        )({
+            codCliente: cliente.padronCodigo
+        })('query')
+        .map(
+            resp => resp && resp.control.codigo && resp.control.codigo === 'OK' ? 
+                new Vendedor(
+                    resp.arraydatos[0].vendedor
+                ) : null
+        )
+        .toPromise();
+
+
+    /**
+     * Checkea que todos los productos agregados tengan cant > 0
+     */
+    existsProductsWithoutCantidad = (prodsList: ProductoPendiente[]) => 
+        !prodsList.every(
+            prod => prod.pendiente > 0
+        )
+    
 
 }

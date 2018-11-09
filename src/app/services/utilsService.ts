@@ -9,6 +9,7 @@ import dynamicClass from 'app/services/dynamicClassService';
 import { resourcesREST } from 'constantes/resoursesREST';
 import { routing } from '../pages/main/tablas/tablas.routing';
 import { DateLikePicker } from 'app/models/dateLikePicker';
+import { ImprimirModal } from 'app/pages/reusable/modals/imprimir-modal/imprimir-modal.component';
 
 @Injectable()
 export class UtilsService {
@@ -21,7 +22,7 @@ export class UtilsService {
     /** TODO: Refactorizar este modal y poner bien el titulo y la descrip
      * Método que muestra un modal con el error de logueo
      */
-    showModal = (titulo) => (descripcion) => (onClick?) => (datos?) => {
+    showModal = (titulo) => (descripcion) => (onClick?) => (datos?, onClickNo?) => {
         // Creo el modal
         let activeModal;
         // Me fijo el tipo de modal a mostrar
@@ -47,11 +48,21 @@ export class UtilsService {
                 // Si hizo click en 'Si', entonces ejecuto la acción.
                 if (result) {
                     onClick();
+                } else {
+                    if (onClickNo)
+                        onClickNo();
                 }
             });
         } else {
             return activeModal.result;
         }
+    }
+
+    showImprimirModal = (titulo) => (descripcion) => (callbackImprimir) => {
+        let activeModal = this.modalService.open(ImprimirModal, { size: 'sm' });
+        activeModal.componentInstance.modalHeader = titulo;
+        activeModal.componentInstance.modalContent = descripcion;
+        activeModal.componentInstance.imprimirComp = callbackImprimir;
     }
 
     /**
@@ -102,9 +113,9 @@ export class UtilsService {
      * @param extraCondition Funcion con condiciones extras particulares de cada formulario
      */
     checkIfIncomplete = (objeto: any) => (ignoreList?: string[])  => (extraCondition?) => {
+
         // Obtengo la primer key de la clase del objeto recibido
         const idRecurso = Object.keys(objeto)[0];
-
 
         // Recorro las keys y checkeo que NO sean null (excepto ignoradas)
         const someKeyIsNull = Object.keys(objeto).some((key) => {
@@ -242,7 +253,7 @@ export class UtilsService {
      * Si es formato dd/mm/aaaa, tambien retoron un datelikepicker
      */
     stringToDateLikePicker = (valueFecha) =>
-        valueFecha.length === 4 ?
+        valueFecha && valueFecha.length === 4 ?
             new DateLikePicker(null, {
                 day: Number(valueFecha.substring(0, 2)),
                 month: Number(valueFecha.substring(2)),
@@ -280,13 +291,9 @@ export class UtilsService {
                 return `${fecha.day < 10 ? '0'+fecha.day : fecha.day}-${fecha.month < 10 ? '0'+fecha.month:fecha.month}-${fecha.year}`;
             }
         } else {
-            return moment(fecha).format(formato)
-            // Si es Date
-            // if (formato === 'yyyy-mm-dd') {
-            //     return `${fecha.year}-${fecha.month}-${fecha.day}`
-            // } else {
-            //     return `${fecha.day}-${fecha.month}-${fecha.year}`
-            // }
+            return moment(fecha).format(
+                formato ? formato.toUpperCase() : 'YYYY-MM-DD'
+            )
         }
 
     }
@@ -316,14 +323,7 @@ export class UtilsService {
 
     checkIfJson = (obj) => (obj && typeof obj === 'object');
 
-    /**
-     * Autocompleta con ceros
-     */
-    autocompNroComp = (tipo) => (recursoComp) => recursoComp && recursoComp[tipo] ?
-        recursoComp[tipo].padStart(
-            tipo === 'puntoVenta' ? 4 : 8,
-            0
-        ) : '';
+    
 
     /**
      * Check if document element has a determinate class
@@ -361,4 +361,30 @@ export class UtilsService {
     }
 
     auxStringify = (obj) => JSON.stringify(obj);
+
+
+    prettyDate = (theDate) => {
+        const day = theDate.getDate();
+        const month = theDate.getMonth() + 1;
+        const year = theDate.getFullYear();
+
+        return `${day<10 ? '0' : ''}${day}/${month<10 ? '0' : ''}${month}/${year}`
+    }
+
+    /**
+     * Autocompleta con ceros
+     */
+    autocompNroComp = (tipo) => (recursoComp) => {
+        // debugger;
+        return recursoComp && recursoComp[tipo] ?
+            recursoComp[tipo].padStart(
+                (
+                    tipo === 'puntoVenta' ||
+                    tipo === 'ptoVenta'
+                ) ? 4 : 8,
+                0
+            ) : '';
+    }
+
+    focusElement = (idElement) => document.getElementById('idBtnConfirmar') ? document.getElementById('idBtnConfirmar').focus() : null
 }

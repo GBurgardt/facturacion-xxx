@@ -139,9 +139,6 @@ export class RecursoService {
      * Checkea si edito un recurso
      */
     checkIfEquals = (recurso, recursoOriginal) => {
-        const t1 = Object.assign({}, recurso)
-        const t2 = Object.assign({}, recursoOriginal)
-        debugger
         return _.isEqual(
             Object.assign({}, recurso),
             Object.assign({}, recursoOriginal)

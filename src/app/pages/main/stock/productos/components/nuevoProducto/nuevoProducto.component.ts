@@ -16,6 +16,7 @@ import { Rubro } from 'app/models/rubro';
 import { ModeloCab } from 'app/models/modeloCab';
 import { AuthService } from '../../../../../../services/authService';
 import { Marca } from 'app/models/marca';
+import { Cultivo } from 'app/models/cultivo';
 
 @Component({
     selector: 'nuevo-producto',
@@ -33,22 +34,22 @@ export class NuevoProducto {
     modelosCab: Observable<ModeloCab[]>;
     marcas: Observable<Marca[]>;
 
-    // sugerenciaProxCodigo: string = '';
+    cultivos: Cultivo[] = [];
 
     constructor(
         private recursoService: RecursoService,
         private utilsService: UtilsService,
         private router: Router
     ) {
-        // Inicializo los valores de los desplegables
         this.rubros = this.recursoService.getRecursoList(resourcesREST.rubros)();
-        // this.subRubros = this.recursoService.getRecursoList(resourcesREST.subRubros)();
         this.unidadesCompra = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.unidadesVenta = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.ivas = this.recursoService.getRecursoList(resourcesREST.sisIVA)();
         this.modelosCab = this.recursoService.getRecursoList(resourcesREST.modeloCab)();
         this.marcas = this.recursoService.getRecursoList(resourcesREST.marcas)();
 
+        this.recursoService.getRecursoList(resourcesREST.cultivo)().toPromise()
+            .then(cultivos => this.cultivos = cultivos)
     }
     
     ngOnInit() {
@@ -89,17 +90,17 @@ export class NuevoProducto {
         })
     }
 
-    // compareWithGeneric = (item1: any, item2: any) => {
-    //     // if (item2 && item2 !== '21012200') debugger;
-    //     return item1 && item2 && (
-    //         item1 === item2 ||
-    //         item1.toString() === item2
-    //     )
-    // }
+    onConditionCultivo = (cult: Cultivo) => 
+        this.recurso.cultivos.length > 0 && 
+        this.recurso.cultivos.some(recCult => recCult.idCultivo === cult.idCultivo);
+    
 
     /**
-     * Selecciona por defecto el primero
+     * Agrega/quita un cultivo de los cultivos del producto
      */
-    // compareWithMarca = (m1: Marca, m2: Marca) => this.marcas && this.marcas.length > 0 ? 
-    //     this.marcas[0].idMarcas === m2.idMarcas : false
+    onClickCultivo = (cult: Cultivo) => () =>
+        this.recurso.cultivos.some(recCult => recCult.idCultivo === cult.idCultivo) ?
+        this.recurso.cultivos = this.recurso.cultivos.filter(recCult => recCult.idCultivo !== cult.idCultivo) :
+        this.recurso.cultivos = this.recurso.cultivos.concat(cult)
+
 }

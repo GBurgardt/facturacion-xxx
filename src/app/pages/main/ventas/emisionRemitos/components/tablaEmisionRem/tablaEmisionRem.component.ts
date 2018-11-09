@@ -219,7 +219,7 @@ export class TablaEmisionRem {
     getSubtotal = (item: ProductoPendiente) => (key) => {
         const subtotalBuscado = this.subtotales
             .find(st => st.idProducto === item.producto.idProductos);
-            
+
         return this.utilsService.parseDecimal(
             subtotalBuscado && subtotalBuscado[key] ? 
                 subtotalBuscado[key] : 0

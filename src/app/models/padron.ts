@@ -30,12 +30,13 @@ export class Padron {
             // this.codigoPostal = null;
             // this.cuit = null;
             // this.condIva = new CondIva(null);
-            this.padronCodigo = undefined;
+            this.padronCodigo = null;
             this.padronApelli = undefined;
             this.padronNombre = undefined;
             this.codigoPostal = undefined;
             this.cuit = undefined;
-            this.condIva = new CondIva(null);
+            // this.condIva = new CondIva(null);
+            this.condIva = null;
         }
     }
 

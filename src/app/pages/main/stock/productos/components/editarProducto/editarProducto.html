@@ -31,74 +31,97 @@
         </div>
 
         <div class="row custom-card">
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label for="rubro">Rubro</label>
-                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.subRubro.rubro" (ngModelChange)="onChangeRubro($event)" class="form-control" id="rubro">
-                        <option *ngFor="let rub of rubros | async" [ngValue]="rub">
-                            {{rub.descripcion}}
-                        </option>
-                    </select>
+            <div class="col-sm-9">
+                <div class="row">
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="rubro">Rubro</label>
+                            <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.subRubro.rubro" (ngModelChange)="onChangeRubro($event)" class="form-control" id="rubro">
+                                <option *ngFor="let rub of rubros | async" [ngValue]="rub">
+                                    {{rub.descripcion}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="subRubro">Sub Rubro</label>
+                            <select [compareWith]="compareWithSubRubro"  [(ngModel)]="recurso.subRubro" class="form-control" id="subRubro">
+                                <option *ngFor="let subRubro of subRubros | async" [ngValue]="subRubro">
+                                    {{subRubro.descripcion}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="unidadCompra">Unidad Compra</label>
+                            <select [compareWith]="utilsService.dropdownCompareWith"  [(ngModel)]="recurso.unidadCompra" class="form-control" id="unidadCompra">
+                                <option *ngFor="let uniCompra of unidadesCompra | async" [ngValue]="uniCompra">
+                                    {{uniCompra.descripcion}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="unidadVenta">Unidad Venta</label>
+                            <select [compareWith]="utilsService.dropdownCompareWith"  [(ngModel)]="recurso.unidadVenta" class="form-control" id="unidadVenta">
+                                <option *ngFor="let uniVenta of unidadesVenta | async" [ngValue]="uniVenta">
+                                    {{uniVenta.descripcion}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-3">
+                        <div class="checkbox-categ"> 
+                            <ba-checkbox  [(ngModel)]="recurso.stock" [label]="'Stock'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="IVA">IVA</label>
+                            <select [compareWith]="utilsService.dropdownCompareWith"  [(ngModel)]="recurso.IVA" class="form-control text-right-select" id="IVA">
+                                <option *ngFor="let iva of ivas | async" [ngValue]="iva">
+                                    {{utilsService.parseDecimal(iva.porcIVA)}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="marca">Marca</label>
+                            <select [compareWith]="utilsService.dropdownCompareWith"  [(ngModel)]="recurso.marca" class="form-control text-right-select" id="marca">
+                                <option *ngFor="let mar of marcas | async; let i = index" 
+                                        [ngValue]="mar"
+                                        [attr.selected]="i == 0 ? true : null">
+                                    {{ mar.descripcion }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label for="subRubro">Sub Rubro</label>
-                    <select [compareWith]="compareWithSubRubro"  [(ngModel)]="recurso.subRubro" class="form-control" id="subRubro">
-                        <option *ngFor="let subRubro of subRubros | async" [ngValue]="subRubro">
-                            {{subRubro.descripcion}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label for="unidadCompra">Unidad Compra</label>
-                    <select [compareWith]="utilsService.dropdownCompareWith"  [(ngModel)]="recurso.unidadCompra" class="form-control" id="unidadCompra">
-                        <option *ngFor="let uniCompra of unidadesCompra | async" [ngValue]="uniCompra">
-                            {{uniCompra.descripcion}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label for="unidadVenta">Unidad Venta</label>
-                    <select [compareWith]="utilsService.dropdownCompareWith"  [(ngModel)]="recurso.unidadVenta" class="form-control" id="unidadVenta">
-                        <option *ngFor="let uniVenta of unidadesVenta | async" [ngValue]="uniVenta">
-                            {{uniVenta.descripcion}}
-                        </option>
-                    </select>
-                </div>
+
             </div>
 
             <div class="col-sm-3">
-                <div class="checkbox-categ"> 
-                    <ba-checkbox  [(ngModel)]="recurso.stock" [label]="'Stock'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                <div class="badges-container">
+                    <div *ngFor="let cult of recurso.cultivos" class="badge-item">
+                        {{ cult.descripcion.substring(0,3).toUpperCase() }}
+                    </div>
                 </div>
-            </div>
-
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label for="IVA">IVA</label>
-                    <select [compareWith]="utilsService.dropdownCompareWith"  [(ngModel)]="recurso.IVA" class="form-control text-right-select" id="IVA">
-                        <option *ngFor="let iva of ivas | async" [ngValue]="iva">
-                            {{utilsService.parseDecimal(iva.porcIVA)}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label for="marca">Marca</label>
-                    <select [compareWith]="utilsService.dropdownCompareWith"  [(ngModel)]="recurso.marca" class="form-control text-right-select" id="marca">
-                        <option *ngFor="let mar of marcas | async; let i = index" 
-                                [ngValue]="mar"
-                                [attr.selected]="i == 0 ? true : null">
-                            {{ mar.descripcion }}
-                        </option>
-                    </select>
+                <div class="cultivos-list">
+                    <sexi-list  title="Cultivos"
+                                [items]="cultivos"
+                                [onCondition]="onConditionCultivo"
+                                [onClickEvent]="onClickCultivo"
+                                [keysToShow]="['descripcion', 'cosecha']"
+                                >
+                    </sexi-list>
                 </div>
             </div>
 

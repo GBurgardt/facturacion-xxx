@@ -20,7 +20,8 @@ export class SubRubro {
         } else {
             this.idSubRubro = null;
             this.descripcion = null;
-            this.rubro = new Rubro();
+            // this.rubro = new Rubro();
+            this.rubro = null;
             this.codigoSubRubro = null;
         }
     }

@@ -66,19 +66,9 @@
                 </td>
             </tr>
 
-            <!-- Fila para agregar elemento -->
-            <!-- <tr *ngIf="enableAdd" class="add-tr">
-                <td class="add-td" *ngFor="let col of columns">
-                    <input [(ngModel)]="textoBuscado" (ngModelChange)="onChangeInputItemAdd($event)" style="margin-top: 4px;" type="text" class="form-control add-input" id="addInput" placeholder="">
-                    
-                    
-                </td>
-            </tr> -->
         </tbody>
         <tfoot>
             <tr>
-                <!-- TODO: Aca cambié de 5 a 12, ver si no tiene consecuencias -->
-                <!-- <td colspan="5"> -->
                 <td colspan="12">
                     <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
                 </td>

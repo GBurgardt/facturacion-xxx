@@ -31,6 +31,7 @@ import { ProductoReducido } from '../../../../models/productoReducido';
 import { TablaCompra } from '../../../../models/tablaCompra';
 import { Numero } from 'app/models/numero';
 import { Numerador } from 'app/models/numerador';
+import sisModulos from 'constantes/sisModulos';
 
 @Component({
     selector: 'comprobante-compra',
@@ -55,7 +56,8 @@ export class ComprobanteCompra implements AfterViewInit {
     proveedorSeleccionado: Padron = new Padron();
     comprobante: Comprobante = new Comprobante();
     comprobanteRelacionado: ComprobanteRelacionado = new ComprobanteRelacionado()
-    factura: Factura = new Factura();
+    // factura: Factura = new Factura();
+    factura: Comprobante = new Comprobante();
     cotizacionDatos: {
         cotizacion: Cotizacion,
         total: number
@@ -308,7 +310,7 @@ export class ComprobanteCompra implements AfterViewInit {
             // debugger;
             // Le seteo el nroComprobante
             const auxProdSelect = Object.assign({}, prodEnc);
-            auxProdSelect.numero = Number(this.comprobante.puntoVenta + this.comprobante.numero).toString();
+            auxProdSelect.numero = Number(this.comprobante.numerador.numero.ptoVenta + this.comprobante.numerador.numero.numero).toString();
     
             // Checkeo que no exista
             const existeProd = this.tablas.datos.productosPend.find(
@@ -403,6 +405,8 @@ export class ComprobanteCompra implements AfterViewInit {
                         // Limpio formas pago
                         this.dataTablaFormasPago = null;
                         this.formasPagoSeleccionadas = [];
+
+                        this.tipoOpSelect = new SisTipoOperacion();
                         
     
                         // Focus en input proveedor (TODO SET TIME OUT)
@@ -525,27 +529,27 @@ export class ComprobanteCompra implements AfterViewInit {
         // Si es fecha de comprobante, antes que nada hay que validar que la fecha no se salga del intervalo
         if (
             keyFecha==='fechaComprobante' && 
-            this.intervaloFechaReqComp && 
-            this.intervaloFechaReqComp.fechaApertura &&
-            this.intervaloFechaReqComp.fechaCierre &&
+            this.comprobante.numerador && 
+            this.comprobante.numerador.fechaApertura &&
+            this.comprobante.numerador.fechaCierre &&
             !moment(
                 this.utilsService.dateLikePickerToDate(this.comprobante.fechaComprobante)
             ).isBetween(
-                moment(this.intervaloFechaReqComp.fechaApertura),
-                moment(this.intervaloFechaReqComp.fechaCierre)
+                moment(this.comprobante.numerador.fechaApertura),
+                moment(this.comprobante.numerador.fechaCierre)
             )
             
         ) {
             // Si se sale del intervalo permitido, seteo la fecha como fechaApertura
             this.comprobante.fechaComprobante = new DateLikePicker(
-                new Date(this.intervaloFechaReqComp.fechaApertura)
+                new Date(this.comprobante.numerador.fechaApertura)
             );
             // Y le aviso
             this.utilsService.showModal('Error de fecha')(
                 `Fecha inválida para este punto de venta (Intervalo permitido: ${
-                    moment(this.intervaloFechaReqComp.fechaApertura).format('DD-MM-YYYY')
+                    moment(this.comprobante.numerador.fechaApertura).format('DD-MM-YYYY')
                 } al ${
-                    moment(this.intervaloFechaReqComp.fechaCierre).format('DD-MM-YYYY')
+                    moment(this.comprobante.numerador.fechaCierre).format('DD-MM-YYYY')
                 })`
             )()()
             return;
@@ -568,8 +572,9 @@ export class ComprobanteCompra implements AfterViewInit {
      * tipo: puntoVenta o numero
      * keyTipoe: comprobante, comprobanteRelacionado
      */
-    onBlurNumeroAutocomp = (e) => (tipo: string) => (keyTipo: string) =>
+    onBlurNumeroAutocomp = (e) => (tipo: string) => (keyTipo: string) => 
         this[keyTipo][tipo] = this.comprobanteCompraService.autocompNroComp(tipo)(this[keyTipo]);
+    
 
 
     /**
@@ -660,7 +665,7 @@ export class ComprobanteCompra implements AfterViewInit {
                 auxDetalleMutado.monto = (this.cotizacionDatos.total + this.sumatoriaSubtotales);
                 const nuevosDetalles = [auxDetalleMutado];
                 this.tablas.datos.detallesFormaPago = nuevosDetalles;
-                debugger;
+                // debugger;
             }, 1000);
         }
     }
@@ -672,13 +677,15 @@ export class ComprobanteCompra implements AfterViewInit {
      */
     onChangeCteTipo = (cteTipoSelect: TipoComprobante) => {
         this.tiposComprobantesRel = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
-            'sisModulo': 1,
+            'sisModulo': sisModulos.compra,
             'idCteTipo': cteTipoSelect.idCteTipo
         });
 
-        this.intervaloFechaReqComp = {
-            fechaApertura: null,
-            fechaCierre: null
+        this.comprobante.numerador.fechaApertura = null;
+        this.comprobante.numerador.fechaCierre = null;
+
+        if (this.comprobante.tipo && this.comprobante.tipo.numerador && this.comprobante.tipo.numerador.length > 0) {
+            this.comprobante.numerador = this.comprobante.tipo.numerador[0];
         }
     }
 
@@ -763,29 +770,10 @@ export class ComprobanteCompra implements AfterViewInit {
     /**
      * En seleccionado por defectp giardp ptoventa y numerador
      */
-    onChangePtoVentaNro = (value) => {
-
-        if (value) {
-            const selectNumerador = new Numerador(
-                JSON.parse(value)
-            );
-            
-            if (selectNumerador && selectNumerador.numero && selectNumerador.numero.ptoVenta) {
-                this.comprobante.puntoVenta = selectNumerador.numero.ptoVenta.toString();
-                this.comprobante.numero = selectNumerador.numero.numero.toString();
-            }
-
-            this.intervaloFechaReqComp.fechaApertura = selectNumerador.fechaApertura;
-            this.intervaloFechaReqComp.fechaCierre = selectNumerador.fechaCierre;
-
-        }
-    }
-
-    intervaloFechaReqComp = {
-        fechaApertura: null,
-        fechaCierre: null
+    onChangePtoVentaNro = (selectNumerador: Numerador) => {
+        this.comprobante.fechaComprobante = new DateLikePicker(
+            new Date(selectNumerador.fechaApertura)
+        );
     }
     
 }
-
-

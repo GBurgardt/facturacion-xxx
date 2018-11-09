@@ -33,6 +33,14 @@ import { ModeloCabSinDetalles } from "app/models/modeloCabSinDetalles";
 import { CodigoAfip } from "app/models/codigoAfip";
 import { Marca } from "app/models/marca";
 import { ProductoReducido } from "app/models/productoReducido";
+import { Numerador } from "app/models/numerador";
+import { Numero } from "app/models/numero";
+import { Categoria } from "app/models/categoria";
+import { SisCategoria } from "app/models/sisCategoria";
+import { Cliente } from "app/models/cliente";
+import { SisSitIVA } from "app/models/sisSitIva";
+import { ClienteModPost } from "app/models/clienteModPost";
+import { Cultivo } from "app/models/cultivo";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -148,7 +156,7 @@ export const resourcesREST = {
     },
     sisSitIva: {
         nombre: 'sisSitIva',
-        Clase: CondIva
+        Clase: SisSitIVA
     },
     buscaCteFecha: {
         nombre: 'buscaCteFecha',
@@ -205,6 +213,30 @@ export const resourcesREST = {
     cteFecha: {
         nombre: 'cteFecha',
         Clase: CteFechas
+    },
+    cteNumerador: {
+        nombre: 'cteNumerador',
+        Clase: Numerador
+    },
+    cteNumero: {
+        nombre: 'cteNumero',
+        Clase: Numero
+    },
+    categorias: {
+        nombre: 'categorias',
+        Clase: Categoria
+    },
+    sisCategoria: {
+        nombre: 'sisCategoria',
+        Clase: SisCategoria
+    },
+    cliente: {
+        nombre: 'cliente',
+        Clase: Cliente
+    },
+    cultivo: {
+        nombre: 'cultivo',
+        Clase: Cultivo
     }
 
 };

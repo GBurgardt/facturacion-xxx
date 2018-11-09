@@ -66,7 +66,7 @@ export class DataTables {
      */
     parseKey(key) {
         const tipoDato:any = typeof key;
-
+        
         if (tipoDato === 'boolean') {
             return key ? 'Si' : 'No';
         } else if (tipoDato === 'object'){
@@ -74,6 +74,10 @@ export class DataTables {
             if (key.constructor.name === 'DateLikePicker') {
                 // return /${key.month<10 ? '0' : ''}${key.month}/${key.day<10 ? '0' : ''}${key.day}`
                 return `${key.day<10 ? '0' : ''}${key.day}/${key.month<10 ? '0' : ''}${key.month}/${key.year}`
+            }
+
+            if (key.constructor.name === 'Date') {
+                return this.utilsService.prettyDate(key);
             }
         };
         

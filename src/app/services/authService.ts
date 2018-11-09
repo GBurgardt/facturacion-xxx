@@ -40,6 +40,7 @@ import sisModulos from 'constantes/sisModulos';
 import { Lote } from 'app/models/lote';
 import sisTipoModelos from '../../constantes/sisTipoModelos';
 import { SisTipoOperacion } from '../models/sisTipoOperacion';
+import { Cliente } from '../models/cliente';
 
 @Injectable()
 export class AuthService {
@@ -168,6 +169,7 @@ export class AuthService {
     * @argument token
     * @argument filtros Lo filtro
     */
+    // getProductosPendientes = (token: string) => (proveedor: Padron) => (comproRel: ComprobanteRelacionado) => {
     getProductosPendientes = (token: string) => (proveedor: Padron) => (comproRel: ComprobanteRelacionado) => {
         return this.request(
             [],
@@ -236,7 +238,8 @@ export class AuthService {
                         (cotizacionDatos: { cotizacion: Cotizacion, total: number }) =>
                         (depositoSelec: Deposito) =>
                         (detallesFormaPago: DetalleFormaPago[]) => 
-                        (factura: Factura) => 
+                        // (factura: Factura) => 
+                        (factura: Comprobante) => 
                         (tipoOpSelect: SisTipoOperacion) => {
 
         return this.request(
@@ -261,9 +264,10 @@ export class AuthService {
                 fechaEmision: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
                 fechaVencimiento: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
                 fechaConta: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
-                fechaDolar: cotizacionDatos.cotizacion.fechaCotizacion,
+                fechaDolar: this.utilsService.formatearFecha('yyyy-mm-dd')(cotizacionDatos.cotizacion.fechaCotizacion),
+                // fechaDolar: cotizacionDatos.cotizacion.fechaCotizacion,
                 fechaVencimientoFact: factura ? this.utilsService.formatearFecha('yyyy-mm-dd')(factura.fechaVto) : null,
-                fechaContaFact: factura ? this.utilsService.formatearFecha('yyyy-mm-dd')(factura.fechaContable) : null,
+                fechaContaFact: factura ? this.utilsService.formatearFecha('yyyy-mm-dd')(factura.fechaComprobante) : null,
                 grabaFactura: factura && factura.tipo && factura.tipo.idCteTipo ? true : false,
                 grillaArticulos: productosPend.map(prod => {
                     return {
@@ -324,7 +328,8 @@ export class AuthService {
 
                 idSisTipoOperacion: tipoOpSelect.idSisTipoOperacion,
 
-                idNumero: null, ////////////// AGREGAR
+                idNumero: comprobante.numerador && comprobante.numerador.numero ? 
+                    comprobante.numerador.numero.idCteNumero : null,
 
                 idFactCab: null,
                 idModulo: sisModulos.compra,
@@ -334,8 +339,10 @@ export class AuthService {
                 lote:   productosPend.some(prodPend => prodPend.producto.trazable) &&
                         comprobante.tipo.comprobante.idSisComprobantes !== 4,
                 nombre: provSelec.padronApelli,
-                numero: Number(comprobante.puntoVenta + comprobante.numero),
-                numeroFact: factura ? Number(factura.puntoVenta + factura.numero) : null,
+                numero: Number(comprobante.numerador.numero.ptoVenta + comprobante.numerador.numero.numero),
+                // numeroFact: factura ? Number(factura.puntoVenta + factura.numero) : null,
+                numeroFact: factura ?
+                    Number(factura.numerador.numero.ptoVenta + factura.numerador.numero.numero) : null,
                 observaciones: comprobante.observaciones,
                 precioReferenciaCanje: 0,
                 productoCanje: ' ',
@@ -359,17 +366,21 @@ export class AuthService {
                         (comprobante: Comprobante) =>
                         (comproRelac: ComprobanteRelacionado) =>
                         (clienteSelect: Padron) =>
+                        // (clienteSelect: Cliente) =>
                         (productosPend: ProductoPendiente[]) =>
                         (modelosFactura: ModeloFactura[]) =>
                         (cotizacionDatos: { cotizacion: Cotizacion, total: number }) =>
                         (depositoSelec: Deposito) =>
                         (sisCanje: SisCanje) =>
                         (formasPagoSeleccionadas: FormaPago[]) =>
-                        (factura: Factura) => 
+                        // (factura: Factura) => 
+                        (factura: Comprobante) => 
                         (detallesFormaPago: DetalleFormaPago[]) => 
                         (lotesTraza: Lote[]) => 
+                        (tipoOpSelect: SisTipoOperacion) => 
+                        (dataVendedor: any) => 
+                        (subtotalesProductos: any) => 
     {
-
         return this.request(
             [],
             RequestMethod.Post,
@@ -393,10 +404,18 @@ export class AuthService {
                 fechaVencimiento: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
                 fechaConta: this.utilsService.formatearFecha('yyyy-mm-dd')(comprobante.fechaComprobante),
                 fechaDolar: cotizacionDatos.cotizacion.fechaCotizacion,
-                fechaVencimientoFact: factura ? this.utilsService.formatearFecha('yyyy-mm-dd')(factura.fechaVto) : null,
-                fechaContaFact: factura ? this.utilsService.formatearFecha('yyyy-mm-dd')(factura.fechaContable) : null,
+                
                 grabaFactura: factura && factura.tipo && factura.tipo.idCteTipo ? true : false,
                 grillaArticulos: productosPend.map(prod => {
+                    
+                    const subtotalBuscado = subtotalesProductos
+                        .find(st => st.idProducto === prod.producto.idProductos);
+                        
+                    const subtotalProd = this.utilsService.parseDecimal(
+                        subtotalBuscado && subtotalBuscado['subtotal'] ? 
+                            subtotalBuscado['subtotal'] : 0
+                    )
+
                     return {
                         idProducto: prod.producto.idProductos,
                         articulo: prod.producto.descripcion ? prod.producto.descripcion : '',
@@ -414,7 +433,8 @@ export class AuthService {
                         // idFactCabImputa: prod.idFactCabImputada ? prod.idFactCabImputada : null,
                         idFactDetalleImputa: prod.idFactDetalleImputa ? prod.idFactDetalleImputa : null,
                         itemImputada: prod.itemImputada,
-                        importe: prod.importe
+                        // importe: prod.importe
+                        importe: Number(subtotalProd) ? Number(subtotalProd) : 0
                     }
                 }),
                 grillaSubTotales: modelosFactura.map(mod => {
@@ -449,33 +469,43 @@ export class AuthService {
                     }
                 }),
 
+                idSisTipoOperacion: tipoOpSelect.idSisTipoOperacion,
+
+                idNumero: comprobante.numerador && comprobante.numerador.numero ? 
+                    comprobante.numerador.numero.idCteNumero : null,
+
                 idCteTipo: comprobante.tipo.idCteTipo,
                 idPadron: clienteSelect.padronCodigo,
                 idMoneda: comprobante.moneda.idMoneda,
                 idModeloCab: null,
-                idFactCab: null,
+                
                 idModulo: sisModulos.venta,
                 listaPrecio: formasPagoSeleccionadas && formasPagoSeleccionadas.length > 0 ? 
-                    formasPagoSeleccionadas[0].listaPrecio.idListaPrecio : null,
-                letraFact: factura ? 'A' : null,
+                formasPagoSeleccionadas[0].listaPrecio.idListaPrecio : null,
                 letra: 'X',
-                // lote:   productosPend.some(prodPend => prodPend.producto.trazable) &&
-                //         comprobante.tipo.comprobante.idSisComprobantes !== 4,
                 lote:   productosPend.some(prodPend => prodPend.producto.trazable) &&
-                        comprobante.tipo.comprobante.idSisComprobantes !== 4,
+                comprobante.tipo.comprobante.idSisComprobantes !== 4,
                 nombre: clienteSelect.padronApelli,
-                numero: Number(`${comprobante.puntoVenta}${comprobante.numero}`),
-                numeroFact: factura ? Number(factura.puntoVenta + factura.numero) : null,
+                numero: Number(`${comprobante.numerador.numero.ptoVenta}${comprobante.numerador.numero.numero}`),
+                // numeroFact: factura ? Number(factura.puntoVenta + factura.numero) : null,
                 observaciones: comprobante.observaciones,
                 precioReferenciaCanje: sisCanje && sisCanje.precio ? sisCanje.precio : 0,
                 productoCanje: sisCanje && sisCanje.descripcion ? sisCanje.descripcion : ' ',
                 produmo: true,
-                relComprobante: comproRelac.tipo.idCteTipo,
-                relPuntoVenta: comproRelac.puntoVenta,
-                relNumero: comproRelac.numero,
+                // relComprobante: comproRelac.tipo.idCteTipo,
+                // relPuntoVenta: comproRelac.puntoVenta,
+                // relNumero: comproRelac.numero,
                 sisSitIva: clienteSelect.condIva.descCorta,
                 interesCanje: sisCanje && sisCanje.interes ? sisCanje.interes : 0,
-                tipoFact: factura && factura.tipo ? factura.tipo.idCteTipo : null
+                idVendedor: dataVendedor.incluir ? dataVendedor.vendedor.idVendedor : null,
+                    
+                idFactCab: null,
+                fechaVencimientoFact: factura ? this.utilsService.formatearFecha('yyyy-mm-dd')(factura.fechaVto) : null,
+                fechaContaFact: factura ? this.utilsService.formatearFecha('yyyy-mm-dd')(factura.fechaComprobante) : null,
+                letraFact: factura ? 'A' : null,
+                numeroFact: factura ? Number(`${factura.numerador.numero.ptoVenta}${factura.numerador.numero.numero}`) : null,
+                tipoFact: factura && factura.tipo ? factura.tipo.idCteTipo : null,
+                idNumeroFact: factura && factura.numerador ? factura.numerador.numero.idCteNumero : null
             },
             {}
         );
@@ -537,7 +567,7 @@ export class AuthService {
             {
                 comprobanteModulo : sisModuloSelec && sisModuloSelec.idSisModulos ? sisModuloSelec.idSisModulos : 0,
                 comprobanteTipo : tipoComprobanteSelec && tipoComprobanteSelec.idCteTipo ? tipoComprobanteSelec.idCteTipo : 0,
-                comprobanteNumero : comprobante && comprobante.puntoVenta && comprobante.numero ? `${comprobante.puntoVenta}${comprobante.numero}` : 0,
+                comprobanteNumero : comprobante && comprobante.numerador.numero.ptoVenta && comprobante.numerador.numero.numero ? `${comprobante.numerador.numero.ptoVenta}${comprobante.numerador.numero.numero}` : 0,
                 fechaDesde : this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.desde),
                 fechaHasta : this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.hasta),
                 idProducto : productoSelec && productoSelec.idProductos ? productoSelec.idProductos : 0,
@@ -587,7 +617,7 @@ export class AuthService {
             resourcesREST.buscaCteFecha.nombre,
             {
                 idCteTipo: comprobante.tipo.idCteTipo,
-	            puntoVenta: comprobante.puntoVenta
+	            puntoVenta: comprobante.numerador.numero.ptoVenta
             },
             {}
         );
@@ -756,6 +786,25 @@ export class AuthService {
                 }
         );
     }
+    
+    // crearCliente = (token) => (padronCli: Padron) => (padronVend: Padron) => 
+    //     this.request(
+    //         [],
+    //         RequestMethod.Post,
+    //         {
+    //             token: token,
+    //         },
+    //         resourcesREST.cliente.nombre,
+    //         { },
+    //         {
+    //             padronCodigoVendedor: padronVend.padronCodigo,
+    //             padronCodigoCliente: padronCli.padronCodigo,
+    //             idCategoriaVendedor: 1,
+    //             idCategoriaCliente: 3,
+    //             porcentaje: 4
+    //         }
+    //     );
+    
 
     ///////////////////////////////////////////////////////////////////////////////////
     ///////////////////              MÉTODOS REUTILIZABLES          ///////////////////
@@ -917,7 +966,10 @@ export class AuthService {
                 idIva: recurso.IVA.idIVA,
                 idUnidadCompra: recurso.unidadCompra.idUnidad,
                 idUnidadVenta: recurso.unidadVenta.idUnidad,
-                idMarca: recurso.marca ? recurso.marca.idMarcas : null
+                idMarca: recurso.marca ? recurso.marca.idMarcas : null,
+                cultivos: recurso.cultivos.map(cul => ({
+                    idCultivo: cul.idCultivo
+                }))
             }
         }
 
@@ -984,6 +1036,46 @@ export class AuthService {
             
         }
 
+        if (nombreRecurso === resourcesREST.cteNumerador.nombre) {
+            return {
+                descripcion: recurso.descripcion,
+                fechaApertura: this.utilsService.formatearFecha('yyyy-mm-dd')(recurso.fechaApertura),
+                fechaCierre: this.utilsService.formatearFecha('yyyy-mm-dd')(recurso.fechaCierre),
+                idCteTipo: recurso.cteTipo.idCteTipo,
+                idCteNumero: recurso.numero && recurso.numero.idCteNumero ?
+                    recurso.numero.idCteNumero : null,
+                ptoVenta: recurso.numero && recurso.numero.ptoVenta ?
+                    recurso.numero.ptoVenta : null,
+                numero: recurso.numero && recurso.numero.numero ?
+                    recurso.numero.numero : null
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.categorias.nombre) {
+            return {
+                codigo: recurso.codigo,
+                descripcion: recurso.descripcion,
+                idSisCategoria: recurso.sisCategoria.idSisCategoria
+            }
+        }
+
+        
+        if (nombreRecurso === resourcesREST.cliente.nombre) {
+            return {
+                padronCodigoVendedor: recurso.vendedor.padronGral.idPadronGral,
+                padronCodigoCliente: recurso.padronGral.idPadronGral,
+                idCategoriaCliente: recurso.padronGral.categoria.idCategoria,
+                idCategoriaVendedor: recurso.vendedor.padronGral.categoria.idCategoria,
+                porcentaje: 0
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.cultivo.nombre) {
+            return {
+                descripcion: recurso.descripcion,
+                cosecha: recurso.cosecha
+            }
+        }
 
     }
 
@@ -1047,7 +1139,6 @@ export class AuthService {
         }
 
         if (nombreRecurso === resourcesREST.productos.nombre) {
-            // debugger;
             return {
                 idProducto: recurso.idProductos,
                 codProducto: recurso.codProducto,
@@ -1069,7 +1160,10 @@ export class AuthService {
                 idIva: recurso.IVA.idIVA,
                 idUnidadCompra: recurso.unidadCompra.idUnidad,
                 idUnidadVenta: recurso.unidadVenta.idUnidad,
-                idMarca: recurso.marca ? recurso.marca.idMarcas : null
+                idMarca: recurso.marca ? recurso.marca.idMarcas : null,
+                cultivos: recurso.cultivos.map(cul => ({
+                    idCultivo: cul.idCultivo
+                }))
             }
         }
 
@@ -1126,14 +1220,6 @@ export class AuthService {
         }
 
         if (nombreRecurso === resourcesREST.cteFecha.nombre) {
-            const t = {
-                idCteFecha: recurso.idCteFechas,
-                puntoVenta: recurso.puntoVenta,
-                fechaApertura: this.utilsService.formatearFecha('yyyy-mm-dd')(recurso.fechaApertura),
-                fechaCierre: this.utilsService.formatearFecha('yyyy-mm-dd')(recurso.fechaCierre),
-                idCteTipo: recurso && recurso.cteTipo ? recurso.cteTipo.idCteTipo : -1
-            };
-            debugger;
             return {
                 idCteFecha: recurso.idCteFechas,
                 puntoVenta: recurso.puntoVenta,
@@ -1144,7 +1230,48 @@ export class AuthService {
             
         }
 
+        if (nombreRecurso === resourcesREST.cteNumerador.nombre) {
+            return {
+                idCteNumerador: recurso.idCteNumerador,
+                descripcion: recurso.descripcion,
+                fechaApertura: this.utilsService.formatearFecha('yyyy-mm-dd')(recurso.fechaApertura),
+                fechaCierre: this.utilsService.formatearFecha('yyyy-mm-dd')(recurso.fechaCierre),
+                idCteTipo: recurso.cteTipo.idCteTipo,
+                idCteNumero: recurso.numero && recurso.numero.idCteNumero ?
+                    recurso.numero.idCteNumero : null,
+                ptoVenta: recurso.numero && recurso.numero.ptoVenta ?
+                    recurso.numero.ptoVenta : null,
+                numero: recurso.numero && recurso.numero.numero ?
+                    recurso.numero.numero : null
+            }
+        }
 
+        if (nombreRecurso === resourcesREST.categorias.nombre) {
+            return {
+                idCategoria: recurso.idCategoria,
+                codigo: recurso.codigo,
+                descripcion: recurso.descripcion,
+                idSisCategoria: recurso.sisCategoria.idSisCategoria
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.cliente.nombre) {
+            return {
+                padronCodigoVendedor: recurso.vendedor.padronGral.idPadronGral,
+                padronCodigoCliente: recurso.padronGral.idPadronGral,
+                idCategoriaCliente: recurso.padronGral.categoria.idCategoria,
+                idCategoriaVendedor: recurso.vendedor.padronGral.categoria.idCategoria,
+                porcentaje: 0
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.cultivo.nombre) {
+            return {
+                idCultivo: recurso.idCultivo,
+                descripcion: recurso.descripcion,
+                cosecha: recurso.cosecha
+            }
+        }
 
     }
 
