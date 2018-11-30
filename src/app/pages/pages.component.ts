@@ -6,6 +6,7 @@ import { PAGES_MENU } from './pages.menu';
 import { AppState } from 'app/app.service';
 import { LocalStorageService } from '../services/localStorageService';
 import { environment } from 'environments/environment';
+import { debug } from 'util';
 
 @Component({
     selector: 'pages',
@@ -41,6 +42,22 @@ export class Pages {
         //this._menuService.updateMenuByRoutes(<Routes>PAGES_MENU);
         this._menuService.updateMenuByRoutes(
             this.localStorageService.getObject(environment.localStorage.menu)
+        );
+
+        this.disabledFormEnter();
+    }
+
+    disabledFormEnter = () => {
+        window.addEventListener(
+            'keydown',
+            function (e: any) {
+                if (e.keyIdentifier == 'U+000A' || e.keyIdentifier == 'Enter' || e.keyCode == 13) {
+                    if (e.target.nodeName == 'INPUT' && e.target.type == 'text') {
+                        e.preventDefault(); return false;
+                    }
+                }
+            },
+            true
         );
     }
 }

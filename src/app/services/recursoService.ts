@@ -13,6 +13,7 @@ import { FiltroListaPrecios } from '../models/filtroListaPrecio';
 import { DetalleProducto } from '../models/detalleProducto';
 import { BehaviorSubject } from '../../../node_modules/rxjs';
 import { ProductoPendiente } from 'app/models/productoPendiente';
+import { ComprobanteEncabezado } from 'app/models/comprobanteEncabezado';
 
 @Injectable()
 export class RecursoService {
@@ -145,6 +146,48 @@ export class RecursoService {
         )
     }
 
+
+    /**
+     * Descargar pdf del comprobante
+     */
+    downloadComp = (compBusc: ComprobanteEncabezado) => {
+
+        compBusc.isDownloading = true;
+
+        this.authService.descargarComprobante(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            compBusc.idFactCab
+        )
+            .subscribe(resp => {
+                const bodyResp = resp['_body'];
+
+                var newBlob = new Blob([bodyResp], {type: "application/pdf"})
+                
+                // IE
+                if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                    window.navigator.msSaveOrOpenBlob(newBlob);
+                    return;
+                } 
+                
+                const data = window.URL.createObjectURL(newBlob);
+
+                var link = document.createElement('a');
+                link.href = data;
+                // link.download="fileBody.pdf";
+                link.download=`${compBusc.numero}.pdf`;
+                link.click();
+
+                // Firefox
+                setTimeout(function(){
+                    // For Firefox it is necessary to delay revoking the ObjectURL
+                    window.URL.revokeObjectURL(data);
+                }, 100);
+
+                compBusc.isDownloading = false;
+            });
+            
+    }
 
     
 

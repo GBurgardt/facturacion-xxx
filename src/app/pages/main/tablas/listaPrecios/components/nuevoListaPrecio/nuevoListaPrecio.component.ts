@@ -18,6 +18,10 @@ import { FiltroListaPrecios } from '../../../../../../models/filtroListaPrecio';
 import { DetalleProducto } from '../../../../../../models/detalleProducto';
 
 import * as _ from 'lodash';
+import { BehaviorSubject } from 'rxjs';
+import { Padron } from 'app/models/padron';
+import gruposParametros from 'constantes/gruposParametros';
+import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
 
 @Component({
     selector: 'nuevo-lista-precio',
@@ -40,10 +44,15 @@ export class NuevoListaPrecio {
     // Bandera que habilita los detalles una vez que se completo la data de la nueva lsita
     detallesActivos: boolean = false;
 
+    padrones: { todos: Padron[]; filtrados: BehaviorSubject<Padron[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
+    
+    padronEnfocadoIndex: number = -1;
+
     constructor(
         private recursoService: RecursoService,
         private utilsService: UtilsService,
-        private router: Router
+        private router: Router,
+        private popupListaService: PopupListaService
     ) {
         this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
         this.rubros = this.recursoService.getRecursoList(resourcesREST.rubros)();
@@ -100,6 +109,13 @@ export class NuevoListaPrecio {
                 enEdicion: null
             }
         ];
+
+        this.recursoService.getRecursoList(resourcesREST.padron)({ grupo: gruposParametros.cliente })
+            .subscribe(padrones => {
+                this.padrones.todos = padrones;
+                // this.padrones.filtrados.next(padrones);
+                this.padrones.filtrados.next([]);
+            })
     }
 
     ngOnInit() {
@@ -258,6 +274,48 @@ export class NuevoListaPrecio {
         (keyFecha==='vigenciaDesde') ? document.getElementById(`fechaVigenciaHasta`).focus() : null;
         (keyFecha==='vigenciaHasta') ? document.getElementById(`porcPrecioVenta`).focus() : null;
 
+    }
+
+    /**
+     * 
+     */
+    onChangeCliProv = (busqueda) => {
+
+        if (busqueda && busqueda.length === 0) {
+            this.padrones.filtrados.next([]);    
+        } else {
+            this.padrones.filtrados.next(
+                this.utilsService.filtrarPadrones(this.padrones.todos, busqueda)
+            );
+        }
+
+        // Reseteo el indice
+        this.padronEnfocadoIndex = -1;
+    }
+
+    /**
+     * Event on click en la lista del popup de padrones
+     */
+    onClickPopupPadron = (idPadronName) => 
+        (prove: Padron) => this.recurso[idPadronName] = prove.padronCodigo
+
+    /**
+     * Evento on enter en el input de buscar cliente
+     */
+    onEnterPopup = (idPadronName) => {
+        this.padrones.filtrados.subscribe(provsLista => {
+            const provSelect = provsLista && provsLista.length ? provsLista[this.padronEnfocadoIndex] : null;
+            provSelect ? this.onClickPopupPadron(idPadronName)(provSelect) : null;
+            this.padronEnfocadoIndex = -1;
+        })
+    }
+
+    keyPressInputTexto = (e: any) => (upOrDown) => {
+        e.preventDefault();
+        // Hace todo el laburo de la lista popup y retorna el nuevo indice seleccionado
+        this.popupListaService.keyPressInputForPopup(upOrDown)(this.padrones.filtrados)(this.padronEnfocadoIndex)
+            .subscribe(newIndex => this.padronEnfocadoIndex = newIndex)
+            .unsubscribe()
     }
 
 }

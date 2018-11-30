@@ -1,5 +1,6 @@
 import { SisComprobante } from "./sisComprobante";
 import { Numerador } from "./numerador";
+import { CodigoAfip } from "./codigoAfip";
 
 export class TipoComprobante {
     idCteTipo: number;
@@ -7,11 +8,13 @@ export class TipoComprobante {
     descCorta: string;
     descripcion: string;
     cursoLegal: boolean;
-    codigoAfip: number;
+    // codigoAfip: number;
+    codigoAfip: CodigoAfip;
     surenu: string;
     observaciones: string;
     comprobante: SisComprobante;
     numerador: any[];
+    requiereFormaPago: boolean;
 
     constructor (tipoComprobante?: {
         idCteTipo: number;
@@ -19,11 +22,13 @@ export class TipoComprobante {
         descCorta: string;
         descripcion: string;
         cursoLegal: boolean;
-        codigoAfip: number;
+        // codigoAfip: number;
+        codigoAfip: any;
         surenu: string;
         observaciones: string;
         comprobante: any;
         numerador: Numerador[];
+        requiereFormaPago: boolean;
     }) {
         if (tipoComprobante) {
             this.idCteTipo = tipoComprobante.idCteTipo;
@@ -31,22 +36,26 @@ export class TipoComprobante {
             this.descCorta = tipoComprobante.descCorta;
             this.descripcion = tipoComprobante.descripcion;
             this.cursoLegal = tipoComprobante.cursoLegal;
-            this.codigoAfip = tipoComprobante.codigoAfip;
+            // this.codigoAfip = tipoComprobante.codigoAfip;
+            this.codigoAfip = new CodigoAfip(tipoComprobante.codigoAfip)
             this.surenu = tipoComprobante.surenu;
             this.observaciones = tipoComprobante.observaciones;
             this.comprobante = new SisComprobante(tipoComprobante.comprobante);
             this.numerador = tipoComprobante.numerador.map(n => new Numerador(n));
+            this.requiereFormaPago = tipoComprobante.requiereFormaPago;
         } else {
             this.idCteTipo = null;
             this.codigoComp = null;
             this.descCorta = null;
             this.descripcion = null;
             this.cursoLegal = null;
-            this.codigoAfip = null;
+            // this.codigoAfip = null;
+            this.codigoAfip = new CodigoAfip();
             this.surenu = null;
             this.observaciones = null;
             this.comprobante = new SisComprobante();
             this.numerador = null;
+            this.requiereFormaPago = null;
         }
     }
 

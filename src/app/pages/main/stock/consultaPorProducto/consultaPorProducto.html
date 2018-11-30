@@ -102,7 +102,7 @@
     </div>
 </ba-card>
 
-<ba-card>
+<ba-card *ngIf="(stockData | async)?.length">
     <table class="table table-striped" [mfData]="stockData | async" #mf="mfDataTable" mfRowsOnPage="10">
         <thead>
             <tr>
@@ -138,4 +138,11 @@
             </tr>
         </tfoot>
     </table>
+
+    <div class="btn-imprimir-container">
+        <button style="margin: 0 19px;" (click)="descargarReporte()" type="submit" class="btn btn-secondary">
+            <i style="padding-right: 4px" class="fa fa-file-text-o" aria-hidden="true"></i>
+            Reporte
+        </button>
+    </div>
 </ba-card>

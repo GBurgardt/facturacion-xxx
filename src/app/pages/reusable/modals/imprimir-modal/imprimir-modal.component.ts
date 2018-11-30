@@ -11,8 +11,9 @@ export class ImprimirModal implements OnInit {
 
     modalHeader: string;
     modalContent: string;
+    currentComprobante: any;
 
-    imprimirComp;
+    onClickImprimir;
 
     constructor(private activeModal: NgbActiveModal) {
     }

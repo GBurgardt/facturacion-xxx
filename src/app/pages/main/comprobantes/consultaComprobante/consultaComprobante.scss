@@ -184,4 +184,25 @@
     //         font-weight: 500;
     //     }
     // }
+
+    .btn-imprimir-container {
+        display: flex;
+        justify-content: flex-end;
+        margin: 1% -0.8%;    
+    }
+
+}
+
+
+.popup-spinner {
+    position: fixed;
+    z-index: 9999999;
+    display: flex;
+    width: 151px;
+    padding: 5px 9px;
+    justify-content: center;
+    background: white;
+    border: solid 1px #e0e0e0;
+    border-radius: 6px 9px 0px 0px;
+    margin-top: 4px;
 }

@@ -38,7 +38,7 @@ import { Numero } from "app/models/numero";
 import { Categoria } from "app/models/categoria";
 import { SisCategoria } from "app/models/sisCategoria";
 import { Cliente } from "app/models/cliente";
-import { SisSitIVA } from "app/models/sisSitIva";
+import { SisSitIVA } from "app/models/sisSitIVA";
 import { ClienteModPost } from "app/models/clienteModPost";
 import { Cultivo } from "app/models/cultivo";
 
@@ -202,8 +202,12 @@ export const resourcesREST = {
         nombre: 'proximoCodigo',
         Clase: String
     },
-    compGest: {
-        nombre: 'compGest',
+    // compGest: {
+    //     nombre: 'compGest',
+    //     Clase: CodigoAfip
+    // },
+    sisCodigoAfip: {
+        nombre: 'sisCodigoAfip',
         Clase: CodigoAfip
     },
     marcas: {
@@ -237,6 +241,17 @@ export const resourcesREST = {
     cultivo: {
         nombre: 'cultivo',
         Clase: Cultivo
+    },
+    descargarListado: {
+        nombre: 'descargarListado',
+        Clase: null
+    },
+    descargarStock: {
+        nombre: 'descargarStock',
+        Clase: null
+    },
+    buscaListaPrecio: {
+        nombre: 'buscaListaPrecio',
+        Clase: ListaPrecio
     }
-
 };

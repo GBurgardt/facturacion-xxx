@@ -51,6 +51,7 @@ export class TipoComprobantes {
             {
                 nombre: 'codigo afip',
                 key: 'codigoAfip',
+                subkey: 'descripcion',
                 ancho: '10%'
             },
             {

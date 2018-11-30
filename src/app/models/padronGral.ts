@@ -1,6 +1,6 @@
 import { Categoria } from "app/models/categoria";
 import { IVA } from "./IVA";
-import { SisSitIVA } from "./sisSitIva";
+import { SisSitIVA } from "app/models/sisSitIVA";
 
 export class PadronGral {
     idPadronGral: number;

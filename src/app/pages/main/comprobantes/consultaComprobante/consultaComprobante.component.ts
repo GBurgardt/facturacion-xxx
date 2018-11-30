@@ -16,6 +16,7 @@ import { ComprobanteDetalle } from '../../../../models/comprobanteDetalle';
 
 import { Observable, BehaviorSubject } from 'rxjs';
 import gruposParametros from 'constantes/gruposParametros';
+import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
 
 @Component({
     selector: 'consulta-comprobante',
@@ -30,8 +31,12 @@ export class ConsultaComprobante {
     productos: Observable<Producto[]>;
     sisEstados: Observable<SisEstado[]>;
     depositos: Observable<Deposito[]>;
-    padrones: Observable<Padron[]>;
+
+    // padrones: Observable<Padron[]>;
+    padrones: { todos: Padron[]; filtrados: BehaviorSubject<Padron[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
     
+    padronEnfocadoIndex: number = -1;
+
     // Lo uso cuando busca específicamente por nro y pto venta
     comprobante: Comprobante = new Comprobante();
 
@@ -58,17 +63,25 @@ export class ConsultaComprobante {
     constructor(
         private recursoService: RecursoService,
         private utilsService: UtilsService,
-        private comprobanteService: ComprobanteService
+        private comprobanteService: ComprobanteService,
+        private popupListaService: PopupListaService
     ) {
         this.sisModulos = this.recursoService.getRecursoList(resourcesREST.sisModulos)();
         this.productos = this.recursoService.getRecursoList(resourcesREST.productos)();
         this.sisEstados = this.recursoService.getRecursoList(resourcesREST.sisEstados)();
 
+        // this.padrones = this.recursoService.getRecursoList(resourcesREST.padron)({
+        //     grupo: gruposParametros.cliente
+        // });
+
+        this.recursoService.getRecursoList(resourcesREST.padron)({ grupo: gruposParametros.cliente })
+            .subscribe(padrones => {
+                this.padrones.todos = padrones;
+                // this.padrones.filtrados.next(padrones);
+                this.padrones.filtrados.next([]);
+            })
         
 
-        this.padrones = this.recursoService.getRecursoList(resourcesREST.padron)({
-            grupo: gruposParametros.cliente
-        });
         this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
     }
 
@@ -139,42 +152,57 @@ export class ConsultaComprobante {
     }
 
     /**
-     * Descargar pdf del comprobante
-     */
-    onClickPrint = (compBusc: ComprobanteEncabezado) => {
-        this.comprobanteService.descargarPdf(compBusc).subscribe(resp => {
-            const bodyResp = resp['_body'];
-
-            var newBlob = new Blob([bodyResp], {type: "application/pdf"})
-            
-            // IE
-            if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-                window.navigator.msSaveOrOpenBlob(newBlob);
-                return;
-            } 
-            
-            const data = window.URL.createObjectURL(newBlob);
-
-            var link = document.createElement('a');
-            link.href = data;
-            // link.download="fileBody.pdf";
-            link.download=`${compBusc.numero}.pdf`;
-            link.click();
-
-            // Firefox
-            setTimeout(function(){
-                // For Firefox it is necessary to delay revoking the ObjectURL
-                window.URL.revokeObjectURL(data);
-            }, 100)
-        });
-        
-    }
-
-    /**
      * Evento blur de pto venta y numero en comprobante
      * tipo: puntoVenta o numero
      * keyTipoe: comprobante, comprobanteRelacionado
      */
     onBlurNumeroAutocomp = (e) => (tipo: string) => (keyTipo: string) => 
         this[keyTipo][tipo] = this.utilsService.autocompNroComp(tipo)(this[keyTipo])
+
+    /**
+     * On click buscar
+     */
+    onClickReporte = (tipo) => {
+        this.comprobanteService.generarReportes(tipo)(this.comprobante)(this.fechasFiltro)(this.sisModuloSelec)(this.tipoComprobanteSelec)(this.productoSelec)(this.sisEstadoSelec)(this.padronSelec)(this.depositoSelec)
+            .subscribe(resp => {
+                // debugger;
+                if (resp) {
+                    this.utilsService.downloadBlob(resp['_body'], tipo);
+                }
+                
+                // compBusc.isDownloading = false;
+            })
+
+    }
+
+    /**
+     * 
+     */
+    onChangeCliProv = (busqueda) => {
+        
+        console.log(this.padronSelec.padronCodigo)
+
+        if (busqueda && busqueda.length === 0) {
+            this.padrones.filtrados.next([]);    
+        } else {
+            this.padrones.filtrados.next(
+                this.comprobanteService.filtrarPadrones(this.padrones.todos, busqueda)
+            );
+        }
+
+        // Reseteo el indice
+        this.padronEnfocadoIndex = -1;
+    }
+
+    /**
+     * Event on click en la lista del popup de padrones
+     */
+    onClickPopupPadron = (prove: Padron) => 
+        this.padronSelec = new Padron({...prove})
+    
+    test2 = () => {
+        const a = this.padrones.filtrados.value
+        debugger;
+    }
+
 }

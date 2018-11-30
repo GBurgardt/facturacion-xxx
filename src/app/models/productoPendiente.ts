@@ -49,7 +49,7 @@ export class ProductoPendiente {
 
     constructor(productoPendiente?: {
         comprobante: string;
-        numero: string;
+        numero: any;
         original: number;
         pendiente: number;
         precio: number;
@@ -71,7 +71,11 @@ export class ProductoPendiente {
     }) {
         if (productoPendiente) {
             this.comprobante = productoPendiente.comprobante;
-            this.numero = productoPendiente.numero;
+            // this.numero = productoPendiente.numero;
+
+            this.numero = productoPendiente.numero ?
+                productoPendiente.numero.toString().padStart(12, '0') : null;
+
             this.original = productoPendiente.original;
             this.pendiente = productoPendiente.pendiente;
             this.precio = productoPendiente.precio;

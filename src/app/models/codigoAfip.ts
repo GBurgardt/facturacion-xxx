@@ -1,3 +1,28 @@
+export class CodigoAfip {
+    idSisCodigoAfip: number;
+    codigoAfip: number;
+    descripcion: string
+
+    constructor(codigoAfip?: {
+        idSisCodigoAfip: number;
+        codigoAfip: number;
+        descripcion: string
+    }) {
+        if (codigoAfip) {
+            this.idSisCodigoAfip = codigoAfip.idSisCodigoAfip;
+            this.codigoAfip = codigoAfip.codigoAfip;
+            this.descripcion = codigoAfip.descripcion
+        } else {
+            this.idSisCodigoAfip = null;
+            this.codigoAfip = null;
+            this.descripcion = null
+        }
+    }
+
+}
+
+
+/*
 
 export class CodigoAfip {
     compDescri: string;
@@ -25,3 +50,5 @@ export class CodigoAfip {
     }
 
 }
+
+*/

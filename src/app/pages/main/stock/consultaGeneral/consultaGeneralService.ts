@@ -30,4 +30,10 @@ export class ConsultaGeneralService {
             )
         )
 
+    descargarReporte = (filtros: any) => 
+        this.authService.descargaStock(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            filtros
+        )('general')
 }

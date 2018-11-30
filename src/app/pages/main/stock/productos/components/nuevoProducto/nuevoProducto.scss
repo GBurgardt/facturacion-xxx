@@ -49,9 +49,13 @@
     
     .badges-container {
         display: flex;
-        // justify-content: space-between;
         margin: 0 20px 0 9px;
         min-height: 28px;
+        padding-top: 10px;
+
+        .title {
+            padding: 6px 8px 0px 0px;
+        }
 
         .badge-item {
             // background: #dee0e0;
@@ -69,7 +73,8 @@
     // Las inner-class van por fuera
     .cultivos-list {
         margin: 0 20px 0 9px !important;
-        max-height: 133px;
+        // max-height: 133px;
+        max-height: 110px;
         overflow: auto;
     }
     

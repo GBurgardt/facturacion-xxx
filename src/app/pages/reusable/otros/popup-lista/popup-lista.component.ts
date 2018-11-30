@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Inject } from '@angular/core';
+import { WINDOW } from '../../../../services/windowService';
 
 @Component({
     selector: 'popup-lista',
@@ -20,7 +21,40 @@ export class PopupLista {
     // Posicion padre
     @Input() fatherPosition: {top: number, left: number};
 
-    constructor() { }
+    itemsReduced = [];
+    itemsCompleted = [];
+
+    constructor(@Inject(WINDOW) private window: Window) { }
+
+    ngOnInit() {
+        this.items.subscribe(resp => {
+            this.itemsReduced = resp.slice(0,30);
+            this.itemsCompleted = resp;
+
+            // Activo el infite scroll
+            this.processInfiniteScroll();
+        });
+    }
+
+    processInfiniteScroll = () => {
+        this.window.addEventListener('scroll', (event) => {
+            const sidenavBody = document.getElementsByClassName('list-group ul-lista-popup');
+
+            if (sidenavBody && sidenavBody[0]){
+
+                const posicionFinal = sidenavBody[0].scrollHeight - sidenavBody[0].clientHeight;
+                const scrollTop = sidenavBody[0].scrollTop;
+
+                if (posicionFinal - scrollTop <= 0) {
+                    const nuevoIndex = (this.itemsReduced.length + 30) <= this.itemsCompleted.length ? (this.itemsReduced.length + 30) : this.itemsCompleted.length;
+
+                    const nuevaTanda = this.itemsCompleted.slice(0, nuevoIndex);
+
+                    this.itemsReduced = nuevaTanda;
+                }
+            };
+        }, true)
+    }
 
     /**
      * Muestra el item de acuerdo a las keys pasadas
@@ -40,8 +74,5 @@ export class PopupLista {
     getPosicionLista = () => {
         return {top: (this.fatherPosition.top + 22) + 'px', left: this.fatherPosition.left + 'px'}
     }
-
-
-
 
 }

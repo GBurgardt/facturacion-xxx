@@ -10,6 +10,9 @@ import { resourcesREST } from 'constantes/resoursesREST';
 import { routing } from '../pages/main/tablas/tablas.routing';
 import { DateLikePicker } from 'app/models/dateLikePicker';
 import { ImprimirModal } from 'app/pages/reusable/modals/imprimir-modal/imprimir-modal.component';
+import { AuthService } from './authService';
+import { Numero } from 'app/models/numero';
+import { Padron } from 'app/models/padron';
 
 @Injectable()
 export class UtilsService {
@@ -58,11 +61,12 @@ export class UtilsService {
         }
     }
 
-    showImprimirModal = (titulo) => (descripcion) => (callbackImprimir) => {
+    showImprimirModal = (titulo) => (descripcion) => (callbackImprimir) => (currentComprobante) => {
         let activeModal = this.modalService.open(ImprimirModal, { size: 'sm' });
         activeModal.componentInstance.modalHeader = titulo;
         activeModal.componentInstance.modalContent = descripcion;
-        activeModal.componentInstance.imprimirComp = callbackImprimir;
+        activeModal.componentInstance.onClickImprimir = callbackImprimir;
+        activeModal.componentInstance.currentComprobante = currentComprobante;
     }
 
     /**
@@ -304,7 +308,12 @@ export class UtilsService {
         arr.reduce((x, y) => [...x, ...f(y)], [])
 
     parseDecimal = (key) => {
-        return Number(key).toFixed(2);
+        const nro = Number.parseFloat(key);
+        if (nro && Number.parseFloat(key).toFixed(2)) {
+            return Number.parseFloat(key).toFixed(2);
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -387,4 +396,41 @@ export class UtilsService {
     }
 
     focusElement = (idElement) => document.getElementById('idBtnConfirmar') ? document.getElementById('idBtnConfirmar').focus() : null
+
+    downloadBlob = (bodyResp, name) => {
+        // const bodyResp = resp['_body'];
+
+        var newBlob = new Blob([bodyResp], {type: "application/pdf"})
+        
+        // IE
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+            window.navigator.msSaveOrOpenBlob(newBlob);
+            return;
+        } 
+        
+        const data = window.URL.createObjectURL(newBlob);
+
+        var link = document.createElement('a');
+        link.href = data;
+        // link.download="fileBody.pdf";
+        link.download=`${name}.pdf`;
+        link.click();
+
+        // Firefox
+        setTimeout(function(){
+            // For Firefox it is necessary to delay revoking the ObjectURL
+            window.URL.revokeObjectURL(data);
+        }, 100);
+
+        // compBusc.isDownloading = false;
+    }
+
+    numeroObjectToString = (numero: Numero) => 
+        `${numero.ptoVenta.toString().padStart(4, '0')}${numero.numero.toString().padStart(8, '0')}`
+
+    filtrarPadrones = (listaPadrones, textoBuscado) => 
+        listaPadrones.filter(
+            (prov: Padron) =>   prov.padronCodigo.toString().includes(textoBuscado) ||
+                                prov.padronApelli.toString().toLowerCase().includes(textoBuscado)
+        );
 }

@@ -1,6 +1,6 @@
 <div class="popup-lista" [ngStyle]="getPosicionLista()">
-    <ul id="list" class="list-group ul-lista-popup">
-        <li *ngFor="let item of items | async" 
+    <ul *ngIf="itemsReduced && itemsReduced.length > 0" id="list" class="list-group ul-lista-popup">
+        <li *ngFor="let item of itemsReduced" 
             (mousedown)="onClickItem(item)" 
             [ngClass]="'list-group-item listElement li-popup-' + (!item ? 'none' :
                 item.producto ? item.producto.idProductos : 
@@ -11,16 +11,8 @@
             {{parseItem(item)}}
         </li>
     </ul>
+
+    <!-- <div class="spinner-container" *ngIf="!itemsReduced || itemsReduced.length <= 0">
+        SPINNER
+    </div> -->
 </div>
-
-<!-- 
-
-    
-                +   !item ? 'none' :
-                        item.producto ? item.producto.idProductos : 
-                            item.padronCodigo ? item.padronCodigo : 'raro'" 
-
- -->
-
-<!-- class="list-group-item listElement"  -->
-<!-- (keyup.enter)="onClickItem(item)" -->

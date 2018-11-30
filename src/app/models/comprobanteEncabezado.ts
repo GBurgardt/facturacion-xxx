@@ -17,6 +17,8 @@ export class ComprobanteEncabezado {
     // Desplegable de detalles
     showDetalles: boolean;
 
+    isDownloading;
+
     constructor(comprobanteEncabezado?: {
         idFactCab: number;
         numero: number;
@@ -46,6 +48,8 @@ export class ComprobanteEncabezado {
             this.detalle = comprobanteEncabezado.detalle.map(det => new ComprobanteDetalle(det));
 
             this.showDetalles = false;
+            
+            this.isDownloading = false;
         } else {
             this.idFactCab = null;
             this.numero = null;
@@ -61,6 +65,8 @@ export class ComprobanteEncabezado {
             this.detalle = null;
             
             this.showDetalles = false;
+
+            this.isDownloading = false;
         }
     }
 

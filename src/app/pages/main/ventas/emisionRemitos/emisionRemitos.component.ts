@@ -36,10 +36,11 @@ import { ModeloFactura } from 'app/models/modeloFactura';
 import gruposParametros from 'constantes/gruposParametros';
 import { ProductoReducido } from '../../../../models/productoReducido';
 import { Cliente } from '../../../../models/cliente';
-import { SisSitIVA } from '../../../../models/sisSitIva';
+import { SisSitIVA } from '../../../../models/sisSitIVA';
 import { Router } from '../../../../../../node_modules/@angular/router';
 import { Vendedor } from '../../../../models/vendedor';
 import sisModulos from 'constantes/sisModulos';
+import { ComprobanteEncabezado } from 'app/models/comprobanteEncabezado';
 
 
 @Component({
@@ -304,15 +305,21 @@ export class EmisionRemitos {
         )
             .subscribe(prodEnc => {
 
-                const existeProd = this.tablas.datos.productosPend.find(prod=>prod.producto.idProductos === prodEnc.producto.idProductos)
-        
+                const auxProdSelect = Object.assign({}, prodEnc);
+                auxProdSelect.numero = this.utilsService.numeroObjectToString(this.comprobante.numerador.numero)
+
+                // const existeProd = this.tablas.datos.productosPend.find(prod=>prod.producto.idProductos === prodEnc.producto.idProductos)
+                const existeProd = this.tablas.datos.productosPend.find(prod=>prod.producto.idProductos === auxProdSelect.producto.idProductos)
+
                 if (!existeProd) {
-                    this.tablas.datos.productosPend.push(prodEnc);
+                    // this.tablas.datos.productosPend.push(prodEnc);
+                    this.tablas.datos.productosPend.push(auxProdSelect);
                     this.actualizarDatosProductos();
                 }
         
                 // Despues de agregar el producto prosedo a ponerlo en edición
-                this.onClickEdit('columnasProductos')(prodEnc);
+                // this.onClickEdit('columnasProductos')(prodEnc);
+                this.onClickEdit('columnasProductos')(auxProdSelect);
         
                 // Actualizo grilla trazable lotes
                 this.actualizarTrazableLotes();
@@ -394,13 +401,22 @@ export class EmisionRemitos {
                             (this.dataVendedor)
                             (this.tablas.datos.subtotalesProductos)
                             .subscribe((respuesta: any) => {
-                                // this.utilsService.showModal(respuesta.control.codigo)(respuesta.control.descripcion)()();
+                                
+                                // Modal para imprimir
+                                const compCreado = new ComprobanteEncabezado();
+                                compCreado.idFactCab = respuesta.datos.idFactCab;
+                                compCreado.numero = Number(
+                                    `${this.comprobante.numerador.numero.ptoVenta}${this.comprobante.numerador.numero.numero.toString().padStart(8, '0')}`
+                                );
+
                                 this.utilsService.showImprimirModal(
                                     respuesta.control.codigo
                                 )(
                                     respuesta.control.descripcion
                                 )(
-                                    () => null
+                                    () => this.recursoService.downloadComp(compCreado)
+                                )(
+                                    compCreado
                                 );
 
                                 // Blanqueo los campos
@@ -771,8 +787,8 @@ export class EmisionRemitos {
         }
 
         // Guardo la moneda de la lista de precio actual
-        this.comprobante.moneda = this.formasPagoSeleccionadas && this.formasPagoSeleccionadas.length > 0 ? 
-            this.formasPagoSeleccionadas[0].listaPrecio.idMoneda : null;
+        // this.comprobante.moneda = this.formasPagoSeleccionadas && this.formasPagoSeleccionadas.length > 0 ? 
+        //     this.formasPagoSeleccionadas[0].listaPrecio.idMoneda : null;
 
         // Detalle de lista correspondiente
         this.detalleListaFpsSeleccionadas = this.formasPagoSeleccionadas
@@ -814,7 +830,7 @@ export class EmisionRemitos {
             )
             .reduce((a, b) => [...a].concat([...b]), []); // Aca aplasto el array bidimensional a uno de una dimensión
 
-
+        // Obtengo los productos que puede agregar a la venta
         this.recursoService.getRecursoList(resourcesREST.productosReducidos)({
             'tipo': 'reducida',
             'listaPrecio':  this.formasPagoSeleccionadas && 
@@ -950,7 +966,6 @@ export class EmisionRemitos {
             'sisModulo': sisModulos.venta,
             'idCteTipo': cteTipoSelect.idCteTipo
         })
-        this.tiposComprobantesRel.subscribe(a => console.log(a))
 
         this.comprobante.numerador.fechaApertura = null;
         this.comprobante.numerador.fechaCierre = null;
@@ -958,6 +973,19 @@ export class EmisionRemitos {
         if (this.comprobante.tipo && this.comprobante.tipo.numerador && this.comprobante.tipo.numerador.length > 0) {
             this.comprobante.numerador = this.comprobante.tipo.numerador[0];
         }
+
+        // Si el cteTipo seleccionado NO requiere forma de pago, entonces me traigo toda la lista de productos completa (para cuando agrega productos)
+        if (cteTipoSelect && !cteTipoSelect.requiereFormaPago) {
+            this.recursoService.getRecursoList(
+                resourcesREST.productosReducidos
+            )({
+                'tipo': 'reducida'
+            }).subscribe(prods => {
+                this.productos.next(prods);
+            });
+        }
+
+
     }
     
 
@@ -1045,7 +1073,7 @@ export class EmisionRemitos {
         }
     }
 
-    test() {
+    disabledConfirmar = () => {
 
         return !this.emisionRemitosService.checkIfDatosValidosComprobante(this.comprobante)
             (this.cliente)
@@ -1055,24 +1083,16 @@ export class EmisionRemitos {
             (this.tablas.datos.lotesTraza)
             ||
             (
-                !this.tablas.datos.detallesFormaPago ||
-                this.tablas.datos.detallesFormaPago.length <= 0 ||
-                !this.isRestoPagarValid()
+                this.comprobante && this.comprobante.tipo && this.comprobante.tipo.requiereFormaPago 
+                &&
+                (
+                    !this.tablas.datos.detallesFormaPago ||
+                    this.tablas.datos.detallesFormaPago.length <= 0 ||
+                    !this.isRestoPagarValid()
+                )
             )
     }
+
+    compareFnMonedas = (m1: Moneda, m2: Moneda) =>
+        m1 && m2 ? m1.idMoneda === m2.idMoneda : m1 === m2
 }
-
-
-
-/**
- * Calcula el resto pagar
- */
-// calcRestoPagar = () => {
-//     const sumMontos = _.sumBy(
-//         this.tablas.datos.detallesFormaPago,
-//         (fPago) => Number(fPago.monto) ? Number(fPago.monto) : 0
-//     )
-
-//     // return this.cotizacionDatos.total - sumMontos
-//     return (this.cotizacionDatos.total + this.sumatoriaSubtotales) - sumMontos
-// }

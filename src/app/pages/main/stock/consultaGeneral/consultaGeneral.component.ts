@@ -231,6 +231,17 @@ export class ConsultaGeneral {
 
     }
 
+    descargarReporte = () => {
+        this.consultaGeneralService.descargarReporte(this.filtros).subscribe(resp => {
+            if (resp && resp['_body']) {
+                this.utilsService.downloadBlob(
+                    resp['_body'], 
+                    'stockGeneral'
+                )
+            }
+        })
+    }
+
 }
 
 

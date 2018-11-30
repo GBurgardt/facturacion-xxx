@@ -113,7 +113,7 @@ export class TablaEmisionRem {
             }
         };
         
-        return key;
+        return key
     }
 
 
@@ -289,7 +289,7 @@ export class TablaEmisionRem {
      */
     canAddProduct = () => 
         this.comprobante.fechaComprobante && 
-        this.comprobante.fechaComprobante.year && 
-        this.productosObservable.value && 
-        this.productosObservable.value.length > 0
+        this.comprobante.fechaComprobante.year
+        // this.productosObservable.value && 
+        // this.productosObservable.value.length > 0
 }

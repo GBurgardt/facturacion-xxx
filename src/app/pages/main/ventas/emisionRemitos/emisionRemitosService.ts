@@ -53,13 +53,13 @@ export class EmisionRemitosService {
             nombre: 'descripcion',
             key: 'producto',
             subkey: 'descripcion',
-            ancho: '10%',
+            ancho: '9%',
             customClass: 'text-left'
         },
         {
             nombre: 'imputacion',
             key: 'imputacion',
-            ancho: '15%',
+            ancho: '13%',
             enEdicion: null,
             editarFocus: true,
             customClass: 'text-left'
@@ -67,7 +67,7 @@ export class EmisionRemitosService {
         {
             nombre: 'cantidad',
             key: 'pendiente',
-            ancho: '7.5%',
+            ancho: '6.5%',
             enEdicion: null,
             decimal: true,
             customClass: 'text-right'
@@ -88,7 +88,7 @@ export class EmisionRemitosService {
             customClass: 'text-right'
         },
         {
-            nombre: 'dto',
+            nombre: 'dto/rec',
             key: 'descuento',
             ancho: '5.5%',
             enEdicion: null,
@@ -127,7 +127,13 @@ export class EmisionRemitosService {
             nombre: 'trazable',
             key: 'producto',
             subkey: 'trazable',
-            ancho: '5.5%',
+            ancho: '4.5%',
+            customClass: 'text-left'
+        },
+        {
+            nombre: 'Nro Comprobante',
+            key: 'numero',
+            ancho: '5%',
             customClass: 'text-left'
         }
     ];
@@ -326,7 +332,7 @@ export class EmisionRemitosService {
                         err && err['_body'] && err['_body'].control ? 
                             err['_body'].control : null;
 
-                    this.utilsService.showModal(respErr.codigo)(respErr.descripcion)()();
+                    // this.utilsService.showModal(respErr.codigo)(respErr.descripcion)()();
                     return Observable.throw(
                         this.utilsService.showErrorWithBody(err)
                     )
@@ -442,6 +448,7 @@ export class EmisionRemitosService {
             subtotalesProductos
         )
             .catch(err => {
+                debugger;
                 this.utilsService.showErrorWithBody(err)
                 return Observable.throw(null)
             })
@@ -509,8 +516,8 @@ export class EmisionRemitosService {
             comprobante.tipo.idCteTipo !== null && 
             comprobante.numerador !== null &&
             comprobante.numerador.numero !== null &&
-            comprobante.moneda !== null && 
-            comprobante.moneda.idMoneda !== null && 
+            // comprobante.moneda !== null && 
+            // comprobante.moneda.idMoneda !== null && 
             comprobante.fechaComprobante !== null &&
             comprobante.fechaVto !== null && 
             productosPend !== null && 
@@ -568,6 +575,11 @@ export class EmisionRemitosService {
         this.authService.getBuscaFormaPago(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(cliente)(fecha).map(resp => resp.arraydatos.map(fp => new FormaPago(fp)))
+        
+    // getFormasPago = (cliente: Padron) => (fecha: any) => 
+    //     this.authService.getBuscaFormaPago(
+    //         this.localStorageService.getObject(environment.localStorage.acceso).token
+    //     )(cliente)(fecha).map(resp => resp.arraydatos.map(fp => new FormaPago(fp)))
  
         
     /**

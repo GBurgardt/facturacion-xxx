@@ -179,9 +179,9 @@
                 <span *ngIf="productosObservable.value && productosObservable.value.length > 0">
                     Debe completar la fecha del comprobante antes de agregar productos
                 </span>
-                <span *ngIf="!(productosObservable.value && productosObservable.value.length > 0)">
+                <!-- <span *ngIf="!(productosObservable.value && productosObservable.value.length > 0)">
                     Debe seleccionar una forma de pago para poder agregar productos
-                </span>
+                </span> -->
             </div>
 
             <!-- ROW PARA AGREGAR UN PRODUCTO -->
@@ -203,6 +203,7 @@
                                     [fatherPosition]="getOffsetOfAddInput()">
                     </popup-lista>
                 </td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

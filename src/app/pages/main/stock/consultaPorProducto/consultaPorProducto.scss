@@ -60,46 +60,44 @@
         }
 
     }
+    
+}
 
+.btn-imprimir-container {
+    display: flex;
+    justify-content: flex-end;
+    margin: 1% -0.8%;    
 }
 
 
-// :host /deep/ .tabset-consulta {
+
+.table-striped > tbody > tr > td {
+    border: none;
+    padding: 1px 12px;
+}
+
+.table-striped > tbody > tr > .td-right {
+    text-align: right !important;
+}
+.table-striped > tbody > tr > .td-nowrap {
+    white-space: nowrap;
+}
 
 
-    // > .tab-content > .tab-pane {
-
-        .table-striped > tbody > tr > td {
-            border: none;
-            padding: 1px 12px;
-        }
-
-        .table-striped > tbody > tr > .td-right {
-            text-align: right !important;
-        }
-        .table-striped > tbody > tr > .td-nowrap {
-            white-space: nowrap;
-        }
-
-
-        // .table-consulta-comp {
-        //     background: red !important;
-        // }
-
-        .table-consulta-comp thead tr th {
-            padding: 7px 10px;
-        }
-
-        .table-consulta-comp  thead td  {
-            padding: 7px 5px;
-        }
-
-        .table-consulta-comp {
-            .btn-print {
-                cursor: pointer;
-            }
-        }
-
-//     }
-
+// .table-consulta-comp {
+//     background: red !important;
 // }
+
+.table-consulta-comp thead tr th {
+    padding: 7px 10px;
+}
+
+.table-consulta-comp  thead td  {
+    padding: 7px 5px;
+}
+
+.table-consulta-comp {
+    .btn-print {
+        cursor: pointer;
+    }
+}

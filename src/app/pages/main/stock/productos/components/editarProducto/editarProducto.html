@@ -31,7 +31,7 @@
         </div>
 
         <div class="row custom-card">
-            <div class="col-sm-9">
+            <div class="col-sm-7">
                 <div class="row">
 
                     <div class="col-sm-3">
@@ -104,12 +104,19 @@
                             </select>
                         </div>
                     </div>
+
+                    <div class="col-sm-3">
+                        <div class="checkbox-apto-canje">
+                            <ba-checkbox [(ngModel)]="recurso.aptoCanje" [label]="'Apto Canje'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                        </div>
+                    </div>
                 </div>
 
             </div>
 
-            <div class="col-sm-3">
+            <div *ngIf="recurso.aptoCanje" class="col-sm-5">
                 <div class="badges-container">
+                    <span class="title">Seleccionados: </span>
                     <div *ngFor="let cult of recurso.cultivos" class="badge-item">
                         {{ cult.descripcion.substring(0,3).toUpperCase() }}
                     </div>
@@ -146,11 +153,11 @@
                     <input  [(ngModel)]="recurso.puntoPedido" type="text" class="form-control text-right" id="puntoPedido" placeholder="">
                 </div>
             </div>
-            <div class="col-sm-2">
+            <!-- <div class="col-sm-2">
                 <div class="checkbox-apto-canje">
                     <ba-checkbox  [(ngModel)]="recurso.aptoCanje" [label]="'Apto Canje'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <div class="row custom-card">

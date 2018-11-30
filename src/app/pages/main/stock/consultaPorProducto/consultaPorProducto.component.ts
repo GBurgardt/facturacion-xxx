@@ -146,6 +146,14 @@ export class ConsultaPorProducto {
         this.filtros.productoSelect = prod;
         this.info.nombreProd = prod.descripcion;
     }
+
+    descargarReporte = () => {
+        this.consultaPorProductoService.descargarReporte(this.filtros).subscribe(resp => {
+            if (resp && resp['_body']) {
+                this.utilsService.downloadBlob(resp['_body'], this.info.nombreProd)
+            }
+        })
+    }
 }
 
 

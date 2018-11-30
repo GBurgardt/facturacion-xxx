@@ -12,13 +12,15 @@ import { TipoComprobante } from '../models/tipoComprobante';
 import { Comprobante } from '../models/comprobante';
 import { DateLikePicker } from '../models/dateLikePicker';
 import { ComprobanteEncabezado } from '../models/comprobanteEncabezado';
+import { UtilsService } from './utilsService';
 
 @Injectable()
 export class ComprobanteService { 
 
     constructor(
         private authService: AuthService,
-        private localStorageService: LocalStorageService
+        private localStorageService: LocalStorageService,
+        private utilsService: UtilsService
     ) { };
     
     /**
@@ -39,18 +41,43 @@ export class ComprobanteService {
                         (sisEstadoSelec: SisEstado) =>
                             (padronSelec: Padron) =>
                                 (depositoSelec: Deposito) =>
-                                    this.authService.getBuscaComprobantes(
+                                    this.authService.buscaComprobantes(
                                         this.localStorageService.getObject(environment.localStorage.acceso).token
                                     )(comprobante)(fechasFiltro)(sisModuloSelec)(tipoComprobanteSelec)(productoSelec)(sisEstadoSelec)(padronSelec)(depositoSelec)
                                         .map(respuesta => respuesta.arraydatos.map(compEnca => new ComprobanteEncabezado(compEnca)))
+    /**
+     * Genera los comprobantes dado los filtros dados
+     */
+    generarReportes = (tipo) => (comprobante: Comprobante) => (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker }) => (sisModuloSelec: SisModulo) => (tipoComprobanteSelec: TipoComprobante) => (productoSelec: Producto) => (sisEstadoSelec: SisEstado) => (padronSelec: Padron) => (depositoSelec: Deposito) =>
+        this.authService.reporteComprobantes(tipo)(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(fechasFiltro)(sisModuloSelec)(tipoComprobanteSelec)(productoSelec)(sisEstadoSelec)(padronSelec)(depositoSelec)                                        
 
 
-    descargarPdf = (compBusc) => {
-        return this.authService.descargarComprobante(
+    /**
+     * Descargar pdf del comprobante
+     */
+    downloadComp = (compBusc: ComprobanteEncabezado) => {
+
+        compBusc.isDownloading = true;
+
+        this.authService.descargarComprobante(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
             compBusc.idFactCab
         )
+            .subscribe(resp => {
+                if (resp && resp['_body']) {
+                    this.utilsService.downloadBlob(resp['_body'], compBusc.numero);
+                }
+
+                compBusc.isDownloading = false;
+            });
+        
     }
+
+    filtrarPadrones = (listaPadrones, textoBuscado) => 
+        listaPadrones.filter(
+            (prov: Padron) =>   prov.padronCodigo.toString().includes(textoBuscado) ||
+                                prov.padronApelli.toString().toLowerCase().includes(textoBuscado)
+        );
 
 }

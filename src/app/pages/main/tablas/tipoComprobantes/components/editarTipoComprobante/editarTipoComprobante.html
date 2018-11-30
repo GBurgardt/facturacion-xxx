@@ -25,19 +25,29 @@
             
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label for="inputEmail">Codigo Afip</label>
-                    <input [(ngModel)]="recurso.codigoAfip" type="text" class="form-control" id="codigoAfip" placeholder="Codigo Afip">
+                    <label for="codAfip">Codigo Afip</label>
+                    <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.codigoAfip" class="form-control" id="codAfip">
+                        <option *ngFor="let codAf of codigosAfip | async" [ngValue]="codAf">
+                            {{ codAf.descripcion }}
+                        </option>
+                    </select>
                 </div>
             </div>
+
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="Clave">D/H</label>
                     <input [(ngModel)]="recurso.surenu" type="text" class="form-control" id="surenu" placeholder="D/H">
                 </div>
             </div>
-            <div class="col-sm-4">
-                <div class="checkbox-curso-legal">
+            <div class="col-sm-2">
+                <div class="checkbox-custom">
                     <ba-checkbox [(ngModel)]="recurso.cursoLegal" [label]="'Curso Legal'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="checkbox-custom">
+                    <ba-checkbox [(ngModel)]="recurso.requiereFormaPago" [label]="'Requiere Forma Pago'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
                 </div>
             </div>
         </div>

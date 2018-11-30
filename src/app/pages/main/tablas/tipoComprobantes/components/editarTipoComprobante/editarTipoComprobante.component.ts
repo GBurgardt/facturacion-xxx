@@ -10,6 +10,7 @@ import { RecursoService } from '../../../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
 import { SisComprobante } from 'app/models/sisComprobante';
 import { CteFechas } from 'app/models/cteFechas';
+import { CodigoAfip } from 'app/models/codigoAfip';
 
 @Component({
     selector: 'editar-tipo-comprobante',
@@ -23,6 +24,8 @@ export class EditarTipoComprobante {
     recursoOriginal: TipoComprobante = new TipoComprobante();
 
     sisComprobantes: Observable<SisComprobante[]>;
+
+    codigosAfip: Observable<CodigoAfip[]>;
 
     constructor(
         private utilsService: UtilsService,
@@ -42,6 +45,8 @@ export class EditarTipoComprobante {
         );
 
         this.sisComprobantes = this.recursoService.getRecursoList(resourcesREST.sisComprobantes)();
+
+        this.codigosAfip = this.recursoService.getRecursoList(resourcesREST.sisCodigoAfip)();
 
     }
 

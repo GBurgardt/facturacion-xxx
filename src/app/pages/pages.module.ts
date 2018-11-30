@@ -13,6 +13,7 @@ import { UtilsService } from '../services/utilsService';
 import { ListPopupService } from './reusable/otros/listFinder/components/listPopup/listPopupService';
 import { ImprimirModal } from './reusable/modals/imprimir-modal/imprimir-modal.component';
 
+import { WINDOW_PROVIDERS } from '../services/windowService';
 
 @NgModule({
     imports: [
@@ -37,7 +38,8 @@ import { ImprimirModal } from './reusable/modals/imprimir-modal/imprimir-modal.c
         PopupListaService,
         ComprobanteService,
         UtilsService,
-        ListPopupService
+        ListPopupService,
+        WINDOW_PROVIDERS
     ],
     exports: [
     ]

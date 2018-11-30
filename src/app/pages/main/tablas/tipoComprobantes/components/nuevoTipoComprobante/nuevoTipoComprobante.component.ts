@@ -12,6 +12,7 @@ import { RecursoService } from '../../../../../../services/recursoService';
 import { Observable } from 'rxjs/Observable';
 import { SisComprobante } from '../../../../../../models/sisComprobante';
 import { resourcesREST } from 'constantes/resoursesREST';
+import { CodigoAfip } from 'app/models/codigoAfip';
 
 
 @Component({
@@ -21,8 +22,9 @@ import { resourcesREST } from 'constantes/resoursesREST';
 })
 export class NuevoTipoComprobante {
     recurso: TipoComprobante = new TipoComprobante();
-
     sisComprobantes: Observable<SisComprobante[]>;
+
+    codigosAfip: Observable<CodigoAfip[]>;
 
     constructor(
         private recursoService: RecursoService,
@@ -30,6 +32,7 @@ export class NuevoTipoComprobante {
         private router: Router
     ) {
         this.sisComprobantes = this.recursoService.getRecursoList(resourcesREST.sisComprobantes)();
+        this.codigosAfip = this.recursoService.getRecursoList(resourcesREST.sisCodigoAfip)();
     }
 
     ngOnInit() {

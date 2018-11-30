@@ -1,6 +1,7 @@
 import { DetalleProducto } from "./detalleProducto";
 import { Moneda } from "./moneda";
 import { DateLikePicker } from "./dateLikePicker";
+import { FormaPago } from "./formaPago";
 
 export class ListaPrecio {
     idListaPrecio: number;
@@ -16,6 +17,7 @@ export class ListaPrecio {
     condiciones: string;
     idMoneda: Moneda;
     listaPrecioDetCollection: DetalleProducto[];
+    formasPago: FormaPago[];
 
     constructor(listaPrecio?: {
         idListaPrecio: number;
@@ -30,6 +32,7 @@ export class ListaPrecio {
         condiciones: string;
         idMoneda: any;
         listaPrecioDetCollection: any[];
+        formasPago: any[];
     }) {
         if (listaPrecio) {
             this.idListaPrecio = listaPrecio.idListaPrecio;
@@ -47,6 +50,7 @@ export class ListaPrecio {
             this.condiciones = listaPrecio.condiciones;
             this.idMoneda = new Moneda(listaPrecio.idMoneda);
             this.listaPrecioDetCollection = listaPrecio.listaPrecioDetCollection.map(detalle => new DetalleProducto(detalle));
+            this.formasPago = listaPrecio.formasPago.map(fp => new FormaPago(fp));
         } else {
             this.idListaPrecio = null;
             this.codigoLista = null;
@@ -59,8 +63,10 @@ export class ListaPrecio {
             // this.porc1 = null;
             this.porc1 = Number(0).toFixed(2);
             this.condiciones = null;
-            this.idMoneda = new Moneda();
+            // this.idMoneda = new Moneda();
+            this.idMoneda = null;
             this.listaPrecioDetCollection = [];
+            this.formasPago = []
         }
     }
 

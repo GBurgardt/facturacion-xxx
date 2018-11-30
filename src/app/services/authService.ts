@@ -295,7 +295,8 @@ export class AuthService {
                         descripcionPie: mod.descripcion,
                         importe: mod.importeTotal,
                         totalComprobante: cotizacionDatos.total,
-                        porcentaje: mod.porcentaje ? mod.porcentaje : 0
+                        porcentaje: mod.porcentaje ? mod.porcentaje : 0,
+                        idSisTipoModelo: mod.idSisTipoModelo ? mod.idSisTipoModelo : 0
                     }
                 }),
                 grillaTrazabilidad: productosPend
@@ -381,6 +382,7 @@ export class AuthService {
                         (dataVendedor: any) => 
                         (subtotalesProductos: any) => 
     {
+        debugger;
         return this.request(
             [],
             RequestMethod.Post,
@@ -443,7 +445,8 @@ export class AuthService {
                         descripcionPie: mod.descripcion,
                         importe: mod.importeTotal,
                         totalComprobante: cotizacionDatos.total,
-                        porcentaje: mod.porcentaje ? mod.porcentaje : 0
+                        porcentaje: mod.porcentaje ? mod.porcentaje : 0,
+                        idSisTipoModelo: mod.idSisTipoModelo ? mod.idSisTipoModelo : 0
                     }
                 }),
                 grillaTrazabilidad: lotesTraza
@@ -477,12 +480,14 @@ export class AuthService {
                 idCteTipo: comprobante.tipo.idCteTipo,
                 idPadron: clienteSelect.padronCodigo,
                 idMoneda: comprobante.moneda.idMoneda,
+                // idMoneda: comprobante && comprobante.moneda && comprobante.moneda.idMoneda ? comprobante.moneda.idMoneda : null,
                 idModeloCab: null,
                 
                 idModulo: sisModulos.venta,
                 listaPrecio: formasPagoSeleccionadas && formasPagoSeleccionadas.length > 0 ? 
                 formasPagoSeleccionadas[0].listaPrecio.idListaPrecio : null,
-                letra: 'X',
+                // letra: 'X',
+                letra: comprobante.letra,
                 lote:   productosPend.some(prodPend => prodPend.producto.trazable) &&
                 comprobante.tipo.comprobante.idSisComprobantes !== 4,
                 nombre: clienteSelect.padronApelli,
@@ -549,7 +554,45 @@ export class AuthService {
     * @argument token
     * @argument filtros Lo filtro
     */
-    getBuscaComprobantes = (token: string) =>   (comprobante: Comprobante) =>
+    reporteComprobantes = (tipo) => (token: string) =>   (comprobante: Comprobante) =>
+                                                (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker}) =>
+                                                (sisModuloSelec: SisModulo) =>
+                                                (tipoComprobanteSelec: TipoComprobante) =>
+                                                (productoSelec: Producto) =>
+                                                (sisEstadoSelec: SisEstado) =>
+                                                (padronSelec: Padron) =>
+                                                (depositoSelec: Deposito) => {
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            resourcesREST.descargarListado.nombre,
+            {
+                comprobanteModulo : sisModuloSelec && sisModuloSelec.idSisModulos ? sisModuloSelec.idSisModulos : 0,
+                comprobanteTipo : tipoComprobanteSelec && tipoComprobanteSelec.idCteTipo ? tipoComprobanteSelec.idCteTipo : 0,
+                comprobanteNumero : comprobante && comprobante.numerador.numero.ptoVenta && comprobante.numerador.numero.numero ? `${comprobante.numerador.numero.ptoVenta}${comprobante.numerador.numero.numero}` : 0,
+                fechaDesde : this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.desde),
+                fechaHasta : this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.hasta),
+                idProducto : productoSelec && productoSelec.idProductos ? productoSelec.idProductos : 0,
+                padCodigo : padronSelec && padronSelec.padronCodigo ? padronSelec.padronCodigo : 0,
+                idDeposito : depositoSelec && depositoSelec.idDeposito ? depositoSelec.idDeposito : 0,
+                idEstado : sisEstadoSelec && sisEstadoSelec.idSisEstados ? sisEstadoSelec.idSisEstados : 0
+            },
+            {
+                tipo
+            },
+            true
+        );
+    }
+
+    /**
+    * @description Obtiene productos pendientes
+    * @argument token
+    * @argument filtros Lo filtro
+    */
+    buscaComprobantes = (token: string) =>   (comprobante: Comprobante) =>
                                                 (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker}) =>
                                                 (sisModuloSelec: SisModulo) =>
                                                 (tipoComprobanteSelec: TipoComprobante) =>
@@ -572,7 +615,6 @@ export class AuthService {
                 fechaHasta : this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.hasta),
                 idProducto : productoSelec && productoSelec.idProductos ? productoSelec.idProductos : 0,
                 padCodigo : padronSelec && padronSelec.padronCodigo ? padronSelec.padronCodigo : 0,
-                // codigoDep : depositoSelec && depositoSelec.codigoDep ? depositoSelec.codigoDep : 0,
                 idDeposito : depositoSelec && depositoSelec.idDeposito ? depositoSelec.idDeposito : 0,
                 idEstado : sisEstadoSelec && sisEstadoSelec.idSisEstados ? sisEstadoSelec.idSisEstados : 0
             },
@@ -580,27 +622,50 @@ export class AuthService {
         );
     }
 
-
     /**
     * @description Obtiene las formas de pago
     * @argument token
     */
-    getBuscaFormaPago = (token: string) => (cliente?: Padron) => (fecha: any) => this.request(
-        [],
-        RequestMethod.Post,
-        {
-            token: token,
-        },
-        resourcesREST.buscaFormaPago.nombre,
-        {
-            activa: true,
-            todas: true,
-            fecha: this.utilsService.formatearFecha('yyyy-mm-dd')(fecha),
-            idPadronDesde: cliente ? cliente.padronCodigo : null,
-            idPadronHasta: cliente ? cliente.padronCodigo : null
-        },
-        {}
-    );
+    getBuscaFormaPago = (token: string) => (cliente?: Padron) => (fecha: any) => 
+        this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            resourcesREST.buscaListaPrecio.nombre,
+            {
+                activa: true,
+                todas: true,
+                fecha: this.utilsService.formatearFecha('yyyy-mm-dd')(fecha),
+                idPadronDesde: cliente ? cliente.padronCodigo : null,
+                idPadronHasta: cliente ? cliente.padronCodigo : null
+            },
+            {}
+        )
+        // TODO: Workaround hasta próx testeo
+        .map(resp => {
+            // debugger;
+            return {
+                arraydatos: resp.arraydatos[0].formasPago
+            }
+        })
+        // this.request(
+        //     [],
+        //     RequestMethod.Post,
+        //     {
+        //         token: token,
+        //     },
+        //     resourcesREST.buscaFormaPago.nombre,
+        //     {
+        //         activa: true,
+        //         todas: true,
+        //         fecha: this.utilsService.formatearFecha('yyyy-mm-dd')(fecha),
+        //         idPadronDesde: cliente ? cliente.padronCodigo : null,
+        //         idPadronHasta: cliente ? cliente.padronCodigo : null
+        //     },
+        //     {}
+        // );
     
 
     /**
@@ -737,13 +802,53 @@ export class AuthService {
                 idProductoDesde: (filtros.productoSelect && tipo === 'general') ? filtros.productoSelect.idProductos : 0,
                 idProductoHasta: filtros.productoSelect2 ? filtros.productoSelect2.idProductos : 0,
                 idProducto: (filtros.productoSelect && tipo === 'producto') ? filtros.productoSelect.idProductos : 0,
-                idDeposito: 0,
+                // idDeposito: 0,
+                idDeposito: filtros.deposito ? filtros.deposito.idDeposito : 0,
                 idCteTipo: filtros.cteTipo ? filtros.cteTipo.idCteTipo : 0,
                 idRubro: filtros.rubro ? filtros.rubro.idRubro : 0,
                 idSubRubro: filtros.subRubro ? filtros.subRubro.idSubRubro : 0,
                 tipoEstado: 0
             },
             {}
+        );
+    }
+
+    /**
+    * @description Cescarga los stock
+    * @argument token
+    */
+    descargaStock = (token: string) => (filtros: {
+        fechaHasta: any,
+        codProducto: any,
+        productoSelect: Producto,
+        productoSelect2?: Producto,
+        cteTipo?: TipoComprobante,
+        deposito?: Deposito,
+        rubro?: Rubro,
+        subRubro: SubRubro
+    }) => (tipo: string) => {
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            resourcesREST.descargarStock.nombre,
+            {
+                fechaHasta: this.utilsService.formatearFecha('yyyy-mm-dd')(filtros.fechaHasta),
+                idProductoDesde: (filtros.productoSelect && tipo === 'general') ? filtros.productoSelect.idProductos : 0,
+                idProductoHasta: filtros.productoSelect2 ? filtros.productoSelect2.idProductos : 0,
+                idProducto: (filtros.productoSelect && tipo === 'producto') ? filtros.productoSelect.idProductos : 0,
+                idDeposito: 0,
+                idCteTipo: filtros.cteTipo ? filtros.cteTipo.idCteTipo : 0,
+                idRubro: filtros.rubro ? filtros.rubro.idRubro : 0,
+                idSubRubro: filtros.subRubro ? filtros.subRubro.idSubRubro : 0,
+                tipoEstado: 0
+            },
+            {
+                tipo
+            },
+            true
         );
     }
 
@@ -924,10 +1029,12 @@ export class AuthService {
                 descCorta: recurso.descCorta,
                 descripcion: recurso.descripcion,
                 cursoLegal: recurso.cursoLegal,
-                codigoAfip: recurso.codigoAfip,
+                // codigoAfip: recurso.codigoAfip.compDgi,
+                codigoAfip: recurso.codigoAfip.idSisCodigoAfip,
                 surenu: recurso.surenu,
                 observaciones: recurso.observaciones ? recurso.observaciones : '',
-                idSisComprobante: recurso.comprobante.idSisComprobantes
+                idSisComprobante: recurso.comprobante.idSisComprobantes,
+                requiereFormaPago: recurso.requiereFormaPago
             }
         }
 
@@ -1116,10 +1223,11 @@ export class AuthService {
                 descCorta: recurso.descCorta,
                 descripcion: recurso.descripcion,
                 cursoLegal: recurso.cursoLegal,
-                codigoAfip: recurso.codigoAfip,
+                codigoAfip: recurso.codigoAfip.idSisCodigoAfip,
                 surenu: recurso.surenu,
                 observaciones: recurso.observaciones ? recurso.observaciones : '',
-                idSisComprobante: recurso.comprobante.idSisComprobantes
+                idSisComprobante: recurso.comprobante.idSisComprobantes,
+                requiereFormaPago: recurso.requiereFormaPago
             }
         }
 

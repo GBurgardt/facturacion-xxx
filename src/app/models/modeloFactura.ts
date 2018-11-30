@@ -3,6 +3,7 @@ export class ModeloFactura {
     descripcion: string;
     importeTotal: number;
     porcentaje: number;
+    idSisTipoModelo: number;
     // idProducto: number;
 
     constructor(modeloFactura?: {
@@ -10,6 +11,7 @@ export class ModeloFactura {
         descripcion: string;
         importeTotal: number;
         porcentaje: number;
+        idSisTipoModelo: number;
         // idProducto?: number;
     }) {
         if (modeloFactura) {
@@ -17,6 +19,7 @@ export class ModeloFactura {
             this.descripcion = modeloFactura.descripcion
             this.importeTotal = modeloFactura.importeTotal
             this.porcentaje = modeloFactura.porcentaje
+            this.idSisTipoModelo = modeloFactura.idSisTipoModelo
 
             // this.idProducto = modeloFactura.idProducto
         } else {
@@ -24,6 +27,7 @@ export class ModeloFactura {
             this.descripcion = null
             this.importeTotal = null
             this.porcentaje = null
+            this.idSisTipoModelo = null
 
             // this.idProducto = null
         }

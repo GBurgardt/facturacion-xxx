@@ -19,19 +19,22 @@
 
             <div class="col-sm-3">
                 <div class="form-group">
-                    <input name="clPadApe" [disabled]="disabledClienteCustom" [(ngModel)]="cliente.padronApelli" type="text" class="form-control"
+                    <!-- <input name="clPadApe" [disabled]="disabledClienteCustom" [(ngModel)]="cliente.padronApelli" type="text" class="form-control" -->
+                    <input disabled name="clPadApe" [(ngModel)]="cliente.padronApelli" type="text" class="form-control"
                         id="nombreCliente" placeholder="">
                 </div>
             </div>
             <div class="col-sm-2">
                 <div class="form-group inline-group">
                     <label for="cuit">CUIT</label>
-                    <input name="clCuit" (blur)="onBlurCuit($event)" [disabled]="disabledClienteCustom" [(ngModel)]="cliente.cuit"
+                    <!-- <input name="clCuit" (blur)="onBlurCuit($event)" [disabled]="disabledClienteCustom" [(ngModel)]="cliente.cuit" -->
+                    <input disabled name="clCuit" (blur)="onBlurCuit($event)" [(ngModel)]="cliente.cuit"
                         type="text" class="form-control" id="cuitCliente" placeholder="">
                 </div>
             </div>
 
-            <div *ngIf="disabledClienteCustom" class="col-sm-1">
+            <!-- <div *ngIf="disabledClienteCustom" class="col-sm-1"> -->
+            <div class="col-sm-1">
                 <div class="form-group inline-group">
                     <label for="cuit">IVA</label>
                     <!-- <input name="clDscCort" disabled [(ngModel)]="cliente.condIva.descCorta" type="text" class="form-control" id="cuit" -->
@@ -40,7 +43,7 @@
                 </div>
             </div>
 
-            <div *ngIf="!disabledClienteCustom" class="col-sm-1 form-group inline-group tipo-compra-dropdown">
+            <!-- <div *ngIf="!disabledClienteCustom" class="col-sm-1 form-group inline-group tipo-compra-dropdown">
                 <label for="tipoCompra">IVA:</label>
                 <select required [compareWith]="compareIvaSelect" name="clCondIva" [(ngModel)]="cliente.condIva" [disabled]="disabledClienteCustom"
                     class="form-control without-padding" [ngStyle]="{padding: '0px 8px 0px 8px'}" id="tipoCompra">
@@ -48,7 +51,7 @@
                         {{sIva.descCorta}}
                     </option>
                 </select>
-            </div>
+            </div> -->
 
             <div class="col-sm-2">
                 <div class="form-group inline-group">
@@ -89,13 +92,26 @@
             <custom-card class="col-sm-5" title="Comprobante">
                 <div class="row">
 
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <div class="form-group inline-group">
                             <label for="cteTipo">Cte:</label>
-                            <select required name="clCompTip" [(ngModel)]="comprobante.tipo" (ngModelChange)="onChangeTipoComprobante($event)"
+                            <select required name="clCompTip" [(ngModel)]="comprobante.tipo" 
+                                    (ngModelChange)="onChangeTipoComprobante($event)"
                                 class="form-control without-padding" [ngStyle]="{padding: '1px 8px 0px 8px'}" id="cteTipo">
                                 <option *ngFor="let tipoComp of tiposComprobantes | async" [ngValue]="tipoComp">
                                     {{tipoComp.descCorta}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-1" style="padding: 0;">
+                        <div class="form-group inline-group">
+                            <!-- [ngStyle]="{padding: '1px 2px 0px 8px', 'min-width': '55px'}"  -->
+                            <select required name="letraSelct" [(ngModel)]="comprobante.letra" class="form-control without-padding" 
+                                    id="cteTipo">
+                                <option *ngFor="let letra of letras" [ngValue]="letra">
+                                    {{letra}}
                                 </option>
                             </select>
                         </div>
@@ -128,7 +144,17 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-5"></div>
+                    <!-- <div class="col-sm-5"></div> -->
+                    <div class="col-sm-5">
+                        <div class="form-group inline-group">
+                            <label for="cteMoneda">Moneda:</label>
+                            <select required [compareWith]="compareFnMonedas" name="compMoneda" [(ngModel)]="comprobante.moneda" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteMoneda">
+                                <option *ngFor="let mon of monedas | async" [ngValue]="mon">
+                                    {{mon.descripcion}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
 
                     <div class="col-sm-7">
                         <div class="form-group inline-group last-child-custom-card">
@@ -236,25 +262,6 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-5">
-
-                                    <!-- <div class="form-group inline-group">
-                                        <label for="selectPtoVentaNumRel">Nro:</label>
-                
-                                        <select     id="selectPtoVentaNumRel" 
-                                                    class="form-control" 
-                                                    [ngStyle]="{padding: '1px 8px 0px 8px'}"
-                                                    [(ngModel)]="comprobanteRelacionado.numerador" 
-                                                    >
-                                            <option *ngFor="let upNum of comprobante.tipo.numerador" [ngValue]="upNum">
-                                                {{ 
-                                                    upNum.numero.ptoVenta.toString().padStart(4, '0')
-                                                }} - {{ 
-                                                    upNum.numero.numero.toString().padStart(8, '0')
-                                                }}
-                                            </option>
-                                        </select>
-                                    </div> -->
-
                                     <div class="form-group inline-group">
                                         <label for="cteNro">Nro:</label>
                                         <input [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null"
@@ -376,7 +383,31 @@
                             </div>
 
                             <div class="col-sm-2">
-                                <div class="form-group inline-group">
+
+                                <div *ngIf="!(factura.tipo && factura.tipo.numerador)" class="form-group inline-group">
+                                    <label for="cteNro">Nro:</label>
+                                    <select required disabled id="selectPtoVentaNumFac" class="form-control" [ngStyle]="{padding: '1px 8px 0px 8px'}" name="clCompNro">
+                                        <option [ngValue]="null">
+                                        </option>
+                                    </select>
+                                </div>
+        
+                                <div *ngIf="factura.tipo && factura.tipo.numerador" class="form-group inline-group">
+                                    <label for="selectPtoVentaNumFac">Nro:</label>
+        
+                                    <select required id="selectPtoVentaNumFac" class="form-control" [ngStyle]="{padding: '1px 8px 0px 8px'}"
+                                        name="factNro" [(ngModel)]="factura.numerador">
+                                        <option *ngFor="let upNum of factura.tipo.numerador" [ngValue]="upNum">
+                                            {{
+                                            upNum.numero.ptoVenta.toString().padStart(4, '0')
+                                            }} - {{
+                                            upNum.numero.numero.toString().padStart(8, '0')
+                                            }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- <div class="form-group inline-group">
                                     <label for="selectPtoVentaNumRel">Nro:</label>
 
                                     <select id="selectPtoVentaNumRel" class="form-control" [ngStyle]="{padding: '1px 8px 0px 8px'}"
@@ -389,11 +420,6 @@
                                             }}
                                         </option>
                                     </select>
-                                </div>
-                                <!-- <div class="form-group inline-group">
-                                    <label for="cteNro">Nro:</label>
-                                    <input maxlength="4" (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('factura')" [(ngModel)]="factura.puntoVenta" type="text" class="form-control pre-numero-input text-right" id="puntoVenta" placeholder="">
-                                    <input maxlength="8" (blur)="onBlurNumeroAutocomp($event)('numero')('factura')" [(ngModel)]="factura.numero" type="text" class="form-control text-right" id="numero" placeholder="">
                                 </div> -->
                             </div>
 
@@ -503,7 +529,7 @@
                 <div class="col-sm-12 btn-container">
                     <!-- <button [disabled]="!emisionRemitosService.checkIfDatosValidosComprobante(comprobante)
                         (cliente)(tablas.datos.productosPend)(tablas.datos.modelosFactura)(deposito)" -->
-                    <button [disabled]="test()" (click)="onClickConfirmar()" class="btn btn-primary btn-ingreso-from">
+                    <button [disabled]="disabledConfirmar()" (click)="onClickConfirmar()" class="btn btn-primary btn-ingreso-from">
                         Confirmar
                     </button>
 

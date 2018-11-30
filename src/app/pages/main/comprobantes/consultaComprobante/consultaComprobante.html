@@ -83,17 +83,24 @@
                     </option>
                 </select>
             </div>
+
             <div class="item-input">
-                <label for="comprobante">Clie/Prov: </label>
-                <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="padronSelec" class="form-control select-input" id="padronSelec">
-                    <option [ngValue]="utilsService.getInstanciaVacia(resourcesREST.productos)">
-                        Todos
-                    </option>
-                    <option *ngFor="let pad of padrones | async" [ngValue]="pad">
-                        {{pad.padronApelli + ', '+ pad.padronCodigo}}
-                    </option>
-                </select>
+                <label for="padronSelec">Clie/Prov</label>
+                <input id="padronSelec" 
+                    (ngModelChange)="onChangeCliProv($event)"
+                    required
+                    name="padronSelec"
+                    [(ngModel)]="padronSelec.padronCodigo" type="text" class="form-control" placeholder=""
+                    >
             </div>
+    
+            <popup-lista 
+                *ngIf="padronSelec.padronCodigo && padronSelec.padronCodigo.length > 0"
+                [items]="padrones.filtrados.asObservable().distinctUntilChanged()"
+                [keysToShow]="['padronApelli', 'padronCodigo']" 
+                [onClickItem]="onClickPopupPadron" 
+                [fatherPosition]="popupListaService.getOffsetOfInputCliente('padronSelec')">
+            </popup-lista>
         </div>
         <div class="input-row flex-end-row">
             <div class="item-input">
@@ -181,8 +188,9 @@
                             <td>{{ compBusc.imputada }}</td>
                             <td>{{ compBusc.modulo }}</td>
                             <td>
-                                <div (click)="onClickPrint(compBusc)" class="btn-print">
-                                    <i class="fa fa-print" aria-hidden="true"></i>
+                                <div (click)="comprobanteService.downloadComp(compBusc)" class="btn-print">
+                                    <i *ngIf="!compBusc.isDownloading" class="fa fa-print" aria-hidden="true"></i>
+                                    <i *ngIf="compBusc.isDownloading" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
                                 </div>
                             </td>
                         </tr>
@@ -239,6 +247,13 @@
                 </tfoot>
             </table>
 
+            <div class="btn-imprimir-container">
+                <button style="margin: 0 19px;" (click)="onClickReporte('cabecera')" type="submit" class="btn btn-secondary">
+                    <i style="padding-right: 4px" class="fa fa-file-text-o" aria-hidden="true"></i>
+                    Reporte
+                </button>
+            </div>
+
         </ng-template>
     </ngb-tab>
 
@@ -284,6 +299,13 @@
                     </tr>
                 </tfoot>
             </table>
+
+            <div class="btn-imprimir-container">
+                <button style="margin: 0 19px;" (click)="onClickReporte('detalle')" type="submit" class="btn btn-secondary">
+                    <i style="padding-right: 4px" class="fa fa-file-text-o" aria-hidden="true"></i>
+                    Reporte
+                </button>
+            </div>
 
         </ng-template>
     </ngb-tab>

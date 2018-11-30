@@ -140,8 +140,12 @@ export class NuevoClientes {
 
         if (busq && busq.length > 3) {
             const encontrado = this.clientesPadronComplete.filter(
-                cli =>  cli.padronApelli.toLowerCase().includes(busq.toLowerCase()) ||
-                        cli.padronNombre.toLowerCase().includes(busq.toLowerCase())
+                cli =>  (
+                            cli.padronApelli && cli.padronApelli.toLowerCase().includes(busq.toLowerCase())
+                        ) || 
+                        (
+                            cli.padronNombre && cli.padronNombre.toLowerCase().includes(busq.toLowerCase())
+                        )
             );
     
             // this.clientesPadron = encontrado && encontrado.length !== this.clientesPadronComplete.length ? 

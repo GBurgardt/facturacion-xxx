@@ -318,12 +318,13 @@
                 </ngb-tab>
                 <ngb-tab title="">
                     <ng-template ngbTabTitle>
-                        <div (click)="fetchFacturas()">Subtotales</div>
+                        <!-- <div (click)="fetchFacturas()">Subtotales</div> -->
+                        <div>Subtotales</div>
                     </ng-template>
                     <ng-template ngbTabContent>
     
                         <div *ngIf="comprobante.tipo && comprobante.tipo.comprobante.idSisComprobantes === 1" class="row factura-filters">
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <div class="form-group inline-group">
                                     <label for="cteTipo">Cte:</label>
                                     <select name="tipoFactu" [(ngModel)]="factura.tipo" class="form-control without-padding" [ngStyle]="{padding: '1px 8px 0px 8px'}" id="cteTipo">
@@ -336,7 +337,6 @@
     
                             <div class="col-sm-1">
                                 <div class="form-group inline-group">
-                                    <!-- [ngStyle]="{padding: '1px 2px 0px 8px'}" without-padding -->
                                     <select name="letraFactu" [(ngModel)]="factura.letra" class="form-control" id="cteTipoFactura">
                                         <option *ngFor="let letra of letras" [ngValue]="letra">
                                             {{letra}}
@@ -345,7 +345,7 @@
                                 </div>
                             </div>
     
-                            <div class="col-sm-2">
+                            <div class="col-sm-3">
     
                                 <div *ngIf="
                                     factura && 
@@ -379,11 +379,28 @@
                                         " 
                                         class="form-group inline-group">
                                     <label for="cteNro">Nro:</label>
-    
-                                    <input name="ptoVentaFact" maxlength="4" (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('factura')" [(ngModel)]="factura.numerador.numero.ptoVenta" type="text" class="form-control pre-numero-input text-right" id="puntoVenta" placeholder="">
-                                    <input name="numeroFact" maxlength="8" (blur)="onBlurNumeroAutocomp($event)('numero')('factura')" [(ngModel)]="factura.numerador.numero.numero" type="text" class="form-control text-right" id="numero" placeholder="">
-                                    <!-- <input maxlength="4" (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('factura')" [(ngModel)]="factura.puntoVenta" type="text" class="form-control pre-numero-input text-right" id="puntoVenta" placeholder="">
-                                    <input maxlength="8" (blur)="onBlurNumeroAutocomp($event)('numero')('factura')" [(ngModel)]="factura.numero" type="text" class="form-control text-right" id="numero" placeholder=""> -->
+
+                                    <input  required
+                                        maxlength="4" 
+                                        (blur)="
+                                            factura.numerador && factura.numerador.numero ?
+                                                factura.numerador.numero.ptoVenta = factura.numerador.numero.ptoVenta.toString().padStart(4, '0') : null
+                                        " 
+                                        name="ptoVentaFact"
+                                        [(ngModel)]="factura.numerador.numero.ptoVenta" 
+                                        type="text" class="form-control pre-numero-input text-right" id="puntoVentaFact" placeholder="">
+                                    <input  required
+                                        maxlength="8" 
+                                        (blur)="
+                                            factura.numerador.numero.numero = factura.numerador.numero.numero.toString().padStart(8, '0')
+                                        " 
+                                        name="numeroFact"
+                                        [(ngModel)]="factura.numerador.numero.numero" 
+                                        type="text" class="form-control text-right" id="numeroFact" placeholder="">
+
+                                    <!-- <input name="ptoVentaFact" maxlength="4" (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('factura')" [(ngModel)]="factura.numerador.numero.ptoVenta" type="text" class="form-control pre-numero-input text-right" id="puntoVenta" placeholder="">
+                                    <input name="numeroFact" maxlength="8" (blur)="onBlurNumeroAutocomp($event)('numero')('factura')" [(ngModel)]="factura.numerador.numero.numero" type="text" class="form-control text-right" id="numero" placeholder=""> -->
+                                    
                                 </div>
                             </div>
     
@@ -512,6 +529,11 @@
                             this.tablas.datos.detallesFormaPago && 
                             this.tablas.datos.detallesFormaPago.length > 0 &&
                             !isRestoPagarValid()
+                        )
+                        ||
+                        (
+                            !this.tablas.datos.detallesFormaPago ||
+                            this.tablas.datos.detallesFormaPago.length <= 0
                         )
                         "
     

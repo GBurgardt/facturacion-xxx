@@ -9,8 +9,9 @@
         {{modalContent}}
     </div>
     <div class="modal-footer btn-container">
-        <button class="btn btn-secondary confirm-btn" (click)="imprimirComp()">
-            Imprimir
+        <button class="btn btn-secondary confirm-btn" (click)="onClickImprimir()">
+            <span *ngIf="!currentComprobante.isDownloading">Imprimir</span>
+            <i *ngIf="currentComprobante.isDownloading" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
         </button>
         <button class="btn btn-primary confirm-btn" (click)="closeModal(false)">
             Aceptar
