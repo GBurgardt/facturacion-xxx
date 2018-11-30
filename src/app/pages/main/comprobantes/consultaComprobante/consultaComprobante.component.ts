@@ -28,14 +28,16 @@ export class ConsultaComprobante {
     
     sisModulos: Observable<SisModulo[]>;
     tipoComprobantes: Observable<TipoComprobante[]>;
-    productos: Observable<Producto[]>;
     sisEstados: Observable<SisEstado[]>;
     depositos: Observable<Deposito[]>;
+    // productos: Observable<Producto[]>;
+    
+    productos: { todos: Producto[]; filtrados: BehaviorSubject<Producto[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
 
-    // padrones: Observable<Padron[]>;
     padrones: { todos: Padron[]; filtrados: BehaviorSubject<Padron[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
     
     padronEnfocadoIndex: number = -1;
+    productoEnfocadoIndex: number = -1;
 
     // Lo uso cuando busca específicamente por nro y pto venta
     comprobante: Comprobante = new Comprobante();
@@ -67,12 +69,13 @@ export class ConsultaComprobante {
         private popupListaService: PopupListaService
     ) {
         this.sisModulos = this.recursoService.getRecursoList(resourcesREST.sisModulos)();
-        this.productos = this.recursoService.getRecursoList(resourcesREST.productos)();
         this.sisEstados = this.recursoService.getRecursoList(resourcesREST.sisEstados)();
-
-        // this.padrones = this.recursoService.getRecursoList(resourcesREST.padron)({
-        //     grupo: gruposParametros.cliente
-        // });
+        // this.productos = this.recursoService.getRecursoList(resourcesREST.productos)();
+        this.recursoService.getRecursoList(resourcesREST.productos)()
+            .subscribe(productos => {
+                this.productos.todos = productos;
+                this.productos.filtrados.next([]);
+            })
 
         this.recursoService.getRecursoList(resourcesREST.padron)({ grupo: gruposParametros.cliente })
             .subscribe(padrones => {
@@ -165,23 +168,15 @@ export class ConsultaComprobante {
     onClickReporte = (tipo) => {
         this.comprobanteService.generarReportes(tipo)(this.comprobante)(this.fechasFiltro)(this.sisModuloSelec)(this.tipoComprobanteSelec)(this.productoSelec)(this.sisEstadoSelec)(this.padronSelec)(this.depositoSelec)
             .subscribe(resp => {
-                // debugger;
                 if (resp) {
                     this.utilsService.downloadBlob(resp['_body'], tipo);
                 }
-                
-                // compBusc.isDownloading = false;
             })
 
     }
 
-    /**
-     * 
-     */
+    // Buscador cli/prov
     onChangeCliProv = (busqueda) => {
-        
-        console.log(this.padronSelec.padronCodigo)
-
         if (busqueda && busqueda.length === 0) {
             this.padrones.filtrados.next([]);    
         } else {
@@ -190,19 +185,25 @@ export class ConsultaComprobante {
             );
         }
 
-        // Reseteo el indice
         this.padronEnfocadoIndex = -1;
     }
 
-    /**
-     * Event on click en la lista del popup de padrones
-     */
-    onClickPopupPadron = (prove: Padron) => 
-        this.padronSelec = new Padron({...prove})
-    
-    test2 = () => {
-        const a = this.padrones.filtrados.value
-        debugger;
+    onClickPopupPadron = (prove: Padron) => this.padronSelec = new Padron({...prove})
+
+    // Buscador producto
+    onChangeProducto = (busqueda) => {
+        if (busqueda && busqueda.length === 0) {
+            this.productos.filtrados.next([]);    
+        } else {
+            this.productos.filtrados.next(
+                this.comprobanteService.filtrarProductos(this.productos.todos, busqueda)
+            );
+        }
+
+        this.productoEnfocadoIndex = -1;
     }
+
+    onClickPopupProducto = (prod: Producto) => 
+        this.productoSelec = new Producto({...prod})
 
 }

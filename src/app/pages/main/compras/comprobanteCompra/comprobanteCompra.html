@@ -79,13 +79,12 @@
                                 </select>
                             </div>
                         </div>
-                        <!-- <div class="col-sm-3 inline-flex without-padding"> -->
                         <div class="col-sm-5 inline-flex">
                             <div class="form-group inline-group">
-                                <select required name="letraSelct" [(ngModel)]="comprobante.letra" class="form-control without-padding" 
+                                <select *ngIf="comprobante && comprobante.tipo && comprobante.tipo.letras" required name="letraSelct" [(ngModel)]="comprobante.letra" class="form-control without-padding" 
                                         [ngStyle]="{padding: '1px 2px 0px 8px', 'min-width': '55px'}" id="cteTipo">
-                                    <option *ngFor="let letra of letras" [ngValue]="letra">
-                                        {{letra}}
+                                    <option *ngFor="let letra of comprobante.tipo.letras" [ngValue]="letra">
+                                        {{ letra.letra }}
                                     </option>
                                 </select>
                             </div>
@@ -337,8 +336,8 @@
     
                             <div class="col-sm-1">
                                 <div class="form-group inline-group">
-                                    <select name="letraFactu" [(ngModel)]="factura.letra" class="form-control" id="cteTipoFactura">
-                                        <option *ngFor="let letra of letras" [ngValue]="letra">
+                                    <select *ngIf="factura && factura.tipo && factura.tipo.letras" name="letraFactu" [(ngModel)]="factura.letra" class="form-control" id="cteTipoFactura">
+                                        <option *ngFor="let letra of factura.tipo.letras" [ngValue]="letra">
                                             {{letra}}
                                         </option>
                                     </select>

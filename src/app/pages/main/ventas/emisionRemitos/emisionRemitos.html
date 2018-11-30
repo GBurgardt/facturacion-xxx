@@ -107,11 +107,10 @@
 
                     <div class="col-sm-1" style="padding: 0;">
                         <div class="form-group inline-group">
-                            <!-- [ngStyle]="{padding: '1px 2px 0px 8px', 'min-width': '55px'}"  -->
-                            <select required name="letraSelct" [(ngModel)]="comprobante.letra" class="form-control without-padding" 
+                            <select *ngIf="comprobante && comprobante.tipo && comprobante.tipo.letras" required name="letraSelct" [(ngModel)]="comprobante.letra" class="form-control without-padding" 
                                     id="cteTipo">
-                                <option *ngFor="let letra of letras" [ngValue]="letra">
-                                    {{letra}}
+                                <option *ngFor="let letra of comprobante.tipo.letras" [ngValue]="letra">
+                                    {{ letra.letra }}
                                 </option>
                             </select>
                         </div>
@@ -355,7 +354,8 @@
 
                 <ngb-tab title="">
                     <ng-template ngbTabTitle>
-                        <div (click)="fetchFacturas()">Subtotales</div>
+                        <!-- <div (click)="fetchFacturas()">Subtotales</div> -->
+                        <div>Subtotales</div>
                     </ng-template>
                     <ng-template ngbTabContent>
 

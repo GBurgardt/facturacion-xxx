@@ -45,9 +45,9 @@ export class Producto {
         traReceta: boolean;
         traInforma: boolean;
         gtin: string;
-        puntoPedido: number;
-        costoReposicion: number;
-        precioVentaProv: number;
+        puntoPedido: any;
+        costoReposicion: any;
+        precioVentaProv: any;
         observaciones: string;
         IVA: any;
         subRubro: any;

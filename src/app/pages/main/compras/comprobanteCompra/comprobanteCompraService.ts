@@ -223,11 +223,11 @@ export class ComprobanteCompraService {
     /**
      * Retorna un array de todas las letras (del iva) del proovedr seleccionado
      */
-    getLetrasProveedor = (proveSelec: Padron) => this.authService.getSisSitIva(
-        this.localStorageService.getObject(environment.localStorage.acceso).token
-    )(proveSelec).map(
-        respSisIva => respSisIva.datos.letra.split(',')
-    )
+    // getLetrasProveedor = (proveSelec: Padron) => this.authService.getSisSitIva(
+    //     this.localStorageService.getObject(environment.localStorage.acceso).token
+    // )(proveSelec).map(
+    //     respSisIva => respSisIva.datos.letra.split(',')
+    // )
 
     /**
      * Busca modelos para tab facturacion

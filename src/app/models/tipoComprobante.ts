@@ -1,6 +1,7 @@
 import { SisComprobante } from "./sisComprobante";
 import { Numerador } from "./numerador";
 import { CodigoAfip } from "./codigoAfip";
+import { SisLetra } from "./sisLetra";
 
 export class TipoComprobante {
     idCteTipo: number;
@@ -15,6 +16,7 @@ export class TipoComprobante {
     comprobante: SisComprobante;
     numerador: any[];
     requiereFormaPago: boolean;
+    letras: SisLetra[] = [];
 
     constructor (tipoComprobante?: {
         idCteTipo: number;
@@ -29,6 +31,7 @@ export class TipoComprobante {
         comprobante: any;
         numerador: Numerador[];
         requiereFormaPago: boolean;
+        letras: any[];
     }) {
         if (tipoComprobante) {
             this.idCteTipo = tipoComprobante.idCteTipo;
@@ -43,20 +46,32 @@ export class TipoComprobante {
             this.comprobante = new SisComprobante(tipoComprobante.comprobante);
             this.numerador = tipoComprobante.numerador.map(n => new Numerador(n));
             this.requiereFormaPago = tipoComprobante.requiereFormaPago;
+            this.letras = tipoComprobante.letras.map(n => new SisLetra(n));
         } else {
             this.idCteTipo = null;
             this.codigoComp = null;
             this.descCorta = null;
             this.descripcion = null;
             this.cursoLegal = null;
-            // this.codigoAfip = null;
-            this.codigoAfip = new CodigoAfip();
+            // this.codigoAfip = new CodigoAfip();
+            this.codigoAfip = null;
             this.surenu = null;
             this.observaciones = null;
-            this.comprobante = new SisComprobante();
+            // this.comprobante = new SisComprobante();
+            this.comprobante = null;
             this.numerador = null;
             this.requiereFormaPago = null;
+            this.letras = [];
         }
     }
+
+    addOrRemoveLetra = (letra: SisLetra) => this.letras &&
+        this.letras.some(cteLet => cteLet.idSisLetra === letra.idSisLetra) ?
+            this.letras = this.letras.filter(cteLet => cteLet.idSisLetra !== letra.idSisLetra) :
+            this.letras = this.letras.concat(letra)
+
+    existLetra = (letra: SisLetra) => this.letras &&
+        this.letras.some(cteLet => cteLet.idSisLetra === letra.idSisLetra)
+    
 
 }

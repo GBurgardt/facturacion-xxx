@@ -243,7 +243,8 @@ export class TablaEmisionRem {
                 return col.enEdicion && (
                     (item.producto && item.producto.idProductos && col.enEdicion === item.producto.idProductos) ||
                     (item.nroLote && col.enEdicion === item.nroLote) ||
-                    (item.idFormaPagoDet && col.enEdicion === item.idFormaPagoDet)
+                    (item.idFormaPagoDet && col.enEdicion === item.idFormaPagoDet) || 
+                    (item.cuentaContable && col.enEdicion === item.cuentaContable)
                 )
 
             });
@@ -254,8 +255,10 @@ export class TablaEmisionRem {
     checkIfEditOn = (item) => (col) => col.enEdicion && (
         (item.producto && item.producto.idProductos && col.enEdicion === item.producto.idProductos) ||
         (item.nroLote && col.enEdicion === item.nroLote) ||
-        (item.idFormaPagoDet && col.enEdicion === item.idFormaPagoDet)
+        (item.idFormaPagoDet && col.enEdicion === item.idFormaPagoDet) ||
+        (item.cuentaContable && col.enEdicion === item.cuentaContable)
     )
+    
     
     
 
@@ -267,6 +270,7 @@ export class TablaEmisionRem {
             // Agarro el id dependiendo el tipo de archivo. Como lo uso en lotes trazables y en detalles formas pagos y productos pendientes, solo me fijo esos dos
             const idItem =  item.nroLote ? item.nroLote : 
                             item.idFormaPagoDet ? item.idFormaPagoDet : 
+                            item.cuentaContable ? item.cuentaContable : 
                             item.producto && item.producto.idProductos ? item.producto.idProductos : '000';
 
             // 'form-control edit-input input-edit-' + item.producto.idProductos

@@ -80,4 +80,10 @@ export class ComprobanteService {
                                 prov.padronApelli.toString().toLowerCase().includes(textoBuscado)
         );
 
+    filtrarProductos = (listaProductos, textoBuscado) => 
+        listaProductos.filter(
+            (prov: Producto) =>   prov.codProducto.toString().includes(textoBuscado) ||
+                                prov.descripcion.toString().toLowerCase().includes(textoBuscado)
+        );
+
 }

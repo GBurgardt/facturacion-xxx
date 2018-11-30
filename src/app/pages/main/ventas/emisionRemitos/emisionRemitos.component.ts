@@ -88,7 +88,7 @@ export class EmisionRemitos {
     productos: BehaviorSubject<ProductoReducido[]> = new BehaviorSubject([]);
     sisCanjes: Observable<SisCanje[]>;
     clientes: { todos: Padron[]; filtrados: BehaviorSubject<Padron[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
-    letras: string[] = [];
+    // letras: string[] = [];
     
     numerosCte: Numero[] = [];
 
@@ -230,7 +230,6 @@ export class EmisionRemitos {
         this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
             let newTabla = tabla;
             if (newTabla.enEdicion !== undefined) {
-                
                 tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = itemSelect.producto.idProductos :
                 tipoColumnas === 'columnasTrazabilidad' ? newTabla.enEdicion = itemSelect.nroLote :
                 tipoColumnas === 'columnasFactura' ? newTabla.enEdicion = itemSelect.cuentaContable :
@@ -479,7 +478,7 @@ export class EmisionRemitos {
         this.limpiarFormulario(['cotizacion']);
         // Despue sseteo el cliente seleccionado
         this.cliente = new Padron({...prove});
-        this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
+        // this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
 
         // Deshabilito la posibilidad de hacer un cliente custom
         this.disabledClienteCustom = true;
@@ -538,7 +537,7 @@ export class EmisionRemitos {
                             };
                         })
                     }
-                    this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
+                    // this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
         
                     // Si están seteados los datos necesarios aprovecho a actualizar la data de la tabla de forma de pago
                     this.comprobante && this.comprobante.fechaComprobante && this.comprobante.fechaComprobante.day ?

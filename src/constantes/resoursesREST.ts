@@ -41,6 +41,7 @@ import { Cliente } from "app/models/cliente";
 import { SisSitIVA } from "app/models/sisSitIVA";
 import { ClienteModPost } from "app/models/clienteModPost";
 import { Cultivo } from "app/models/cultivo";
+import { SisLetra } from "app/models/sisLetra";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -253,5 +254,9 @@ export const resourcesREST = {
     buscaListaPrecio: {
         nombre: 'buscaListaPrecio',
         Clase: ListaPrecio
+    },
+    sisLetra: {
+        nombre: 'sisLetra',
+        Clase: SisLetra
     }
 };

@@ -1,5 +1,6 @@
 import { TipoComprobante } from "./tipoComprobante";
 import { DateLikePicker } from "app/models/dateLikePicker";
+import { SisLetra } from "./sisLetra";
 
 export class Factura {
     tipo: TipoComprobante;
@@ -7,7 +8,7 @@ export class Factura {
     numero: number;
     fechaContable: DateLikePicker;
     fechaVto: DateLikePicker;
-    letra: string;
+    letra: SisLetra;
 
     constructor(factura?: {
         tipo: any;
@@ -16,7 +17,7 @@ export class Factura {
         fechaContable: any;
         fechaVto: any;
 
-        letra?: string;
+        letra?: any;
     }) {
         if (factura) {
             this.tipo = new TipoComprobante(factura.tipo)
@@ -24,7 +25,7 @@ export class Factura {
             this.numero = factura.numero
             this.fechaContable = factura.fechaContable
             this.fechaVto = factura.fechaVto
-            this.letra = factura.letra;
+            this.letra = new SisLetra(factura.letra);
         } else {
             this.tipo = new TipoComprobante()
             this.puntoVenta = null

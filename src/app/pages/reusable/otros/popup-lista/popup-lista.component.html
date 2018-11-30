@@ -1,7 +1,7 @@
 <div class="popup-lista" [ngStyle]="getPosicionLista()">
     <ul *ngIf="itemsReduced && itemsReduced.length > 0" id="list" class="list-group ul-lista-popup">
         <li *ngFor="let item of itemsReduced" 
-            (mousedown)="onClickItem(item)" 
+            (mousedown)="onMouseDown(item)" 
             [ngClass]="'list-group-item listElement li-popup-' + (!item ? 'none' :
                 item.producto ? item.producto.idProductos : 
                 item.idProductos ? item.idProductos : 

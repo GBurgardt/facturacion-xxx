@@ -115,7 +115,7 @@ export class ComprobanteCompra implements AfterViewInit {
     popupLista: any = {
         onClickListProv: (prove: Padron) => {
             this.proveedorSeleccionado = new Padron({...prove});
-            this.comprobanteCompraService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
+            // this.comprobanteCompraService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
 
             // Intento obtener las formas de pago
             if(this.comprobante.fechaComprobante) {
@@ -528,7 +528,7 @@ export class ComprobanteCompra implements AfterViewInit {
         // Actualizo proveedor seleccionado
         try {
             this.proveedorSeleccionado = this.comprobanteCompraService.seleccionarProveedor(this.proveedores.todos)(this.proveedorSeleccionado);
-            this.comprobanteCompraService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
+            // this.comprobanteCompraService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
 
             // Intento obtener las formas de pago
             if(this.comprobante.fechaComprobante) {

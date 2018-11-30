@@ -421,12 +421,13 @@ export class UtilsService {
             // For Firefox it is necessary to delay revoking the ObjectURL
             window.URL.revokeObjectURL(data);
         }, 100);
-
-        // compBusc.isDownloading = false;
     }
 
     numeroObjectToString = (numero: Numero) => 
-        `${numero.ptoVenta.toString().padStart(4, '0')}${numero.numero.toString().padStart(8, '0')}`
+        numero && numero.ptoVenta && numero.ptoVenta ?
+            `${numero.ptoVenta.toString().padStart(4, '0')}${numero.numero.toString().padStart(8, '0')}` :
+            `XXXXXXXXXXXX`
+    
 
     filtrarPadrones = (listaPadrones, textoBuscado) => 
         listaPadrones.filter(

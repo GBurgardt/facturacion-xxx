@@ -336,7 +336,7 @@ export class AuthService {
                 idModulo: sisModulos.compra,
                 listaPrecio: ' ',
                 letraFact: factura ? 'A' : null,
-                letra: comprobante.letra,
+                letra: comprobante.letra ? comprobante.letra.letra : null,
                 lote:   productosPend.some(prodPend => prodPend.producto.trazable) &&
                         comprobante.tipo.comprobante.idSisComprobantes !== 4,
                 nombre: provSelec.padronApelli,
@@ -487,7 +487,7 @@ export class AuthService {
                 listaPrecio: formasPagoSeleccionadas && formasPagoSeleccionadas.length > 0 ? 
                 formasPagoSeleccionadas[0].listaPrecio.idListaPrecio : null,
                 // letra: 'X',
-                letra: comprobante.letra,
+                letra: comprobante.letra ? comprobante.letra.letra : null,
                 lote:   productosPend.some(prodPend => prodPend.producto.trazable) &&
                 comprobante.tipo.comprobante.idSisComprobantes !== 4,
                 nombre: clienteSelect.padronApelli,
@@ -1028,13 +1028,13 @@ export class AuthService {
                 codigoComp: recurso.codigoComp,
                 descCorta: recurso.descCorta,
                 descripcion: recurso.descripcion,
-                cursoLegal: recurso.cursoLegal,
-                // codigoAfip: recurso.codigoAfip.compDgi,
+                cursoLegal: recurso.cursoLegal ? true : false,
+                requiereFormaPago: recurso.requiereFormaPago ? true : false,
                 codigoAfip: recurso.codigoAfip.idSisCodigoAfip,
                 surenu: recurso.surenu,
                 observaciones: recurso.observaciones ? recurso.observaciones : '',
                 idSisComprobante: recurso.comprobante.idSisComprobantes,
-                requiereFormaPago: recurso.requiereFormaPago
+                letras: recurso.letras.map(letra => ({ idSisLetra: letra.idSisLetra }))
             }
         }
 
@@ -1222,12 +1222,13 @@ export class AuthService {
                 codigoComp: recurso.codigoComp,
                 descCorta: recurso.descCorta,
                 descripcion: recurso.descripcion,
-                cursoLegal: recurso.cursoLegal,
+                cursoLegal: recurso.cursoLegal ? true : false,
+                requiereFormaPago: recurso.requiereFormaPago ? true : false,
                 codigoAfip: recurso.codigoAfip.idSisCodigoAfip,
                 surenu: recurso.surenu,
                 observaciones: recurso.observaciones ? recurso.observaciones : '',
                 idSisComprobante: recurso.comprobante.idSisComprobantes,
-                requiereFormaPago: recurso.requiereFormaPago
+                letras: recurso.letras.map(letra => ({ idSisLetra: letra.idSisLetra }))
             }
         }
 

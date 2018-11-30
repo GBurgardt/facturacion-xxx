@@ -11,6 +11,7 @@ import { resourcesREST } from 'constantes/resoursesREST';
 import { SisComprobante } from 'app/models/sisComprobante';
 import { CteFechas } from 'app/models/cteFechas';
 import { CodigoAfip } from 'app/models/codigoAfip';
+import { SisLetra } from 'app/models/sisLetra';
 
 @Component({
     selector: 'editar-tipo-comprobante',
@@ -22,10 +23,9 @@ export class EditarTipoComprobante {
     // Usuario que se va a editar
     recurso: TipoComprobante = new TipoComprobante();
     recursoOriginal: TipoComprobante = new TipoComprobante();
-
     sisComprobantes: Observable<SisComprobante[]>;
-
     codigosAfip: Observable<CodigoAfip[]>;
+    sisLetras: Observable<SisLetra[]>;
 
     constructor(
         private utilsService: UtilsService,
@@ -43,10 +43,9 @@ export class EditarTipoComprobante {
                     this.recursoOriginal = Object.assign({}, recurso);
                 })
         );
-
         this.sisComprobantes = this.recursoService.getRecursoList(resourcesREST.sisComprobantes)();
-
         this.codigosAfip = this.recursoService.getRecursoList(resourcesREST.sisCodigoAfip)();
+        this.sisLetras = this.recursoService.getRecursoList(resourcesREST.sisLetra)();
 
     }
 

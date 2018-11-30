@@ -13,6 +13,7 @@ import { Observable } from 'rxjs/Observable';
 import { SisComprobante } from '../../../../../../models/sisComprobante';
 import { resourcesREST } from 'constantes/resoursesREST';
 import { CodigoAfip } from 'app/models/codigoAfip';
+import { SisLetra } from 'app/models/sisLetra';
 
 
 @Component({
@@ -25,6 +26,7 @@ export class NuevoTipoComprobante {
     sisComprobantes: Observable<SisComprobante[]>;
 
     codigosAfip: Observable<CodigoAfip[]>;
+    sisLetras: Observable<SisLetra[]>;
 
     constructor(
         private recursoService: RecursoService,
@@ -33,6 +35,7 @@ export class NuevoTipoComprobante {
     ) {
         this.sisComprobantes = this.recursoService.getRecursoList(resourcesREST.sisComprobantes)();
         this.codigosAfip = this.recursoService.getRecursoList(resourcesREST.sisCodigoAfip)();
+        this.sisLetras = this.recursoService.getRecursoList(resourcesREST.sisLetra)();
     }
 
     ngOnInit() {

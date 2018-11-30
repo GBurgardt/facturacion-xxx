@@ -28,11 +28,15 @@ export class PopupLista {
 
     ngOnInit() {
         this.items.subscribe(resp => {
-            this.itemsReduced = resp.slice(0,30);
-            this.itemsCompleted = resp;
-
-            // Activo el infite scroll
-            this.processInfiniteScroll();
+            if (resp && resp.length > 30) {
+                this.itemsReduced = resp.slice(0,30);
+                this.itemsCompleted = resp;
+    
+                // Activo el infite scroll
+                this.processInfiniteScroll();
+            } else {
+                this.itemsReduced = resp;
+            }
         });
     }
 
@@ -61,18 +65,20 @@ export class PopupLista {
      */
     parseItem = (item) => {
         return this.keysToShow
-                    .map(key => {
-                        const deepKey = key.includes('.') ? key.split('.') : null;
-
-                        // Si tiene deepKey entonces voy profundo en el json (ejemplo: producto.descripcion)
-                        return deepKey ? item[deepKey[0]][deepKey[1]] : item[key];
-                        //return item[key];
-                    })
-                    .join(', ');
+            .map(key => {
+                const deepKey = key.includes('.') ? key.split('.') : null;
+                // Si tiene deepKey entonces voy profundo en el json (ejemplo: producto.descripcion)
+                return deepKey ? item[deepKey[0]][deepKey[1]] : item[key];
+            })
+            .join(', ');
     }
 
     getPosicionLista = () => {
         return {top: (this.fatherPosition.top + 22) + 'px', left: this.fatherPosition.left + 'px'}
     }
 
+    onMouseDown = (item) => {
+        this.onClickItem(item)
+        this.itemsReduced = []
+    }
 }

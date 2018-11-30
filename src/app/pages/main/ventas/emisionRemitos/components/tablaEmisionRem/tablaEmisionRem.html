@@ -36,7 +36,6 @@
 
 
                             <div *ngIf="col.decimal">
-                                <!-- {{utilsService.parseDecimal(item[col.key][col.subkey])}} -->
                                 {{utilsService.parseDecimal(!utilsService.checkIfJson(item[col.key][col.subkey]) ? item[col.key][col.subkey] : item[col.key][col.subkey].descripcion)}}
                             </div>
 
@@ -45,13 +44,8 @@
                                         !utilsService.checkIfJson(item[col.key][col.subkey]) ? item[col.key][col.subkey] : item[col.key][col.subkey].descripcion
                                         )}}
                             </div>
-
-                            <!-- {{parseKey(
-                                !utilsService.checkIfJson(item[col.key][col.subkey]) ? item[col.key][col.subkey] : item[col.key][col.subkey].descripcion
-                                )}} -->
                         </div>
 
-                        <!-- (col.key === 'trazabilidad' && col.subkey !== 'fechaElab' && col.subkey !== 'fechaVto') ||  -->
                         <div *ngIf="checkIfEditOn(item)(col)">
                             <input *ngIf="(col.nombre !== 'trazable' && col.key !== 'trazabilidad')"
                                             
@@ -62,18 +56,6 @@
                                     [ngClass]="getClassInputEditable(item)(col)"
                                     id="inputSubKey" 
                                     placeholder="">
-
-                            <!-- Datepicker para fecha -->
-                            <!-- <div *ngIf="col.key === 'trazabilidad' && (col.subkey === 'fechaElab' || col.subkey === 'fechaVto')" class="datepicker-datelikepicker">
-                                <input [attr.id]="'fecha-' + col.subkey" (blur)="onCalculateFecha($event)(col.key)(col.subkey)(item)" (keyup.enter)="onCalculateFecha($event)(col.key)(col.subkey)(item)" class="form-control" placeholder="dd-mm-yyyy" name="dp" [(ngModel)]="item[col.key][col.subkey]" ngbDatepicker #dComp="ngbDatepicker">
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button" style="height: 100%;">
-                                        <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
-                                    </button>
-                                </div>
-                            </div> -->
-
-                            
 
                         </div>
                         
@@ -187,7 +169,7 @@
             <!-- ROW PARA AGREGAR UN PRODUCTO -->
             <tr class="row-agregar-producto" *ngIf="enableAddItem">
                 <td></td>
-                <td (mouseenter) = "showTooltip = true"  (mouseleave) = "showTooltip = false">
+                <td (mouseenter) = "showTooltip = true" (mouseleave) = "showTooltip = false">
                     <input  [(ngModel)]="textoBusqueda" type="text" class="form-control input-new-prod" id="addInput" placeholder="" 
                             (blur)="onBlurInputItemAdd()" 
                             (ngModelChange)="onChangeInputItemAdd($event)" 
