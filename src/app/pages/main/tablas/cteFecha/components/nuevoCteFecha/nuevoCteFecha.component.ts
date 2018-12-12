@@ -21,7 +21,7 @@ export class NuevoCteFecha {
 
     constructor(
         private recursoService: RecursoService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router
     ) {
         this.cteTipos = this.recursoService.getRecursoList(resourcesREST.cteTipo)();

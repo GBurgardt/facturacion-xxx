@@ -26,7 +26,7 @@
                 <!-- [likePickerChanges]="recurso.fechaApertura = $event" -->
                 <date-licker-picker idLikePicker="idFechaApertura" 
                                     idFocusBlur="idFechaCierre" 
-                                    (itemChanged)="recurso.fechaApertura = $event"
+                                    (itemChanged)="onItemChangedFecha($event, 'fechaApertura')"
                                     [itemBinded]="recurso.fechaApertura"></date-licker-picker>
             </div>
 
@@ -36,7 +36,7 @@
                 </label>
                 <date-licker-picker idLikePicker="idFechaCierre"
                                     idFocusBlur="idNumero"
-                                    (itemChanged)="recurso.fechaCierre = $event"
+                                    (itemChanged)="onItemChangedFecha($event, 'fechaCierre')"
                                     [(itemBinded)]="recurso.fechaCierre"></date-licker-picker>
             </div>
         </div>

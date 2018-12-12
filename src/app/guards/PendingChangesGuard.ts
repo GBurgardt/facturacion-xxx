@@ -11,7 +11,7 @@ export interface ComponentCanDeactivate {
 export class PendingChangesGuard implements CanDeactivate<ComponentCanDeactivate> {
 
     constructor(
-        private utilsService: UtilsService
+        public utilsService: UtilsService
     ) { }
 
     canDeactivate(component: ComponentCanDeactivate): boolean | Observable<boolean> {

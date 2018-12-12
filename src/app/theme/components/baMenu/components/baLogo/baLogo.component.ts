@@ -12,6 +12,7 @@ export class BaLogo {
     dropdownOpen: boolean = false;
 
     nombreEmpresa: string;
+    descripcionEmpresa: string;
 
     constructor(
         private localStorageService: LocalStorageService

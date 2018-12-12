@@ -6,7 +6,8 @@
             <div class="col-sm-2">
                 <div class="form-group inline-group">
                     <label for="proveedorSeleccionado">Proveedor</label>
-                    <input  id="inputProveedor"
+                    <input  #inputProveedorDom
+                            id="inputProveedor"
                             (blur)="onBlurInputProv($event)"
                             (ngModelChange)="onChangeInputProveedor($event)"
                             [(ngModel)]="proveedorSeleccionado.padronCodigo"
@@ -22,7 +23,7 @@
                 </div>
             </div>
     
-            <popup-lista    *ngIf="proveedorSeleccionado.padronCodigo && proveedorSeleccionado.padronCodigo.length > 0"
+            <popup-lista    *ngIf="utilsService.ifFocused(inputProveedorDom)"
                             [items]="proveedores.filtrados.asObservable().distinctUntilChanged()"
                             [keysToShow]="['padronApelli', 'padronCodigo']"
                             [onClickItem]="popupLista.onClickListProv"
@@ -47,8 +48,8 @@
                 </div>
             </div>
             <div class="col-sm-2 form-group inline-group tipo-compra-dropdown without-padding">
-                <label for="tipoCompra">Tipo Operacion:</label>
-                <select required class="form-control without-padding" name="tipoOPselec" [(ngModel)]="tipoOpSelect" (ngModelChange)="onChangeTipoOperacion($event)" [ngStyle]="{padding: '0px 8px 0px 8px'}" id="tipoCompra">
+                <label for="tipoOperacionSelect">Tipo Operacion:</label>
+                <select required class="form-control without-padding" name="tipoOPselec" [(ngModel)]="tipoOpSelect" (ngModelChange)="onChangeTipoOperacion($event)" [ngStyle]="{padding: '0px 8px 0px 8px'}" id="tipoOperacionSelect">
                     <option *ngFor="let tipoOp of tiposOperacion | async" [ngValue]="tipoOp">
                         {{tipoOp.descripcion}}
                     </option>
@@ -198,8 +199,8 @@
                             <div class="input-group">
                                 <input  required
                                         id="fechaVtoComprobante" 
-                                        (blur)="onBlurOrEnterFechaVtoComp()" 
-                                        (keyup.enter)="onBlurOrEnterFechaVtoComp()" 
+                                        (blur)="onBlurOrEnterFechaVtoComp($event)" 
+                                        (keyup.enter)="onBlurOrEnterFechaVtoComp($event)" 
                                         class="form-control" 
                                         placeholder="dd/mm/aaaa" 
                                         name="dp" 

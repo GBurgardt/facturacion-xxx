@@ -13,6 +13,7 @@ import { Comprobante } from '../models/comprobante';
 import { DateLikePicker } from '../models/dateLikePicker';
 import { ComprobanteEncabezado } from '../models/comprobanteEncabezado';
 import { UtilsService } from './utilsService';
+import { Vendedor } from 'app/models/vendedor';
 
 @Injectable()
 export class ComprobanteService { 
@@ -20,7 +21,7 @@ export class ComprobanteService {
     constructor(
         private authService: AuthService,
         private localStorageService: LocalStorageService,
-        private utilsService: UtilsService
+        public utilsService: UtilsService
     ) { };
     
     /**
@@ -41,10 +42,11 @@ export class ComprobanteService {
                         (sisEstadoSelec: SisEstado) =>
                             (padronSelec: Padron) =>
                                 (depositoSelec: Deposito) =>
-                                    this.authService.buscaComprobantes(
-                                        this.localStorageService.getObject(environment.localStorage.acceso).token
-                                    )(comprobante)(fechasFiltro)(sisModuloSelec)(tipoComprobanteSelec)(productoSelec)(sisEstadoSelec)(padronSelec)(depositoSelec)
-                                        .map(respuesta => respuesta.arraydatos.map(compEnca => new ComprobanteEncabezado(compEnca)))
+                                    (vendedorSelec: Vendedor) =>
+                                        this.authService.buscaComprobantes(
+                                            this.localStorageService.getObject(environment.localStorage.acceso).token
+                                        )(comprobante)(fechasFiltro)(sisModuloSelec)(tipoComprobanteSelec)(productoSelec)(sisEstadoSelec)(padronSelec)(depositoSelec)(vendedorSelec)
+                                            .map(respuesta => respuesta.arraydatos.map(compEnca => new ComprobanteEncabezado(compEnca)))
     /**
      * Genera los comprobantes dado los filtros dados
      */

@@ -4,13 +4,13 @@ import { UtilsService } from "app/services/utilsService";
 @Injectable()
 export class PopupListaService {
 
-    constructor(private utilsService: UtilsService) { }
+    constructor(public utilsService: UtilsService) { }
     
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////// Servicios popup ////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    keyPressInputForPopup = (upOrDown) => (itemsFiltrados) => (productoEnfocadoIndex) => itemsFiltrados.map(itemsLista => {
+    keyPressInputForPopup = (upOrDown) => (itemsLista) => (productoEnfocadoIndex) => {
         // Primero checkeo que el indice no se paseo
         if (
             itemsLista.length > 0 &&
@@ -68,8 +68,7 @@ export class PopupListaService {
             
             return productoEnfocadoIndex;
         }
-
-    });
+    }
 
 
     getOffsetOfInputCliente = (idElemento) => this.utilsService.getOffset(document.getElementById(idElemento))

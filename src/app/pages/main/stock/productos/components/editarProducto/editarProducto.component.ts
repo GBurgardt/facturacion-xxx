@@ -39,7 +39,7 @@ export class EditarProducto {
 
     constructor(
         private recursoService: RecursoService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router,
         private route: ActivatedRoute,
     ) {
@@ -139,4 +139,5 @@ export class EditarProducto {
         this.recurso.cultivos = this.recurso.cultivos.filter(recCult => recCult.idCultivo !== cult.idCultivo) :
         this.recurso.cultivos = this.recurso.cultivos.concat(cult)
 
+    compareRubro = (a, b) => a && b && a.idRubro && b.idRubro && a.idRubro === b.idRubro
 }

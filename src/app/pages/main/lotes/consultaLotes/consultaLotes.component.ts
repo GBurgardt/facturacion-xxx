@@ -54,7 +54,7 @@ export class ConsultaLotes {
     productoEnfocadoIndex: number = -1;
 
     constructor(
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private popupListaService: PopupListaService,
         private recursoService: RecursoService,
         private consultaLotesService: ConsultaLotesService
@@ -95,9 +95,9 @@ export class ConsultaLotes {
     keyPressInputTextoProv = (e: any) => (upOrDown) => {
         e.preventDefault();
         // Hace todo el laburo de la lista popup y retorna el nuevo indice seleccionado
-        this.popupListaService.keyPressInputForPopup(upOrDown)(this.proveedores.filtrados)(this.proveedorEnfocadoIndex)
-            .subscribe(newIndex => this.proveedorEnfocadoIndex = newIndex)
-            .unsubscribe()
+        this.proveedorEnfocadoIndex = 
+            this.popupListaService.keyPressInputForPopup(upOrDown)(this.proveedores.filtrados.value)(this.proveedorEnfocadoIndex)
+            
     }
 
     /**
@@ -159,9 +159,8 @@ export class ConsultaLotes {
     keyPressInputTextoProd = (e: any) => (upOrDown) => {
         e.preventDefault();
         // Hace todo el laburo de la lista popup y retorna el nuevo indice seleccionado
-        this.popupListaService.keyPressInputForPopup(upOrDown)(this.productos.filtrados)(this.productoEnfocadoIndex)
-            .subscribe(newIndex => this.productoEnfocadoIndex = newIndex)
-            .unsubscribe()
+        this.productoEnfocadoIndex = 
+            this.popupListaService.keyPressInputForPopup(upOrDown)(this.productos.filtrados.value)(this.productoEnfocadoIndex)
     }
 
     /**

@@ -21,6 +21,8 @@ import { THIS_EXPR } from '../../../../../../../../node_modules/@angular/compile
 })
 
 export class EditarFormaPago {
+    recursoEditado: boolean = false;
+
     recurso: FormaPago = new FormaPago();
     recursoOriginal: FormaPago = new FormaPago();
 
@@ -36,7 +38,7 @@ export class EditarFormaPago {
 
     constructor(
         private recursoService: RecursoService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router,
         private route: ActivatedRoute
     ) {

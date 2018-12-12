@@ -41,6 +41,7 @@ import { Router } from '../../../../../../node_modules/@angular/router';
 import { Vendedor } from '../../../../models/vendedor';
 import sisModulos from 'constantes/sisModulos';
 import { ComprobanteEncabezado } from 'app/models/comprobanteEncabezado';
+import { TypeScriptEmitter } from '@angular/compiler';
 
 
 @Component({
@@ -158,7 +159,6 @@ export class EmisionRemitos {
             modelosFactura: [],
         }
     };
-    
 
     /**
      * Toda la carga de data se hace en el mismo orden en el que está declarado arriba
@@ -166,7 +166,7 @@ export class EmisionRemitos {
     constructor(
         private recursoService: RecursoService,
         private emisionRemitosService: EmisionRemitosService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private popupListaService: PopupListaService,
         private _state: GlobalState,
         private router: Router
@@ -256,7 +256,7 @@ export class EmisionRemitos {
     onClickConfirmEdit = (tipoColumnas) => (itemSelect: any) => { 
         // Me fijo si es valida la data ignresada
         const estado = this.emisionRemitosService.validarAntesDeConfirmar(tipoColumnas)(itemSelect);
-
+        
         // Hago la sumatoria de los subtotales de la factura
         if (tipoColumnas === 'columnasFactura') {
             // Actualizo el Total Comprobante sumando todos los precios nuevamente (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
@@ -268,8 +268,11 @@ export class EmisionRemitos {
         }
 
         if (estado === 'ok') {
-            // Actualizo datos dle producto (si NO son las facturas lo que se edita)
-            if (tipoColumnas !== 'columnasFactura') this.actualizarDatosProductos(itemSelect);
+            // Actualizo datos dle producto (si NO son las facturas lo que se edita, o las forma de pago)
+            if (
+                tipoColumnas !== 'columnasFactura' && 
+                tipoColumnas !== 'columnasDetallesFp'
+            ) this.actualizarDatosProductos(itemSelect);
     
             // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
             this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
@@ -287,8 +290,6 @@ export class EmisionRemitos {
             // Si NO es valida, entonces muestro mensajito
             this.utilsService.showModal('Error')(estado)
         }
-
-
         
     }
     
@@ -299,8 +300,9 @@ export class EmisionRemitos {
 
         this.emisionRemitosService.buscarProducto(prodSelec.idProductos)(
             this.formasPagoSeleccionadas && 
-                this.formasPagoSeleccionadas[0] && 
-                this.formasPagoSeleccionadas[0].listaPrecio ? this.formasPagoSeleccionadas[0].listaPrecio.idListaPrecio : null
+                this.formasPagoSeleccionadas[0] 
+                // && 
+                // this.formasPagoSeleccionadas[0].listaPrecio ? this.formasPagoSeleccionadas[0].listaPrecio.idListaPrecio : null
         )
             .subscribe(prodEnc => {
 
@@ -363,95 +365,88 @@ export class EmisionRemitos {
     /**
      * Valida y graba el comprobante
      */
-    onClickConfirmar = () => 
+    onClickConfirmar = () =>
         this.emisionRemitosService.existsProductsWithoutCantidad(this.tablas.datos.productosPend) ?
             this.utilsService.showModal('Problema')('Los productos deben tener una cantidad asignada')()()
             :
             this.utilsService.showModal('Confirmar')('¿Confirmar emision de remito?')(
                 () => {
 
-                    // Actualizo facturas antes de confirmar
-                    this.emisionRemitosService.buscaModelos(
-                        this.tablas.datos.productosPend
-                    )(
-                        this.tablas.datos.subtotalesProductos
-                    ).subscribe(modelProds => {
-                        this.tablas.datos.modelosFactura = modelProds;
 
-                        this.sumatoriaSubtotales = 
-                            _.sumBy(
-                                this.tablas.datos.modelosFactura,
-                                (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
+                    this.sumatoriaSubtotales =
+                        _.sumBy(
+                            this.tablas.datos.modelosFactura,
+                            (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
+                        );
+
+                    this.emisionRemitosService.confirmarYEmitirRemito(this.comprobante)
+                        (this.comprobanteRelacionado)
+                        (this.cliente)
+                        (this.tablas.datos.productosPend)
+                        (this.cotizacionDatos)
+                        (this.sisCanje)
+                        (this.formasPagoSeleccionadas)
+                        (this.factura)
+                        (this.tablas.datos.modelosFactura)
+                        (this.tablas.datos.detallesFormaPago)
+                        (this.deposito)
+                        (this.tablas.datos.lotesTraza)
+                        (this.tipoOperacion)
+                        (this.dataVendedor)
+                        (this.tablas.datos.subtotalesProductos)
+                        .subscribe((respuesta: any) => {
+
+                            // Modal para imprimir
+                            const compCreado = new ComprobanteEncabezado();
+                            compCreado.idFactCab = respuesta.datos.idFactCab;
+                            compCreado.numero = Number(
+                                `${this.comprobante.numerador.numero.ptoVenta}${this.comprobante.numerador.numero.numero.toString().padStart(8, '0')}`
                             );
 
-                        this.emisionRemitosService.confirmarYEmitirRemito(this.comprobante)
-                            (this.comprobanteRelacionado)
-                            (this.cliente)
-                            (this.tablas.datos.productosPend)
-                            (this.cotizacionDatos)
-                            (this.sisCanje)
-                            (this.formasPagoSeleccionadas)
-                            (this.factura)
-                            (this.tablas.datos.modelosFactura)
-                            (this.tablas.datos.detallesFormaPago)
-                            (this.deposito)
-                            (this.tablas.datos.lotesTraza)
-                            (this.tipoOperacion)
-                            (this.dataVendedor)
-                            (this.tablas.datos.subtotalesProductos)
-                            .subscribe((respuesta: any) => {
-                                
-                                // Modal para imprimir
-                                const compCreado = new ComprobanteEncabezado();
-                                compCreado.idFactCab = respuesta.datos.idFactCab;
-                                compCreado.numero = Number(
-                                    `${this.comprobante.numerador.numero.ptoVenta}${this.comprobante.numerador.numero.numero.toString().padStart(8, '0')}`
-                                );
+                            this.utilsService.showImprimirModal(
+                                respuesta.control.codigo
+                            )(
+                                respuesta.control.descripcion
+                            )(
+                                () => this.recursoService.downloadComp(compCreado)
+                            )(
+                                compCreado
+                            );
 
-                                this.utilsService.showImprimirModal(
-                                    respuesta.control.codigo
-                                )(
-                                    respuesta.control.descripcion
-                                )(
-                                    () => this.recursoService.downloadComp(compCreado)
-                                )(
-                                    compCreado
-                                );
+                            // Blanqueo los campos
+                            const auxFecha = this.comprobante.fechaComprobante;
+                            this.comprobante = new Comprobante();
+                            this.comprobante.fechaComprobante = auxFecha;
+                            this.comprobanteRelacionado = new ComprobanteRelacionado();
+                            // this.cliente = new Padron();
+                            this.cliente = new Padron();
 
-                                // Blanqueo los campos
-                                const auxFecha = this.comprobante.fechaComprobante;
-                                this.comprobante = new Comprobante();
-                                this.comprobante.fechaComprobante = auxFecha;
-                                this.comprobanteRelacionado = new ComprobanteRelacionado();
-                                // this.cliente = new Padron();
-                                this.cliente = new Padron();
+                            this.cliente.condIva = new CondIva(); setTimeout(() => { this.cliente.condIva = new CondIva() }, 1000); // TODO: Fix horrible, sacar
 
-                                this.cliente.condIva = new CondIva(); setTimeout(() => { this.cliente.condIva = new CondIva() }, 1000); // TODO: Fix horrible, sacar
+                            this.tablas.datos.productosPend = [];
+                            this.tablas.datos.modelosFactura = [];
+                            this.deposito = new Deposito()
+                            this.tablas.datos.detallesFormaPago = [];
+                            this.dataTablaFormasPago = Observable.of([]);
 
-                                this.tablas.datos.productosPend = [];
-                                this.tablas.datos.modelosFactura = [];
-                                this.deposito = new Deposito()
-                                this.tablas.datos.detallesFormaPago = [];
-                                this.dataTablaFormasPago = Observable.of([]);
-            
-                                // Limpio formas pago
-                                this.dataTablaFormasPago = null;
-                                this.formasPagoSeleccionadas = [];
+                            // Limpio formas pago
+                            this.dataTablaFormasPago = null;
+                            this.formasPagoSeleccionadas = [];
 
-                                // Limpio vendedor
-                                this.dataVendedor.vendedor = new Vendedor();
-                                this.dataVendedor.incluir = false;
-                                
-                                // Focus en input proveedor (TODO SET TIME OUT)
-                                document.getElementById('clienteSeleccionado') ? document.getElementById('clienteSeleccionado').focus() : null
-                            })
-                    })
+                            // Limpio vendedor
+                            this.dataVendedor.vendedor = new Vendedor();
+                            this.dataVendedor.incluir = false;
 
-                    
-                }
-            )({
-                tipoModal: 'confirmation'
-            });
+                            // Limpio cotizacion datos
+                            this.cotizacionDatos.total = 0;
+                            this.sumatoriaSubtotales = 0;
+
+                            // Focus en input proveedor (TODO SET TIME OUT)
+                            document.getElementById('clienteSeleccionado') ? document.getElementById('clienteSeleccionado').focus() : null
+                        })
+
+
+                })({ tipoModal: 'confirmation' })
 
     /**
      * Busca los productos pendientes de acuerdo al comprobante relacionado
@@ -482,6 +477,9 @@ export class EmisionRemitos {
 
         // Deshabilito la posibilidad de hacer un cliente custom
         this.disabledClienteCustom = true;
+
+        // Focus siguiente elemento
+        document.getElementById('tipoOperacionSelect') ? document.getElementById('tipoOperacionSelect').focus() : null;
     }
     
     ///////////////////////////////////////////////////////////////////////////////////
@@ -504,52 +502,61 @@ export class EmisionRemitos {
             const clienteExistente = this.emisionRemitosService.seleccionarCliente(this.clientes.todos)(this.cliente);
 
             if (clienteExistente && clienteExistente.padronCodigo) {
-                // Limpio primero el formulario
-                this.limpiarFormulario(['cotizacion']);
-                // Despue sseteo el cliente seleccionado
-                this.cliente = clienteExistente;
-    
-                // Lo busco en la base de facturacion
-                this.emisionRemitosService.checkIfClientExistInFacturacion(clienteExistente).then(vendedorAsociado => {
+                // Antes de todo, checkeo que tenga cuit. Si NO tiene cuit, no puede continuar
+                if (!clienteExistente.cuit || clienteExistente.cuit <= 0) {
+                    // Muestra mensaje cuit no tiene
+                    this.utilsService.showModal('Aviso')('Debe seleccionar un cliente que tenga un cuit')()();
+                    this.cliente = new Padron();
+                } else {
 
-                    // Viene en un array pero siempre trae 1 (si lo encuetra, si no lo encuentra trae 0 o null)
-                    if (vendedorAsociado) {
-                        // Si lo encuentra todo ok, no le pido que lo cree. Solo me guardo el vendedor asociado
-                        this.dataVendedor = {
-                            vendedor: vendedorAsociado,
-                            incluir: true
-                        }
-                    } else {
-                        // Si NO lo encuentra, le pido que lo cree
-                        this.utilsService.showModal('Aviso')('Cliente no existente. ¿Desea crearlo?')(()=>{
-                            this.router.navigate(
-                                ['/pages/tablas/clientes/nuevo'],
-                                { 
-                                    queryParams: { 
-                                        codPadronCliente: clienteExistente.padronCodigo
-                                    } 
-                                }
-                            );
-                        })({tipoModal:'confirmation'}, () => {
-                            this.dataVendedor = {
-                                vendedor: new Vendedor(),
-                                incluir: false
-                            };
-                        })
-                    }
-                    // this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
+                    // Limpio primero el formulario
+                    this.limpiarFormulario(['cotizacion']);
+                    // Despue sseteo el cliente seleccionado
+                    this.cliente = clienteExistente;
         
-                    // Si están seteados los datos necesarios aprovecho a actualizar la data de la tabla de forma de pago
-                    this.comprobante && this.comprobante.fechaComprobante && this.comprobante.fechaComprobante.day ?
-                        this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante) :
-                        null;
+                    // Lo busco en la base de facturacion
+                    this.emisionRemitosService.checkIfClientExistInFacturacion(clienteExistente).then(vendedorAsociado => {
     
-                    // Deshabilito los input del customcliente
-                    this.disabledClienteCustom = true;
-    
-                    // Hago foco en dropdown tipo
-                    document.getElementById('tipoOperacionDropdown').focus();
-                });
+                        // Viene en un array pero siempre trae 1 (si lo encuetra, si no lo encuentra trae 0 o null)
+                        if (vendedorAsociado) {
+                            // Si lo encuentra todo ok, no le pido que lo cree. Solo me guardo el vendedor asociado
+                            this.dataVendedor = {
+                                vendedor: vendedorAsociado,
+                                incluir: true
+                            }
+                        } else {
+                            // Si NO lo encuentra, le pido que lo cree
+                            this.utilsService.showModal('Aviso')('Cliente no existente. ¿Desea crearlo?')(()=>{
+                                this.router.navigate(
+                                    ['/pages/tablas/clientes/nuevo'],
+                                    { 
+                                        queryParams: { 
+                                            codPadronCliente: clienteExistente.padronCodigo
+                                        } 
+                                    }
+                                );
+                            })({tipoModal:'confirmation'}, () => {
+                                this.dataVendedor = {
+                                    vendedor: new Vendedor(),
+                                    incluir: false
+                                };
+                            })
+                        }
+                        // this.emisionRemitosService.getLetrasCliente(this.cliente).subscribe(letras => this.letras = letras);
+            
+                        // Si están seteados los datos necesarios aprovecho a actualizar la data de la tabla de forma de pago
+                        this.comprobante && this.comprobante.fechaComprobante && this.comprobante.fechaComprobante.day ?
+                            this.dataTablaFormasPago = this.emisionRemitosService.getFormasPago(this.cliente)(this.comprobante.fechaComprobante) :
+                            null;
+        
+                        // Deshabilito los input del customcliente
+                        this.disabledClienteCustom = true;
+        
+                        // Hago foco en dropdown tipo
+                        document.getElementById('tipoOperacionDropdown').focus();
+                    });
+                }
+
 
             } else {
                 // Caso contrario creo un nuevo cliente con el cod ingresado y habilito el custom client
@@ -576,6 +583,7 @@ export class EmisionRemitos {
             // Vacio cliente seleccionado
             this.cliente = new Padron();
         }
+
     }
 
     
@@ -739,9 +747,8 @@ export class EmisionRemitos {
     keyPressInputTexto = (e: any) => (upOrDown) => {
         e.preventDefault();
         // Hace todo el laburo de la lista popup y retorna el nuevo indice seleccionado
-        this.popupListaService.keyPressInputForPopup(upOrDown)(this.clientes.filtrados)(this.clienteEnfocadoIndex)
-            .subscribe(newIndex => this.clienteEnfocadoIndex = newIndex)
-            .unsubscribe()
+        this.clienteEnfocadoIndex = 
+            this.popupListaService.keyPressInputForPopup(upOrDown)(this.clientes.filtrados.value)(this.clienteEnfocadoIndex)
     }
 
     /**
@@ -790,13 +797,13 @@ export class EmisionRemitos {
         //     this.formasPagoSeleccionadas[0].listaPrecio.idMoneda : null;
 
         // Detalle de lista correspondiente
-        this.detalleListaFpsSeleccionadas = this.formasPagoSeleccionadas
-            .map(fpSelec => fp.listaPrecio)
-            .filter(
-                (lista, index, self) => index === self.findIndex(l => l.idListaPrecio === lista.idListaPrecio)
-            )
-            .map(lista => `Lista ${lista.idListaPrecio} \nDesde: ${lista.vigenciaDesde.getFechaFormateada()}, Hasta: ${lista.vigenciaHasta.getFechaFormateada()}, ${lista.idMoneda.descripcion}`)
-            .join('\n');
+        // this.detalleListaFpsSeleccionadas = this.formasPagoSeleccionadas
+        //     .map(fpSelec => fp.listaPrecio)
+        //     .filter(
+        //         (lista, index, self) => index === self.findIndex(l => l.idListaPrecio === lista.idListaPrecio)
+        //     )
+        //     .map(lista => `Lista ${lista.idListaPrecio} \nDesde: ${lista.vigenciaDesde.getFechaFormateada()}, Hasta: ${lista.vigenciaHasta.getFechaFormateada()}, ${lista.idMoneda.descripcion}`)
+        //     .join('\n');
 
 
         // Ahora mappeo los detalles de las formas de pago seleccionadas para mostrarlos en la grilla de el medio
@@ -833,8 +840,9 @@ export class EmisionRemitos {
         this.recursoService.getRecursoList(resourcesREST.productosReducidos)({
             'tipo': 'reducida',
             'listaPrecio':  this.formasPagoSeleccionadas && 
-                            this.formasPagoSeleccionadas[0] && 
-                            this.formasPagoSeleccionadas[0].listaPrecio ? this.formasPagoSeleccionadas[0].listaPrecio.idListaPrecio : null
+                            this.formasPagoSeleccionadas[0] 
+                            // && 
+                            // this.formasPagoSeleccionadas[0].listaPrecio ? this.formasPagoSeleccionadas[0].listaPrecio.idListaPrecio : null
         }).subscribe(prods => {
             this.productos.next(prods);
         });
@@ -1094,4 +1102,10 @@ export class EmisionRemitos {
 
     compareFnMonedas = (m1: Moneda, m2: Moneda) =>
         m1 && m2 ? m1.idMoneda === m2.idMoneda : m1 === m2
+
+    // tetete() {
+    //     const a = this.cliente.padronCodigo && this.cliente.padronCodigo.length > 0
+    //     debugger
+    //     return a
+    // }
 }

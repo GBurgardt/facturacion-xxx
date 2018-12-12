@@ -18,6 +18,10 @@ import { FiltroListaPrecios } from '../../../../../../models/filtroListaPrecio';
 import { DetalleProducto } from '../../../../../../models/detalleProducto';
 
 import * as _ from 'lodash';
+import { BehaviorSubject } from 'rxjs';
+import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
+import { Padron } from 'app/models/padron';
+import gruposParametros from 'constantes/gruposParametros';
 
 @Component({
     selector: 'editar-lista-precio',
@@ -42,11 +46,19 @@ export class EditarListaPrecio {
     // Bandera que habilita los detalles una vez que se completo la data de la nueva lsita
     detallesActivos: boolean = false;
 
+    productos: { todos: Producto[]; filtrados: BehaviorSubject<Producto[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
+    productoEnfocadoIndex: number = -1;
+    productoEnfocadoIndexHasta: number = -1;
+
+    proveedores: { todos: Padron[]; filtrados: BehaviorSubject<Padron[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
+    proveedorEnfocadoIndex: number = -1;
+
     constructor(
         private recursoService: RecursoService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private popupListaService: PopupListaService
     ) {
         // Inicializo los desplegables
         this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
@@ -116,6 +128,19 @@ export class EditarListaPrecio {
                 enEdicion: null
             }
         ];
+
+        this.recursoService.getRecursoList(resourcesREST.productos)()
+            .subscribe(productos => {
+                this.productos.todos = productos;
+                this.productos.filtrados.next(productos);
+            });
+
+        this.recursoService.getRecursoList(resourcesREST.padron)({
+                grupo: gruposParametros.cliente
+            }).subscribe(proveedores => {
+                this.proveedores.todos = proveedores;
+                this.proveedores.filtrados.next(proveedores);
+            });
     }
 
     
@@ -263,4 +288,125 @@ export class EditarListaPrecio {
         this.detallesActivos = !this.detallesActivos;
     }
 
+
+
+    /////////////////////////////
+    // Buscador producto desde //
+    /////////////////////////////
+    onChangeProducto = (busqueda) => {
+        if (busqueda && busqueda.length === 0) {
+            this.productos.filtrados.next([]);    
+        } else {
+            this.productos.filtrados.next(
+                this.productos.todos.filter(
+                    (prov: Producto) =>   prov.codProducto.toString().includes(busqueda) ||
+                                        prov.descripcion.toString().toLowerCase().includes(busqueda)
+                )
+            );
+        }
+
+        this.productoEnfocadoIndex = -1;
+    }
+
+    onClickPopupProducto = (prod: Producto) => {
+        prod && prod.codProducto ?
+            this.filtroListaPrecios.codProdDesde = prod.codProducto : null;
+
+        // Focus siguiente elemento
+        document.getElementById('prodHasta') ? document.getElementById('prodHasta').focus() : null
+
+        // Reinicio la lista de productos filtrados
+        this.productos.filtrados.next(this.productos.todos);
+    }
+
+    onEnterProducto = (e: any) => {
+        e.preventDefault();
+
+        const prodsLista = this.productos.filtrados.value;
+        const prodSelect: any = prodsLista && prodsLista.length ? prodsLista[this.productoEnfocadoIndex] : null;
+
+        prodSelect ? this.onClickPopupProducto(prodSelect) : null;
+
+        this.productoEnfocadoIndex = -1;
+    }
+
+    /////////////////////////////
+    // Buscador producto desde //
+    /////////////////////////////
+    onChangeProductoHasta = (busqueda) => {
+        if (busqueda && busqueda.length === 0) {
+            this.productos.filtrados.next([]);    
+        } else {
+            this.productos.filtrados.next(
+                this.productos.todos.filter(
+                    (prov: Producto) =>   prov.codProducto.toString().includes(busqueda) ||
+                                        prov.descripcion.toString().toLowerCase().includes(busqueda)
+                )
+            );
+        }
+
+        this.productoEnfocadoIndexHasta = -1;
+    }
+
+    onClickPopupProductoHasta = (prod: Producto) => {
+        prod && prod.codProducto ?
+            this.filtroListaPrecios.codProdHasta = prod.codProducto : null;
+
+        // Focus siguiente elemento
+        document.getElementById('proveedor') ? document.getElementById('proveedor').focus() : null
+
+        // Reinicio la lista de productos filtrados
+        this.productos.filtrados.next(this.productos.todos);
+    }
+
+    onEnterProductoHasta = (e: any) => {
+        e.preventDefault();
+
+        const prodsLista = this.productos.filtrados.value;
+        const prodSelect: any = prodsLista && prodsLista.length ? prodsLista[this.productoEnfocadoIndexHasta] : null;
+
+        prodSelect ? this.onClickPopupProductoHasta(prodSelect) : null;
+
+        this.productoEnfocadoIndexHasta = -1;
+    }
+
+    /////////////////////////////
+    // Buscador proveedor      //
+    /////////////////////////////
+    onChangeProveedor = (busqueda) => {
+        if (busqueda && busqueda.length === 0) {
+            this.proveedores.filtrados.next([]);    
+        } else {
+            this.proveedores.filtrados.next(
+                this.proveedores.todos.filter(
+                    (prov: Padron) =>   prov.padronCodigo.toString().includes(busqueda) ||
+                                        prov.padronApelli.toString().toLowerCase().includes(busqueda)
+                )
+            );
+        }
+
+        this.proveedorEnfocadoIndex = -1;
+    }
+
+    onClickPopupProveedor = (prod: Padron) => {
+        prod && prod.padronCodigo ?
+            this.filtroListaPrecios.codProvedor = prod.padronCodigo : null;
+
+        // Focus siguiente elemento
+        document.getElementById('filtroRubro') ? document.getElementById('filtroRubro').focus() : null
+
+        // Reinicio la lista de productos filtrados
+        this.proveedores.filtrados.next(this.proveedores.todos);
+    }
+
+    onEnterProveedor = (e: any) => {
+        e.preventDefault();
+
+        const provsLista = this.proveedores.filtrados.value;
+        const provSelect: any = provsLista && provsLista.length ? provsLista[this.proveedorEnfocadoIndex] : null;
+
+        provSelect ? this.onClickPopupProveedor(provSelect) : null;
+
+        this.proveedorEnfocadoIndex = -1;
+    }
 }

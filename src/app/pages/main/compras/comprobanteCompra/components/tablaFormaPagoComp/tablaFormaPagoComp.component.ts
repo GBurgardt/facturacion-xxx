@@ -23,7 +23,8 @@ export class TablaFormaPagoComp {
      * Checkea si se puede seleccionar o no
      */
     checkIfSeleccionable = (fp: FormaPago) => 
-        this.seleccionados.some(fpSelec => fpSelec.listaPrecio.idListaPrecio !== fp.listaPrecio.idListaPrecio)
+        true 
+        // this.seleccionados.some(fpSelec => fpSelec.listaPrecio.idListaPrecio !== fp.listaPrecio.idListaPrecio)
 
     /**
      * Evento change del checkbox

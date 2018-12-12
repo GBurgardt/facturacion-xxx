@@ -17,7 +17,7 @@ export class Cultivos {
 
     constructor(
         private router: Router,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private recursoService: RecursoService
     ) {
         this.tableColumns = [

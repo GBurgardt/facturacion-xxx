@@ -19,6 +19,7 @@ import { ProductoReducido } from '../../../../../../models/productoReducido';
 })
 
 export class TablaIngreso {
+    showTooltip = false;
     // Datos de mierda que me da paja sacar por miedo a romper todo
     sortBy = 'nombre';
     filterQuery = "";
@@ -55,8 +56,10 @@ export class TablaIngreso {
 
     @Input() customsBlur = null;
 
+    prodFocus = false;
+
     constructor(
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private recursoService: RecursoService,
         private popupListaService: PopupListaService
     ) {
@@ -107,6 +110,8 @@ export class TablaIngreso {
      */
     parseKey(key) {
         const tipoDato:any = typeof key;
+
+        // debugger;
 
         if (tipoDato === 'boolean') {
             return key ? 'Si' : 'No';
@@ -160,6 +165,8 @@ export class TablaIngreso {
         setTimeout(()=>this.productosBusqueda.filtrados.next([]), 100);
         // También reseteo el indice de busqueda
         this.productoEnfocadoIndex = -1;
+
+        this.prodFocus = false;
     }
 
     /**
@@ -192,9 +199,9 @@ export class TablaIngreso {
     keyPressInputTexto = (e: any) => (upOrDown) => {
         e.preventDefault();
         // Hace todo el laburo de la lista popup y retorna el nuevo indice seleccionado
-        this.popupListaService.keyPressInputForPopup(upOrDown)(this.productosBusqueda.filtrados)(this.productoEnfocadoIndex)
-            .subscribe(newIndex => this.productoEnfocadoIndex = newIndex)
-            .unsubscribe()
+        this.productoEnfocadoIndex = 
+            this.popupListaService.keyPressInputForPopup(upOrDown)(this.productosBusqueda.filtrados.value)(this.productoEnfocadoIndex)
+            
     }
 
     /**

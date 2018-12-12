@@ -41,13 +41,14 @@ import { Lote } from 'app/models/lote';
 import sisTipoModelos from '../../constantes/sisTipoModelos';
 import { SisTipoOperacion } from '../models/sisTipoOperacion';
 import { Cliente } from '../models/cliente';
+import { Vendedor } from 'app/models/vendedor';
 
 @Injectable()
 export class AuthService {
 
     constructor(
         private http: Http,
-        private utilsService: UtilsService
+        public utilsService: UtilsService
     ) { }
 
     /**
@@ -293,7 +294,7 @@ export class AuthService {
                     return {
                         cuenta: mod.cuentaContable,
                         descripcionPie: mod.descripcion,
-                        importe: mod.importeTotal,
+                        importe: Number(mod.importeTotal),
                         totalComprobante: cotizacionDatos.total,
                         porcentaje: mod.porcentaje ? mod.porcentaje : 0,
                         idSisTipoModelo: mod.idSisTipoModelo ? mod.idSisTipoModelo : 0
@@ -443,7 +444,7 @@ export class AuthService {
                     return {
                         cuenta: mod.cuentaContable,
                         descripcionPie: mod.descripcion,
-                        importe: mod.importeTotal,
+                        importe: Number(mod.importeTotal),
                         totalComprobante: cotizacionDatos.total,
                         porcentaje: mod.porcentaje ? mod.porcentaje : 0,
                         idSisTipoModelo: mod.idSisTipoModelo ? mod.idSisTipoModelo : 0
@@ -484,8 +485,8 @@ export class AuthService {
                 idModeloCab: null,
                 
                 idModulo: sisModulos.venta,
-                listaPrecio: formasPagoSeleccionadas && formasPagoSeleccionadas.length > 0 ? 
-                formasPagoSeleccionadas[0].listaPrecio.idListaPrecio : null,
+                // listaPrecio: formasPagoSeleccionadas && formasPagoSeleccionadas.length > 0 ? 
+                // formasPagoSeleccionadas[0].listaPrecio.idListaPrecio : null,
                 // letra: 'X',
                 letra: comprobante.letra ? comprobante.letra.letra : null,
                 lote:   productosPend.some(prodPend => prodPend.producto.trazable) &&
@@ -599,7 +600,8 @@ export class AuthService {
                                                 (productoSelec: Producto) =>
                                                 (sisEstadoSelec: SisEstado) =>
                                                 (padronSelec: Padron) =>
-                                                (depositoSelec: Deposito) => {
+                                                (depositoSelec: Deposito) => 
+                                                (vendedorSelec: Vendedor) => {
         return this.request(
             [],
             RequestMethod.Post,
@@ -616,7 +618,8 @@ export class AuthService {
                 idProducto : productoSelec && productoSelec.idProductos ? productoSelec.idProductos : 0,
                 padCodigo : padronSelec && padronSelec.padronCodigo ? padronSelec.padronCodigo : 0,
                 idDeposito : depositoSelec && depositoSelec.idDeposito ? depositoSelec.idDeposito : 0,
-                idEstado : sisEstadoSelec && sisEstadoSelec.idSisEstados ? sisEstadoSelec.idSisEstados : 0
+                idEstado : sisEstadoSelec && sisEstadoSelec.idSisEstados ? sisEstadoSelec.idSisEstados : 0,
+                idVendedor : vendedorSelec && vendedorSelec.idVendedor ? vendedorSelec.idVendedor : 0
             },
             {}
         );
@@ -802,7 +805,6 @@ export class AuthService {
                 idProductoDesde: (filtros.productoSelect && tipo === 'general') ? filtros.productoSelect.idProductos : 0,
                 idProductoHasta: filtros.productoSelect2 ? filtros.productoSelect2.idProductos : 0,
                 idProducto: (filtros.productoSelect && tipo === 'producto') ? filtros.productoSelect.idProductos : 0,
-                // idDeposito: 0,
                 idDeposito: filtros.deposito ? filtros.deposito.idDeposito : 0,
                 idCteTipo: filtros.cteTipo ? filtros.cteTipo.idCteTipo : 0,
                 idRubro: filtros.rubro ? filtros.rubro.idRubro : 0,
@@ -1042,12 +1044,15 @@ export class AuthService {
             return {
                 tipo: recurso.tipo.idSisFormaPago,
                 descripcion: recurso.descripcion,
-                idListaPrecio: recurso.listaPrecio.idListaPrecio,
+                // idListaPrecio: recurso.listaPrecio.idListaPrecio,
                 formaPagoDet: recurso.detalles.map((det: DetalleFormaPago) => ({
                     cantDias: det.cantDias ? det.cantDias : 0,
                     porcentaje: det.porcentaje ? det.porcentaje : 0,
                     detalle: det.detalle ? det.detalle : '',
                     ctaContable: det.planCuenta ? det.planCuenta.planCuentas : ''
+                })),
+                listasPrecios: recurso.listasPrecios.map(lp => ({
+                    idListaPrecio: lp.idListaPrecio
                 }))
             }
         }
@@ -1095,7 +1100,7 @@ export class AuthService {
                 fechaAlta: `${recurso.fechaAlta.year}-${recurso.fechaAlta.month}-${recurso.fechaAlta.day}`,
                 vigenciaDesde: `${recurso.vigenciaDesde.year}-${recurso.vigenciaDesde.month}-${recurso.vigenciaDesde.day}`,
                 vigenciaHasta: `${recurso.vigenciaHasta.year}-${recurso.vigenciaHasta.month}-${recurso.vigenciaHasta.day}`,
-                activa: recurso.activa,
+                activa: recurso.activa ? true : false,
                 idPadronCliente: recurso.idPadronCliente,
                 idPadronRepresentante: recurso.idPadronRepresentante,
                 porc1: recurso.porc1,
@@ -1237,12 +1242,15 @@ export class AuthService {
                 idFormaPago: recurso.idFormaPago,
                 tipo: recurso.tipo.idSisFormaPago,
                 descripcion: recurso.descripcion,
-                idListaPrecio: recurso.listaPrecio.idListaPrecio,
+                // idListaPrecio: recurso.listaPrecio.idListaPrecio,
                 formaPagoDet: recurso.detalles.map((det: DetalleFormaPago) => ({
                     cantDias: det.cantDias ? det.cantDias : 0,
                     porcentaje: det.porcentaje ? det.porcentaje : 0,
                     detalle: det.detalle ? det.detalle : '',
                     ctaContable: det.planCuenta ? det.planCuenta.planCuentas : ''
+                })),
+                listasPrecios: recurso.listasPrecios.map(lp => ({
+                    idListaPrecio: lp.idListaPrecio
                 }))
             }
         }

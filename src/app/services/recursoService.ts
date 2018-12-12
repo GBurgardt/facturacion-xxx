@@ -23,7 +23,7 @@ export class RecursoService {
     constructor(
         private authService: AuthService,
         private localStorageService: LocalStorageService,
-        private utilsService: UtilsService
+        public utilsService: UtilsService
     ) {
         // Inicializo en false cada vez que ingresa
         // this.edicionFinalizada.next(false);

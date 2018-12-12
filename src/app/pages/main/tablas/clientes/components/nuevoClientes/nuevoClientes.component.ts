@@ -32,7 +32,7 @@ export class NuevoClientes {
 
     constructor(
         private recursoService: RecursoService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router,
         private route: ActivatedRoute
     ) {
@@ -55,14 +55,12 @@ export class NuevoClientes {
             this.route.queryParams
                 .subscribe(params => {
                     if (params && params.codPadronCliente) {
-                        // Busco el padro que viene por query
-                        const queryPadron = this.clientesPadronComplete.find(
-                            cliPadron => Number(cliPadron.padronCodigo) === Number(params.codPadronCliente)
-                        );
-
-                        // Busco por su nombre
-                        this.textBusqueda = `${queryPadron.padronNombre}${queryPadron.padronNombre ? ', ' : ''}${queryPadron.padronApelli}`;
-                        this.onBuscar(this.textBusqueda);
+                        // Busco el padro que viene por query y lo selecciono por defecto
+                        this.clientesPadron = [].concat(
+                            this.clientesPadronComplete.find(
+                                cliPadron => Number(cliPadron.padronCodigo) === Number(params.codPadronCliente)
+                            )
+                        )
 
                         // Lo seteo como seleccionado
                         this.recurso.padronGral.idPadronGral = Number(params.codPadronCliente);
@@ -105,8 +103,6 @@ export class NuevoClientes {
 
     onClickCrear = async () => {
         try {
-            console.log(this.recurso);
-            debugger;
 
             const resp: any = await this.recursoService.setRecurso(this.recurso)();
     

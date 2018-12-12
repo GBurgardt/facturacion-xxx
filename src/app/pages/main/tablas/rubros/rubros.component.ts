@@ -23,7 +23,7 @@ export class Rubros {
 
     constructor(
         private router: Router,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private recursoService: RecursoService
     ) {
         // Guardo las columnas de la tabla con sus respectivas anchuras

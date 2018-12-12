@@ -32,7 +32,7 @@ export class NuevoUsuario {
     usuarioNuevo: Usuario = new Usuario();
 
     constructor(
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router,
         private recursoService: RecursoService,
         private localStorageService: LocalStorageService

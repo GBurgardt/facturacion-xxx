@@ -20,7 +20,7 @@ export class Login {
         fb: FormBuilder,
         private loginService: LoginService,
         private router: Router,
-        private utilsService: UtilsService
+        public utilsService: UtilsService
         
     ) {
         this.form = fb.group({
@@ -42,7 +42,8 @@ export class Login {
                 this.loginService.completeLogin(respLogin);
                 
                 // Redirecciono al dashboard
-                this.router.navigate(['/pages/dashboard']);
+                // this.router.navigate(['/pages/dashboard']);
+                this.router.navigate(['/pages/compras/comprobante-compra']);
 
 
             }catch(ex) {

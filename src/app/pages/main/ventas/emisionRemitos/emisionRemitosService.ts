@@ -31,7 +31,7 @@ export class EmisionRemitosService {
         private authService: AuthService,
         private localStorageService: LocalStorageService,
         private recursoService: RecursoService,
-        private utilsService: UtilsService
+        public utilsService: UtilsService
     ) { }
 
     filtrarClientes = (listaClientes, textoBuscado) => 

@@ -21,10 +21,12 @@ export class PopupLista {
     // Posicion padre
     @Input() fatherPosition: {top: number, left: number};
 
-    itemsReduced = [];
+    // itemsReduced = [];
+    itemsReduced = null;
     itemsCompleted = [];
 
-    constructor(@Inject(WINDOW) private window: Window) { }
+    // constructor(@Inject(WINDOW) private window: Window) { }
+    constructor(@Inject(WINDOW) private window: any) { }
 
     ngOnInit() {
         this.items.subscribe(resp => {
@@ -36,6 +38,7 @@ export class PopupLista {
                 this.processInfiniteScroll();
             } else {
                 this.itemsReduced = resp;
+                // debugger;
             }
         });
     }

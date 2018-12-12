@@ -58,7 +58,7 @@ export class TablaProductos {
     @Input() onFilter;
 
     constructor(
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private popupListaService: PopupListaService
     ) {
     
@@ -173,9 +173,8 @@ export class TablaProductos {
     keyPressInputTexto = (e: any) => (upOrDown) => {
         e.preventDefault();
         // Hace todo el laburo de la lista popup y retorna el nuevo indice seleccionado
-        this.popupListaService.keyPressInputForPopup(upOrDown)(this.productosBusqueda.filtrados)(this.productoEnfocadoIndex)
-            .subscribe(newIndex => this.productoEnfocadoIndex = newIndex)
-            .unsubscribe()
+        this.productoEnfocadoIndex = 
+            this.popupListaService.keyPressInputForPopup(upOrDown)(this.productosBusqueda.filtrados.value)(this.productoEnfocadoIndex)
     }
 
     /**

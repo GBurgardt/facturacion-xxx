@@ -38,7 +38,7 @@ export class NuevoProducto {
 
     constructor(
         private recursoService: RecursoService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router
     ) {
         this.rubros = this.recursoService.getRecursoList(resourcesREST.rubros)();

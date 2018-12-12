@@ -1,7 +1,7 @@
 import { CondIva } from "app/models/condIva";
 
 export class Padron {
-    padronCodigo: number;
+    padronCodigo: any;
     padronApelli: string;
     padronNombre: string;
     codigoPostal: number;
@@ -9,7 +9,7 @@ export class Padron {
     condIva: CondIva;
 
     constructor(padron?: {
-        padronCodigo: number;
+        padronCodigo: any;
         padronApelli: string;
         padronNombre: string;
         codigoPostal: number;

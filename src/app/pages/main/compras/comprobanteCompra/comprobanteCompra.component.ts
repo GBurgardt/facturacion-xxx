@@ -122,20 +122,20 @@ export class ComprobanteCompra implements AfterViewInit {
                 this.dataTablaFormasPago = this.comprobanteCompraService.getFormasPago(this.comprobante.fechaComprobante);
             }
 
+            // Focus siguiente elemento
+            document.getElementById('tipoOperacionSelect') ? document.getElementById('tipoOperacionSelect').focus() : null;
+
         },
         getOffsetOfInputProveedor: () => this.utilsService.getOffset(document.getElementById('inputProveedor'))
     }
-
-
-
 
     /**
      * Toda la carga de data se hace en el mismo orden en el que está declarado arriba
      */
     constructor(
         private recursoService: RecursoService,
-        private comprobanteCompraService: ComprobanteCompraService,
-        private utilsService: UtilsService,
+        public comprobanteCompraService: ComprobanteCompraService,
+        public utilsService: UtilsService,
         private popupListaService: PopupListaService,
         configProgressBar: NgbProgressbarConfig
     ) {
@@ -271,8 +271,9 @@ export class ComprobanteCompra implements AfterViewInit {
         }
 
         // Actualizo datos dle producto (si NO son las facturas lo que se edita)
-        if (tipoColumnas !== 'columnasFactura')
+        if (tipoColumnas !== 'columnasFactura' && tipoColumnas !== 'columnasDetallesFp') {
             this.actualizarDatosProductos();
+        }
     }
 
     /**
@@ -488,6 +489,7 @@ export class ComprobanteCompra implements AfterViewInit {
         // Busco las facturas de los productos
         if (this.tablas.datos.productosPend && this.tablas.datos.productosPend.length > 0) {
             this.comprobanteCompraService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
+
                 this.tablas.datos.modelosFactura = modelProds;
 
                 this.sumatoriaSubtotales = 
@@ -543,6 +545,7 @@ export class ComprobanteCompra implements AfterViewInit {
             // Vacio proveedor seleccionado
             this.proveedorSeleccionado = new Padron();
         }
+
     }
 
     /**
@@ -627,9 +630,8 @@ export class ComprobanteCompra implements AfterViewInit {
     keyPressInputTexto = (e: any) => (upOrDown) => {
         e.preventDefault();
         // Hace todo el laburo de la lista popup y retorna el nuevo indice seleccionado
-        this.popupListaService.keyPressInputForPopup(upOrDown)(this.proveedores.filtrados)(this.proveedorEnfocadoIndex)
-            .subscribe(newIndex => this.proveedorEnfocadoIndex = newIndex)
-            .unsubscribe()
+        this.proveedorEnfocadoIndex = 
+            this.popupListaService.keyPressInputForPopup(upOrDown)(this.proveedores.filtrados.value)(this.proveedorEnfocadoIndex)
     }
 
     /**

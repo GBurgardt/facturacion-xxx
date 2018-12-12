@@ -134,6 +134,17 @@
                     </option>
                 </select>
             </div>
+            <div class="item-input">
+                <label for="comprobante">Vendedor: </label>
+                <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="vendedorSelec" class="form-control select-input" id="vendedorSelec">
+                    <option [ngValue]="utilsService.getInstanciaVacia(resourcesREST.vendedor)">
+                        Todos
+                    </option>
+                    <option *ngFor="let vend of vendedores | async" [ngValue]="vend">
+                        {{ vend.auxNombreCompleto }}
+                    </option>
+                </select>
+            </div>
         </div>
 
 
@@ -237,7 +248,7 @@
                                         <td class="text-right">{{ utilsService.parseDecimal(compDet.pendiente) }}</td>
                                         <td class="text-right">{{ utilsService.parseDecimal(compDet.precio) }}</td>
                                         <td class="text-right">{{ utilsService.parseDecimal(
-                                            (compDet.pendiente) * (compDet.precio)
+                                            (compDet.importe)
                                         ) }}</td>
                                         <td class="text-right">{{ compDet.deposito }}</td>
                                     </tr>

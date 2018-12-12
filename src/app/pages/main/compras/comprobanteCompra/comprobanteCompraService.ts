@@ -26,7 +26,7 @@ export class ComprobanteCompraService {
         private authService: AuthService,
         private localStorageService: LocalStorageService,
         private recursoService: RecursoService,
-        private utilsService: UtilsService
+        public utilsService: UtilsService
     ) { }
 
     filtrarProveedores = (listaProveedores, textoBuscado) => {

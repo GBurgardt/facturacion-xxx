@@ -142,6 +142,7 @@
                 <td (mouseenter) = "showTooltip = true"  (mouseleave) = "showTooltip = false">
                     <input  [(ngModel)]="textoBusqueda" type="text" class="form-control input-new-prod" id="addInput" placeholder=""
                             (blur)="onBlurInputItemAdd()"
+                            (focus)="prodFocus = true"
                             (ngModelChange)="onChangeInputItemAdd($event)"
                             (keydown.arrowdown)="keyPressInputTexto($event)('down')"
                             (keydown.arrowup)="keyPressInputTexto($event)('up')"
@@ -149,9 +150,8 @@
                             [disabled]="!comprobante || !comprobante.numerador || !comprobante.numerador.numero || !comprobante.numerador.numero.ptoVenta || !comprobante.numerador.numero.numero"
                             >
 
-
-
-                    <popup-lista *ngIf="textoBusqueda && textoBusqueda.length > 0"
+                    <!-- *ngIf="textoBusqueda && textoBusqueda.length > 0" -->
+                    <popup-lista    *ngIf="prodFocus"
                                     [items]="productosBusqueda.filtrados"
                                     [keysToShow]="['descripcion', 'codProducto']"
                                     [onClickItem]="onClickProductoListaLocal"

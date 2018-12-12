@@ -34,7 +34,7 @@ export class NuevaFormaPago {
 
     constructor(
         private recursoService: RecursoService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router
     ) {
         this.tiposFormaPago = this.recursoService.getRecursoList(resourcesREST.sisFormaPago)();

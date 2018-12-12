@@ -91,7 +91,7 @@
             <button [disabled]="
                 utilsService.checkIfIncomplete(recurso)([
                     'idCteTipo', 'cursoLegal', 'numerador', 'observaciones', 'requiereFormaPago'
-                ])(checkSurEnu)
+                ])()
                 || 
                 this.recurso && this.recurso.letras && this.recurso.letras.length <= 0
             "

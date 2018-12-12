@@ -51,9 +51,11 @@ export class ConsultaPorProducto {
     // Busquedas
     productos: { todos: Producto[]; filtrados: BehaviorSubject<Producto[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
 
+    isProdSelected = false;
+
     constructor(
         private recursoService: RecursoService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private popupListaService: PopupListaService,
         private consultaPorProductoService: ConsultaPorProductoService
     ) {
@@ -81,10 +83,10 @@ export class ConsultaPorProducto {
 
     keyPressInputTextoProd = (e: any) => (upOrDown) => {
         e.preventDefault();
+
         // Hace todo el laburo de la lista popup y retorna el nuevo indice seleccionado
-        this.popupListaService.keyPressInputForPopup(upOrDown)(this.productos.filtrados)(this.productoEnfocadoIndex)
-            .subscribe(newIndex => this.productoEnfocadoIndex = newIndex)
-            .unsubscribe()
+        this.productoEnfocadoIndex = 
+            this.popupListaService.keyPressInputForPopup(upOrDown)(this.productos.filtrados.value)(this.productoEnfocadoIndex)
     }
 
     /**
@@ -110,6 +112,9 @@ export class ConsultaPorProducto {
      * Evento change del input del proovedor
      */
     onChangeInputProd = (valor) => {
+
+        this.isProdSelected = false;
+
         this.productos.filtrados.next(
             this.consultaPorProductoService.filtrarProductos(this.productos.todos, valor)
         );
@@ -145,6 +150,7 @@ export class ConsultaPorProducto {
         this.filtros.codProducto = prod.codProducto.toString();
         this.filtros.productoSelect = prod;
         this.info.nombreProd = prod.descripcion;
+        this.isProdSelected = true;
     }
 
     descargarReporte = () => {

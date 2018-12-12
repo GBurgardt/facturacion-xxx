@@ -18,7 +18,12 @@
                         (blur)="onBlurInputProd($event)"
                         >
 
-                <popup-lista    *ngIf="filtros.codProducto && filtros.codProducto.length > 0"
+                <popup-lista    
+                                *ngIf="
+                                    filtros.codProducto && 
+                                    filtros.codProducto.length > 0 &&
+                                    !isProdSelected
+                                "
                                 [items]="productos.filtrados.asObservable().distinctUntilChanged()"
                                 [keysToShow]="['descripcion', 'codProducto']"
                                 [onClickItem]="onSelectProducto"

@@ -9,7 +9,7 @@
 
             <div class="form-group item">
                 <label for="cteTipo">Tipo Comprobante</label>
-                <select [compareWith]="utilsService.dropdownCompareWith" [(ngModel)]="recurso.cteTipo" class="form-control" id="cteTipo">
+                <select [compareWith]="compareWithCteTipo" [(ngModel)]="recurso.cteTipo" class="form-control" id="cteTipo">
                     <option *ngFor="let ct of cteTipos | async" [ngValue]="ct">
                         {{ ct.descripcion }}
                     </option>

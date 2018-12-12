@@ -42,12 +42,24 @@
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
-                    <label for="listaPrecio">Lista precio</label>
-                    <select [(ngModel)]="recurso.listaPrecio" class="form-control" id="listaPrecio">
+                    <label for="listaPrecio">Seleccione Listas de precio</label>
+
+                    <div class="lista-precio-container">
+                        <div    
+                            *ngFor="let lista of listasPrecios | async"
+                            (click)="recurso.addOrRemoveLista(lista)" 
+                            class="lista" 
+                            [ngClass]="{'lista-select': recurso.existLista(lista)}" 
+                            >
+                            {{ lista.codigoLista }}
+                        </div>
+                    </div>
+
+                    <!-- <select [(ngModel)]="recurso.listaPrecio" class="form-control" id="listaPrecio">
                         <option *ngFor="let lista of listasPrecios | async" [ngValue]="lista">
                             {{lista.condiciones}}
                         </option>
-                    </select>
+                    </select> -->
                 </div>
             </div>
 

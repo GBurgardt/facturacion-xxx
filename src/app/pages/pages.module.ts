@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Injectable } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { routing } from './pages.routing';
 import { NgaModule } from '../theme/nga.module';
@@ -13,7 +13,7 @@ import { UtilsService } from '../services/utilsService';
 import { ListPopupService } from './reusable/otros/listFinder/components/listPopup/listPopupService';
 import { ImprimirModal } from './reusable/modals/imprimir-modal/imprimir-modal.component';
 
-import { WINDOW_PROVIDERS } from '../services/windowService';
+
 
 @NgModule({
     imports: [
@@ -38,8 +38,7 @@ import { WINDOW_PROVIDERS } from '../services/windowService';
         PopupListaService,
         ComprobanteService,
         UtilsService,
-        ListPopupService,
-        WINDOW_PROVIDERS
+        ListPopupService
     ],
     exports: [
     ]

@@ -28,7 +28,7 @@ export class NuevoRecurso {
 
     constructor(
         private authService: AuthService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router
     ) { }
 

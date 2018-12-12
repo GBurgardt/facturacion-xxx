@@ -112,11 +112,6 @@
                             [onClickItem]="onClickPopupPadron('idPadronRepresentante')" 
                             [fatherPosition]="popupListaService.getOffsetOfInputCliente('padronRepreSelec')">
                         </popup-lista>
-
-                        <!-- <div class="form-group">
-                            <label for="idPadronRepresentante">Representante</label>
-                            <input required name="padronrepre-lp" [(ngModel)]="recurso.idPadronRepresentante" type="text" class="form-control text-right" id="idPadronRepresentante" placeholder="">
-                        </div> -->
                     </div>
         
                     <div class="col-sm-3">
@@ -154,28 +149,105 @@
 
             <custom-card *ngIf="detallesActivos" title="Filtros">
                 <div class="row">
-                    <div class="col-sm-3    ">
-                        <div class="form-group">
-                            <label for="filtroProductoDesde">Producto desde</label>
-                            <input required name="proddesde-lp" [(ngModel)]="filtroListaPrecios.codProdDesde" type="text" class="form-control" id="filtroProductoDesde" placeholder="">
-                        </div>
-                    </div>
                     <div class="col-sm-3">
                         <div class="form-group">
-                            <label for="filtroProductoHasta">Producto hasta</label>
-                            <input required name="prodhasta-lp" [(ngModel)]="filtroListaPrecios.codProdHasta" type="text" class="form-control" id="filtroProductoHasta" placeholder="">
+                            <div class="item-input">
+                                <label for="prodDesde">Producto Desde</label>
+                                <input 
+                                    #inputProdDesdeDom
+                                    id="prodDesde" 
+                                    (ngModelChange)="onChangeProducto($event)"
+                                    name="prodDesde"
+                                    [(ngModel)]="filtroListaPrecios.codProdDesde" type="text" class="form-control" placeholder=""
+                                    (keydown.arrowdown)="
+                                        productoEnfocadoIndex = popupListaService
+                                            .keyPressInputForPopup('down')(productos.filtrados.value)(productoEnfocadoIndex);
+                                    "
+                                    (keydown.arrowup)="
+                                        productoEnfocadoIndex = popupListaService
+                                            .keyPressInputForPopup('up')(productos.filtrados.value)(productoEnfocadoIndex);
+                                    "
+                                    (keyup.enter)="onEnterProducto($event)"
+                                    >
+                                </div>
+                            <popup-lista 
+                                *ngIf="utilsService.ifFocused(inputProdDesdeDom)"
+                                [items]="productos.filtrados.asObservable().distinctUntilChanged()"
+                                [keysToShow]="['codProducto', 'descripcion']" 
+                                [onClickItem]="onClickPopupProducto" 
+                                [fatherPosition]="popupListaService.getOffsetOfInputCliente('prodDesde')">
+                            </popup-lista>
                         </div>
                     </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <div class="item-input">
+                                <label for="prodHasta">Producto Hasta</label>
+                                <input 
+                                    #inputProdHastaDom
+                                    id="prodHasta" 
+                                    (ngModelChange)="onChangeProducto($event)"
+                                    name="prodHasta"
+                                    [(ngModel)]="filtroListaPrecios.codProdHasta" type="text" class="form-control" placeholder=""
+                                    (keydown.arrowdown)="
+                                        productoEnfocadoIndexHasta = popupListaService
+                                            .keyPressInputForPopup('down')(productos.filtrados.value)(productoEnfocadoIndexHasta);
+                                    "
+                                    (keydown.arrowup)="
+                                        productoEnfocadoIndexHasta = popupListaService
+                                            .keyPressInputForPopup('up')(productos.filtrados.value)(productoEnfocadoIndexHasta);
+                                    "
+                                    (keyup.enter)="onEnterProductoHasta($event)"
+                                    
+                                    >
+                                </div>
+                            <popup-lista 
+                                *ngIf="utilsService.ifFocused(inputProdHastaDom)"
+                                [items]="productos.filtrados.asObservable().distinctUntilChanged()"
+                                [keysToShow]="['codProducto', 'descripcion']" 
+                                [onClickItem]="onClickPopupProductoHasta" 
+                                [fatherPosition]="popupListaService.getOffsetOfInputCliente('prodHasta')">
+                            </popup-lista>
+                        </div>
+                    </div>
+
                     <div class="col-sm-2">
                         <div class="form-group">
-                            <label for="filtroProveedor">Proveedor</label>
-                            <input required name="proveedor-lp" [(ngModel)]="filtroListaPrecios.codProvedor" type="text" class="form-control" id="filtroProveedor" placeholder="">
+                            <div class="item-input">
+                                <label for="proveedor">Proveedor</label>
+                                <input 
+                                    #inputProveedorDom
+                                    id="proveedor" 
+                                    (ngModelChange)="onChangeProveedor($event)"
+                                    name="proveedor"
+                                    [(ngModel)]="filtroListaPrecios.codProvedor" type="text" class="form-control" placeholder=""
+                                    (keydown.arrowdown)="
+                                        proveedorEnfocadoIndex = popupListaService
+                                            .keyPressInputForPopup('down')(proveedores.filtrados.value)(proveedorEnfocadoIndex);
+                                    "
+                                    (keydown.arrowup)="
+                                        proveedorEnfocadoIndex = popupListaService
+                                            .keyPressInputForPopup('up')(proveedores.filtrados.value)(proveedorEnfocadoIndex);
+                                    "
+                                    (keyup.enter)="onEnterProveedor($event)"
+                                    
+                                    >
+                                </div>
+                            <popup-lista 
+                                *ngIf="utilsService.ifFocused(inputProveedorDom)"
+                                [items]="proveedores.filtrados.asObservable().distinctUntilChanged()"
+                                [keysToShow]="['padronApelli', 'padronCodigo']" 
+                                [onClickItem]="onClickPopupProveedor" 
+                                [fatherPosition]="popupListaService.getOffsetOfInputCliente('proveedor')">
+                            </popup-lista>
                         </div>
                     </div>
+
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label for="filtroRubro">Rubro</label>
-                            <select required name="rubro-lp" [(ngModel)]="filtroListaPrecios.rubro" class="form-control" id="filtroRubro">
+                            <select name="rubro-lp" [(ngModel)]="filtroListaPrecios.rubro" class="form-control" id="filtroRubro">
                                 <option *ngFor="let rub of rubros | async" [ngValue]="rub">
                                     {{rub.descripcion}}
                                 </option>
@@ -185,7 +257,7 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label for="filtroSubRubro">Sub Rubro</label>
-                            <select required name="subrubro-lp" [(ngModel)]="filtroListaPrecios.subRubro" class="form-control" id="filtroSubRubro">
+                            <select name="subrubro-lp" [(ngModel)]="filtroListaPrecios.subRubro" class="form-control" id="filtroSubRubro">
                                 <option *ngFor="let subrub of subRubros | async" [ngValue]="subrub">
                                     {{subrub.descripcion}}
                                 </option>

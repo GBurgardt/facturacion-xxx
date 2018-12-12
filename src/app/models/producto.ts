@@ -4,6 +4,7 @@ import { SubRubro } from "./subRubro";
 import { ModeloCab } from "app/models/modeloCab";
 import { Marca } from "./marca";
 import { Cultivo } from "app/models/cultivo";
+import { Rubro } from "./rubro";
 
 export class Producto {
     idProductos: number;
@@ -23,6 +24,7 @@ export class Producto {
     observaciones: string;
     IVA: IVA;
     subRubro: SubRubro;
+    rubro: Rubro;
     unidadCompra: Unidad;
     unidadVenta: Unidad; 
 
@@ -51,6 +53,7 @@ export class Producto {
         observaciones: string;
         IVA: any;
         subRubro: any;
+        rubro: any;
         unidadCompra: any;
         unidadVenta: any; 
 
@@ -88,6 +91,8 @@ export class Producto {
             this.marca = new Marca(producto.marca);
 
             this.cultivos = producto.cultivos.map(cult => new Cultivo(cult));
+
+            this.rubro = new Rubro(producto.rubro)
         } else {
             this.idProductos = null;       
             this.codProducto = null;       

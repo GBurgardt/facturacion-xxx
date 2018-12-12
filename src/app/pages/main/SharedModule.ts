@@ -1,4 +1,4 @@
-import { NgModule }       from '@angular/core';
+import { NgModule, Injectable }       from '@angular/core';
 import { CommonModule }   from '@angular/common';
 import { FormsModule }    from '@angular/forms';
 import { CustomCard } from 'app/pages/reusable/cards/customCard';
@@ -13,8 +13,6 @@ import { ListFinder } from '../reusable/otros/listFinder/listFinder';
 import { ListPopup } from 'app/pages/reusable/otros/listFinder/components/listPopup/listPopup';
 import { DateLickePicker } from 'app/pages/reusable/otros/dateLickePicker/dateLickePicker.component';
 import { SexiList } from '../reusable/listas/sexiList';
-
-
 
 @NgModule({
     imports: [

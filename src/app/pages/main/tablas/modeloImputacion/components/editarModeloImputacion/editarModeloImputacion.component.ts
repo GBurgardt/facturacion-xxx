@@ -41,7 +41,7 @@ export class EditarModeloImputacion {
     sisModulos: Observable<SisModulo[]> = Observable.of([]);
 
     constructor(
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router,
         private route: ActivatedRoute,
         private recursoService: RecursoService

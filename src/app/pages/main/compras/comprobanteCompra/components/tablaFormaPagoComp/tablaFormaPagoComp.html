@@ -3,7 +3,7 @@
         <tr class="table-header">
             <th></th>
             <th>F.Pago</th>
-            <th>Lista</th>
+            <!-- <th>Lista</th> -->
             <th>Detalle</th>
         </tr>
     
@@ -12,7 +12,7 @@
                 <input (blur)="onBlurCheckbox(isLast)" [attr.id]="'fp-check-' + indFp" (change)="onChangeCheckbox($event)(fp)" [disabled]="checkIfSeleccionable(fp)" class="checkbox-td" type="checkbox"/>
             </td>
             <td>{{ fp.descripcion }}</td>
-            <td>{{ fp.listaPrecio.idListaPrecio }}</td>
+            <!-- <td>{{ fp.listaPrecio.idListaPrecio }}</td> -->
             <td>{{ fp.descripcion }}</td>
         </tr>
     </table> 

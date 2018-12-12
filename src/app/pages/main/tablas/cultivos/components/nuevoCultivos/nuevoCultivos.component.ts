@@ -16,7 +16,7 @@ export class NuevoCultivos {
 
     constructor(
         private recursoService: RecursoService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router
     ) { }
 

@@ -38,7 +38,7 @@ export class DataTables {
     
 
     constructor(
-        private utilsService: UtilsService
+        public utilsService: UtilsService
     ) { }
 
     toInt(num: string) {

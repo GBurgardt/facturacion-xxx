@@ -17,6 +17,7 @@ import { ComprobanteDetalle } from '../../../../models/comprobanteDetalle';
 import { Observable, BehaviorSubject } from 'rxjs';
 import gruposParametros from 'constantes/gruposParametros';
 import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
+import { Vendedor } from 'app/models/vendedor';
 
 @Component({
     selector: 'consulta-comprobante',
@@ -30,7 +31,7 @@ export class ConsultaComprobante {
     tipoComprobantes: Observable<TipoComprobante[]>;
     sisEstados: Observable<SisEstado[]>;
     depositos: Observable<Deposito[]>;
-    // productos: Observable<Producto[]>;
+    vendedores: Observable<Vendedor[]>;
     
     productos: { todos: Producto[]; filtrados: BehaviorSubject<Producto[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
 
@@ -56,6 +57,7 @@ export class ConsultaComprobante {
     sisEstadoSelec: SisEstado = new SisEstado();
     padronSelec: Padron = new Padron();
     depositoSelec: Deposito = new Deposito();
+    vendedorSelec: Vendedor = new Vendedor();
 
     // compEncabezados: Observable<ComprobanteEncabezado[]> = Observable.of([]);
     compEncabezados: BehaviorSubject<ComprobanteEncabezado[]> = new BehaviorSubject([]);
@@ -64,7 +66,7 @@ export class ConsultaComprobante {
 
     constructor(
         private recursoService: RecursoService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private comprobanteService: ComprobanteService,
         private popupListaService: PopupListaService
     ) {
@@ -86,11 +88,7 @@ export class ConsultaComprobante {
         
 
         this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
-    }
-
-    ngOnInit() {
-        this.compDetalles.subscribe(a=>console.log(a));
-
+        this.vendedores = this.recursoService.getRecursoList(resourcesREST.vendedor)();
     }
 
     /**
@@ -111,7 +109,7 @@ export class ConsultaComprobante {
         // Busco los encabezados
         // Me suscribo a los cambios de los encabezados y en cada actualizacion de estos, actualizo también todos los detalles
         // Aprovecho a fijarme si la cantidad es 0. En ese caso, muestro mensaje
-        this.comprobanteService.buscarComprobantes(this.comprobante)(this.fechasFiltro)(this.sisModuloSelec)(this.tipoComprobanteSelec)(this.productoSelec)(this.sisEstadoSelec)(this.padronSelec)(this.depositoSelec)
+        this.comprobanteService.buscarComprobantes(this.comprobante)(this.fechasFiltro)(this.sisModuloSelec)(this.tipoComprobanteSelec)(this.productoSelec)(this.sisEstadoSelec)(this.padronSelec)(this.depositoSelec)(this.vendedorSelec)
             .subscribe(encabezados => {
                 // Actualizo encabezados
                 this.compEncabezados.next(encabezados);
@@ -136,7 +134,10 @@ export class ConsultaComprobante {
      * Formatea el numero pto-venta 4 caracteres y numero 8 caracteres
      */
     formatNumero = (numero) => 
-        `${numero.toString().substring(0, numero.toString().length - 8).padStart(4,0)} - ${numero.toString().substring(numero.toString().length - 8)}`
+        numero && numero.toString() && 
+        numero.toString().substring(0, numero.toString().length - 8) ?
+            `${numero.toString().substring(0, numero.toString().length - 8).padStart(4,0)} - ${numero.toString().substring(numero.toString().length - 8)}` :
+            ''
     
 
     /**

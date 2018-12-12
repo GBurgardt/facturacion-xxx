@@ -29,7 +29,7 @@ export class EditarClientes {
     categoriasVendedor: Observable<Categoria[]>;
 
     constructor(
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router,
         private route: ActivatedRoute,
         private recursoService: RecursoService

@@ -16,7 +16,7 @@ export class EditarCultivos {
     recursoOriginal: Cultivo = new Cultivo();
 
     constructor(
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router,
         private route: ActivatedRoute,
         private recursoService: RecursoService

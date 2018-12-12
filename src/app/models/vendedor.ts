@@ -18,7 +18,8 @@ export class Vendedor {
             this.porcentaje = vendedor.porcentaje;
             this.padronGral = new PadronGral(vendedor.padronGral);
 
-            this.auxNombreCompleto = `${this.padronGral.apellido}, ${this.padronGral.nombre}`
+            this.auxNombreCompleto = `${this.padronGral.apellido ? this.padronGral.apellido : ''}${this.padronGral.apellido && this.padronGral.nombre ? ', ':''}${this.padronGral.nombre ? this.padronGral.nombre : ''}`
+            
             this.auxCategoria = `${this.padronGral.categoria.descripcion}`;
         } else {
             this.idVendedor = null;

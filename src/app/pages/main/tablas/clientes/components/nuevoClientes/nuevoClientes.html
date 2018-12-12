@@ -50,7 +50,7 @@
                             recurso.vendedor.padronGral.idPadronGral = vend.padronCodigo : null
                         " 
                         *ngFor="let vend of vendedoresPadron">
-                        {{ vend.padronNombre }}, {{ vend.padronApelli }}
+                        {{ vend.padronNombre }} {{ vend.padronNombre ? ',' : '' }} {{ vend.padronApelli }}
                     </li>
                 </ul>
             </div>

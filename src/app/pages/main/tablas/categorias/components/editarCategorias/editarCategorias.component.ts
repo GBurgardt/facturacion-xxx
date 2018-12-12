@@ -20,7 +20,7 @@ export class EditarCategorias {
     sisCategorias: Observable<SisCategoria[]>;
 
     constructor(
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router,
         private route: ActivatedRoute,
         private recursoService: RecursoService

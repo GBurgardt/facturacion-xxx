@@ -21,6 +21,7 @@ import { Categoria } from "app/models/categoria";
 import { ClienteModPost } from "app/models/clienteModPost";
 import { Cliente } from "app/models/cliente";
 import { Cultivo } from "app/models/cultivo";
+import { Vendedor } from "app/models/vendedor";
 
 const classes = {
     Usuario,
@@ -44,7 +45,8 @@ const classes = {
     Numerador,
     Categoria,
     Cliente,
-    Cultivo
+    Cultivo,
+    Vendedor
 };
 
 export default function dynamicClass (name) {

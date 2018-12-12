@@ -24,7 +24,7 @@ export class ListaPrecios {
     constructor(
         private recursoService: RecursoService,
         private router: Router,
-        private utilsService: UtilsService
+        public utilsService: UtilsService
     ) {
         this.tableColumns = [
             {

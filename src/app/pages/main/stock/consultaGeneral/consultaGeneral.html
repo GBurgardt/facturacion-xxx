@@ -6,19 +6,31 @@
                 <label  for="desde">
                     Producto *
                 </label>
-                <input  [(ngModel)]="filtros.codProducto"
+                <input  [disabled]="filtros.todos"
+                        [(ngModel)]="filtros.codProducto"
                         type="text"
                         class="form-control text-right"
                         id="inputProducto"
                         placeholder=""
-                        (keydown.arrowdown)="keyPressInputTextoProd($event)('down')"
-                        (keydown.arrowup)="keyPressInputTextoProd($event)('up')"
+                        (keydown.arrowdown)="
+                            productoEnfocadoIndex = popupListaService
+                                .keyPressInputForPopup('down')(productos.filtrados.value)(productoEnfocadoIndex);
+                        "
+                        (keydown.arrowup)="
+                            productoEnfocadoIndex = popupListaService
+                                .keyPressInputForPopup('up')(productos.filtrados.value)(productoEnfocadoIndex);
+                        "
                         (keyup.enter)="onEnterInputProd($event)"
                         (ngModelChange)="onChangeInputProd($event)"
                         (blur)="onBlurInputProd($event)"
                         >
 
-                <popup-lista    *ngIf="filtros.codProducto && filtros.codProducto.length > 0"
+                <popup-lista    
+                                *ngIf="
+                                    filtros.codProducto && 
+                                    filtros.codProducto.length > 0 &&
+                                    !isProdSelec1
+                                "
                                 [items]="productos.filtrados.asObservable().distinctUntilChanged()"
                                 [keysToShow]="['descripcion', 'codProducto']"
                                 [onClickItem]="onSelectProducto"
@@ -31,25 +43,40 @@
                 <label  for="hasta">
                     Hasta *
                 </label>
-                <input  [(ngModel)]="filtros.codProducto2"
+                <input  [disabled]="filtros.todos"
+                        [(ngModel)]="filtros.codProducto2"
                         type="text"
                         class="form-control text-right"
                         id="inputProducto2"
                         placeholder=""
-                        (keydown.arrowdown)="keyPressInputTextoProd2($event)('down')"
-                        (keydown.arrowup)="keyPressInputTextoProd2($event)('up')"
                         (keyup.enter)="onEnterInputProd2($event)"
                         (ngModelChange)="onChangeInputProd2($event)"
                         (blur)="onBlurInputProd2($event)"
+                        (keydown.arrowdown)="
+                            productoEnfocadoIndex2 = popupListaService
+                                .keyPressInputForPopup('down')(productos2.filtrados.value)(productoEnfocadoIndex2);
+                        "
+                        (keydown.arrowup)="
+                            productoEnfocadoIndex2 = popupListaService
+                                .keyPressInputForPopup('up')(productos2.filtrados.value)(productoEnfocadoIndex2);
+                        "
                         >
 
-                <popup-lista    *ngIf="filtros.codProducto2 && filtros.codProducto2.length > 0"
+                <popup-lista    
+                                *ngIf="
+                                    filtros.codProducto2 && 
+                                    filtros.codProducto2.length > 0 &&
+                                    !isProdSelec2"
                                 [items]="productos2.filtrados.asObservable().distinctUntilChanged()"
                                 [keysToShow]="['descripcion', 'codProducto']"
                                 [onClickItem]="onSelectProducto2"
                                 [fatherPosition]="popupListaService.getOffsetOfInputCliente('inputProducto2')">
                 </popup-lista>
 
+            </div>
+
+            <div class="item-input checkbox-container">                
+                <ba-checkbox [(ngModel)]="filtros.todos" [label]="'Todos'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
             </div>
 
         </div>
@@ -72,7 +99,7 @@
                 <label for="selectSubRubro">
                     Sub Rubro
                 </label>
-                <select [(ngModel)]="filtros.subRubro" class="form-control" id="selectSubRubro">
+                <select [(ngModel)]="filtros.subrubro" class="form-control" id="selectSubRubro">
                     <option [ngValue]="null">
                         Todos
                     </option>
@@ -108,7 +135,22 @@
         <div class="input-row flex-end">
             <div class="item-input nro-cte">
                 <button id="btnConsultar"
-                    [disabled]="!filtros.codProducto || !filtros.codProducto2 || !filtros.fechaHasta"
+                    [disabled]="
+                        (
+                            filtros.todos &&
+                            !filtros.fechaHasta
+                        ) 
+                        || 
+                        (
+                            !filtros.todos && 
+                            (
+                                !filtros.codProducto || 
+                                !filtros.codProducto2
+                            )
+                            ||
+                            !filtros.fechaHasta
+                        ) 
+                    " 
                     (click)="onClickConsultar()"
                     class="btn btn-primary">
                     <i class="fa fa-search" aria-hidden="true"></i>

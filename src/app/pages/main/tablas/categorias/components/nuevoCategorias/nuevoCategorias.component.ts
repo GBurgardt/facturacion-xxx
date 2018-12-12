@@ -21,7 +21,7 @@ export class NuevoCategorias {
 
     constructor(
         private recursoService: RecursoService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router
     ) {
         this.sisCategorias = this.recursoService.getRecursoList(resourcesREST.sisCategoria)();

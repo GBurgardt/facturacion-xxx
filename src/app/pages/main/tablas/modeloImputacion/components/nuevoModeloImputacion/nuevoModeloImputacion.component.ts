@@ -43,7 +43,7 @@ export class NuevoModeloImputacion {
 
     constructor(
         private recursoService: RecursoService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router
     ) {
         this.contPlanCuentaList = this.recursoService.getRecursoList(resourcesREST.contPlanCuenta)();

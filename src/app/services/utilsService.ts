@@ -153,6 +153,7 @@ export class UtilsService {
     getNameRestOfResource = (recurso) => {
         // Obtengo la clase del objeto recibido
         const ClaseRecurso = dynamicClass(recurso.constructor.name);
+
         // Obtengo la referencia REST de tal clase
         return resourcesREST[
             Object.keys(resourcesREST).find(key => resourcesREST[key].Clase === ClaseRecurso)
@@ -201,10 +202,11 @@ export class UtilsService {
      * @param item1
      * @param item2
      */
-    dropdownCompareWith(item1: any, item2: any) {
+    dropdownCompareWith(item1: any, item2: any, idKeyName?) {
         const idRecurso1 = item1 ? Object.keys(item1)[0] : null;
         const idRecurso2 = item2 ? Object.keys(item2)[0] : null;
         return idRecurso1 && idRecurso2 ? item1[idRecurso1] === item2[idRecurso2] : null;
+        
     }
     // dropdownCompareWith = (keyId?) => (item1: any, item2: any) => {
     //     debugger;
@@ -434,4 +436,10 @@ export class UtilsService {
             (prov: Padron) =>   prov.padronCodigo.toString().includes(textoBuscado) ||
                                 prov.padronApelli.toString().toLowerCase().includes(textoBuscado)
         );
+
+    /**
+     * Retorna true si un elemento está focuseado actualmente
+     */
+    ifFocused = (el) => 
+        document.activeElement && el ? document.activeElement.id === el.id : false
 }

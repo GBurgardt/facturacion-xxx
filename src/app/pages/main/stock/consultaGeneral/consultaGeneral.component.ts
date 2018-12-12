@@ -27,7 +27,8 @@ export class ConsultaGeneral {
         productoSelect: any,
         productoSelect2: any,
         rubro: any,
-        subrubro: any
+        subrubro: any,
+        todos: boolean
     } = {
         fechaHasta: null,
         codProducto: null,
@@ -35,7 +36,8 @@ export class ConsultaGeneral {
         productoSelect: null,
         productoSelect2: null,
         rubro: null,
-        subrubro: null
+        subrubro: null,
+        todos: false
     }
 
     // Desplegables
@@ -50,9 +52,12 @@ export class ConsultaGeneral {
     productos: { todos: Producto[]; filtrados: BehaviorSubject<Producto[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
     productos2: { todos: Producto[]; filtrados: BehaviorSubject<Producto[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
 
+    isProdSelec1 = false;
+    isProdSelec2 = false;
+
     constructor(
         private recursoService: RecursoService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private popupListaService: PopupListaService,
         private consultaGeneralService: ConsultaGeneralService
     ) {
@@ -74,18 +79,15 @@ export class ConsultaGeneral {
         null : this.filtros.fechaHasta = this.utilsService.stringToDateLikePicker(this.filtros.fechaHasta);
 
     onClickConsultar = () => {
+
+        if (this.filtros.todos && this.productos && this.productos.todos && this.productos.todos.length > 0) {
+            this.filtros.productoSelect2 = this.productos.todos[this.productos.todos.length-1]
+        }
+
         this.stockData = this.consultaGeneralService.consultarStock(this.filtros);
     }
 
     ///// EVENTOS BUSQUEDA PRODUCTO 1 /////
-
-    keyPressInputTextoProd = (e: any) => (upOrDown) => {
-        e.preventDefault();
-        // Hace todo el laburo de la lista popup y retorna el nuevo indice seleccionado
-        this.popupListaService.keyPressInputForPopup(upOrDown)(this.productos.filtrados)(this.productoEnfocadoIndex)
-            .subscribe(newIndex => this.productoEnfocadoIndex = newIndex)
-            .unsubscribe()
-    }
 
     /**
      * Evento on enter en el input de buscar cliente
@@ -109,6 +111,9 @@ export class ConsultaGeneral {
      * Evento change del input del proovedor
      */
     onChangeInputProd = (valor) => {
+
+        this.isProdSelec1 = false;
+
         this.productos.filtrados.next(
             this.consultaGeneralService.filtrarProductos(this.productos.todos, valor)
         );
@@ -144,42 +149,51 @@ export class ConsultaGeneral {
         this.filtros.codProducto = prod.codProducto.toString();
         this.filtros.productoSelect = prod;
         // this.info.nombreProd = prod.descripcion;
+
+        this.isProdSelec1 = true;
     }
 
 
     ///// EVENTOS BUSQUEDA PRODUCTO 2 /////
-
-    keyPressInputTextoProd2 = (e: any) => (upOrDown) => {
-        e.preventDefault();
-        // Hace todo el laburo de la lista popup y retorna el nuevo indice seleccionado
-        this.popupListaService.keyPressInputForPopup(upOrDown)(this.productos2.filtrados)(this.productoEnfocadoIndex2)
-            .subscribe(newIndex => this.productoEnfocadoIndex2 = newIndex)
-            .unsubscribe()
-    }
 
     /**
      * Evento on enter en el input de buscar cliente
      */
     onEnterInputProd2 = (e: any) => {
         e.preventDefault();
-        this.productos2.filtrados.subscribe(prodsLista => {
-            // Busco el producto
-            const prodSelect: any = prodsLista && prodsLista.length ? prodsLista[this.productoEnfocadoIndex] : null;
-            // Lo selecciono
-            prodSelect ? this.onSelectProducto2(prodSelect) : null;
-            // Reseteo el index
-            this.productoEnfocadoIndex2 = -1;
-            // Vacio filtrados y focus lote input
-            this.productos2.filtrados.next([]);
 
-            document.getElementById('inputLoteNro') ? document.getElementById('inputLoteNro').focus() : null
-        })
+        // Busco el producto
+        const prodsLista = this.productos2.filtrados.value;
+        const prodSelect: any = prodsLista && prodsLista.length ? prodsLista[this.productoEnfocadoIndex2] : null;
+        // Lo selecciono
+        prodSelect ? this.onSelectProducto2(prodSelect) : null;
+        // Reseteo el index
+        this.productoEnfocadoIndex2 = -1;
+        // Vacio filtrados y focus lote input
+        this.productos2.filtrados.next([]);
+        // document.getElementById('inputLoteNro') ? document.getElementById('inputLoteNro').focus() : null
+
+        // this.productos2.filtrados.subscribe(prodsLista => {
+        //     // Busco el producto
+        //     const prodSelect: any = prodsLista && prodsLista.length ? prodsLista[this.productoEnfocadoIndex] : null;
+        //     // Lo selecciono
+        //     prodSelect ? this.onSelectProducto2(prodSelect) : null;
+        //     // Reseteo el index
+        //     this.productoEnfocadoIndex2 = -1;
+        //     // Vacio filtrados y focus lote input
+        //     this.productos2.filtrados.next([]);
+
+        //     document.getElementById('inputLoteNro') ? document.getElementById('inputLoteNro').focus() : null
+        // })
     }
 
     /**
      * Evento change del input del proovedor
      */
     onChangeInputProd2 = (valor) => {
+
+        this.isProdSelec2 = false;
+
         this.productos2.filtrados.next(
             this.consultaGeneralService.filtrarProductos(this.productos2.todos, valor)
         );
@@ -215,6 +229,8 @@ export class ConsultaGeneral {
         this.filtros.codProducto2 = prod.codProducto.toString();
         this.filtros.productoSelect2 = prod;
         // this.info.nombreProd2 = prod.descripcion;
+
+        this.isProdSelec2 = true;
     }
 
     //////////////////////////////////////////////////////////////////////

@@ -24,7 +24,7 @@ export class EditarNumeradores {
     addNewNumero = false;
 
     constructor(
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private router: Router,
         private route: ActivatedRoute,
         private recursoService: RecursoService
@@ -40,7 +40,9 @@ export class EditarNumeradores {
                 })
         );
 
-        this.cteTipos = this.recursoService.getRecursoList(resourcesREST.cteTipo)();
+        this.cteTipos = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
+            'condicion': 'propio'
+        });
         this.numeros = this.recursoService.getRecursoList(resourcesREST.cteNumero)();
     }
 
@@ -84,5 +86,8 @@ export class EditarNumeradores {
 
         this.recurso.numero = new Numero();
     }
+
+    compareWithCteTipo = (a, b) => a && b && a.idCteTipo && b.idCteTipo ?
+        a.idCteTipo === b.idCteTipo : null
 
 }

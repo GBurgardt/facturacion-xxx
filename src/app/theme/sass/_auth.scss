@@ -33,9 +33,11 @@ $text-color: #ffffff;
     text-decoration: none;
     outline: none;
     transition: all 0.2s ease;
-    color: $primary;
+    // color: $primary;
+    color: #fff;
     &:hover {
-      color: $primary-dark;
+      // color: $primary-dark;
+      color: rgb(182, 182, 182);
     }
   }
 
@@ -47,6 +49,11 @@ $text-color: #ffffff;
   .form-group {
     margin-bottom: 12px;
   }
+
+  
+  background-color: #aeaeae;
+  
+  opacity: 0.9;
 }
 
 .auth-input {

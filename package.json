@@ -40,7 +40,8 @@
     "clean:coverage": "npm run rimraf -- coverage",
     "docs:build": "wintersmith build -C docs -o build/ng2-admin",
     "docs:deploy": "npm run docs:build && gh-pages -d docs/build -r git@github.com:akveo/akveo.github.io.git -b master",
-    "docs:serve": "wintersmith preview -C docs"
+    "docs:serve": "wintersmith preview -C docs",
+    "build:testing": "ng build --prod && scp -rp dist/* administrador@10.0.0.210:/home/administrador/facturacion/"
   },
   "private": true,
   "dependencies": {
@@ -92,7 +93,7 @@
     "zone.js": "0.8.11"
   },
   "devDependencies": {
-    "@angular/cli": "1.0.4",
+    "@angular/cli": "^1.2.6",
     "@angular/compiler-cli": "4.1.3",
     "@types/fullcalendar": "2.7.40",
     "@types/jasmine": "2.5.38",

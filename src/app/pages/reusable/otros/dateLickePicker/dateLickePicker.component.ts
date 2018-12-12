@@ -18,7 +18,7 @@ export class DateLickePicker implements AfterViewChecked {
 
     @Output() itemChanged = new EventEmitter<string>();
 
-    constructor(private utilsService: UtilsService) { }
+    constructor(public utilsService: UtilsService) { }
 
     ngAfterViewChecked() {
         if (
@@ -32,7 +32,9 @@ export class DateLickePicker implements AfterViewChecked {
     }
 
     public onItemChanged() {
+        // debugger;
         this.itemChanged.emit(this.itemBinded);
+        // debugger;
     }
 
     onBlurItem = () => {
@@ -43,5 +45,9 @@ export class DateLickePicker implements AfterViewChecked {
             document.getElementById(this.idFocusBlur).focus() : null // En vez de null sería bueno algo como focusNextInput
 
         this.itemChanged.emit(this.itemBinded);
+    }
+
+    onNgModelChange(e) {
+        this.itemChanged.emit(e);
     }
 }

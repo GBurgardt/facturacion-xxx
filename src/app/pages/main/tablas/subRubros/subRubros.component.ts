@@ -26,7 +26,7 @@ export class SubRubros {
     constructor(
         private recursoService: RecursoService,
         private router: Router,
-        private utilsService: UtilsService
+        public utilsService: UtilsService
     ) {
         // Guardo las columnas de la tabla con sus respectivas anchuras
         this.tableColumns = [

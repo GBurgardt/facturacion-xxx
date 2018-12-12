@@ -1,10 +1,13 @@
-<ba-card cardTitle="{{titulo}}" class="emision-remitos">
+<ba-card cardTitle="Emitir Remito" class="emision-remitos">
     <form #ventForm="ngForm">
         <div class="row">
             <div class="col-sm-2">
                 <div class="form-group inline-group">
                     <label for="cliente">Cliente</label>
-                    <input id="clienteSeleccionado" (blur)="onBlurInputCliente($event)" (ngModelChange)="onChangeInputCliente($event)"
+                    <input #testeandoInput
+                        id="clienteSeleccionado" 
+                        (blur)="onBlurInputCliente($event)"
+                        (ngModelChange)="onChangeInputCliente($event)"
                         required
                         name="clPadCod"
                         [(ngModel)]="cliente.padronCodigo" type="text" class="form-control" placeholder=""
@@ -13,8 +16,12 @@
                 </div>
             </div>
 
-            <popup-lista *ngIf="cliente.padronCodigo && cliente.padronCodigo.length > 0" [items]="clientes.filtrados.asObservable().distinctUntilChanged()"
-                [keysToShow]="['padronApelli', 'padronCodigo']" [onClickItem]="onClickPopupCliente" [fatherPosition]="popupListaService.getOffsetOfInputCliente('clienteSeleccionado')">
+            <popup-lista 
+                *ngIf="utilsService.ifFocused(testeandoInput)"
+                [items]="clientes.filtrados.asObservable().distinctUntilChanged()"
+                [keysToShow]="['padronApelli', 'padronCodigo']" 
+                [onClickItem]="onClickPopupCliente" 
+                [fatherPosition]="popupListaService.getOffsetOfInputCliente('clienteSeleccionado')">
             </popup-lista>
 
             <div class="col-sm-3">
@@ -43,21 +50,11 @@
                 </div>
             </div>
 
-            <!-- <div *ngIf="!disabledClienteCustom" class="col-sm-1 form-group inline-group tipo-compra-dropdown">
-                <label for="tipoCompra">IVA:</label>
-                <select required [compareWith]="compareIvaSelect" name="clCondIva" [(ngModel)]="cliente.condIva" [disabled]="disabledClienteCustom"
-                    class="form-control without-padding" [ngStyle]="{padding: '0px 8px 0px 8px'}" id="tipoCompra">
-                    <option *ngFor="let sIva of sisSitIvas | async" [ngValue]="sIva">
-                        {{sIva.descCorta}}
-                    </option>
-                </select>
-            </div> -->
-
             <div class="col-sm-2">
                 <div class="form-group inline-group">
-                    <label for="cteTipo">Tipo Operacion:</label>
+                    <label for="tipoOperacionSelect">Tipo Operacion:</label>
                     <select required name="clTipOp" [(ngModel)]="tipoOperacion" (ngModelChange)="onChangeTipoOperacion($event)" class="form-control without-padding"
-                        [ngStyle]="{padding: '0px 8px 0px 8px'}" id="tipoOperacionDropdown">
+                        [ngStyle]="{padding: '0px 8px 0px 8px'}" id="tipoOperacionSelect">
                         <option *ngFor="let tipoOp of tiposOperacion | async" [ngValue]="tipoOp">
                             {{tipoOp.descripcion}}
                         </option>
@@ -160,10 +157,14 @@
                             <label for="fechaComprobante">Fecha: </label>
                             <div class="input-group">
                                 <!-- Deshabilito la fecha si NÓ está seleccionado el cliente, el tipo comprobante y seteado el ptoventa -->
-                                <input required [disabled]="!(cliente && cliente.padronCodigo && comprobante && comprobante.tipo && comprobante.numerador.numero.ptoVenta)"
-                                    (blur)="onBlurFechaComprobante($event)" (keyup.enter)="onBlurFechaComprobante($event)"
-                                    class="form-control" placeholder="dd/mm/aaaa" name="dp1" [(ngModel)]="comprobante.fechaComprobante"
-                                    ngbDatepicker (ngModelChange)="onModelChangeFechaComp($event, d)" #dComp="ngbDatepicker">
+                                <input required 
+                                    [disabled]="!(cliente && cliente.padronCodigo && comprobante && comprobante.tipo && comprobante.numerador.numero.ptoVenta)"
+                                    (blur)="onBlurFechaComprobante($event)" 
+                                    (keyup.enter)="onBlurFechaComprobante($event)"
+                                    class="form-control" 
+                                    placeholder="dd/mm/aaaa" 
+                                    name="dp1" [(ngModel)]="comprobante.fechaComprobante"
+                                    ngbDatepicker (ngModelChange)="onModelChangeFechaComp($event, dComp)" #dComp="ngbDatepicker">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button"
                                         style="height: 100%;">
@@ -363,7 +364,7 @@
                             <div class="col-sm-3">
                                 <div class="form-group inline-group">
                                     <label for="cteTipo">Cte:</label>
-                                    <select name="clFactTip" [(ngModel)]="factura.tipo" class="form-control without-padding" [ngStyle]="{padding: '1px 8px 0px 8px'}"
+                                    <select [compareWith]="utilsService.dropdownCompareWith" required name="clFactTip" [(ngModel)]="factura.tipo" class="form-control without-padding" [ngStyle]="{padding: '1px 8px 0px 8px'}"
                                         id="cteTipo">
                                         <option *ngFor="let tipoComp of tiposComprobantesFactura | async" [ngValue]="tipoComp">
                                             {{tipoComp.descCorta}}
@@ -372,11 +373,11 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-1">
+                            <div *ngIf="factura && factura.tipo && factura.tipo.letras" class="col-sm-1">
                                 <div class="form-group inline-group">
-                                    <select name="clFactLetra" [(ngModel)]="factura.letra" class="form-control" id="cteTipoFactura">
-                                        <option *ngFor="let letra of letras" [ngValue]="letra">
-                                            {{letra}}
+                                    <select required name="clFactLetra" [(ngModel)]="factura.letra" class="form-control" id="cteTipoFactura">
+                                        <option *ngFor="let letra of factura.tipo.letras" [ngValue]="letra">
+                                            {{ letra.letra }}
                                         </option>
                                     </select>
                                 </div>
@@ -406,28 +407,14 @@
                                         </option>
                                     </select>
                                 </div>
-
-                                <!-- <div class="form-group inline-group">
-                                    <label for="selectPtoVentaNumRel">Nro:</label>
-
-                                    <select id="selectPtoVentaNumRel" class="form-control" [ngStyle]="{padding: '1px 8px 0px 8px'}"
-                                        name="clFactNro" [(ngModel)]="factura.numerador">
-                                        <option *ngFor="let upNum of factura.tipo.numerador" [ngValue]="upNum">
-                                            {{
-                                            upNum.numero.ptoVenta.toString().padStart(4, '0')
-                                            }} - {{
-                                            upNum.numero.numero.toString().padStart(8, '0')
-                                            }}
-                                        </option>
-                                    </select>
-                                </div> -->
                             </div>
 
                             <div class="col-sm-3">
                                 <div class="form-group inline-group last-child-custom-card">
                                     <label for="fechaComprobante">Fecha Contable</label>
                                     <div class="input-group">
-                                        <input (blur)="onCalculateFecha($event)('fechaContable')('factura')"
+                                        <input 
+                                            (blur)="factura.fechaComprobante = utilsService.stringToDateLikePicker(factura.fechaComprobante)"
                                             (keyup.enter)="onCalculateFecha($event)('fechaContable')('factura')" class="form-control"
                                             placeholder="dd/mm/aaaa" name="dp3" [(ngModel)]="factura.fechaComprobante"
                                             ngbDatepicker #dComp="ngbDatepicker">
@@ -444,7 +431,9 @@
                                 <div class="form-group inline-group last-child-custom-card">
                                     <label for="fechaVto">Fecha Vto</label>
                                     <div class="input-group">
-                                        <input (blur)="onCalculateFecha($event)('fechaVto')('factura')" (keyup.enter)="onCalculateFecha($event)('fechaVto')('factura')"
+                                        <input 
+                                            (blur)="factura.fechaVto = utilsService.stringToDateLikePicker(factura.fechaVto)"
+                                            (keyup.enter)="onCalculateFecha($event)('fechaVto')('factura')"
                                             id="fechaVtoFactura" class="form-control" placeholder="dd/mm/aaaa" name="dp4"
                                             [(ngModel)]="factura.fechaVto" ngbDatepicker #dVto="ngbDatepicker">
                                         <div class="input-group-append">

@@ -19,6 +19,7 @@ import { AppState, InternalStateType } from './app.service';
 import { GlobalState } from './global.state';
 import { NgaModule } from './theme/nga.module';
 import { PagesModule } from './pages/pages.module';
+import { WINDOW_PROVIDERS } from './services/windowService';
 
 
 
@@ -27,6 +28,7 @@ import { PagesModule } from './pages/pages.module';
 const APP_PROVIDERS = [
   AppState,
   GlobalState
+  // WINDOW_PROVIDERS
 ];
 
 export type StoreType = {
@@ -57,7 +59,8 @@ export type StoreType = {
     routing
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
-    APP_PROVIDERS
+    APP_PROVIDERS,
+    WINDOW_PROVIDERS
   ]
 })
 
