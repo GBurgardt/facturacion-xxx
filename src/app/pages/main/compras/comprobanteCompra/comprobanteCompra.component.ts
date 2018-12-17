@@ -310,7 +310,7 @@ export class ComprobanteCompra implements AfterViewInit {
             // Le seteo el nroComprobante
             const auxProdSelect = Object.assign({}, prodEnc);
             // auxProdSelect.numero = Number(this.comprobante.numerador.numero.ptoVenta + this.comprobante.numerador.numero.numero).toString();
-            auxProdSelect.numero = this.utilsService.numeroObjectToString(this.comprobante.numerador.numero)
+            auxProdSelect.numero = this.utilsService.numeroObjectToString(this.comprobante.numerador.ptoVenta)
             
             // Checkeo que no exista
             const existeProd = this.tablas.datos.productosPend.find(
@@ -417,7 +417,7 @@ export class ComprobanteCompra implements AfterViewInit {
                             const compCreado = new ComprobanteEncabezado();
                             compCreado.idFactCab = respuesta.datos.idFactCab;
                             compCreado.numero = Number(
-                                `${this.comprobante.numerador.numero.ptoVenta}${this.comprobante.numerador.numero.numero.toString().padStart(8, '0')}`
+                                `${this.comprobante.numerador.ptoVenta.ptoVenta}${this.comprobante.numerador.ptoVenta.ptoVenta.toString().padStart(8, '0')}`
                             );
 
                             this.utilsService.showImprimirModal(
@@ -721,14 +721,7 @@ export class ComprobanteCompra implements AfterViewInit {
             'idCteTipo': cteTipoSelect.idCteTipo
         });
 
-        // this.comprobante.numerador.fechaApertura = null;
-        // this.comprobante.numerador.fechaCierre = null;
-
         this.comprobante.numerador = new Numerador();
-
-        if (this.comprobante.tipo && this.comprobante.tipo.numerador && this.comprobante.tipo.numerador.length > 0) {
-            this.comprobante.numerador = this.comprobante.tipo.numerador[0];
-        }
     }
 
 
@@ -759,7 +752,6 @@ export class ComprobanteCompra implements AfterViewInit {
      */
     onChangeTipoOperacion = (tipoOpSelect: SisTipoOperacion) => {
         this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
-            // 'sisModulo':  1,
             'sisTipoOperacion': tipoOpSelect.idSisTipoOperacion
         });
     }

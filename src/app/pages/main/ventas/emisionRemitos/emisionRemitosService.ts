@@ -24,6 +24,7 @@ import { Factura } from "../../../../models/factura";
 import { SisTipoOperacion } from "app/models/sisTipoOperacion";
 import { Cliente } from "../../../../models/cliente";
 import { Vendedor } from "../../../../models/vendedor";
+import { ListaPrecio } from "app/models/listaPrecio";
 
 @Injectable()
 export class EmisionRemitosService {
@@ -414,6 +415,7 @@ export class EmisionRemitosService {
                                 (tipoOpSelect: SisTipoOperacion) => 
                                 (dataVendedor: any) => 
                                 (subtotalesProductos: any) => 
+                                (listaPrecioSelec: ListaPrecio) => 
         this.authService.emitirRemito(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
@@ -446,6 +448,8 @@ export class EmisionRemitosService {
             dataVendedor
         )(
             subtotalesProductos
+        )(
+            listaPrecioSelec
         )
             .catch(err => {
                 debugger;
@@ -515,7 +519,7 @@ export class EmisionRemitosService {
             comprobante.tipo !== null && 
             comprobante.tipo.idCteTipo !== null && 
             comprobante.numerador !== null &&
-            comprobante.numerador.numero !== null &&
+            comprobante.numerador.ptoVenta !== null &&
             // comprobante.moneda !== null && 
             // comprobante.moneda.idMoneda !== null && 
             comprobante.fechaComprobante !== null &&

@@ -52,6 +52,22 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="listaPrecio">Seleccione Listas de precio</label>
+                    <div class="lista-precio-container">
+                        <div    *ngFor="let lista of listasPrecios | async" 
+                                (click)="usuarioNuevo.addOrRemoveLista(lista)" class="lista"
+                            [ngClass]="{'lista-select': usuarioNuevo.existLista(lista)}">
+                            {{ lista.codigoLista }}
+                        </div>
+                    </div>
+        
+                </div>
+            </div>
+        </div>
+
         <button [disabled]="utilsService.checkIfIncomplete(usuarioNuevo)([
                                 'email',
                                 'telefono'

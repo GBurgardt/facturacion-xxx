@@ -129,7 +129,7 @@
             display: flex;
             justify-content: space-between;
             .fpago-tabla {
-                width: 50%;
+                width: 30%;
             }
             .txt-area-container {
                 width: 48%;
@@ -137,6 +137,25 @@
                     height: 78px;
                     color: #000;
                     font-size: 0.8rem;
+                }
+            }
+
+            .fpago-lista-precio-tab {
+                width: 70%;
+                .table-header {
+                    background: #b8b8bd;
+                }
+        
+                tr:nth-child(even) {
+                    background: #cacad2;
+                }
+        
+                td {
+                    padding: 2px;
+                    .checkbox-td {
+                        display: block;
+                        margin: 2px;
+                    }           
                 }
             }
         }

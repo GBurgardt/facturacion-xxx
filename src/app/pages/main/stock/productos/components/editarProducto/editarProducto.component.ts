@@ -41,7 +41,7 @@ export class EditarProducto {
         private recursoService: RecursoService,
         public utilsService: UtilsService,
         private router: Router,
-        private route: ActivatedRoute,
+        private route: ActivatedRoute
     ) {
         // Inicializo los valores de los desplegables
         this.rubros = this.recursoService.getRecursoList(resourcesREST.rubros)();

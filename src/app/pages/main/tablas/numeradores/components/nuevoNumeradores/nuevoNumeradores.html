@@ -44,14 +44,14 @@
         <div class="line">
             <div class="form-group item numero-item">
                 <div class="numero-item-content">
-                    <label for="idNumero">Numero</label>
+                    <label for="idNumero">Pto Venta</label>
                     <select     (blur)="utilsService.focusElement('idBtnConfirmar')"
                                 [disabled]="addNewNumero"
-                                [(ngModel)]="recurso.numero" 
+                                [(ngModel)]="recurso.ptoVenta" 
                                 class="form-control" 
                                 id="idNumero">
-                        <option *ngFor="let num of numeros | async" [ngValue]="num">
-                            {{ num.auxNumero }}
+                        <option *ngFor="let ptoV of ptoVentas | async" [ngValue]="ptoV">
+                            {{ ptoV.ptoVenta }}
                         </option>
                     </select>
                 </div>
@@ -72,7 +72,7 @@
         <div *ngIf="addNewNumero" class="nuevo-numerador">
             
             <div class="line">
-                <p>Nuevo Numero</p>
+                <p>Nuevo Pto Venta</p>
                 <div class="toggle-btn" (click)="onClickAddNumero()">
                     <i class="fa fa-caret-down" aria-hidden="true"></i>
                 </div>
@@ -80,20 +80,20 @@
             <div class="line">
                 <div class="form-group item">
                     <label for="idPtoVentaNro">Punto Venta:</label>
-                    <input  (blur)="recurso.numero.ptoVenta = utilsService.autocompNroComp('ptoVenta')(recurso.numero)"
+                    <input  (blur)="recurso.ptoVenta.ptoVenta = utilsService.autocompNroComp('ptoVenta')(recurso.ptoVenta)"
                             maxlength="4" 
                             class="form-control" 
-                            [(ngModel)]="recurso.numero.ptoVenta" 
+                            [(ngModel)]="recurso.ptoVenta.ptoVenta" 
                             id="idPtoVentaNro">
                 </div>
-                <div class="form-group item">
+                <!-- <div class="form-group item">
                     <label for="idNroNro">Numero:</label>
-                    <input  (blur)="recurso.numero.numero = utilsService.autocompNroComp('numero')(recurso.numero)"
+                    <input  (blur)="recurso.ptoVenta.ptoVenta = utilsService.autocompNroComp('numero')(recurso.ptoVenta)"
                             maxlength="8" 
                             class="form-control" 
-                            [(ngModel)]="recurso.numero.numero" 
+                            [(ngModel)]="recurso.ptoVenta.ptoVenta" 
                             id="idNroNro">
-                </div>
+                </div> -->
             </div>
 
             <!-- <div class="line line-nro">

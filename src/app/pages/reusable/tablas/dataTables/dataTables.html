@@ -23,11 +23,11 @@
         </thead>
         <tbody>
             <tr *ngFor="let item of mf.data">
-                <td *ngIf="enableEditDelete" class="btn-container">
-                    <div (click)="edit(item)" class="btn-accion btn-editar">
+                <td *ngIf="enableEditDelete && utilsService.getCurrentMenu()" class="btn-container">
+                    <div *ngIf="utilsService.getCurrentMenu().modificacion" (click)="edit(item)" class="btn-accion btn-editar">
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </div>
-                    <div (click)="remove(item)" class="btn-accion btn-remover">
+                    <div *ngIf="utilsService.getCurrentMenu().baja" (click)="remove(item)" class="btn-accion btn-remover">
                         <i class="fa fa-trash" aria-hidden="true"></i>
                     </div>
                     <div *ngIf="checkIfEditOn(item)" (click)="confirmEdit(item)" class="btn-accion btn-remover">

@@ -10,16 +10,19 @@ import { resourcesREST } from 'constantes/resoursesREST';
 import { routing } from '../pages/main/tablas/tablas.routing';
 import { DateLikePicker } from 'app/models/dateLikePicker';
 import { ImprimirModal } from 'app/pages/reusable/modals/imprimir-modal/imprimir-modal.component';
-import { AuthService } from './authService';
-import { Numero } from 'app/models/numero';
 import { Padron } from 'app/models/padron';
+import { ActivatedRoute } from '@angular/router';
+import { LocalStorageService } from './localStorageService';
+import { PtoVenta } from 'app/models/ptoVenta';
 
 @Injectable()
 export class UtilsService {
 
     constructor(
         private modalService: NgbModal,
-        private appState: AppState
+        private appState: AppState,
+        private route: ActivatedRoute,
+        private localStorageService: LocalStorageService
     ) { }
 
     /** TODO: Refactorizar este modal y poner bien el titulo y la descrip
@@ -425,9 +428,9 @@ export class UtilsService {
         }, 100);
     }
 
-    numeroObjectToString = (numero: Numero) => 
-        numero && numero.ptoVenta && numero.ptoVenta ?
-            `${numero.ptoVenta.toString().padStart(4, '0')}${numero.numero.toString().padStart(8, '0')}` :
+    numeroObjectToString = (ptoVenta: PtoVenta) => 
+        ptoVenta && ptoVenta.ptoVenta && ptoVenta.ptoVenta ?
+            `${ptoVenta.ptoVenta.toString().padStart(4, '0')}${ptoVenta.ptoVenta.toString().padStart(8, '0')}` :
             `XXXXXXXXXXXX`
     
 
@@ -442,4 +445,30 @@ export class UtilsService {
      */
     ifFocused = (el) => 
         document.activeElement && el ? document.activeElement.id === el.id : false
+
+    compareWithSimple = (a, b) => a && b && a === b
+
+    /**
+     * Retorna el menu actual (matcheando ruta actual con menus del localStorage)
+     * TODO: Por ahora solo ABMs
+     */
+    getCurrentMenu = () => {
+        if (window && window.location && window.location.href) {
+            // Busco ruta actual
+            const rutaActual = window.location.href
+                .substring(
+                    window.location.href.indexOf('tablas') 
+                    + 'tablas'.length 
+                    + 1
+                )
+            // Agarro solo los menu de abm
+            const abmMenus = this.localStorageService.getAbmMenus();
+            // Matcheo agarrando el current menu
+            const currentMenu = abmMenus.find(abm => abm.path === rutaActual);
+            return currentMenu;
+        } else {
+            return null;
+        }
+    }
+    
 }

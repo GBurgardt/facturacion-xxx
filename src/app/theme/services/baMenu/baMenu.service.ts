@@ -132,35 +132,38 @@ export class BaMenuService {
     /**
      * Parsea los datos del menu que viene del backend al formato requerido por el metodo updateMenuByRoutes
      */
-    generatePagesMenu = (menuSucursal) => {
-        // Por ahora dejo esto así, después reformatear un poco
-        // Le doy el formato requerido a los menus
-        const menusFormateados = menuSucursal.map(menuPadre => {
-            if (menuPadre.menuResponse.idPadre === '/') {
+    generatePagesMenu = (permisos) => {
+        const menusFormateados = permisos.map(permiso => {
+            if (permiso.menu.idPadre === '/') {
                 return {
-                    path: menuPadre.menuResponse.nombreForm,
+                    path: permiso.menu.nombreForm,
                     data: {
                         menu: {
-                            title: menuPadre.menuResponse.nombre,
-                            icon: menuPadre.menuResponse.icono,
+                            title: permiso.menu.nombre,
+                            icon: permiso.menu.icono,
                             selected: false,
                             expanded: false,
-                            order: menuPadre.menuResponse.orden * 100
+                            order: permiso.menu.orden * 100
                         }
                     },
-                    children: menuSucursal.map(menuChildren => {
-                        if (menuChildren.menuResponse.idPadre === menuPadre.menuResponse.idMenu) {
+                    children: permisos.map(menuChildren => {
+                        if (menuChildren.menu.idPadre === permiso.menu.idMenu) {
                             return {
-                                path: menuChildren.menuResponse.nombreForm,
-                                //path: this._convertIdMenuToPath(menuChildren.menuResponse),
+                                path: menuChildren.menu.nombreForm,
                                 data: {
                                     menu: {
-                                        title: menuChildren.menuResponse.nombre,
+                                        title: menuChildren.menu.nombre,
                                     }
-                                }
+                                },
+                                alta: menuChildren.alta,
+                                baja: menuChildren.baja,
+                                modificacion: menuChildren.modificacion
                             }
                         }
-                    }).filter(menu => menu != undefined)
+                    }).filter(menu => menu != undefined),
+                    alta: permiso.alta,
+                    baja: permiso.baja,
+                    modificacion: permiso.modificacion
                 }
             }
         }).filter(menu => menu != undefined);

@@ -354,9 +354,9 @@ export class ComprobanteCompraService {
         comprobante &&
         comprobante.tipo &&
         comprobante.tipo.idCteTipo &&
-        comprobante.letra &&
-        comprobante.numerador.numero.ptoVenta &&
-        comprobante.numerador.numero.numero &&
+        comprobante.letraCodigo &&
+        comprobante.numerador.ptoVenta.ptoVenta &&
+        comprobante.numerador.ptoVenta.ptoVenta &&
         comprobante.moneda &&
         comprobante.moneda.idMoneda &&
         comprobante.fechaComprobante &&

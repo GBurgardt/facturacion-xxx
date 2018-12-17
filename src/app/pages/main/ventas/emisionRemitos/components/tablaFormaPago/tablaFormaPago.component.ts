@@ -22,12 +22,6 @@ export class TablaFormaPago {
     constructor() { }
 
     /**
-     * Checkea si se puede seleccionar o no
-     */
-    checkIfSeleccionable = (fp: FormaPago) => true
-        // this.seleccionados.some(fpSelec => fpSelec.listaPrecio.idListaPrecio !== fp.listaPrecio.idListaPrecio)
-
-    /**
      * Evento change del checkbox
      */
     onChangeCheckbox = (e) => (fp: FormaPago) => {

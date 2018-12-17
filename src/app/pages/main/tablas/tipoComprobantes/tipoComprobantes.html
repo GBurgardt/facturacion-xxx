@@ -8,7 +8,7 @@
                      tituloTabla="Tipos de Comprobantes" >
         </data-tables>
     
-        <div class="btn-container">
+        <div *ngIf="utilsService.getCurrentMenu() && utilsService.getCurrentMenu().alta" class="btn-container">
             <button routerLink="/pages/tablas/tipos-comprobantes/nuevo" type="submit" class="btn btn-default btn-new-user" translate>
                 Nuevo tipo comprobante
             </button>

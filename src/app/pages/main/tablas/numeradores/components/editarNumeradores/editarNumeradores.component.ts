@@ -7,7 +7,7 @@ import { resourcesREST } from 'constantes/resoursesREST';
 import { Numerador } from '../../../../../../models/numerador';
 import { Observable } from '../../../../../../../../node_modules/rxjs';
 import { TipoComprobante } from 'app/models/tipoComprobante';
-import { Numero } from 'app/models/numero';
+import { PtoVenta } from 'app/models/ptoVenta';
 
 @Component({
     selector: 'editar-numeradores',
@@ -19,7 +19,7 @@ export class EditarNumeradores {
     recursoOriginal: Numerador = new Numerador();
 
     cteTipos: Observable<TipoComprobante[]>;
-    numeros: Observable<Numero[]>;
+    numeros: Observable<PtoVenta[]>;
 
     addNewNumero = false;
 
@@ -43,7 +43,7 @@ export class EditarNumeradores {
         this.cteTipos = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
             'condicion': 'propio'
         });
-        this.numeros = this.recursoService.getRecursoList(resourcesREST.cteNumero)();
+        this.numeros = this.recursoService.getRecursoList(resourcesREST.ptoVenta)();
     }
 
     
@@ -84,7 +84,7 @@ export class EditarNumeradores {
     onClickAddNumero = () => {
         this.addNewNumero = !this.addNewNumero;
 
-        this.recurso.numero = new Numero();
+        this.recurso.ptoVenta = new PtoVenta();
     }
 
     compareWithCteTipo = (a, b) => a && b && a.idCteTipo && b.idCteTipo ?

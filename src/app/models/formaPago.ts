@@ -10,7 +10,7 @@ export class FormaPago {
     // listaPrecio: ListaPrecio;
     detalles: DetalleFormaPago[];
 
-    listasPrecios: ListaPrecio[];
+    listaPrecios: ListaPrecio[];
 
     constructor (formaPago?: {
         idFormaPago: number;
@@ -20,7 +20,7 @@ export class FormaPago {
         // listaPrecio: any;
         formaPagoDet: any[]
 
-        listasPrecios: any[]
+        listaPrecios: any[]
     }) {
         if (formaPago) {
             this.idFormaPago = formaPago.idFormaPago;
@@ -29,7 +29,7 @@ export class FormaPago {
             this.tipo = new TipoFormaPago(formaPago.tipo);
             // this.listaPrecio = new ListaPrecio(formaPago.listaPrecio);
             this.detalles = formaPago.formaPagoDet.map(det => new DetalleFormaPago(det))
-            this.listasPrecios = formaPago.listasPrecios ? formaPago.listasPrecios.map(lp => new ListaPrecio(lp)) : []
+            this.listaPrecios = formaPago.listaPrecios ? formaPago.listaPrecios.map(lp => new ListaPrecio(lp)) : []
         } else {
             this.idFormaPago = null;
             this.descripcion = null;
@@ -37,16 +37,18 @@ export class FormaPago {
             this.tipo = new TipoFormaPago();
             // this.listaPrecio = new ListaPrecio();
             this.detalles = [];
-            this.listasPrecios = [];
+            this.listaPrecios = [];
         }
     }
 
-    addOrRemoveLista = (lp: ListaPrecio) => this.listasPrecios &&
-        this.listasPrecios.some(cteLet => cteLet.idListaPrecio === lp.idListaPrecio) ?
-            this.listasPrecios = this.listasPrecios.filter(cteLet => cteLet.idListaPrecio !== lp.idListaPrecio) :
-            this.listasPrecios = this.listasPrecios.concat(lp)
+    addOrRemoveLista = (lp: ListaPrecio) => this.listaPrecios &&
+        this.listaPrecios.some(cteLet => cteLet.idListaPrecio === lp.idListaPrecio) ?
+            this.listaPrecios = this.listaPrecios.filter(cteLet => cteLet.idListaPrecio !== lp.idListaPrecio) :
+            this.listaPrecios = this.listaPrecios.concat(lp)
 
-    existLista = (letra: ListaPrecio) => this.listasPrecios &&
-        this.listasPrecios.some(cteLet => cteLet.idListaPrecio === letra.idListaPrecio)
+    existLista = (lp: ListaPrecio) => 
+        this.listaPrecios &&
+            this.listaPrecios.some(cteLet => cteLet.idListaPrecio === lp.idListaPrecio)
+    
 
 }

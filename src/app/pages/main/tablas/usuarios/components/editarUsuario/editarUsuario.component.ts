@@ -12,6 +12,7 @@ import { RecursoService } from '../../../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
 
 import * as crypto from 'crypto-js';
+import { ListaPrecio } from 'app/models/listaPrecio';
 
 @Component({
     selector: 'editar-usuario',
@@ -29,6 +30,8 @@ export class EditarUsuario {
     // Perfiles disponible para tal sucursal
     perfiles: Observable<Perfil[]>;
 
+    listasPrecios: Observable<ListaPrecio[]>;
+
     constructor(
         public utilsService: UtilsService,
         private router: Router,
@@ -38,6 +41,8 @@ export class EditarUsuario {
     ) {
         // Obtengo las sucursales disponibles de la empresa
         this.sucursales = recursoService.getRecursoList(resourcesREST.sucursales)();
+
+        this.listasPrecios = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
         
         // Busco el id del usuario a editar en la ruta
         this.route.params.subscribe(params => {

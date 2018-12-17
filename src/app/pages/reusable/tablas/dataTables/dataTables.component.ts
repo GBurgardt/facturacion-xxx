@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DataTablesService } from './dataTables.service';
 import { UtilsService } from 'app/services/utilsService';
+import { LocalStorageService } from 'app/services/localStorageService';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'data-tables',
@@ -35,7 +37,6 @@ export class DataTables {
 
     // Sistema de filtros
     @Input() filtrosActivos = false;
-    
 
     constructor(
         public utilsService: UtilsService

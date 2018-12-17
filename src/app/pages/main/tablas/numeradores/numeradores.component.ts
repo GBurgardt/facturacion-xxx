@@ -28,8 +28,7 @@ export class Numeradores {
             },
             {
                 nombre: 'numero',
-                key: 'numero',
-                subkey: 'auxNumero',
+                key: 'auxNumero',
                 ancho: '22%'
             },
             {

@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
 
 import { BaMenuService } from '../theme';
-import { PAGES_MENU } from './pages.menu';
 import { AppState } from 'app/app.service';
 import { LocalStorageService } from '../services/localStorageService';
 import { environment } from 'environments/environment';

@@ -104,10 +104,12 @@
 
                     <div class="col-sm-1" style="padding: 0;">
                         <div class="form-group inline-group">
-                            <select *ngIf="comprobante && comprobante.tipo && comprobante.tipo.letras" required name="letraSelct" [(ngModel)]="comprobante.letra" class="form-control without-padding" 
+                            <select *ngIf="comprobante && comprobante.tipo && comprobante.tipo.letrasCodigos" required 
+                                name="letraSelct" 
+                                [(ngModel)]="comprobante.letraCodigo" class="form-control without-padding" 
                                     id="cteTipo">
-                                <option *ngFor="let letra of comprobante.tipo.letras" [ngValue]="letra">
-                                    {{ letra.letra }}
+                                <option *ngFor="let lc of comprobante.tipo.letrasCodigos" [ngValue]="lc">
+                                    {{ lc.letra.letra }}
                                 </option>
                             </select>
                         </div>
@@ -129,9 +131,9 @@
                                 name="clCompNro" [(ngModel)]="comprobante.numerador" (ngModelChange)="onChangePtoVentaNro($event)">
                                 <option *ngFor="let upNum of comprobante.tipo.numerador" [ngValue]="upNum">
                                     {{
-                                    upNum.numero.ptoVenta.toString().padStart(4, '0')
+                                    upNum.ptoVenta.ptoVenta.toString().padStart(4, '0')
                                     }} - {{
-                                    upNum.numero.numero.toString().padStart(8, '0')
+                                    upNum.ptoVenta.ptoVenta.toString().padStart(8, '0')
                                     }}
                                 </option>
                             </select>
@@ -158,7 +160,7 @@
                             <div class="input-group">
                                 <!-- Deshabilito la fecha si NÓ está seleccionado el cliente, el tipo comprobante y seteado el ptoventa -->
                                 <input required 
-                                    [disabled]="!(cliente && cliente.padronCodigo && comprobante && comprobante.tipo && comprobante.numerador.numero.ptoVenta)"
+                                    [disabled]="!(cliente && cliente.padronCodigo && comprobante && comprobante.tipo && comprobante.numerador.ptoVenta.ptoVenta)"
                                     (blur)="onBlurFechaComprobante($event)" 
                                     (keyup.enter)="onBlurFechaComprobante($event)"
                                     class="form-control" 
@@ -181,14 +183,40 @@
                 <ngb-tab title="Forma de Pago">
                     <ng-template ngbTabContent>
                         <div class="fpago-content">
-                            <tabla-forma-pago class="fpago-tabla" [dataTable]="dataTablaFormasPago"
-                                (onAddSelecFormaPago)="handleFormaPagoSelec($event)('add')" (onRemoveSelecFormaPago)="handleFormaPagoSelec($event)('remove')">
-                            </tabla-forma-pago>
+                            
+                            <!-- (blur)="onBlurCheckbox(isLast)" 
+                            [attr.id]="'fp-check-' + indFp" 
+                            (change)="onChangeCheckbox($event)(fp)" 
+                            [disabled]="checkIfSeleccionable(fp)" 
+                            class="checkbox-td"  -->
+                            <table class="fpago-lista-precio-tab">
+                                <tr class="table-header">
+                                    <th></th>
+                                    <th>Lista Precio</th>
+                                    <th>Condiciones</th>
+                                </tr>
 
-                            <div class="txt-area-container">
-                                <label for="cteNro">Detalles:</label>
-                                <textarea disabled class="form-control text-area-forma-pago" id="txAreaFPago">{{ detalleListaFpsSeleccionadas }}</textarea>
-                            </div>
+                                <tr *ngFor="let lp of listasPreciosUsuario | async; index as indFp; last as isLast">
+                                    <td>
+                                        <input 
+                                            type="radio"
+                                            name="lista-radio"
+                                            [value]="lp"
+                                            (change)="
+                                                onChangeListaPrecio(lp)
+                                            "/>
+                                    </td>
+                                    <td>{{ lp.codigoLista }}</td>
+                                    <td>{{ lp.condiciones }}</td>
+                                </tr>
+                            </table>
+
+                            <tabla-forma-pago 
+                                class="fpago-tabla" 
+                                [dataTable]="dataTablaFormasPago"
+                                (onAddSelecFormaPago)="handleFormaPagoSelec($event)('add')" 
+                                (onRemoveSelecFormaPago)="handleFormaPagoSelec($event)('remove')">
+                            </tabla-forma-pago>
                         </div>
 
                     </ng-template>
@@ -373,11 +401,11 @@
                                 </div>
                             </div>
 
-                            <div *ngIf="factura && factura.tipo && factura.tipo.letras" class="col-sm-1">
+                            <div *ngIf="factura && factura.tipo && factura.tipo.letrasCodigos" class="col-sm-1">
                                 <div class="form-group inline-group">
-                                    <select required name="clFactLetra" [(ngModel)]="factura.letra" class="form-control" id="cteTipoFactura">
-                                        <option *ngFor="let letra of factura.tipo.letras" [ngValue]="letra">
-                                            {{ letra.letra }}
+                                    <select required name="clFactLetra" [(ngModel)]="factura.letraCodigo" class="form-control" id="cteTipoFactura">
+                                        <option *ngFor="let lcf of factura.tipo.letrasCodigos" [ngValue]="lcf">
+                                            {{ lcf.letra.letra }}
                                         </option>
                                     </select>
                                 </div>
@@ -400,9 +428,9 @@
                                         name="factNro" [(ngModel)]="factura.numerador">
                                         <option *ngFor="let upNum of factura.tipo.numerador" [ngValue]="upNum">
                                             {{
-                                            upNum.numero.ptoVenta.toString().padStart(4, '0')
+                                            upNum.ptoVenta.ptoVenta.toString().padStart(4, '0')
                                             }} - {{
-                                            upNum.numero.numero.toString().padStart(8, '0')
+                                            upNum.ptoVenta.ptoVenta.toString().padStart(8, '0')
                                             }}
                                         </option>
                                     </select>

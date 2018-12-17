@@ -49,12 +49,6 @@ export class TipoComprobantes {
                 ancho: '10%'
             },
             {
-                nombre: 'codigo afip',
-                key: 'codigoAfip',
-                subkey: 'descripcion',
-                ancho: '10%'
-            },
-            {
                 nombre: 'D/H',
                 key: 'surenu',
                 ancho: '10%'

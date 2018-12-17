@@ -63,17 +63,6 @@ export class TablaIngreso {
         private recursoService: RecursoService,
         private popupListaService: PopupListaService
     ) {
-        // Cargo todos los productos pendientes posibles
-        // recursoService.getRecursoList(resourcesREST.buscaPendientes)({
-        //     'idSisTipoModelo': sisTipoModelos.neto,
-        //     'modulo': sisModulos.compra,
-        //     'tipo': 'reducida'
-        // }).subscribe(prodsPendPosibles => {
-        //     debugger;
-        //     this.productosBusqueda.todos = prodsPendPosibles;
-        //     this.productosBusqueda.filtrados.next(prodsPendPosibles);
-        // });
-
         recursoService.getRecursoList(resourcesREST.productosReducidos)({
             'tipo': 'reducida'
         }).subscribe(prods => {

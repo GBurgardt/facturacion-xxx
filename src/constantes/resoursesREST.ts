@@ -34,7 +34,7 @@ import { CodigoAfip } from "app/models/codigoAfip";
 import { Marca } from "app/models/marca";
 import { ProductoReducido } from "app/models/productoReducido";
 import { Numerador } from "app/models/numerador";
-import { Numero } from "app/models/numero";
+
 import { Categoria } from "app/models/categoria";
 import { SisCategoria } from "app/models/sisCategoria";
 import { Cliente } from "app/models/cliente";
@@ -43,6 +43,7 @@ import { ClienteModPost } from "app/models/clienteModPost";
 import { Cultivo } from "app/models/cultivo";
 import { SisLetra } from "app/models/sisLetra";
 import { Vendedor } from "app/models/vendedor";
+import { PtoVenta } from "app/models/ptoVenta";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -224,9 +225,9 @@ export const resourcesREST = {
         nombre: 'cteNumerador',
         Clase: Numerador
     },
-    cteNumero: {
-        nombre: 'cteNumero',
-        Clase: Numero
+    ptoVenta: {
+        nombre: 'ptoVenta',
+        Clase: PtoVenta
     },
     categorias: {
         nombre: 'categorias',

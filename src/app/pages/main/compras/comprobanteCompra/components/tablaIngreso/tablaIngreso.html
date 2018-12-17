@@ -130,7 +130,7 @@
 
             </tr>
 
-            <div class="tooltip-add-prod" *ngIf="showTooltip && (!comprobante || !comprobante.numerador || !comprobante.numerador.numero || !comprobante.numerador.numero.ptoVenta || !comprobante.numerador.numero.ptoVenta)" [ngStyle]="getPositionTooltip()">
+            <div class="tooltip-add-prod" *ngIf="showTooltip && (!comprobante || !comprobante.numerador || !comprobante.numerador.ptoVenta || !comprobante.numerador.ptoVenta.ptoVenta || !comprobante.numerador.ptoVenta.ptoVenta)" [ngStyle]="getPositionTooltip()">
                 <span>
                     Debe completar el nro de comprobante antes de agregar productos
                 </span>
@@ -147,7 +147,7 @@
                             (keydown.arrowdown)="keyPressInputTexto($event)('down')"
                             (keydown.arrowup)="keyPressInputTexto($event)('up')"
                             (keydown.enter)="onEnterInputBuscProd($event)"
-                            [disabled]="!comprobante || !comprobante.numerador || !comprobante.numerador.numero || !comprobante.numerador.numero.ptoVenta || !comprobante.numerador.numero.numero"
+                            [disabled]="!comprobante || !comprobante.numerador || !comprobante.numerador.ptoVenta || !comprobante.numerador.ptoVenta.ptoVenta || !comprobante.numerador.ptoVenta.ptoVenta"
                             >
 
                     <!-- *ngIf="textoBusqueda && textoBusqueda.length > 0" -->

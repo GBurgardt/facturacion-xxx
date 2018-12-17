@@ -32,7 +32,8 @@ export class LoginService {
         this.localStorageService.setObject(environment.localStorage.acceso)(respLogin.datos.acceso);
         this.localStorageService.setObject(environment.localStorage.perfil)(respLogin.datos.perfil);
         // Guardo los menus PARSEADOS en el localStorage
-        this.localStorageService.setObject(environment.localStorage.menu)(<Routes>this.baMenuService.generatePagesMenu(respLogin.datos.perfil.sucursal.menuSucursal));
+        // this.localStorageService.setObject(environment.localStorage.menu)(<Routes>this.baMenuService.generatePagesMenu(respLogin.datos.perfil.sucursal.menuSucursal));
+        this.localStorageService.setObject(environment.localStorage.menu)(<Routes>this.baMenuService.generatePagesMenu(respLogin.datos.perfil.sucursal.permisos));
     }
 
 

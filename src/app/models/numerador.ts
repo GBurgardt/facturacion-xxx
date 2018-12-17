@@ -1,46 +1,42 @@
-import { Numero } from "app/models/numero";
+
 import { DateLikePicker } from "./dateLikePicker";
 import { TipoComprobante } from "./tipoComprobante";
+import { PtoVenta } from "./ptoVenta";
 
 export class Numerador {
     idCteNumerador: number;
     descripcion: string;
     fechaApertura: any;
     fechaCierre: any;
-    cteTipo: TipoComprobante;
-    numero: Numero;
+    ptoVenta: PtoVenta;
+    numerador: number;
+
+    auxNumero: string;
 
     constructor(numerador?: {
         idCteNumerador: number;
         descripcion: string;
-        numero: any;
+        ptoVenta: any;
         fechaApertura: any;
         fechaCierre: any;
-        cteTipo: any;
+        numerador: number;
     }) {
         if (numerador) {
             this.idCteNumerador = numerador.idCteNumerador;
             this.descripcion = numerador.descripcion;
-            this.numero = new Numero(numerador.numero);
-            // this.fechaApertura = numerador.fechaApertura;
-            // this.fechaCierre = numerador.fechaCierre;
+            this.ptoVenta = new PtoVenta(numerador.ptoVenta);
             this.fechaApertura = new Date(numerador.fechaApertura);
             this.fechaCierre = new Date(numerador.fechaCierre);
-            // this.fechaApertura = new DateLikePicker(
-            //     new Date(numerador.fechaApertura)
-            // );
-            // this.fechaCierre = new DateLikePicker(
-            //     new Date(numerador.fechaCierre)
-            // );
-            this.cteTipo = new TipoComprobante(numerador.cteTipo);
+            this.numerador = numerador.numerador;
+            this.auxNumero = `${this.ptoVenta.ptoVenta.toString().padStart(4, '0')}-${this.numerador.toString().padStart(8, '0')}`
         } else {
             this.idCteNumerador = null;
             this.descripcion = null;
-            this.numero = new Numero();
-            // this.numero = null;
+            this.ptoVenta = new PtoVenta();
             this.fechaApertura = null;
             this.fechaCierre = null;
-            this.cteTipo = new TipoComprobante();
+            this.numerador = null;
+            this.auxNumero = null;
         }
     }
 }

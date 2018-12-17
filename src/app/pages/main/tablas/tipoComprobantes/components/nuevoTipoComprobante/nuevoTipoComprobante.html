@@ -2,75 +2,76 @@
     <ba-card cardTitle="Nuevo tipo comprobante" baCardClass="with-scroll">
         <form #subrubroForm="ngForm">
             <div class="row">
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="inputFirstName">Codigo</label>
-                        <input name="codigo-cte" required   name="codigo-cte" required [(ngModel)]="recurso.codigoComp" type="text" class="form-control" id="codigoComp" placeholder="Codigo">
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="inputEmail">Descripcion Corta</label>
-                        <input name="desccort-cte" required   [(ngModel)]="recurso.descCorta" type="email" class="form-control" id="descCorta" placeholder="Desc Corta">
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="Clave">Descripcion</label>
-                        <input name="desc-cte" required   [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion" placeholder="Descripcion">
-                    </div>
-                </div>
-            </div>
-            
-            <div class="row">
+
+                <div class="col-sm-8">
     
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="codAfip">Codigo Afip</label>
-                        <select name="afip-cte" required  [(ngModel)]="recurso.codigoAfip" class="form-control" id="codAfip">
-                            <option *ngFor="let codAf of codigosAfip | async" [ngValue]="codAf">
-                                {{ codAf.descripcion }}
-                            </option>
-                        </select>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="inputFirstName">Codigo</label>
+                                <input name="codigo-cte" required   name="codigo-cte" required [(ngModel)]="recurso.codigoComp" type="text" class="form-control" id="codigoComp" placeholder="Codigo">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="inputEmail">Descripcion Corta</label>
+                                <input maxlength="10" name="desccort-cte" required   [(ngModel)]="recurso.descCorta" type="email" class="form-control" id="descCorta" placeholder="Desc Corta">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="Clave">Descripcion</label>
+                                <input name="desc-cte" required   [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion" placeholder="Descripcion">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="Clave">D/H</label>
+                                <select required name="dh-select" class="form-control" [(ngModel)]="recurso.surenu">
+                                    <option value='D'>D</option>
+                                    <option value='H'>H</option>
+                                </select>
+                            </div>
+                        </div>
+        
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="comprobante">Tipo</label>
+                                <select name="tipo-cte" required  [(ngModel)]="recurso.comprobante" class="form-control" id="comprobante">
+                                    <option *ngFor="let comp of sisComprobantes | async" [ngValue]="comp">
+                                        {{comp.descripcion}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+        
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="inputFirstName">Observaciones</label>
+                                <input name="obser-cte" [(ngModel)]="recurso.observaciones" type="text" class="form-control" id="observaciones" placeholder="Observaciones">
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="checkbox-custom">
+                                <ba-checkbox [(ngModel)]="recurso.cursoLegal" [label]="'Curso Legal'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="checkbox-custom">
+                                <ba-checkbox [(ngModel)]="recurso.requiereFormaPago" [label]="'Requiere Forma Pago'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="Clave">D/H</label>
-                        <input name="dh-cte" required   [(ngModel)]="recurso.surenu" type="text" class="form-control" id="surenu" placeholder="D/H">
-                    </div>
-                </div>
-    
-                <div class="col-sm-2">
-                    <div class="checkbox-custom">
-                        <ba-checkbox [(ngModel)]="recurso.cursoLegal" [label]="'Curso Legal'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="checkbox-custom">
-                        <ba-checkbox [(ngModel)]="recurso.requiereFormaPago" [label]="'Requiere Forma Pago'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="comprobante">Tipo</label>
-                        <select name="tipo-cte" required  [(ngModel)]="recurso.comprobante" class="form-control" id="comprobante">
-                            <option *ngFor="let comp of sisComprobantes | async" [ngValue]="comp">
-                                {{comp.descripcion}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="inputFirstName">Observaciones</label>
-                        <input name="obser-cte" [(ngModel)]="recurso.observaciones" type="text" class="form-control" id="observaciones" placeholder="Observaciones">
-                    </div>
-                </div>
                 <div class="col-sm-4">
                     <div class="form-group">
                         <label for="letras">Seleccione Letras</label>
@@ -85,22 +86,79 @@
                             </div>
                         </div>
                     </div>
+
+                    <table class="letras-table" style="width: 100%">
+                        <tr class="table-header">
+                            <th style="width: 20%">Letra</th>
+                            <th>Codigo Afip</th>
+                        </tr>
+                        <tr *ngFor="let lc of recurso.letrasCodigos">
+                            <td style="width: 20%">
+                                {{ lc.letra.letra }}
+                            </td>
+                            <td>
+                                <div class="select-cod-afip-container">
+                                    <div *ngIf="!lc.isEditing" >
+                                        {{ lc.codigoAfip.descripcion }}
+                                    </div>
+                                    <select 
+                                        *ngIf="lc.isEditing" 
+                                        id="codAfip" name="afip-cte" class="form-control" 
+                                        required 
+                                        [(ngModel)]="lc.codigoAfip"
+                                        >
+                                        <option *ngFor="let codAf of codigosAfip | async" [ngValue]="codAf">
+                                            {{ codAf.descripcion }}
+                                        </option>
+                                    </select>
+    
+                                    <div class="edit-option">
+                                        <i 
+                                            *ngIf="!lc.isEditing" 
+                                            (click)="lc.isEditing = true"
+                                            class="fa fa-pencil-square-o" 
+                                            aria-hidden="true"></i>
+                                        <i 
+                                            *ngIf="lc.isEditing" 
+                                            (click)="lc.isEditing = false"
+                                            class="fa fa-check" 
+                                            style="padding-top: 6px;"
+                                            aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
-            
-            <button [disabled]="
-                utilsService.checkIfIncomplete(recurso)([
-                    'idCteTipo', 'cursoLegal', 'numerador', 'observaciones', 'requiereFormaPago'
-                ])(checkSurEnu)
-                || 
-                this.recurso && this.recurso.letras && this.recurso.letras.length <= 0
-            "
-                    (click)="onClickCrearTipoComprobante()" 
-                    type="submit" 
-                    class="btn btn-primary">
-                Confirmar
-            </button>
+
+            <div class="row" style="display: flex; justify-content: flex-end;">
+                <button [disabled]="
+                    utilsService.checkIfIncomplete(recurso)([
+                        'idCteTipo', 'cursoLegal', 'numerador', 'observaciones', 'requiereFormaPago'
+                    ])(checkSurEnu)
+                    || 
+                    this.recurso && this.recurso.letras && this.recurso.letras.length <= 0
+                "
+                        (click)="onClickCrearTipoComprobante()" 
+                        type="submit" 
+                        class="btn btn-primary">
+                    Confirmar
+                </button>
+            </div>
         </form>
     </ba-card>
 
 </div>
+
+
+                <!-- <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="codAfip">Codigo Afip</label>
+                        <select name="afip-cte" required  [(ngModel)]="recurso.codigoAfip" class="form-control" id="codAfip">
+                            <option *ngFor="let codAf of codigosAfip | async" [ngValue]="codAf">
+                                {{ codAf.descripcion }}
+                            </option>
+                        </select>
+                    </div>
+                </div> -->

@@ -40,7 +40,7 @@
             <div class="form-group item numero-item">
                 <div class="numero-item-content">
                     <label for="idNumero">Numero</label>
-                    <select [compareWith]="utilsService.dropdownCompareWith" (blur)="utilsService.focusElement('idBtnConfirmar')" [disabled]="addNewNumero" [(ngModel)]="recurso.numero" class="form-control"
+                    <select [compareWith]="utilsService.dropdownCompareWith" (blur)="utilsService.focusElement('idBtnConfirmar')" [disabled]="addNewNumero" [(ngModel)]="recurso.ptoVenta" class="form-control"
                         id="idNumero">
                         <option *ngFor="let num of numeros | async" [ngValue]="num">
                             {{ num.auxNumero }}
@@ -70,13 +70,13 @@
             <div class="line">
                 <div class="form-group item">
                     <label for="idPtoVentaNro">Punto Venta:</label>
-                    <input (blur)="recurso.numero.ptoVenta = utilsService.autocompNroComp('ptoVenta')(recurso.numero)" maxlength="4" class="form-control"
-                        [(ngModel)]="recurso.numero.ptoVenta" id="idPtoVentaNro">
+                    <input (blur)="recurso.ptoVenta.ptoVenta = utilsService.autocompNroComp('ptoVenta')(recurso.ptoVenta)" maxlength="4" class="form-control"
+                        [(ngModel)]="recurso.ptoVenta.ptoVenta" id="idPtoVentaNro">
                 </div>
                 <div class="form-group item">
                     <label for="idNroNro">Numero:</label>
-                    <input (blur)="recurso.numero.numero = utilsService.autocompNroComp('numero')(recurso.numero)" maxlength="8" class="form-control"
-                        [(ngModel)]="recurso.numero.numero" id="idNroNro">
+                    <input (blur)="recurso.ptoVenta.ptoVenta = utilsService.autocompNroComp('ptoVenta')(recurso.ptoVenta)" maxlength="8" class="form-control"
+                        [(ngModel)]="recurso.ptoVenta.ptoVenta" id="idNroNro">
                 </div>
             </div>
         </div>

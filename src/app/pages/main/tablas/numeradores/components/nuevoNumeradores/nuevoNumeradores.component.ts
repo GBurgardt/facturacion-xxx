@@ -7,8 +7,9 @@ import { Numerador } from '../../../../../../models/numerador';
 import { TipoComprobante } from '../../../../../../models/tipoComprobante';
 import { Observable } from '../../../../../../../../node_modules/rxjs';
 import { resourcesREST } from 'constantes/resoursesREST';
-import { Numero } from '../../../../../../models/numero';
+
 import { DateLikePicker } from 'app/models/dateLikePicker';
+import { PtoVenta } from 'app/models/ptoVenta';
 
 @Component({
     selector: 'nuevo-numeradores',
@@ -19,7 +20,7 @@ import { DateLikePicker } from 'app/models/dateLikePicker';
 export class NuevoNumeradores {
     recurso: Numerador = new Numerador();
     cteTipos: Observable<TipoComprobante[]>;
-    numeros: Observable<Numero[]>;
+    ptoVentas: Observable<PtoVenta[]>;
 
     addNewNumero = false;
 
@@ -31,7 +32,7 @@ export class NuevoNumeradores {
         this.cteTipos = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
             'condicion': 'propio'
         });
-        this.numeros = this.recursoService.getRecursoList(resourcesREST.cteNumero)();
+        this.ptoVentas = this.recursoService.getRecursoList(resourcesREST.ptoVenta)();
     }
 
     ngOnInit() {
@@ -69,7 +70,7 @@ export class NuevoNumeradores {
     onClickAddNumero = () => {
         this.addNewNumero = !this.addNewNumero;
 
-        this.recurso.numero = new Numero();
+        this.recurso.ptoVenta = new PtoVenta();
     }
 
     onItemChangedFecha(e, keyFecha) {

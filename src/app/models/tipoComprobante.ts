@@ -9,14 +9,13 @@ export class TipoComprobante {
     descCorta: string;
     descripcion: string;
     cursoLegal: boolean;
-    // codigoAfip: number;
-    codigoAfip: CodigoAfip;
     surenu: string;
     observaciones: string;
     comprobante: SisComprobante;
-    numerador: any[];
+    //numerador: any[];
     requiereFormaPago: boolean;
-    letras: SisLetra[] = [];
+
+    letrasCodigos: any[];
 
     constructor (tipoComprobante?: {
         idCteTipo: number;
@@ -24,14 +23,12 @@ export class TipoComprobante {
         descCorta: string;
         descripcion: string;
         cursoLegal: boolean;
-        // codigoAfip: number;
-        codigoAfip: any;
         surenu: string;
         observaciones: string;
         comprobante: any;
         numerador: Numerador[];
         requiereFormaPago: boolean;
-        letras: any[];
+        letrasCodigos: any[];
     }) {
         if (tipoComprobante) {
             this.idCteTipo = tipoComprobante.idCteTipo;
@@ -39,39 +36,44 @@ export class TipoComprobante {
             this.descCorta = tipoComprobante.descCorta;
             this.descripcion = tipoComprobante.descripcion;
             this.cursoLegal = tipoComprobante.cursoLegal;
-            // this.codigoAfip = tipoComprobante.codigoAfip;
-            this.codigoAfip = new CodigoAfip(tipoComprobante.codigoAfip)
             this.surenu = tipoComprobante.surenu;
             this.observaciones = tipoComprobante.observaciones;
             this.comprobante = new SisComprobante(tipoComprobante.comprobante);
-            this.numerador = tipoComprobante.numerador.map(n => new Numerador(n));
+            // this.numerador = tipoComprobante.numerador.map(n => new Numerador(n));
             this.requiereFormaPago = tipoComprobante.requiereFormaPago;
-            this.letras = tipoComprobante.letras.map(n => new SisLetra(n));
+
+            this.letrasCodigos = tipoComprobante.letrasCodigos.map(lc => ({
+                letra: new SisLetra(lc.letra),
+                codigoAfip: new CodigoAfip(lc.codigoAfip),
+                isEditing: false
+            }));
+            // debugger;
         } else {
             this.idCteTipo = null;
             this.codigoComp = null;
             this.descCorta = null;
             this.descripcion = null;
             this.cursoLegal = null;
-            // this.codigoAfip = new CodigoAfip();
-            this.codigoAfip = null;
             this.surenu = null;
             this.observaciones = null;
-            // this.comprobante = new SisComprobante();
             this.comprobante = null;
-            this.numerador = null;
+            // this.numerador = null;
             this.requiereFormaPago = null;
-            this.letras = [];
+
+            this.letrasCodigos = [];
         }
     }
 
-    addOrRemoveLetra = (letra: SisLetra) => this.letras &&
-        this.letras.some(cteLet => cteLet.idSisLetra === letra.idSisLetra) ?
-            this.letras = this.letras.filter(cteLet => cteLet.idSisLetra !== letra.idSisLetra) :
-            this.letras = this.letras.concat(letra)
+    addOrRemoveLetra = (letra: SisLetra) => this.letrasCodigos &&
+        this.letrasCodigos.some(lc => lc.letra.idSisLetra === letra.idSisLetra) ?
+            this.letrasCodigos = this.letrasCodigos.filter(lc => lc.letra.idSisLetra !== letra.idSisLetra) :
+            this.letrasCodigos = this.letrasCodigos.concat({
+                letra,
+                codigoAfip: null,
+                isEditing: true
+            })
 
-    existLetra = (letra: SisLetra) => this.letras &&
-        this.letras.some(cteLet => cteLet.idSisLetra === letra.idSisLetra)
-    
+    existLetra = (letra: SisLetra) => this.letrasCodigos &&
+        this.letrasCodigos.some(lc => lc.letra.idSisLetra === letra.idSisLetra)
 
 }

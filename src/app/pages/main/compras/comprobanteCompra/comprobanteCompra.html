@@ -72,8 +72,12 @@
                         <div class="col-sm-6 inline-flex">
                             <div class="form-group inline-group">
                                 <label for="cteTipo">Cte:</label>
-                                <select required name="compTipoSelect" [(ngModel)]="comprobante.tipo" (ngModelChange)="onChangeCteTipo($event)" class="form-control without-padding" 
-                                        [ngStyle]="{ padding: '1px 8px 0px 8px', 'min-width': '55px', 'margin-top': '1px' }" id="cteTipo">
+                                <select 
+                                    id="cteTipo" name="compTipoSelect" required 
+                                    class="form-control without-padding" [ngStyle]="{ padding: '1px 8px 0px 8px', 'min-width': '55px', 'margin-top': '1px' }" 
+                                    [(ngModel)]="comprobante.tipo" 
+                                    (ngModelChange)="onChangeCteTipo($event)" 
+                                    >
                                     <option *ngFor="let tipoComp of tiposComprobantes | async" [ngValue]="tipoComp">
                                         {{tipoComp.descCorta}}
                                     </option>
@@ -82,10 +86,14 @@
                         </div>
                         <div class="col-sm-5 inline-flex">
                             <div class="form-group inline-group">
-                                <select *ngIf="comprobante && comprobante.tipo && comprobante.tipo.letras" required name="letraSelct" [(ngModel)]="comprobante.letra" class="form-control without-padding" 
-                                        [ngStyle]="{padding: '1px 2px 0px 8px', 'min-width': '55px'}" id="cteTipo">
-                                    <option *ngFor="let letra of comprobante.tipo.letras" [ngValue]="letra">
-                                        {{ letra.letra }}
+                                <select 
+                                    *ngIf="comprobante && comprobante.tipo && comprobante.tipo.letrasCodigos" 
+                                    id="cteTipo" class="form-control without-padding" name="letraSelct" required 
+                                    [ngStyle]="{padding: '1px 2px 0px 8px', 'min-width': '55px'}" 
+                                    [(ngModel)]="comprobante.letraCodigo" 
+                                    >
+                                    <option *ngFor="let lc of comprobante.tipo.letrasCodigos" [ngValue]="lc">
+                                        {{ lc.letra.letra }}
                                     </option>
                                 </select>
                             </div>
@@ -96,9 +104,9 @@
                             <label for="cteNro">Nro:</label>
                             <div *ngIf="
                                 comprobante && 
-                                comprobante.tipo && 
-                                comprobante.tipo.numerador &&
-                                comprobante.tipo.numerador.length > 0
+                                comprobante.letraCodigo && 
+                                comprobante.letraCodigo.numeradores && 
+                                comprobante.letraCodigo.numeradores.length > 0
                                 ">
                                 <select     required
                                             id="selectPtoVentaNum" 
@@ -108,11 +116,11 @@
                                             [(ngModel)]="comprobante.numerador" 
                                             (ngModelChange)="onChangePtoVentaNro($event)"
                                             >
-                                    <option *ngFor="let upNum of comprobante.tipo.numerador" [ngValue]="upNum">
+                                    <option *ngFor="let upNum of comprobante.letraCodigo.numeradores" [ngValue]="upNum">
                                         {{ 
-                                            upNum.numero.ptoVenta.toString().padStart(4, '0')
+                                            upNum.ptoVenta.ptoVenta.toString().padStart(4, '0')
                                         }} - {{ 
-                                            upNum.numero.numero.toString().padStart(8, '0')
+                                            upNum.ptoVenta.ptoVenta.toString().padStart(8, '0')
                                         }}
                                     </option>
                                 </select>
@@ -120,27 +128,27 @@
                             <div [ngStyle]="{display: 'flex'}" *ngIf="
                                 !(
                                     comprobante && 
-                                    comprobante.tipo && 
-                                    comprobante.tipo.numerador &&
-                                    comprobante.tipo.numerador.length > 0
+                                    comprobante.letraCodigo && 
+                                    comprobante.letraCodigo.numeradores && 
+                                    comprobante.letraCodigo.numeradores.length > 0
                                 )
                                 ">
                                 <input  required
                                         maxlength="4" 
                                         (blur)="
-                                            comprobante.numerador && comprobante.numerador.numero ?
-                                                comprobante.numerador.numero.ptoVenta = comprobante.numerador.numero.ptoVenta.toString().padStart(4, '0') : null
+                                            comprobante.numerador && comprobante.numerador.ptoVenta && comprobante.numerador.ptoVenta.ptoVenta ?
+                                                comprobante.numerador.ptoVenta.ptoVenta = comprobante.numerador.ptoVenta.ptoVenta.toString().padStart(4, '0') : null
                                         " 
                                         name="compPtoVenta"
-                                        [(ngModel)]="comprobante.numerador.numero.ptoVenta" 
+                                        [(ngModel)]="comprobante.numerador.ptoVenta.ptoVenta" 
                                         type="text" class="form-control pre-numero-input text-right" id="puntoVenta" placeholder="">
                                 <input  required
                                         maxlength="8" 
                                         (blur)="
-                                            comprobante.numerador.numero.numero = comprobante.numerador.numero.numero.toString().padStart(8, '0')
+                                            comprobante.numerador.ptoVenta.ptoVenta = comprobante.numerador.ptoVenta.ptoVenta.toString().padStart(8, '0')
                                         " 
                                         name="compNumero"
-                                        [(ngModel)]="comprobante.numerador.numero.numero" 
+                                        [(ngModel)]="comprobante.numerador.ptoVenta.ptoVenta" 
                                         type="text" class="form-control text-right" id="numero" placeholder="">
                             </div>
                         </div>
@@ -164,13 +172,12 @@
                                 <input  required
                                         [disabled]="
                                     !comprobante || 
-                                    !comprobante.tipo ||
-                                    !comprobante.tipo.idCteTipo ||
+                                    !comprobante.letraCodigo ||
                                     (
                                         comprobante &&
-                                        comprobante.tipo && 
-                                        comprobante.tipo.numerador &&
-                                        comprobante.tipo.numerador.length > 0 &&
+                                        comprobante.letraCodigo && 
+                                        comprobante.letraCodigo.numeradores &&
+                                        comprobante.letraCodigo.numeradores.length > 0 &&
                                         (
                                             !comprobante.numerador || !comprobante.numerador.fechaApertura
                                         )
@@ -337,9 +344,10 @@
     
                             <div class="col-sm-1">
                                 <div class="form-group inline-group">
-                                    <select *ngIf="factura && factura.tipo && factura.tipo.letras" name="letraFactu" [(ngModel)]="factura.letra" class="form-control" id="cteTipoFactura">
-                                        <option *ngFor="let letra of factura.tipo.letras" [ngValue]="letra">
-                                            {{letra}}
+                                    <select *ngIf="factura && factura.tipo && factura.tipo.letrasCodigos" name="letraFactu" 
+                                        [(ngModel)]="factura.letraCodigo" class="form-control" id="cteTipoFactura">
+                                        <option *ngFor="let lc of factura.tipo.letrasCodigos" [ngValue]="lc">
+                                            {{ lc.letra.letra }}
                                         </option>
                                     </select>
                                 </div>
@@ -349,9 +357,9 @@
     
                                 <div *ngIf="
                                     factura && 
-                                    factura.tipo && 
-                                    factura.tipo.numerador &&
-                                    factura.tipo.numerador.length > 0
+                                    factura.letraCodigo && 
+                                    factura.letraCodigo.numeradores &&
+                                    factura.letraCodigo.numeradores.length > 0
                                     ">
                                     <select     id="selectPtoVentaNum" 
                                                 class="form-control" 
@@ -359,11 +367,11 @@
                                                 [(ngModel)]="factura.numerador"
                                                 name="nroFactu"
                                                 >
-                                        <option *ngFor="let upNum of factura.tipo.numerador" [ngValue]="upNum">
+                                        <option *ngFor="let upNum of factura.letraCodigo.numeradores" [ngValue]="upNum">
                                             {{ 
-                                                upNum.numero.ptoVenta.toString().padStart(4, '0')
+                                                upNum.ptoVenta.ptoVenta.toString().padStart(4, '0')
                                             }} - {{ 
-                                                upNum.numero.numero.toString().padStart(8, '0')
+                                                upNum.ptoVenta.ptoVenta.toString().padStart(8, '0')
                                             }}
                                         </option>
                                     </select>
@@ -383,19 +391,19 @@
                                     <input  required
                                         maxlength="4" 
                                         (blur)="
-                                            factura.numerador && factura.numerador.numero ?
-                                                factura.numerador.numero.ptoVenta = factura.numerador.numero.ptoVenta.toString().padStart(4, '0') : null
+                                            factura.numerador && factura.numerador.ptoVenta ?
+                                                factura.numerador.ptoVenta.ptoVenta = factura.numerador.ptoVenta.ptoVenta.toString().padStart(4, '0') : null
                                         " 
                                         name="ptoVentaFact"
-                                        [(ngModel)]="factura.numerador.numero.ptoVenta" 
+                                        [(ngModel)]="factura.numerador.ptoVenta.ptoVenta" 
                                         type="text" class="form-control pre-numero-input text-right" id="puntoVentaFact" placeholder="">
                                     <input  required
                                         maxlength="8" 
                                         (blur)="
-                                            factura.numerador.numero.numero = factura.numerador.numero.numero.toString().padStart(8, '0')
+                                            factura.numerador.ptoVenta.ptoVenta = factura.numerador.ptoVenta.ptoVenta.toString().padStart(8, '0')
                                         " 
                                         name="numeroFact"
-                                        [(ngModel)]="factura.numerador.numero.numero" 
+                                        [(ngModel)]="factura.numerador.ptoVenta.ptoVenta" 
                                         type="text" class="form-control text-right" id="numeroFact" placeholder="">
 
                                     <!-- <input name="ptoVentaFact" maxlength="4" (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('factura')" [(ngModel)]="factura.numerador.numero.ptoVenta" type="text" class="form-control pre-numero-input text-right" id="puntoVenta" placeholder="">

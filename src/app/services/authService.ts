@@ -42,6 +42,7 @@ import sisTipoModelos from '../../constantes/sisTipoModelos';
 import { SisTipoOperacion } from '../models/sisTipoOperacion';
 import { Cliente } from '../models/cliente';
 import { Vendedor } from 'app/models/vendedor';
+import { ListaPrecio } from 'app/models/listaPrecio';
 
 @Injectable()
 export class AuthService {
@@ -330,21 +331,23 @@ export class AuthService {
 
                 idSisTipoOperacion: tipoOpSelect.idSisTipoOperacion,
 
-                idNumero: comprobante.numerador && comprobante.numerador.numero ? 
-                    comprobante.numerador.numero.idCteNumero : null,
+                idNumero: comprobante.numerador && comprobante.numerador.ptoVenta ? 
+                    comprobante.numerador.ptoVenta.idCtePtoVenta : null,
 
                 idFactCab: null,
                 idModulo: sisModulos.compra,
                 listaPrecio: ' ',
                 letraFact: factura ? 'A' : null,
-                letra: comprobante.letra ? comprobante.letra.letra : null,
+                letra: comprobante.letraCodigo ? comprobante.letraCodigo.letra.letra : null,
+                codigoAfip: comprobante.letraCodigo ? comprobante.letraCodigo.codigoAfip.codigoAfip : null,
                 lote:   productosPend.some(prodPend => prodPend.producto.trazable) &&
                         comprobante.tipo.comprobante.idSisComprobantes !== 4,
                 nombre: provSelec.padronApelli,
-                numero: Number(comprobante.numerador.numero.ptoVenta + comprobante.numerador.numero.numero),
-                // numeroFact: factura ? Number(factura.puntoVenta + factura.numero) : null,
+                // numero: Number(comprobante.numerador.numero.ptoVenta + comprobante.numerador.numero.numero),
+                numero: Number(comprobante.numerador.ptoVenta.ptoVenta + comprobante.numerador.numerador),
                 numeroFact: factura ?
-                    Number(factura.numerador.numero.ptoVenta + factura.numerador.numero.numero) : null,
+                    // Number(factura.numerador.numero.ptoVenta + factura.numerador.numero.numero) : null,
+                    Number(factura.numerador.ptoVenta.ptoVenta + factura.numerador.numerador) : null,
                 observaciones: comprobante.observaciones,
                 precioReferenciaCanje: 0,
                 productoCanje: ' ',
@@ -382,8 +385,8 @@ export class AuthService {
                         (tipoOpSelect: SisTipoOperacion) => 
                         (dataVendedor: any) => 
                         (subtotalesProductos: any) => 
+                        (listaPrecioSelec: ListaPrecio) => 
     {
-        debugger;
         return this.request(
             [],
             RequestMethod.Post,
@@ -475,8 +478,8 @@ export class AuthService {
 
                 idSisTipoOperacion: tipoOpSelect.idSisTipoOperacion,
 
-                idNumero: comprobante.numerador && comprobante.numerador.numero ? 
-                    comprobante.numerador.numero.idCteNumero : null,
+                idNumero: comprobante.numerador && comprobante.numerador.ptoVenta ? 
+                    comprobante.numerador.ptoVenta.idCtePtoVenta : null,
 
                 idCteTipo: comprobante.tipo.idCteTipo,
                 idPadron: clienteSelect.padronCodigo,
@@ -485,14 +488,16 @@ export class AuthService {
                 idModeloCab: null,
                 
                 idModulo: sisModulos.venta,
-                // listaPrecio: formasPagoSeleccionadas && formasPagoSeleccionadas.length > 0 ? 
+                listaPrecio: listaPrecioSelec ? listaPrecioSelec.idListaPrecio : null,
                 // formasPagoSeleccionadas[0].listaPrecio.idListaPrecio : null,
                 // letra: 'X',
-                letra: comprobante.letra ? comprobante.letra.letra : null,
+                // letra: comprobante.letraCodigo ? comprobante.letraCodigo.letra : null,
+                letra: comprobante.letraCodigo ? comprobante.letraCodigo.letra.letra : null,
+                codigoAfip: comprobante.letraCodigo ? comprobante.letraCodigo.codigoAfip.codigoAfip : null,
                 lote:   productosPend.some(prodPend => prodPend.producto.trazable) &&
                 comprobante.tipo.comprobante.idSisComprobantes !== 4,
                 nombre: clienteSelect.padronApelli,
-                numero: Number(`${comprobante.numerador.numero.ptoVenta}${comprobante.numerador.numero.numero}`),
+                numero: Number(`${comprobante.numerador.ptoVenta.ptoVenta}${comprobante.numerador.numerador}`),
                 // numeroFact: factura ? Number(factura.puntoVenta + factura.numero) : null,
                 observaciones: comprobante.observaciones,
                 precioReferenciaCanje: sisCanje && sisCanje.precio ? sisCanje.precio : 0,
@@ -509,9 +514,9 @@ export class AuthService {
                 fechaVencimientoFact: factura ? this.utilsService.formatearFecha('yyyy-mm-dd')(factura.fechaVto) : null,
                 fechaContaFact: factura ? this.utilsService.formatearFecha('yyyy-mm-dd')(factura.fechaComprobante) : null,
                 letraFact: factura ? 'A' : null,
-                numeroFact: factura ? Number(`${factura.numerador.numero.ptoVenta}${factura.numerador.numero.numero}`) : null,
+                numeroFact: factura ? Number(`${factura.numerador.ptoVenta.ptoVenta}${factura.numerador.numerador}`) : null,
                 tipoFact: factura && factura.tipo ? factura.tipo.idCteTipo : null,
-                idNumeroFact: factura && factura.numerador ? factura.numerador.numero.idCteNumero : null
+                idNumeroFact: factura && factura.numerador ? factura.numerador.ptoVenta.idCtePtoVenta : null
             },
             {}
         );
@@ -573,7 +578,7 @@ export class AuthService {
             {
                 comprobanteModulo : sisModuloSelec && sisModuloSelec.idSisModulos ? sisModuloSelec.idSisModulos : 0,
                 comprobanteTipo : tipoComprobanteSelec && tipoComprobanteSelec.idCteTipo ? tipoComprobanteSelec.idCteTipo : 0,
-                comprobanteNumero : comprobante && comprobante.numerador.numero.ptoVenta && comprobante.numerador.numero.numero ? `${comprobante.numerador.numero.ptoVenta}${comprobante.numerador.numero.numero}` : 0,
+                comprobanteNumero : comprobante && comprobante.numerador.ptoVenta.ptoVenta && comprobante.numerador.numerador ? `${comprobante.numerador.ptoVenta.ptoVenta}${comprobante.numerador.numerador}` : 0,
                 fechaDesde : this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.desde),
                 fechaHasta : this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.hasta),
                 idProducto : productoSelec && productoSelec.idProductos ? productoSelec.idProductos : 0,
@@ -612,7 +617,7 @@ export class AuthService {
             {
                 comprobanteModulo : sisModuloSelec && sisModuloSelec.idSisModulos ? sisModuloSelec.idSisModulos : 0,
                 comprobanteTipo : tipoComprobanteSelec && tipoComprobanteSelec.idCteTipo ? tipoComprobanteSelec.idCteTipo : 0,
-                comprobanteNumero : comprobante && comprobante.numerador.numero.ptoVenta && comprobante.numerador.numero.numero ? `${comprobante.numerador.numero.ptoVenta}${comprobante.numerador.numero.numero}` : 0,
+                comprobanteNumero : comprobante && comprobante.numerador.ptoVenta.ptoVenta && comprobante.numerador.numerador ? `${comprobante.numerador.ptoVenta.ptoVenta}${comprobante.numerador.numerador}` : 0,
                 fechaDesde : this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.desde),
                 fechaHasta : this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.hasta),
                 idProducto : productoSelec && productoSelec.idProductos ? productoSelec.idProductos : 0,
@@ -685,7 +690,7 @@ export class AuthService {
             resourcesREST.buscaCteFecha.nombre,
             {
                 idCteTipo: comprobante.tipo.idCteTipo,
-	            puntoVenta: comprobante.numerador.numero.ptoVenta
+	            puntoVenta: comprobante.numerador.ptoVenta.ptoVenta
             },
             {}
         );
@@ -1006,7 +1011,8 @@ export class AuthService {
                 nombre: recurso.nombre,
                 telefono: recurso.telefono,
                 perfil: recurso.perfil.idPerfil,
-                mail: recurso.email
+                mail: recurso.email,
+                listaPrecios: recurso.listaPrecios.map(l => ({ idListaPrecio: l.idListaPrecio }))
             }
         }
 
@@ -1032,11 +1038,15 @@ export class AuthService {
                 descripcion: recurso.descripcion,
                 cursoLegal: recurso.cursoLegal ? true : false,
                 requiereFormaPago: recurso.requiereFormaPago ? true : false,
-                codigoAfip: recurso.codigoAfip.idSisCodigoAfip,
                 surenu: recurso.surenu,
                 observaciones: recurso.observaciones ? recurso.observaciones : '',
                 idSisComprobante: recurso.comprobante.idSisComprobantes,
-                letras: recurso.letras.map(letra => ({ idSisLetra: letra.idSisLetra }))
+                letras: recurso.letrasCodigos.map(
+                    lc => ({ 
+                        idSisLetra: lc.letra.idSisLetra,
+                        codigoAfip: lc.codigoAfip.idSisCodigoAfip
+                    })
+                )
             }
         }
 
@@ -1201,7 +1211,8 @@ export class AuthService {
                 nombre: recurso.nombre,
                 telefono: recurso.telefono,
                 perfil: recurso.perfil.idPerfil,
-                mail: recurso.email
+                mail: recurso.email,
+                listaPrecios: recurso.listaPrecios.map(l => ({ idListaPrecio: l.idListaPrecio }))
             }
         }
 
@@ -1229,11 +1240,15 @@ export class AuthService {
                 descripcion: recurso.descripcion,
                 cursoLegal: recurso.cursoLegal ? true : false,
                 requiereFormaPago: recurso.requiereFormaPago ? true : false,
-                codigoAfip: recurso.codigoAfip.idSisCodigoAfip,
                 surenu: recurso.surenu,
                 observaciones: recurso.observaciones ? recurso.observaciones : '',
                 idSisComprobante: recurso.comprobante.idSisComprobantes,
-                letras: recurso.letras.map(letra => ({ idSisLetra: letra.idSisLetra }))
+                letras: recurso.letrasCodigos.map(
+                    lc => ({ 
+                        idSisLetra: lc.letra.idSisLetra,
+                        codigoAfip: lc.codigoAfip.idSisCodigoAfip
+                    })
+                )
             }
         }
 

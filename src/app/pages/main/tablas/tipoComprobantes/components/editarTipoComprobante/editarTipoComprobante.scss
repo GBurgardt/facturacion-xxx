@@ -26,4 +26,35 @@
             background: #61e40a71;
         }
     }
+
+    .letras-table {
+        width: 70%;
+        .table-header {
+            background: #b8b8bd;
+        }
+
+        tr:nth-child(even) {
+            background: #cacad2;
+        }
+
+        td {
+            padding: 2px;
+            .checkbox-td {
+                display: block;
+                margin: 2px;
+            }           
+        }
+
+        .select-cod-afip-container {
+            display: flex;
+
+            .edit-option {
+                margin: 0 10px;
+
+                > i {
+                    cursor: pointer;
+                }
+            }
+        }
+    }
 }

@@ -14,6 +14,7 @@ import { RecursoService } from '../../../../../../services/recursoService';
 import * as crypto from 'crypto-js';
 import { resourcesREST } from 'constantes/resoursesREST';
 import { Observable } from 'rxjs/Observable';
+import { ListaPrecio } from 'app/models/listaPrecio';
 
 @Component({
     selector: 'nuevo-usuario',
@@ -31,6 +32,8 @@ export class NuevoUsuario {
     // Usuario nuevo
     usuarioNuevo: Usuario = new Usuario();
 
+    listasPrecios: Observable<ListaPrecio[]>;
+
     constructor(
         public utilsService: UtilsService,
         private router: Router,
@@ -38,6 +41,7 @@ export class NuevoUsuario {
         private localStorageService: LocalStorageService
     ) {
         this.sucursales = recursoService.getRecursoList(resourcesREST.sucursales)();
+        this.listasPrecios = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
     }
 
     ngOnInit() {

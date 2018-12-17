@@ -27,4 +27,19 @@ export class LocalStorageService {
     clearLocalStorage = () => {
         localStorage.clear();
     }
+
+    getMenus = () => this.getObject('menuActivo');
+
+    /**
+     * Retorna todos los menus abm
+     */
+    getAbmMenus = () => {
+        const menus = this.getObject('menuActivo');
+
+        if (menus && menus[0] && menus[0].children) {
+            const tablas = menus[0].children.find(m => m.path === 'tablas');
+
+            return tablas ? tablas.children : null
+        }
+    }
 }
