@@ -6,6 +6,8 @@
 
     .btn-container {
         padding-top: 13px;
+        display: flex;
+        justify-content: flex-end;
     }
 
     .line {
@@ -49,5 +51,17 @@
         .btn-container {
             margin: 1px 9px;
         }
+    }
+
+    .tipo-custom-pto-venta {
+        position: relative;
+        white-space: nowrap;
+        background: #ededed;
+        padding: 3px 7px;
+        border-radius: 7px;
+        font-size: 0.8rem;
+        color: #121212;
+        top: 3px;
+        opacity: 0.9;
     }
 }

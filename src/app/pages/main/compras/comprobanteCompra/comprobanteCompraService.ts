@@ -62,8 +62,7 @@ export class ComprobanteCompraService {
         },
         {
             nombre: 'precio',
-            key: 'producto',
-            subkey: 'costoReposicion',
+            key: 'precio',
             ancho: '10%',
             enEdicion: null,
             decimal: true,
@@ -177,6 +176,12 @@ export class ComprobanteCompraService {
             ancho: '30%'
         },
         {
+            nombre: 'base imponible',
+            key: 'baseImponible',
+            ancho: '30%',
+            decimal: true
+        },
+        {
             nombre: 'importe',
             key: 'importeTotal',
             ancho: '30%',
@@ -191,8 +196,18 @@ export class ComprobanteCompraService {
     /**
      * Buscar los productos pendientes
      */
-    buscarPendientes = (proveedor: Padron) => (comprobanteRel: ComprobanteRelacionado) =>
-        this.authService.getProductosPendientes(this.localStorageService.getObject(environment.localStorage.acceso).token)(proveedor)(comprobanteRel)
+    buscarPendientes = (proveedor: Padron) => (comprobanteRel: ComprobanteRelacionado) => (comprobante: Comprobante) => (tipoOpSelect: SisTipoOperacion) =>
+        this.authService.getProductosPendientes(
+                this.localStorageService.getObject(environment.localStorage.acceso).token
+            )(
+                proveedor
+            )(
+                comprobanteRel
+            )(
+                comprobante
+            )(
+                tipoOpSelect
+            )
             .map(
                 respuesta => respuesta.arraydatos.map(
                     prodPend => new ProductoPendiente(prodPend)
@@ -232,18 +247,18 @@ export class ComprobanteCompraService {
     /**
      * Busca modelos para tab facturacion
      */
-    buscaModelos = (prodsPend: ProductoPendiente[]) => {
+    buscaModelos = (prodsPend: ProductoPendiente[], idMoneda) => {
         const prodsModel = prodsPend.map(prodP => new ProductoBuscaModelo(
             {
                 idProducto: prodP.producto.idProductos,
-                precio: Number(prodP.producto.costoReposicion),
+                precio: Number(prodP.precio),
                 cantidad: prodP.pendiente
             }
         ));
 
         return this.authService.buscaModelos(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(prodsModel)(1).map(responBuscMod => responBuscMod.arraydatos.map(respModFact => {
+        )(prodsModel)(1)(idMoneda).map(responBuscMod => responBuscMod.arraydatos.map(respModFact => {
             // const auxModFact = Object.assign({}, respModFact);
             // auxModFact.idProducto = prod
             return new ModeloFactura(respModFact)
@@ -265,15 +280,13 @@ export class ComprobanteCompraService {
         (factura: Comprobante) => 
         (tipoOpSelect: SisTipoOperacion) => 
             this.authService.grabaComprobante(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(comproRelac)(provSelec)(productosPend)(modelosFactura)(cotizacionDatos)(depositoSelec)(detallesFormaPago)(factura)(tipoOpSelect)
-                .catch(err => {
-                    // debugger;
-                    this.utilsService.decodeErrorResponse(err);
-                    return Observable.throw(null)
-                    // return Observable.throw(
-                    //     this.utilsService.showErrorWithBody(err)
-                    // )
-                }
-            )
+                .catch(
+                    err => {
+                        debugger;
+                        this.utilsService.decodeErrorResponse(err);
+                        return Observable.throw(null)
+                    }
+                )
         
 
     /**
@@ -355,7 +368,7 @@ export class ComprobanteCompraService {
         comprobante.tipo &&
         comprobante.tipo.idCteTipo &&
         comprobante.letraCodigo &&
-        comprobante.numerador.ptoVenta.ptoVenta &&
+        comprobante.numerador.ptoVenta &&
         comprobante.numerador.ptoVenta.ptoVenta &&
         comprobante.moneda &&
         comprobante.moneda.idMoneda &&
@@ -417,7 +430,7 @@ export class ComprobanteCompraService {
 
 
     /**
-     * Get formas pago apra la tabla de forma pago emisiuon remito
+     * Get formas pago apra la tabla de forma pago
      */
     getFormasPago = (fecha: any) => 
         this.authService.getBuscaFormaPago(this.localStorageService.getObject(environment.localStorage.acceso).token)()(fecha)
@@ -493,7 +506,7 @@ export class ComprobanteCompraService {
             ['fechaContable', 'fechaVto']
         )
         const factOrigi = _.omit(
-            Object.assign({}, new Factura()),
+            Object.assign({}, new Comprobante()),
             ['fechaContable', 'fechaVto']
         )
 
@@ -537,10 +550,10 @@ export class ComprobanteCompraService {
     /**
      * Busca un producto en la base, por su ID
      */
-    buscarProducto = (idProducto) =>
+    buscarProducto = (idProducto, idMoneda) =>
         this.authService.getBuscarProducto(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(idProducto)()
+        )(idProducto)()(idMoneda)
             .map(
                 respProdEnc => respProdEnc && respProdEnc.arraydatos && respProdEnc.arraydatos.length > 0 ?
                     new ProductoPendiente(respProdEnc.arraydatos[0]) : null

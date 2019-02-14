@@ -1,16 +1,16 @@
 export class PtoVenta {
-    idCtePtoVenta: number;
+    idPtoVenta: number;
     ptoVenta: any;
 
     constructor(numero?: {
-        idCteNumero: number;
+        idPtoVenta: number;
         ptoVenta: any;
     }) {
         if (numero) {
-            this.idCtePtoVenta = numero.idCteNumero;
+            this.idPtoVenta = numero.idPtoVenta;
             this.ptoVenta = numero.ptoVenta;
         } else {
-            this.idCtePtoVenta = null;
+            this.idPtoVenta = null;
             this.ptoVenta = null;
         }
     }

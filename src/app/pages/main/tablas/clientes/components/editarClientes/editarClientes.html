@@ -1,5 +1,5 @@
 <div class="editar-clientes">
-    <ba-card cardTitle="Editar cliente" baCardClass="with-scroll" class="editar-clientes-card">
+    <ba-card cardTitle="Modificar cliente" baCardClass="with-scroll" class="editar-clientes-card">
 
         <div class="title-container">
             <p>
@@ -65,6 +65,13 @@
 
 
         <div class="btn-container">
+            <button 
+                routerLink="/pages/tablas/clientes"
+                style="margin-right: 5px;"
+                class="btn btn-secondary 
+                btn-detalle">
+                Cancelar
+            </button>
             <button [disabled]="!recurso.padronGral.idPadronGral || !recurso.vendedor.padronGral.idPadronGral" (click)="onClickEditar()"
                 type="submit" class="btn btn-primary" id="idBtnConfirmar">Confirmar</button>
         </div>

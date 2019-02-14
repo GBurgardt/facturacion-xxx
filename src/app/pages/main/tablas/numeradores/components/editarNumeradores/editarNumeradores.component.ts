@@ -8,6 +8,7 @@ import { Numerador } from '../../../../../../models/numerador';
 import { Observable } from '../../../../../../../../node_modules/rxjs';
 import { TipoComprobante } from 'app/models/tipoComprobante';
 import { PtoVenta } from 'app/models/ptoVenta';
+import { LetraCodigo } from 'app/models/letraCodigo';
 
 @Component({
     selector: 'editar-numeradores',
@@ -17,11 +18,11 @@ import { PtoVenta } from 'app/models/ptoVenta';
 export class EditarNumeradores {
     recurso: Numerador = new Numerador();
     recursoOriginal: Numerador = new Numerador();
+    ptoVentas: Observable<PtoVenta[]>;
 
-    cteTipos: Observable<TipoComprobante[]>;
-    numeros: Observable<PtoVenta[]>;
+    letrasCodigos: Observable<LetraCodigo[]>;
 
-    addNewNumero = false;
+    tipCustomPtoVenta = false;
 
     constructor(
         public utilsService: UtilsService,
@@ -40,10 +41,8 @@ export class EditarNumeradores {
                 })
         );
 
-        this.cteTipos = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
-            'condicion': 'propio'
-        });
-        this.numeros = this.recursoService.getRecursoList(resourcesREST.ptoVenta)();
+        this.ptoVentas = this.recursoService.getRecursoList(resourcesREST.ptoVenta)();
+        this.letrasCodigos = this.recursoService.getRecursoList(resourcesREST.letraCodigo)();
     }
 
     
@@ -81,13 +80,13 @@ export class EditarNumeradores {
         }
     }
 
-    onClickAddNumero = () => {
-        this.addNewNumero = !this.addNewNumero;
+    customPtoVenta = false;
+    /**
+     * Altera entre select e input
+     */
+    onClickCustomPtoVenta = () => {
+        this.customPtoVenta = !this.customPtoVenta;
 
         this.recurso.ptoVenta = new PtoVenta();
     }
-
-    compareWithCteTipo = (a, b) => a && b && a.idCteTipo && b.idCteTipo ?
-        a.idCteTipo === b.idCteTipo : null
-
 }

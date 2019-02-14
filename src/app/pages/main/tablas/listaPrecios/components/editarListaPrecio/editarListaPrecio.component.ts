@@ -88,36 +88,42 @@ export class EditarListaPrecio {
             {
                 nombre: 'descripcion',
                 key: 'producto',
+                customClass: 'text-left',
                 subkey: 'descripcion',
                 ancho: '20%'
             },
             {
                 nombre: 'precio',
                 key: 'precio',
+                customClass: 'text-right',
                 ancho: '10%',
                 enEdicion: null
             },
             {
                 nombre: 'inferior',
                 key: 'cotaInf',
+                customClass: 'text-right',
                 ancho: '10%',
                 enEdicion: null
             },
             {
                 nombre: 'superior',
                 key: 'cotaSup',
+                customClass: 'text-right',
                 ancho: '10%',
                 enEdicion: null
             },
             {
                 nombre: '% inferior',
-                key: 'porcentajeInf',
+                key: 'cotaInfPorce',
+                customClass: 'text-right',
                 ancho: '5%',
                 enEdicion: null
             },
             {
                 nombre: '% superior',
-                key: 'porcentajeSup',
+                key: 'cotaSupPorce',
+                customClass: 'text-right',
                 ancho: '5%',
                 enEdicion: null
             },
@@ -207,6 +213,8 @@ export class EditarListaPrecio {
     onClickAgregar = async (e) => {
         // El porcentajeCabecera está en la nueva lista creada, tengo que agregarlo a los filtros
         this.filtroListaPrecios.porcentajeCabecera = this.recurso.porc1;
+        // También la moneda
+        this.filtroListaPrecios.moneda = this.recurso.idMoneda;
         try {
             // Agrego los detalles a la lista de detalles de la lista de precios
             this.recursoService.getProductosByFiltro(this.filtroListaPrecios).subscribe(listaDetalles => {
@@ -214,8 +222,8 @@ export class EditarListaPrecio {
                 const cloneListaDet = listaDetalles.map(det => {
                     const cloneDet = Object.assign({}, det);
 
-                    cloneDet.porcentajeInf = this.filtroListaPrecios.porcentajeInf;
-                    cloneDet.porcentajeSup = this.filtroListaPrecios.porcentajeSup;
+                    cloneDet.cotaInfPorce = this.filtroListaPrecios.cotaInfPorce;
+                    cloneDet.cotaSupPorce = this.filtroListaPrecios.cotaSupPorce;
 
                     return cloneDet;
                 })

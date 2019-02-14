@@ -14,6 +14,7 @@ import { DateLikePicker } from '../models/dateLikePicker';
 import { ComprobanteEncabezado } from '../models/comprobanteEncabezado';
 import { UtilsService } from './utilsService';
 import { Vendedor } from 'app/models/vendedor';
+import { SisTipoOperacion } from 'app/models/sisTipoOperacion';
 
 @Injectable()
 export class ComprobanteService { 
@@ -34,19 +35,14 @@ export class ComprobanteService {
     /**
      * Busca los comprobantes dado los filtros dados
      */
-    buscarComprobantes = (comprobante: Comprobante) =>
-        (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker }) =>
-            (sisModuloSelec: SisModulo) =>
-                (tipoComprobanteSelec: TipoComprobante) =>
-                    (productoSelec: Producto) =>
-                        (sisEstadoSelec: SisEstado) =>
-                            (padronSelec: Padron) =>
-                                (depositoSelec: Deposito) =>
-                                    (vendedorSelec: Vendedor) =>
-                                        this.authService.buscaComprobantes(
-                                            this.localStorageService.getObject(environment.localStorage.acceso).token
-                                        )(comprobante)(fechasFiltro)(sisModuloSelec)(tipoComprobanteSelec)(productoSelec)(sisEstadoSelec)(padronSelec)(depositoSelec)(vendedorSelec)
-                                            .map(respuesta => respuesta.arraydatos.map(compEnca => new ComprobanteEncabezado(compEnca)))
+    buscarComprobantes = (comprobante: Comprobante) => (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker }) => (sisModuloSelec: SisModulo) => (tipoComprobanteSelec: TipoComprobante) => (productoSelec: Producto) => (sisEstadoSelec: SisEstado) => (padronSelec: Padron) => (depositoSelec: Deposito) => (vendedorSelec: Vendedor) => (sisTipoOpSelect: SisTipoOperacion) =>
+        this.authService.buscaComprobantes(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(fechasFiltro)(sisModuloSelec)(tipoComprobanteSelec)(productoSelec)(sisEstadoSelec)(padronSelec)(depositoSelec)(vendedorSelec)(sisTipoOpSelect)
+            .catch(
+                err => this.utilsService.decodeErrorResponse(err)
+            )
+            .map(
+                respuesta => respuesta.arraydatos.map(compEnca => new ComprobanteEncabezado(compEnca))
+            )
     /**
      * Genera los comprobantes dado los filtros dados
      */

@@ -12,8 +12,10 @@ export class ComprobanteDetalle {
     porCalc: number;
     ivaPorc: number;
     deposito: number
-    
     importe: number;
+    precioDesc: number;
+    unidadDescuento: string;
+    descuento: string;
 
     constructor(comprobanteDetalle?: {
         comprobante: string;
@@ -29,8 +31,10 @@ export class ComprobanteDetalle {
         porCalc: number;
         ivaPorc: number;
         deposito: number;
-
         importe: number;
+        precioDesc: number;
+        unidadDescuento: string;
+        descuento: string;
     }) {
         if (comprobanteDetalle) {
             this.comprobante = comprobanteDetalle.comprobante;
@@ -47,6 +51,9 @@ export class ComprobanteDetalle {
             this.ivaPorc = comprobanteDetalle.ivaPorc;
             this.deposito = comprobanteDetalle.deposito
             this.importe = comprobanteDetalle.importe;
+            this.precioDesc = comprobanteDetalle.precioDesc;
+            this.unidadDescuento = comprobanteDetalle.unidadDescuento;
+            this.descuento = comprobanteDetalle.descuento;
         } else {
             this.comprobante = null;
             this.numero = null;
@@ -62,6 +69,9 @@ export class ComprobanteDetalle {
             this.ivaPorc = null;
             this.deposito = null;
             this.importe = null;
+            this.precioDesc = null;
+            this.unidadDescuento = null;
+            this.descuento = null;
         }
     }
 

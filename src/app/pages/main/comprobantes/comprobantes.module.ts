@@ -8,6 +8,8 @@ import { AuthService } from "../../../services/authService";
 import { UtilsService } from "../../../services/utilsService";
 import { ConsultaComprobante } from "app/pages/main/comprobantes/consultaComprobante/consultaComprobante.component";
 import { ComprobanteService } from "../../../services/comprobanteService";
+import { ConsultaImputaciones } from "./consultaImputaciones";
+import { ImputacionesService } from "app/services/imputacionesService";
 
 @NgModule({
     imports: [
@@ -17,13 +19,15 @@ import { ComprobanteService } from "../../../services/comprobanteService";
     ],
     declarations: [
         Comprobantes,
-        ConsultaComprobante
+        ConsultaComprobante,
+        ConsultaImputaciones
     ],
     providers: [
         RecursoService,
         AuthService,
         UtilsService,
-        ComprobanteService
+        ComprobanteService,
+        ImputacionesService
     ],
     exports: []
 })

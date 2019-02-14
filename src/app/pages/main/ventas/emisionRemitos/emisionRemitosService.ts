@@ -25,6 +25,7 @@ import { SisTipoOperacion } from "app/models/sisTipoOperacion";
 import { Cliente } from "../../../../models/cliente";
 import { Vendedor } from "../../../../models/vendedor";
 import { ListaPrecio } from "app/models/listaPrecio";
+import { TipoComprobante } from "app/models/tipoComprobante";
 
 @Injectable()
 export class EmisionRemitosService {
@@ -71,7 +72,8 @@ export class EmisionRemitosService {
             ancho: '6.5%',
             enEdicion: null,
             decimal: true,
-            customClass: 'text-right'
+            customClass: 'text-right',
+            customBlur: 'onBlurInputNumber'
         },
         {
             nombre: 'unidad',
@@ -86,7 +88,8 @@ export class EmisionRemitosService {
             ancho: '5.5%',
             enEdicion: null,
             decimal: true,
-            customClass: 'text-right'
+            customClass: 'text-right',
+            customBlur: 'onBlurInputNumber'
         },
         {
             nombre: 'dto/rec',
@@ -110,6 +113,12 @@ export class EmisionRemitosService {
             ancho: '5.5%',
             // decimal: true,
             customClass: 'text-right'
+        },
+        {
+            nombre: 'precio desc',
+            key: 'precioDesc',
+            ancho: '5.5%',
+            customClass: 'text-right',
         },
         {
             nombre: '%IVA',
@@ -323,10 +332,10 @@ export class EmisionRemitosService {
     /**
      * Buscar los productos pendientes
      */
-    buscarPendientes = (cliente: Padron) => (comprobanteRel: ComprobanteRelacionado) => {
+    buscarPendientes = (cliente: Padron) => (comprobanteRel: ComprobanteRelacionado) => (comprobante: Comprobante) => (tipoOpSelect) => {
         return this.authService.getProductosPendientes(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(cliente)(comprobanteRel)
+        )(cliente)(comprobanteRel)(comprobante)(tipoOpSelect)
             .catch(
                 err => {
                     const respErr = 
@@ -374,25 +383,38 @@ export class EmisionRemitosService {
      * Busca modelos para tab facturacion
      * 
      */
-    buscaModelos = (prodsPend: ProductoPendiente[]) => (subtotales: any[]) => {
-        const prodsModel = prodsPend.map(prodP => {
+    buscaModelos = (prodsPend: ProductoPendiente[]) => (subtotales: any[]) => (idMoneda) => {
+        const prodsModel = prodsPend
+            .map(prodP => {
 
-            const subtotalProd = subtotales.find(st => st.idProducto === prodP.producto.idProductos)
+                const subtotalProd = subtotales
+                    .find(
+                        st => 
+                            st.idProducto === prodP.producto.idProductos && 
+                            st.numeroComp === prodP.numero
+                    )
 
-            return new ProductoBuscaModelo(
-                {
-                    idProducto: prodP.producto.idProductos,
-                    // precio: prodP.precio,
-                    precio: Number(prodP.producto.costoReposicion),
-                    cantidad: prodP.pendiente,
-                    subTotal: subtotalProd ? subtotalProd.subtotal : null
-                }
-            )
-        });
+                return new ProductoBuscaModelo(
+                    {
+                        idProducto: prodP.producto.idProductos,
+                        precio: prodP.precio,
+                        // precio: Number(prodP.producto.costoReposicion),
+                        cantidad: prodP.pendiente,
+                        subTotal: subtotalProd ? subtotalProd.subtotal : null
+                        // numeroComp: prodP.numero
+                    }
+                )
+            });
 
         return this.authService.buscaModelos(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(prodsModel)(2).map(responBuscMod => responBuscMod.arraydatos.map(respModFact => new ModeloFactura(respModFact)));
+        )(prodsModel)(2)(idMoneda)
+            .map(
+                responBuscMod => 
+                    responBuscMod.arraydatos.map(
+                        respModFact => new ModeloFactura(respModFact)
+                    )
+            );
     }
 
     /**
@@ -452,7 +474,7 @@ export class EmisionRemitosService {
             listaPrecioSelec
         )
             .catch(err => {
-                debugger;
+                
                 this.utilsService.showErrorWithBody(err)
                 return Observable.throw(null)
             })
@@ -580,12 +602,6 @@ export class EmisionRemitosService {
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(cliente)(fecha).map(resp => resp.arraydatos.map(fp => new FormaPago(fp)))
         
-    // getFormasPago = (cliente: Padron) => (fecha: any) => 
-    //     this.authService.getBuscaFormaPago(
-    //         this.localStorageService.getObject(environment.localStorage.acceso).token
-    //     )(cliente)(fecha).map(resp => resp.arraydatos.map(fp => new FormaPago(fp)))
- 
-        
     /**
      * Busca el (o los) intevalo fecha de un comprobaten dado
      */
@@ -605,7 +621,9 @@ export class EmisionRemitosService {
             return {
                 idProducto: prodPend.producto.idProductos,
                 subtotal: respuesta.datos.subTotal,
-                subtotalIva: respuesta.datos.subTotalIva
+                subtotalIva: respuesta.datos.subTotalIva,
+                precioDesc: respuesta.datos.precioDesc,
+                numeroComp: prodPend.numero,
             }
         });
 
@@ -648,10 +666,16 @@ export class EmisionRemitosService {
             ancho: '30%'
         },
         {
+            nombre: 'base imponible',
+            key: 'baseImponible',
+            ancho: '30%',
+            decimal: true,
+        },
+        {
             nombre: 'importe',
             key: 'importeTotal',
             ancho: '30%',
-            decimal: true,
+            // decimal: true,
             enEdicion: null,
             customClass: 'text-right',
             editarFocus: true,
@@ -662,10 +686,10 @@ export class EmisionRemitosService {
     /**
      * Busca un producto en la base, por su ID
      */
-    buscarProducto = (idProducto) => (idListaPrecio) =>
+    buscarProducto = (idProducto) => (idListaPrecio) => (idMoneda) =>
         this.authService.getBuscarProducto(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(idProducto)(idListaPrecio)
+        )(idProducto)(idListaPrecio)(idMoneda)
             .map(
                 respProdEnc => respProdEnc && respProdEnc.arraydatos && respProdEnc.arraydatos.length > 0 ?
                     new ProductoPendiente(respProdEnc.arraydatos[0]) : null
@@ -700,5 +724,13 @@ export class EmisionRemitosService {
             prod => prod.pendiente > 0
         )
     
+
+    autorizarAfip = (tipo, idFactCab) => {
+        this.authService.autorizarAfip(
+            this.localStorageService.getObject(environment.localStorage.acceso).token,
+            tipo,
+            idFactCab
+        )
+    }
 
 }

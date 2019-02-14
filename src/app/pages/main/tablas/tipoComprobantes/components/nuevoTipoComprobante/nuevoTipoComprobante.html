@@ -133,12 +133,18 @@
             </div>
 
             <div class="row" style="display: flex; justify-content: flex-end;">
+                <button 
+                    routerLink="/pages/tablas/tipos-comprobantes"
+                    style="margin-right: 5px;"
+                    class="btn btn-secondary 
+                    btn-detalle">
+                    Cancelar
+                </button>
+                
                 <button [disabled]="
                     utilsService.checkIfIncomplete(recurso)([
                         'idCteTipo', 'cursoLegal', 'numerador', 'observaciones', 'requiereFormaPago'
                     ])(checkSurEnu)
-                    || 
-                    this.recurso && this.recurso.letras && this.recurso.letras.length <= 0
                 "
                         (click)="onClickCrearTipoComprobante()" 
                         type="submit" 
@@ -150,15 +156,3 @@
     </ba-card>
 
 </div>
-
-
-                <!-- <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="codAfip">Codigo Afip</label>
-                        <select name="afip-cte" required  [(ngModel)]="recurso.codigoAfip" class="form-control" id="codAfip">
-                            <option *ngFor="let codAf of codigosAfip | async" [ngValue]="codAf">
-                                {{ codAf.descripcion }}
-                            </option>
-                        </select>
-                    </div>
-                </div> -->

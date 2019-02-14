@@ -141,27 +141,39 @@
                 <div class="col-sm-4">
                     <div class="form-group">
                         <label for="precioVentaProv">Precio Venta Proveedor </label>
-                        <input required name="fafa14" [(ngModel)]="recurso.precioVentaProv" type="text" class="form-control text-right"
+                        <input 
+                            (blur)="utilsService.onBlurInputNumber($event)"
+                            required name="fafa14" [(ngModel)]="recurso.precioVentaProv" type="text" class="form-control text-right"
                             id="precioVentaProv" placeholder="">
                     </div>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-4">
                     <div class="form-group">
                         <label for="costoReposicion">Costo Reposicion </label>
-                        <input required name="fafa15" [(ngModel)]="recurso.costoReposicion" type="text" class="form-control text-right"
+                        <input 
+                            (blur)="utilsService.onBlurInputNumber($event)"
+                            required name="fafa15" [(ngModel)]="recurso.costoReposicion" type="text" class="form-control text-right"
                             id="costoReposicion" placeholder="">
                     </div>
                 </div>
-                <div class="col-sm-3">
+
+                <div class="col-sm-4">
                     <div class="form-group">
-                        <label for="puntoPedido">Punto Pedido </label>
-                        <input required name="fafa16" [(ngModel)]="recurso.puntoPedido" type="text" class="form-control text-right"
-                            id="puntoPedido" placeholder="">
+                        <label for="rubro">Moneda</label>
+                        <select name="monedar" required [(ngModel)]="recurso.moneda" class="form-control" id="moneda">
+                            
+                            <option *ngFor="let m of monedas | async" [ngValue]="m">
+                                {{ m.descripcion }}
+                            </option>
+                        </select>
                     </div>
                 </div>
-                <!-- <div class="col-sm-2">
-                    <div class="checkbox-apto-canje">
-                        <ba-checkbox  required name="fafa17"  [(ngModel)]="recurso.aptoCanje" [label]="'Apto Canje'" [ngModelOptions]="{standalone: true}"></ba-checkbox>
+
+                <!-- <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="puntoPedido">Punto Pedido </label>
+                        <input (blur)="utilsService.onBlurInputNumber($event)" required name="fafa16" [(ngModel)]="recurso.puntoPedido" type="text" class="form-control text-right"
+                            id="puntoPedido" placeholder="">
                     </div>
                 </div> -->
             </div>
@@ -213,25 +225,43 @@
                             </option>
                         </select>
                     </div>
+                    <!-- <div class="col-sm-3"> -->
+                        <div class="form-group">
+                            <label for="puntoPedido">Punto Pedido </label>
+                            <input (blur)="utilsService.onBlurInputNumber($event)" required name="fafa16" [(ngModel)]="recurso.puntoPedido" type="text" class="form-control text-right"
+                                id="puntoPedido" placeholder="">
+                        </div>
+                    <!-- </div> -->
                 </div>
             </div>
 
-            <button [disabled]="utilsService.checkIfIncomplete(recurso)([
-                                    'idProductos',
-                                    'codigoBarra',
-                                    'aptoCanje',
-                                    'stock',
-                                    'trazable',
-                                    'traReceta',
-                                    'traInforma',
-                                    'IVA',
-                                    'descripcionCorta',
-                                    'descripcion',
-                                    'gtin',
-                                    'observaciones',
-                                    'editar'
-                                ])()"
-                (click)="onClickCrear()" type="submit" class="btn btn-primary">Confirmar</button>
+            <div class="row" style="display: flex; justify-content: flex-end;">
+                <button 
+                    routerLink="/pages/stock/productos"
+                    style="margin-right: 5px;"
+                    class="btn btn-secondary 
+                    btn-detalle">
+                    Cancelar
+                </button>
+                <button [disabled]="utilsService.checkIfIncomplete(recurso)([
+                                        'idProductos',
+                                        'codigoBarra',
+                                        'aptoCanje',
+                                        'stock',
+                                        'trazable',
+                                        'traReceta',
+                                        'traInforma',
+                                        'IVA',
+                                        'descripcionCorta',
+                                        'descripcion',
+                                        'gtin',
+                                        'observaciones',
+                                        'editar'
+                                    ])()"
+                    (click)="onClickCrear()" type="submit" class="btn btn-primary">Confirmar</button>
+
+            </div>
+
         </form>
     </ba-card>
 

@@ -2,14 +2,14 @@ import { TipoComprobante } from "./tipoComprobante";
 
 export class ComprobanteRelacionado {
     tipo: TipoComprobante;
-    puntoVenta: number;
-    numero: number;
+    puntoVenta: string;
+    numero: string;
     todosLosPendientes: boolean;
 
     constructor(comprobanteRelacionado?: {
         tipo: any;
-        puntoVenta: number;
-        numero: number;
+        puntoVenta: string;
+        numero: string;
         todosLosPendientes: boolean;
     }) {
         if (comprobanteRelacionado) {

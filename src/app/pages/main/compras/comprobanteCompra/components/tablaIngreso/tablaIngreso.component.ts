@@ -58,6 +58,9 @@ export class TablaIngreso {
 
     prodFocus = false;
 
+    // Indica si es o no es la tabla de subtotales
+    @Input() tablaSubtotales = false;
+
     constructor(
         public utilsService: UtilsService,
         private recursoService: RecursoService,
@@ -269,25 +272,13 @@ export class TablaIngreso {
     /**
      * Retorna la function blur de una columna dada (si esta tiene custom blur)
      */
-    getFunctionBlurOfColumn = (col) => {
-        if (col && col.customBlur) {
-            return this.customsBlur[col.customBlur];
-        }
-    }
-
-
-    // force2decimals = (event) => event.target.value = parseFloat(event.target.value).toFixed(2);
+    // getFunctionBlurOfColumn = (col) => {
+    //     if (col && col.customBlur) {
+    //         return this.customsBlur[col.customBlur];
+    //     }
+    // }
 
     force2decimals = (item) => (col) => item && col && col.decimal ?
         item[col.key] = parseFloat(item[col.key]).toFixed(2) : item[col.key]
 
 }
-
-
-/**
- * (
-                    this.productoEnfocadoIndex >=0 && this.productoEnfocadoIndex < prodsLista.length-1 ||
-                    this.productoEnfocadoIndex === -1 && upOrDown === 'down' ||
-                    this.productoEnfocadoIndex === (prodsLista.length - 2) && upOrDown === 'up'
-                )
- */

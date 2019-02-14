@@ -13,7 +13,6 @@ import { EmisionRemitosService } from "./emisionRemitos/emisionRemitosService";
 import { TablaEmisionRem } from "app/pages/main/ventas/emisionRemitos/components/tablaEmisionRem/tablaEmisionRem.component";
 import { TablaFormaPago } from "app/pages/main/ventas/emisionRemitos/components/tablaFormaPago";
 
-
 @NgModule({
     imports: [
         routing,

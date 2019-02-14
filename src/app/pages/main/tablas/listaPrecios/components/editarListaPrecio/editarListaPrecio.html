@@ -1,5 +1,5 @@
 <div class="editar-lista-precio">
-    <ba-card cardTitle="Editar lista precio" baCardClass="with-scroll">
+    <ba-card cardTitle="Modificar lista precio" baCardClass="with-scroll">
         <form #listaPreForm="ngForm">
             <custom-card *ngIf="!detallesActivos" title="Lista">
                 <div class="row">
@@ -15,7 +15,9 @@
                         <div class="form-group">
                             <label for="codigoLista">Fecha Alta</label>
                             <div class="input-group">
-                                <input required name="fechalt-lp" (blur)="onCalculateFecha($event)('fechaAlta')('recurso')"
+                                <input 
+                                    required name="fechalt-lp" 
+                                    (blur)="onCalculateFecha($event)('fechaAlta')('recurso')"
                                     class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.fechaAlta"
                                     ngbDatepicker #dAlta="ngbDatepicker">
                                 <div class="input-group-append">
@@ -250,14 +252,14 @@
                     <div class="col-sm-3">
                         <div class="form-group">
                             <label for="filtroCotaInf">Cota Inferior %</label>
-                            <input required name="cotainf-lp" [(ngModel)]="filtroListaPrecios.porcentajeInf" type="text"
+                            <input required name="cotainf-lp" [(ngModel)]="filtroListaPrecios.cotaInfPorce" type="text"
                                 class="form-control" id="filtroCotaInf" placeholder="">
                         </div>
                     </div>
                     <div class="col-sm-3">
                         <div class="form-group">
                             <label for="filtroCotaSup">Cota Superior %</label>
-                            <input required name="cotasup-lp" [(ngModel)]="filtroListaPrecios.porcentajeSup" type="text"
+                            <input required name="cotasup-lp" [(ngModel)]="filtroListaPrecios.cotaSupPorce" type="text"
                                 class="form-control" id="filtroCotaSup" placeholder="">
                         </div>
                     </div>

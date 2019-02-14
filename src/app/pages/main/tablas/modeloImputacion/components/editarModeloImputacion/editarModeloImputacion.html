@@ -68,7 +68,7 @@
                 <div class="col-sm-2">
                     <div class="form-group">
                         <label for="selectCtaCont">Operador *</label>
-                        <select [compareWith]="compareWithGeneric" [(ngModel)]="detalleEnEdicion.operador" class="form-control" id="selectCtaCont">
+                        <select [compareWith]="compareWithAbsolut" [(ngModel)]="detalleEnEdicion.operador" class="form-control" id="selectCtaCont">
                             <option *ngFor="let sig of signos" [value]="sig">
                                 {{ sig }}
                             </option>
@@ -79,7 +79,7 @@
                 <div class="col-sm-2">
                     <div class="form-group">
                         <label for="selectCtaCont">Tipo Modelo *</label>
-                        <select [compareWith]="compareWithGeneric" [(ngModel)]="detalleEnEdicion.idSisTipoModelo" class="form-control" id="selectSisTipoModelo">
+                        <select [compareWith]="compareWithAbsolut" [(ngModel)]="detalleEnEdicion.idSisTipoModelo" class="form-control" id="selectSisTipoModelo">
                             <option *ngFor="let stm of sisTipoModeloList | async" [value]="stm.idTipoModelo">
                                 {{ stm.descripcion }}
                             </option>

@@ -80,6 +80,13 @@
 
 
         <div class="btn-container">
+            <button 
+                routerLink="/pages/tablas/clientes"
+                style="margin-right: 5px;"
+                class="btn btn-secondary 
+                btn-detalle">
+                Cancelar
+            </button>
             <button [disabled]="!recurso.padronGral.idPadronGral || !recurso.vendedor.padronGral.idPadronGral" 
                     (click)="onClickCrear()" 
                     type="submit" 

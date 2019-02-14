@@ -17,6 +17,7 @@ import { ModeloCab } from 'app/models/modeloCab';
 import { AuthService } from '../../../../../../services/authService';
 import { Marca } from 'app/models/marca';
 import { Cultivo } from 'app/models/cultivo';
+import { Moneda } from 'app/models/moneda';
 
 @Component({
     selector: 'nuevo-producto',
@@ -33,8 +34,10 @@ export class NuevoProducto {
     unidadesVenta: Observable<Unidad[]>;
     modelosCab: Observable<ModeloCab[]>;
     marcas: Observable<Marca[]>;
-
+    
     cultivos: Cultivo[] = [];
+    
+    monedas: Observable<Moneda[]>;
 
     constructor(
         private recursoService: RecursoService,
@@ -47,9 +50,19 @@ export class NuevoProducto {
         this.ivas = this.recursoService.getRecursoList(resourcesREST.sisIVA)();
         this.modelosCab = this.recursoService.getRecursoList(resourcesREST.modeloCab)();
         this.marcas = this.recursoService.getRecursoList(resourcesREST.marcas)();
+        this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
 
         this.recursoService.getRecursoList(resourcesREST.cultivo)().toPromise()
-            .then(cultivos => this.cultivos = cultivos)
+            .then(cultivos => this.cultivos = cultivos);
+
+        // nullizo los valores del recurso
+        this.recurso.IVA = null;
+        this.recurso.subRubro = null;
+        this.recurso.unidadCompra = null;
+        this.recurso.unidadVenta = null;
+        this.recurso.modeloCab = null;
+        this.recurso.marca = null;
+        this.recurso.moneda = null;
     }
     
     ngOnInit() {

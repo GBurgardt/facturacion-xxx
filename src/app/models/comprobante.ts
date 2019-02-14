@@ -3,11 +3,12 @@ import { Moneda } from "./moneda";
 import { DateLikePicker } from "./dateLikePicker";
 import { Numerador } from "./numerador";
 import { SisLetra } from "./sisLetra";
+import { LetraCodigo } from "./letraCodigo";
 
 export class Comprobante {
     tipo: TipoComprobante;
     // letra: string;
-    letraCodigo: any;
+    letraCodigo: LetraCodigo;
     moneda: Moneda;
     fechaComprobante: DateLikePicker;
     fechaVto: DateLikePicker;
@@ -17,7 +18,7 @@ export class Comprobante {
 
     constructor(comprobante?: {
         tipo: any;
-        letra: any;
+        letraCodigo: any;
         moneda: any;
         fechaComprobante: any;
         fechaVto: any;
@@ -26,7 +27,7 @@ export class Comprobante {
     }) {
         if (comprobante) {
             this.tipo = new TipoComprobante(comprobante.tipo)
-            this.letraCodigo = comprobante.letra;
+            this.letraCodigo = new LetraCodigo(comprobante.letraCodigo)
             this.moneda = new Moneda(comprobante.moneda)
             this.fechaComprobante = comprobante.fechaComprobante
             this.fechaVto = comprobante.fechaVto

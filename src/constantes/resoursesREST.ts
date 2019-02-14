@@ -44,6 +44,7 @@ import { Cultivo } from "app/models/cultivo";
 import { SisLetra } from "app/models/sisLetra";
 import { Vendedor } from "app/models/vendedor";
 import { PtoVenta } from "app/models/ptoVenta";
+import { LetraCodigo } from "app/models/letraCodigo";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -264,5 +265,17 @@ export const resourcesREST = {
     vendedor: {
         nombre: 'vendedor',
         Clase: Vendedor
+    },
+    letraCodigo: {
+        nombre: 'letraCodigo',
+        Clase: LetraCodigo
+    },
+    facturacionElectronica: {
+        nombre: 'facturacionElectronica',
+        Clase: null
+    },
+    imputaciones: {
+        nombre: 'imputaciones',
+        Clase: null
     }
 };

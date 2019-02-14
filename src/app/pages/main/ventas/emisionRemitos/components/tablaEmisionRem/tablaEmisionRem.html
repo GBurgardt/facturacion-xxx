@@ -64,7 +64,13 @@
                     <div *ngIf="!col.subkey">
                         <div *ngIf="!checkIfEditOn(item)(col)">
                             <!-- Caso comun -->
-                            <div *ngIf="col.nombre !== 'imputacion' && col.key !== 'subtotal' && col.key !== 'subtotalIva' && !col.decimal" >
+                            <div *ngIf="
+                                col.nombre !== 'imputacion' && 
+                                col.key !== 'subtotal' && 
+                                col.key !== 'subtotalIva' && 
+                                col.key !== 'precioDesc' && 
+                                col.key !== 'importeTotal' && 
+                                !col.decimal" >
                                 {{parseKey(item[col.key])}}
                             </div>
 
@@ -73,12 +79,42 @@
                                 {{ item[col.key] && item[col.key].seleccionada ? item[col.key].seleccionada.descripcion : ''}}
                             </div>
 
-                            <div *ngIf="col.key === 'subtotal' || col.key === 'subtotalIva' && !col.decimal">
-                                {{ getSubtotal(item)(col.key) }}
+
+                            <div *ngIf="col.decimal && col.key !== 'precio'">
+                                {{ utilsService.parseDecimal(item[col.key]) }}
                             </div>
 
-                            <div *ngIf="col.decimal">
-                                {{utilsService.parseDecimal(item[col.key])}}
+                            <div *ngIf="col.decimal && col.key === 'precio'">
+                                {{ item[col.key] }}
+                            </div>
+
+                            <div *ngIf="
+                                    !col.decimal && 
+                                    col.key !== 'imputacion' &&
+                                    col.key !== 'tipoDescuento' &&
+                                    col.key !== 'numero' &&
+                                    !checkIncluyeNetoAndIva(col)
+                                    
+                                ">
+                                {{ 
+                                    col.key == 'importeTotal'
+                                    ?
+                                    parseKey(item[col.key]) : 
+                                    getSubtotal(item)(col.key) 
+                                }}
+                            </div>
+
+                            <!-- <div    style="background: #ff000061 !important;" -->
+                            <div    style="color: #c10000 !important;"
+                                    *ngIf="
+                                        checkIncluyeNetoAndIva(col)
+                                    ">
+                                {{ 
+                                    col.key == 'importeTotal'
+                                    ?
+                                    parseKey(item[col.key]) :
+                                    getSubtotal(item)(col.key) 
+                                }}
                             </div>
                             
 
@@ -90,13 +126,16 @@
                                         col.key !== 'trazabilidad' &&
                                         !col.elementoFinalBlur && 
                                         (col.key !== 'fechaPago')
-                                    )"
+                                    )
+                                    "
                                     [(ngModel)]="item[col.key]" 
                                     style="margin: 4px 6px; text-align: end;" 
                                     type="text" 
                                     [ngClass]="getClassInputEditable(item)(col)" 
                                     id="inputSubKey" 
-                                    placeholder="">
+                                    placeholder=""
+                                    (blur)="onBlurInput($event, col)"
+                                    >
 
                                 <!-- Datepicker para fechaPago -->
                             <div *ngIf="col.key === 'fechaPago'" class="datepicker-datelikepicker">
@@ -197,30 +236,9 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
             </tr>
             <!-- FIN ROW PARA AGREGAR UN PRODUCTO -->
-            
-            <!-- <tr class="row-agregar-producto" *ngIf="enableAddItem">
-                <td></td>
-                <td *ngFor="let col of columns">
-                    <div *ngIf="col.nombre === 'articulo'">
-                        <input  [(ngModel)]="textoBusqueda" type="text" class="form-control input-new-prod" id="addInput" placeholder="" 
-                            (blur)="onBlurInputItemAdd()" 
-                            (ngModelChange)="onChangeInputItemAdd($event)" 
-                            (keydown.arrowdown)="keyPressInputTexto($event)('down')" 
-                            (keydown.arrowup)="keyPressInputTexto($event)('up')" 
-                            (keydown.enter)="onEnterInputBuscProd($event)" 
-                            [disabled]="!comprobante.fechaComprobante || !comprobante.fechaComprobante.year">
-
-                        <popup-lista *ngIf="textoBusqueda && textoBusqueda.length > 0"
-                                        [items]="productosBusqueda.filtrados" 
-                                        [keysToShow]="['producto.descripcion', 'producto.codProducto']" 
-                                        [onClickItem]="onClickProductoListaLocal" 
-                                        [fatherPosition]="getOffsetOfAddInput()">
-                        </popup-lista>
-                    </div>
-                </td>
-            </tr> -->
 
         </tbody>
 

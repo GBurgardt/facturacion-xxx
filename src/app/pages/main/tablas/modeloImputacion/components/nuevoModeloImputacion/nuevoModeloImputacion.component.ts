@@ -149,8 +149,19 @@ export class NuevoModeloImputacion {
     }
 
     // Detalles
-    checkIfExisteDetallesCompra = () => this.detalles.filter(det => Number(det.idSisModulo) === 1).length > 0 
-    checkIfExisteDetallesVenta = () => this.detalles.filter(det => Number(det.idSisModulo) === 2).length > 0 
+    checkIfExisteDetallesCompra = () => 
+        this.detalles.filter(
+            det => 
+                Number(det.idSisModulo) === 1 || 
+                Number(det.idSisModulo) === 3
+        ).length > 0;
+    
+    checkIfExisteDetallesVenta = () => 
+        this.detalles.filter(
+            det => 
+                Number(det.idSisModulo) === 2 || 
+                Number(det.idSisModulo) === 3
+        ).length > 0;
 
     checkIfShowLiCompra = (liDet: ModeloDetalle) => {
         return Number(liDet.idSisModulo) === 2 ? 

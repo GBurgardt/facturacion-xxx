@@ -164,10 +164,19 @@ export class EditarModeloImputacion {
     }
 
     // Detalles
-    checkIfExisteDetallesCompra = () => this.recurso.modeloDetalle && this.recurso.modeloDetalle.filter(det => Number(det.idSisModulo) === 1).length > 0 
+    checkIfExisteDetallesCompra = () => 
+        this.recurso.modeloDetalle && this.recurso.modeloDetalle.filter(
+            det => 
+                Number(det.idSisModulo) === 1 || 
+                Number(det.idSisModulo) === 3
+        ).length > 0;
     
     checkIfExisteDetallesVenta = () => 
-        this.recurso.modeloDetalle && this.recurso.modeloDetalle.filter(det => Number(det.idSisModulo) === 2).length > 0 
+        this.recurso.modeloDetalle && this.recurso.modeloDetalle.filter(
+            det => 
+                Number(det.idSisModulo) === 2 ||
+                Number(det.idSisModulo) === 3
+        ).length > 0;
 
     checkIfShowLiCompra = (liDet: ModeloDetalle) => {
         return Number(liDet.idSisModulo) === 2 ? 

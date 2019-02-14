@@ -18,6 +18,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import gruposParametros from 'constantes/gruposParametros';
 import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
 import { Vendedor } from 'app/models/vendedor';
+import { PtoVenta } from 'app/models/ptoVenta';
+import { SisTipoOperacion } from 'app/models/sisTipoOperacion';
 
 @Component({
     selector: 'consulta-comprobante',
@@ -32,9 +34,9 @@ export class ConsultaComprobante {
     sisEstados: Observable<SisEstado[]>;
     depositos: Observable<Deposito[]>;
     vendedores: Observable<Vendedor[]>;
+    sisTipoOperaciones: Observable<SisTipoOperacion[]>;
     
     productos: { todos: Producto[]; filtrados: BehaviorSubject<Producto[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
-
     padrones: { todos: Padron[]; filtrados: BehaviorSubject<Padron[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
     
     padronEnfocadoIndex: number = -1;
@@ -42,7 +44,7 @@ export class ConsultaComprobante {
 
     // Lo uso cuando busca específicamente por nro y pto venta
     comprobante: Comprobante = new Comprobante();
-
+    
     fechasFiltro: {
         desde: DateLikePicker,
         hasta: DateLikePicker
@@ -58,6 +60,7 @@ export class ConsultaComprobante {
     padronSelec: Padron = new Padron();
     depositoSelec: Deposito = new Deposito();
     vendedorSelec: Vendedor = new Vendedor();
+    sisTipoOpSelect: SisTipoOperacion = new SisTipoOperacion();
 
     // compEncabezados: Observable<ComprobanteEncabezado[]> = Observable.of([]);
     compEncabezados: BehaviorSubject<ComprobanteEncabezado[]> = new BehaviorSubject([]);
@@ -70,9 +73,10 @@ export class ConsultaComprobante {
         private comprobanteService: ComprobanteService,
         private popupListaService: PopupListaService
     ) {
+        this.comprobante.numerador.ptoVenta = new PtoVenta();// Es necesario
+
         this.sisModulos = this.recursoService.getRecursoList(resourcesREST.sisModulos)();
         this.sisEstados = this.recursoService.getRecursoList(resourcesREST.sisEstados)();
-        // this.productos = this.recursoService.getRecursoList(resourcesREST.productos)();
         this.recursoService.getRecursoList(resourcesREST.productos)()
             .subscribe(productos => {
                 this.productos.todos = productos;
@@ -89,18 +93,20 @@ export class ConsultaComprobante {
 
         this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
         this.vendedores = this.recursoService.getRecursoList(resourcesREST.vendedor)();
+        this.sisTipoOperaciones = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)();
     }
 
     /**
      * Cuando se cambia un módulo se actualiza la lista de tiposComprobantes
      */
-    onChangeSisModulo = (moduloSelec: SisModulo) => 
+    onChangeSisModulo = (moduloSelec: SisModulo) => {
+
         this.tipoComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
             'sisModulo': moduloSelec.idSisModulos
-        })
-        // ([
-        //     moduloSelec.idSisModulos
-        // ]);
+        });
+
+        // this.sisTipoOperaciones
+    }
 
     /**
      * On click buscar
@@ -109,8 +115,10 @@ export class ConsultaComprobante {
         // Busco los encabezados
         // Me suscribo a los cambios de los encabezados y en cada actualizacion de estos, actualizo también todos los detalles
         // Aprovecho a fijarme si la cantidad es 0. En ese caso, muestro mensaje
-        this.comprobanteService.buscarComprobantes(this.comprobante)(this.fechasFiltro)(this.sisModuloSelec)(this.tipoComprobanteSelec)(this.productoSelec)(this.sisEstadoSelec)(this.padronSelec)(this.depositoSelec)(this.vendedorSelec)
+        this.comprobanteService.buscarComprobantes(this.comprobante)(this.fechasFiltro)(this.sisModuloSelec)(this.tipoComprobanteSelec)(this.productoSelec)(this.sisEstadoSelec)(this.padronSelec)(this.depositoSelec)(this.vendedorSelec)(this.sisTipoOpSelect)
+            
             .subscribe(encabezados => {
+
                 // Actualizo encabezados
                 this.compEncabezados.next(encabezados);
 

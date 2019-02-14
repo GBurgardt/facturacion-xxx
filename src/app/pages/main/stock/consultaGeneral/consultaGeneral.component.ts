@@ -58,7 +58,7 @@ export class ConsultaGeneral {
     constructor(
         private recursoService: RecursoService,
         public utilsService: UtilsService,
-        private popupListaService: PopupListaService,
+        public popupListaService: PopupListaService,
         private consultaGeneralService: ConsultaGeneralService
     ) {
         this.recursoService.getRecursoList(resourcesREST.productos)().subscribe(productos => {

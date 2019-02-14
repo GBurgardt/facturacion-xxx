@@ -47,6 +47,9 @@ import { EditarClientes } from 'app/pages/main/tablas/clientes/components/editar
 import { Cultivos } from './cultivos';
 import { NuevoCultivos } from 'app/pages/main/tablas/cultivos/components/nuevoCultivos';
 import { EditarCultivos } from './cultivos/components/editarCultivos';
+import { Marcas } from './marcas';
+import { NuevoMarca } from './marcas/components/nuevoMarca';
+import { EditarMarca } from './marcas/components/editarMarca';
 
 // noinspection TypeScriptValidateTypes
 const routes: Routes = [
@@ -93,6 +96,9 @@ const routes: Routes = [
             { path: 'cultivos', component: Cultivos },
             { path: 'cultivos/nuevo', component: NuevoCultivos, canDeactivate: [PendingChangesGuard] },
             { path: 'cultivos/editar/:idCultivo', component: EditarCultivos, canDeactivate: [PendingChangesGuard] },
+            { path: 'marcas', component: Marcas },
+            { path: 'marcas/nuevo', component: NuevoMarca, canDeactivate: [PendingChangesGuard] },
+            { path: 'marcas/editar/:idMarcas', component: EditarMarca, canDeactivate: [PendingChangesGuard] },
         ]
     }
 ];

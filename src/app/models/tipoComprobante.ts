@@ -45,6 +45,7 @@ export class TipoComprobante {
             this.letrasCodigos = tipoComprobante.letrasCodigos.map(lc => ({
                 letra: new SisLetra(lc.letra),
                 codigoAfip: new CodigoAfip(lc.codigoAfip),
+                numeradores: lc.numeradores.map(n => new Numerador(n)),
                 isEditing: false
             }));
             // debugger;

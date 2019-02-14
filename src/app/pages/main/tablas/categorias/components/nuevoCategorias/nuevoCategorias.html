@@ -24,6 +24,13 @@
 
         <div class="line line-end">
             <div class="btn-container">
+                    <button 
+                    routerLink="/pages/tablas/categorias"
+                    style="margin-right: 5px;"
+                    class="btn btn-secondary 
+                    btn-detalle">
+                    Cancelar
+                </button>
                 <button [disabled]="utilsService.checkIfIncomplete(recurso)(
                     ['idCategoria']
                 )()" (click)="onClickCrear()" type="submit" class="btn btn-primary" id="idBtnConfirmar">Confirmar</button>

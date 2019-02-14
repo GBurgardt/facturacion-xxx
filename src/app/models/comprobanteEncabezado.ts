@@ -16,8 +16,10 @@ export class ComprobanteEncabezado {
 
     // Desplegable de detalles
     showDetalles: boolean;
-
     isDownloading;
+    idCteTipo: number;
+
+    
 
     constructor(comprobanteEncabezado?: {
         idFactCab: number;
@@ -32,6 +34,7 @@ export class ComprobanteEncabezado {
         imputada: string;
         fechaEmi: string;
         detalle: any[];
+        idCteTipo: number;
     }) {
         if (comprobanteEncabezado) {
             this.idFactCab = comprobanteEncabezado.idFactCab;
@@ -48,8 +51,9 @@ export class ComprobanteEncabezado {
             this.detalle = comprobanteEncabezado.detalle.map(det => new ComprobanteDetalle(det));
 
             this.showDetalles = false;
-            
             this.isDownloading = false;
+
+            this.idCteTipo = comprobanteEncabezado.idCteTipo;
         } else {
             this.idFactCab = null;
             this.numero = null;
@@ -65,8 +69,9 @@ export class ComprobanteEncabezado {
             this.detalle = null;
             
             this.showDetalles = false;
-
             this.isDownloading = false;
+
+            this.idCteTipo = null;
         }
     }
 

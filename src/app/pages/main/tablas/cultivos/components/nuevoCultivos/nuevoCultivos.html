@@ -12,11 +12,15 @@
         </div>
         <div class="line line-end">
             <div class="btn-container">
-                <button [disabled]="utilsService.checkIfIncomplete(recurso)(['idCultivo'])()" 
-                        (click)="onClickCrear()" 
-                        type="submit" 
-                        class="btn btn-primary" 
-                        id="idBtnConfirmar">Confirmar</button>
+                <button 
+                    routerLink="/pages/tablas/cultivos" 
+                    style="margin-right: 5px;" class="btn btn-secondary 
+                    btn-detalle">
+                    Cancelar
+                </button>
+
+                <button [disabled]="utilsService.checkIfIncomplete(recurso)(['idCultivo'])()" (click)="onClickCrear()"
+                    type="submit" class="btn btn-primary" id="idBtnConfirmar">Confirmar</button>
             </div>
         </div>
     </ba-card>

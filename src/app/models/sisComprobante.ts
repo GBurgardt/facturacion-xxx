@@ -1,25 +1,62 @@
+import { SisModulo } from "./sisModulo";
+import { Moneda } from "./moneda";
+import sisCategorias from "constantes/sisCategorias";
+
 export class SisComprobante {
     idSisComprobantes: number;
     descripcion: string;
-    modulo: string;
-    imputacion: string;
+    orden: number;
+    modulo: SisModulo;
+    incluyeNeto: boolean;
+    incluyeIva: boolean;
+    referencia: string;
+    difCotizacion: boolean;
+    idSisOperacionComprobante: number;
+    
+    relacionadosMultiples: boolean;
+
+    monedas: Moneda[];
 
     constructor(sisComprobante?: {
         idSisComprobantes: number;
         descripcion: string;
-        modulo: string;
-        imputacion: string;
+        orden: number;
+        modulo: SisModulo;
+        incluyeNeto: boolean;
+        incluyeIva: boolean;
+        referencia: string;
+        idSisOperacionComprobante: number;
+        difCotizacion: boolean;
+        relacionadosMultiples: boolean;
+
+        monedas: any[];
     }) {
         if (sisComprobante) {
-            this.idSisComprobantes = sisComprobante.idSisComprobantes
-            this.descripcion = sisComprobante.descripcion
-            this.modulo = sisComprobante.modulo
-            this.imputacion = sisComprobante.imputacion
+            this.idSisComprobantes = sisComprobante.idSisComprobantes;
+            this.descripcion = sisComprobante.descripcion;
+            this.orden = sisComprobante.orden;
+            this.modulo = new SisModulo(sisComprobante.modulo);
+            this.incluyeNeto = sisComprobante.incluyeNeto;
+            this.incluyeIva = sisComprobante.incluyeIva;
+            this.referencia = sisComprobante.referencia;
+            this.idSisOperacionComprobante = sisComprobante.idSisOperacionComprobante;
+            this.difCotizacion = sisComprobante.difCotizacion;
+            this.relacionadosMultiples = sisComprobante.relacionadosMultiples;
+
+            this.monedas = sisComprobante.monedas.map(m => new Moneda(m));
         } else {
-            this.idSisComprobantes = null
-            this.descripcion = null
-            this.modulo = null
-            this.imputacion = null
+            this.idSisComprobantes = null;
+            this.descripcion = null;
+            this.orden = null;
+            this.modulo = null;
+            this.incluyeNeto = null;
+            this.incluyeIva = null;
+            this.referencia = null;
+            this.idSisOperacionComprobante = null;
+            this.difCotizacion = null;
+            this.relacionadosMultiples = null;
+
+            this.monedas = [];
         }
     }
 

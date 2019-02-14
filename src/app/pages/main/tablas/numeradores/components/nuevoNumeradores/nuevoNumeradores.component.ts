@@ -10,6 +10,7 @@ import { resourcesREST } from 'constantes/resoursesREST';
 
 import { DateLikePicker } from 'app/models/dateLikePicker';
 import { PtoVenta } from 'app/models/ptoVenta';
+import { LetraCodigo } from 'app/models/letraCodigo';
 
 @Component({
     selector: 'nuevo-numeradores',
@@ -19,20 +20,18 @@ import { PtoVenta } from 'app/models/ptoVenta';
 
 export class NuevoNumeradores {
     recurso: Numerador = new Numerador();
-    cteTipos: Observable<TipoComprobante[]>;
     ptoVentas: Observable<PtoVenta[]>;
+    letrasCodigos: Observable<LetraCodigo[]>;
 
-    addNewNumero = false;
+    tipCustomPtoVenta = false;
 
     constructor(
         private recursoService: RecursoService,
         public utilsService: UtilsService,
         private router: Router
     ) {
-        this.cteTipos = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
-            'condicion': 'propio'
-        });
         this.ptoVentas = this.recursoService.getRecursoList(resourcesREST.ptoVenta)();
+        this.letrasCodigos = this.recursoService.getRecursoList(resourcesREST.letraCodigo)();
     }
 
     ngOnInit() {
@@ -46,8 +45,6 @@ export class NuevoNumeradores {
 
     onClickCrear = async () => {
         try {
-            const fa = this.recurso;
-            debugger;
 
             const resp: any = await this.recursoService.setRecurso(this.recurso)();
     
@@ -67,14 +64,17 @@ export class NuevoNumeradores {
         }
     }
 
-    onClickAddNumero = () => {
-        this.addNewNumero = !this.addNewNumero;
-
-        this.recurso.ptoVenta = new PtoVenta();
-    }
-
     onItemChangedFecha(e, keyFecha) {
         this.recurso[keyFecha] = new DateLikePicker(null, e)
     }
 
+    customPtoVenta = false;
+    /**
+     * Altera entre select e input
+     */
+    onClickCustomPtoVenta = () => {
+        this.customPtoVenta = !this.customPtoVenta;
+
+        this.recurso.ptoVenta = new PtoVenta();
+    }
 }

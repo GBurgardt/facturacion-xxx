@@ -37,7 +37,10 @@
                 padding: 5px 3px 3px;
             }
         }
+
     }
+    
+    
 
     .lista-filtrada-proveedores {
         position: absolute;
@@ -219,6 +222,12 @@
     .checkbox-vend {
         padding: 4px 2px 0px;
     }
+
+    .spinner-container {
+        padding-top: 5.3px;
+        right: 21px;
+        position: absolute;
+    }
 }
 
 
@@ -229,4 +238,15 @@
 
 .inline-flex {
     display: inline-flex
+}
+
+
+
+:host /deep/ .emision-remitos {
+
+    .tabs-ingreso {
+        .tab-content {
+            padding: 2px 0px !important;
+        }
+    }
 }

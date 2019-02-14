@@ -14,6 +14,8 @@ import { Padron } from 'app/models/padron';
 import { ActivatedRoute } from '@angular/router';
 import { LocalStorageService } from './localStorageService';
 import { PtoVenta } from 'app/models/ptoVenta';
+import { Numerador } from 'app/models/numerador';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class UtilsService {
@@ -96,7 +98,9 @@ export class UtilsService {
         }
 
         // Mostrar mensaje de error
-        this.showModal(errorBody.control.codigo)(errorBody.control.descripcion)()();
+        this.showModal(errorBody.control.codigo)(errorBody.control.descripcion)()()
+
+        return Observable.throw(null);
     }
 
     /**
@@ -313,9 +317,37 @@ export class UtilsService {
         arr.reduce((x, y) => [...x, ...f(y)], [])
 
     parseDecimal = (key) => {
+        
+        // const nro = Number.parseFloat(key);
+
+        // if (nro) {
+        //     return this.toFixedTrunc(Number.parseFloat(key), 3);
+        // } else {
+        //     return 0;
+        // }
+
         const nro = Number.parseFloat(key);
+
         if (nro && Number.parseFloat(key).toFixed(2)) {
             return Number.parseFloat(key).toFixed(2);
+        } else {
+            return 0;
+        }
+    }
+
+    toFixedTrunc = (num, fixed) => {
+        var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
+        return num.toString().match(re)[0];
+    }
+
+    /**
+     * Trunca hasta 3
+     */
+    toTrunc3 = (key) => {
+        const nro = Number.parseFloat(key);
+
+        if (nro) {
+            return this.toFixedTrunc(Number.parseFloat(key), 3);
         } else {
             return 0;
         }
@@ -349,7 +381,7 @@ export class UtilsService {
     }
 
 
-    compareWithGeneric = (item1: any, item2: any) => {
+    compareWithAbsolut = (item1: any, item2: any) => {
         // if (item2 && item2 !== '21012200') debugger;
         return item1 && item2 && (
             item1 === item2 ||
@@ -428,9 +460,9 @@ export class UtilsService {
         }, 100);
     }
 
-    numeroObjectToString = (ptoVenta: PtoVenta) => 
-        ptoVenta && ptoVenta.ptoVenta && ptoVenta.ptoVenta ?
-            `${ptoVenta.ptoVenta.toString().padStart(4, '0')}${ptoVenta.ptoVenta.toString().padStart(8, '0')}` :
+    numeroObjectToString = (numerador: Numerador) => 
+        numerador && numerador.ptoVenta && numerador.numerador ?
+            `${numerador.ptoVenta.ptoVenta.toString().padStart(4, '0')}${numerador.numerador.toString().padStart(8, '0')}` :
             `XXXXXXXXXXXX`
     
 
@@ -471,4 +503,25 @@ export class UtilsService {
         }
     }
     
+    /**
+     * Dada una key retorna un compareWith generico donde compara las dos key de los dos objetos
+     */
+    compareWithGeneric = (keyToCompare) => (a, b) => a && b && a[keyToCompare] && b[keyToCompare] ?
+        a[keyToCompare] === b[keyToCompare] : null
+
+    /**
+     * Se fija si es un numero valido. Si NO es, entonces enfoca de nuevo o limpia el input
+     */
+    onBlurInputNumber = (ev) => {
+        const currentValue = ev && ev.currentTarget ? 
+            Number(ev.currentTarget.value) : null;
+
+        // Si NO es un numero..
+        if (Number.isNaN(currentValue)) {
+            ev.currentTarget.focus();
+            return false
+        } else {
+            return true
+        }
+    }
 }

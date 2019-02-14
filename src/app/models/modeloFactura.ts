@@ -4,7 +4,7 @@ export class ModeloFactura {
     importeTotal: number;
     porcentaje: number;
     idSisTipoModelo: number;
-    // idProducto: number;
+    baseImponible: number;
 
     constructor(modeloFactura?: {
         cuentaContable: string;
@@ -12,7 +12,7 @@ export class ModeloFactura {
         importeTotal: number;
         porcentaje: number;
         idSisTipoModelo: number;
-        // idProducto?: number;
+        baseImponible: number;
     }) {
         if (modeloFactura) {
             this.cuentaContable = modeloFactura.cuentaContable
@@ -20,16 +20,14 @@ export class ModeloFactura {
             this.importeTotal = modeloFactura.importeTotal
             this.porcentaje = modeloFactura.porcentaje
             this.idSisTipoModelo = modeloFactura.idSisTipoModelo
-
-            // this.idProducto = modeloFactura.idProducto
+            this.baseImponible = modeloFactura.baseImponible
         } else {
             this.cuentaContable = null
             this.descripcion = null
             this.importeTotal = null
             this.porcentaje = null
             this.idSisTipoModelo = null
-
-            // this.idProducto = null
+            this.baseImponible = null
         }
     }
 }

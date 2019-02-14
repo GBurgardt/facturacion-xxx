@@ -184,6 +184,12 @@
             }
         }
     }
+
+    .spinner-prov-container {
+        padding-top: 5.3px;
+        right: 21px;
+        position: absolute;
+    }
 }
 
 
@@ -213,5 +219,14 @@
         font-size: 1rem;
         padding-bottom: 3px;
         font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+}
+
+:host /deep/ .comprobante-compra {
+
+    .tabs-ingreso {
+        .tab-content {
+            padding: 2px 0px !important;
+        }
     }
 }

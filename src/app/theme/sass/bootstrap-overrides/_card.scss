@@ -62,6 +62,7 @@ $card-header-font-size: 16px;
 .card {
   > .card-body {
     padding: 15px 22px;
+    // padding: 7px 22px 15px;
     height: 100%;
   }
   > .card-header {
@@ -96,6 +97,16 @@ $card-header-font-size: 16px;
   opacity: 0.9;
   color: $content-text;
 }
+
+.card-header-min {
+  padding: 8px 15px;
+  height: 29px;
+
+  .card-title {
+    font-size: 0.8rem;
+  }
+}
+
 
 .card-primary {
   > .card-header {
@@ -172,4 +183,13 @@ $card-header-font-size: 16px;
 
 .light-text {
   font-weight: $font-light;
+}
+
+
+
+.toggle-btn-extra {
+  position: absolute;
+  left: 96.3%;
+  padding: 0.6rem 1rem 0;
+  cursor: pointer;
 }

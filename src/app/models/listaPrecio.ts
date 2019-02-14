@@ -51,6 +51,7 @@ export class ListaPrecio {
             this.idMoneda = new Moneda(listaPrecio.idMoneda);
             this.listaPrecioDetCollection = listaPrecio.listaPrecioDetCollection.map(detalle => new DetalleProducto(detalle));
             this.formasPago = listaPrecio.formasPago.map(fp => new FormaPago(fp));
+            
         } else {
             this.idListaPrecio = null;
             this.codigoLista = null;
@@ -66,7 +67,7 @@ export class ListaPrecio {
             // this.idMoneda = new Moneda();
             this.idMoneda = null;
             this.listaPrecioDetCollection = [];
-            this.formasPago = []
+            this.formasPago = [];
         }
     }
 

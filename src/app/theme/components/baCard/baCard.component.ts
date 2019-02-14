@@ -10,6 +10,9 @@ export class BaCard {
     @Input() cardType: String;
 
     @Input() toggleBtn: Boolean;
+    @Input() toggleBtnExtra: Boolean;
+
+    @Input() headerMin: Boolean = false;
 
     showCard: Boolean = true;
 

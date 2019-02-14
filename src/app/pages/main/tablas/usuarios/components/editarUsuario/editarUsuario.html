@@ -67,15 +67,27 @@
             </div>
         </div>
 
-        <button [disabled]="utilsService.checkIfIncomplete(recurso)([
-                                'email',
-                                'telefono'
-                            ])()"
-                (click)="onClickEditarUsuario()" 
-                type="submit" 
-                class="btn btn-primary">
-            Confirmar
-        </button>
+        <div style="display: flex; justify-content: flex-end;">
+
+                <button 
+                    routerLink="/pages/tablas/usuarios"
+                    style="margin-right: 5px;"
+                    class="btn btn-secondary 
+                    btn-detalle">
+                    Cancelar
+                </button>
+
+                <button [disabled]="utilsService.checkIfIncomplete(recurso)([
+                                        'email',
+                                        'telefono'
+                                    ])()"
+                        (click)="onClickEditarUsuario()" 
+                        type="submit" 
+                        class="btn btn-primary">
+                    Confirmar
+                </button>
+        </div>
+
     </ba-card>
 
 </div>

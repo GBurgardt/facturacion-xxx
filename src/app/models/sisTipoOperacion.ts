@@ -1,3 +1,5 @@
+import { SisComprobante } from "./sisComprobante";
+
 export class SisTipoOperacion {
     idSisTipoOperacion: number;
     descripcion: string;
@@ -15,11 +17,13 @@ export class SisTipoOperacion {
             this.descripcion = sisTipoOperacion.descripcion;
             this.modulo = sisTipoOperacion.modulo;
             this.canje = sisTipoOperacion.canje;
+            
         } else {
             this.idSisTipoOperacion = null;
             this.descripcion = null;
             this.modulo = null;
             this.canje = null;
+            
         }
     }
 

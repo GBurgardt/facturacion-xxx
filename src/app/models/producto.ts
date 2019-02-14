@@ -5,6 +5,7 @@ import { ModeloCab } from "app/models/modeloCab";
 import { Marca } from "./marca";
 import { Cultivo } from "app/models/cultivo";
 import { Rubro } from "./rubro";
+import { Moneda } from "./moneda";
 
 export class Producto {
     idProductos: number;
@@ -35,6 +36,8 @@ export class Producto {
 
     cultivos: Cultivo[]
 
+    moneda: Moneda;
+
     constructor (producto?: {
         idProductos: number;
         codProducto: string;
@@ -63,6 +66,8 @@ export class Producto {
         marca: any;
 
         cultivos: any[];
+
+        moneda: any;
     }) {
         if (producto) {
             this.idProductos = producto.idProductos;
@@ -92,7 +97,9 @@ export class Producto {
 
             this.cultivos = producto.cultivos.map(cult => new Cultivo(cult));
 
-            this.rubro = new Rubro(producto.rubro)
+            this.rubro = new Rubro(producto.rubro);
+
+            this.moneda = new Moneda(producto.moneda);
         } else {
             this.idProductos = null;       
             this.codProducto = null;       
@@ -105,23 +112,31 @@ export class Producto {
             this.traReceta = false;         
             this.traInforma = false;        
             this.gtin = null;              
-            
             this.puntoPedido = Number(0).toFixed(2);
             this.costoReposicion = Number(0).toFixed(2);
             this.precioVentaProv = Number(0).toFixed(2);
-
             this.observaciones = null;     
-            this.IVA = new IVA();               
+            this.editar = null;
+            this.cultivos = [];
+
+            
+            // this.IVA = null;
+            // this.subRubro = null;
+            // this.unidadCompra = null;
+            // this.unidadVenta = null;
+            // this.modeloCab = null;
+            // this.marca = null;
+            // this.moneda = null;
+            
+            this.IVA = new IVA();  
             this.subRubro = new SubRubro();          
             this.unidadCompra = new Unidad();      
             this.unidadVenta = new Unidad();      
-
-            this.editar = null;
             this.modeloCab = new ModeloCab();
-
             this.marca = new Marca();
+            this.moneda = new Moneda();
+            
 
-            this.cultivos = [];
         }
     }
 

@@ -35,6 +35,18 @@
                     </div>
                 </td>
 
+                <td *ngIf="enableEditDelete && !utilsService.getCurrentMenu()" class="btn-container">
+                    <div (click)="edit(item)" class="btn-accion btn-editar">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </div>
+                    <div (click)="remove(item)" class="btn-accion btn-remover">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </div>
+                    <div *ngIf="checkIfEditOn(item)" (click)="confirmEdit(item)" class="btn-accion btn-remover">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                    </div>
+                </td>
+
                 <td *ngFor="let col of columns" [ngClass]="col.customClass ? col.customClass : 'text-align: left;'">
                     <div *ngIf="!col.subkey">
                         <div *ngIf="!col.enEdicion || col.enEdicion !== item[utilsService.getNameIdKeyOfResource(item)]">

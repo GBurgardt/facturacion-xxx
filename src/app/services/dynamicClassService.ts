@@ -18,10 +18,10 @@ import { ModeloCab } from "app/models/modeloCab";
 import { CteFechas } from "app/models/cteFechas";
 import { Numerador } from "app/models/numerador";
 import { Categoria } from "app/models/categoria";
-import { ClienteModPost } from "app/models/clienteModPost";
 import { Cliente } from "app/models/cliente";
 import { Cultivo } from "app/models/cultivo";
 import { Vendedor } from "app/models/vendedor";
+import { Marca } from "app/models/marca";
 
 const classes = {
     Usuario,
@@ -46,7 +46,8 @@ const classes = {
     Categoria,
     Cliente,
     Cultivo,
-    Vendedor
+    Vendedor,
+    Marca
 };
 
 export default function dynamicClass (name) {

@@ -38,7 +38,6 @@ export class PopupLista {
                 this.processInfiniteScroll();
             } else {
                 this.itemsReduced = resp;
-                // debugger;
             }
         });
     }

@@ -50,6 +50,9 @@ import { EditarClientes } from './clientes/components/editarClientes';
 import { Cultivos } from './cultivos';
 import { NuevoCultivos } from './cultivos/components/nuevoCultivos';
 import { EditarCultivos } from './cultivos/components/editarCultivos';
+import { Marcas } from './marcas';
+import { NuevoMarca } from './marcas/components/nuevoMarca';
+import { EditarMarca } from './marcas/components/editarMarca';
 
 @NgModule({
     imports: [
@@ -97,7 +100,10 @@ import { EditarCultivos } from './cultivos/components/editarCultivos';
         EditarClientes,
         Cultivos,
         NuevoCultivos,
-        EditarCultivos
+        EditarCultivos,
+        Marcas,
+        NuevoMarca,
+        EditarMarca
     ],
     providers: [
         DataTablesService,

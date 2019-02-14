@@ -34,12 +34,14 @@ export class ModeloImputacion {
             {
                 nombre: 'descripcion',
                 key: 'descripcion',
-                ancho: '15%'
+                ancho: '15%',
+                customClass: 'text-left'
             },
             {
                 nombre: 'detalle',
                 key: 'detalleInfo',
-                ancho: '75%'
+                ancho: '75%',
+                customClass: 'text-left'
             }
         ]
 

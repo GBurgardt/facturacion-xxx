@@ -1,7 +1,7 @@
 import { Routes, RouterModule } from '@angular/router';
 import { Comprobantes } from '.';
 import { ConsultaComprobante } from './consultaComprobante';
-
+import { ConsultaImputaciones } from './consultaImputaciones';
 
 // noinspection TypeScriptValidateTypes
 const routes: Routes = [
@@ -10,6 +10,7 @@ const routes: Routes = [
         component: Comprobantes,
         children: [
             { path: 'consulta', component: ConsultaComprobante },
+            { path: 'imputaciones', component: ConsultaImputaciones }
         ]
     }
 ];

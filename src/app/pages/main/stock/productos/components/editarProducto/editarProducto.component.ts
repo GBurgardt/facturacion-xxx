@@ -16,6 +16,7 @@ import { Rubro } from 'app/models/rubro';
 import { ModeloCab } from '../../../../../../models/modeloCab';
 import { Marca } from '../../../../../../models/marca';
 import { Cultivo } from 'app/models/cultivo';
+import { Moneda } from 'app/models/moneda';
 
 @Component({
     selector: 'editar-producto',
@@ -37,20 +38,21 @@ export class EditarProducto {
     
     cultivos: Cultivo[] = [];
 
+    monedas: Observable<Moneda[]>;
+
     constructor(
         private recursoService: RecursoService,
         public utilsService: UtilsService,
         private router: Router,
         private route: ActivatedRoute
     ) {
-        // Inicializo los valores de los desplegables
         this.rubros = this.recursoService.getRecursoList(resourcesREST.rubros)();
-        
         this.unidadesCompra = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.unidadesVenta = this.recursoService.getRecursoList(resourcesREST.sisUnidad)();
         this.ivas = this.recursoService.getRecursoList(resourcesREST.sisIVA)();
         this.modelosCab = this.recursoService.getRecursoList(resourcesREST.modeloCab)();
         this.marcas = this.recursoService.getRecursoList(resourcesREST.marcas)();
+        this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
 
         this.recursoService.getRecursoList(resourcesREST.cultivo)().toPromise()
             .then(cultivos => this.cultivos = cultivos)
@@ -64,7 +66,7 @@ export class EditarProducto {
                 .subscribe(recurso =>{
                     this.recurso = recurso;
                     this.recursoOriginal = Object.assign({}, recurso);
-
+                    
                     this.subRubros = this.recursoService.getRecursoList(resourcesREST.subRubros)({
                         idRubro: this.recurso.subRubro.rubro.idRubro
                     });

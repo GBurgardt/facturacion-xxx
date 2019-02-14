@@ -15,6 +15,13 @@
             </div>
         </div>
         
+        <button 
+            routerLink="/pages/tablas/sub-rubros"
+            style="margin-right: 5px;"
+            class="btn btn-secondary 
+            btn-detalle">
+            Cancelar
+        </button>
         <button [disabled]="utilsService.checkIfIncomplete(recurso)()()"
                 (click)="onClickEditar()" type="submit" class="btn btn-primary">Confirmar</button>
     </ba-card>

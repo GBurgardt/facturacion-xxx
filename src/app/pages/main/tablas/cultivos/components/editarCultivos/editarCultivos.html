@@ -1,5 +1,5 @@
 <div class="editar-cultivos">
-    <ba-card cardTitle="Editar cultivo" baCardClass="with-scroll" class="cultivos-card">
+    <ba-card cardTitle="Modificar cultivo" baCardClass="with-scroll" class="cultivos-card">
         <div class="line">
             <div class="form-group item">
                 <label for="idDescripcion">Descripción:</label>
@@ -12,6 +12,14 @@
         </div>
         <div class="line line-end">
             <div class="btn-container">
+                <button 
+                    routerLink="/pages/tablas/cultivos"
+                    style="margin-right: 5px;"
+                    class="btn btn-secondary 
+                    btn-detalle">
+                    Cancelar
+                </button>
+                
                 <button [disabled]="utilsService.checkIfIncomplete(recurso)(['idCultivo'])()" (click)="onClickEditar()" type="submit" class="btn btn-primary"
                     id="idBtnConfirmar">Confirmar</button>
             </div>

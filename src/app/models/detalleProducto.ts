@@ -7,9 +7,9 @@ export class DetalleProducto {
     precio: number;
     producto: Producto;
     observaciones: string;
-    
-    porcentajeInf: number;
-    porcentajeSup: number;
+
+    cotaInfPorce: number;
+    cotaSupPorce: number;
 
     constructor (detalleProducto?: {
         cotaInf: number;
@@ -17,6 +17,9 @@ export class DetalleProducto {
         precio: number;
         idProducto: any;
         observaciones: string;
+
+        cotaInfPorce: number;
+        cotaSupPorce: number;
     }) {
         if (detalleProducto) {
             this.idDetalleProducto = detalleProducto.idProducto.idProductos;
@@ -25,6 +28,9 @@ export class DetalleProducto {
             this.precio = detalleProducto.precio;
             this.producto = new Producto(detalleProducto.idProducto);
             this.observaciones = detalleProducto.observaciones;
+
+            this.cotaInfPorce = detalleProducto.cotaInfPorce;
+            this.cotaSupPorce = detalleProducto.cotaSupPorce;
         } else {
             this.idDetalleProducto = null;
             this.cotaInf = null;
@@ -32,6 +38,9 @@ export class DetalleProducto {
             this.precio = null;
             this.producto = new Producto();
             this.observaciones = null;
+
+            this.cotaInfPorce = null;
+            this.cotaSupPorce = null;
         }
     }
 

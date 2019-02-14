@@ -12,7 +12,7 @@ import { SisTipoOperacion } from 'app/models/sisTipoOperacion';
 import { TipoComprobante } from 'app/models/tipoComprobante';
 import { Moneda } from '../../../../models/moneda';
 import { ProductoPendiente } from 'app/models/productoPendiente';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Cotizacion } from '../../../../models/cotizacion';
 import { Comprobante } from 'app/models/comprobante';
 import { ComprobanteRelacionado } from 'app/models/comprobanteRelacionado';
@@ -30,6 +30,9 @@ import { TablaCompra } from '../../../../models/tablaCompra';
 import { Numerador } from 'app/models/numerador';
 import sisModulos from 'constantes/sisModulos';
 import { ComprobanteEncabezado } from 'app/models/comprobanteEncabezado';
+import { PtoVenta } from 'app/models/ptoVenta';
+import { SisLetra } from 'app/models/sisLetra';
+import { LetraCodigo } from 'app/models/letraCodigo';
 
 @Component({
     selector: 'comprobante-compra',
@@ -54,7 +57,6 @@ export class ComprobanteCompra implements AfterViewInit {
     proveedorSeleccionado: Padron = new Padron();
     comprobante: Comprobante = new Comprobante();
     comprobanteRelacionado: ComprobanteRelacionado = new ComprobanteRelacionado()
-    // factura: Factura = new Factura();
     factura: Comprobante = new Comprobante();
     cotizacionDatos: {
         cotizacion: Cotizacion,
@@ -64,12 +66,11 @@ export class ComprobanteCompra implements AfterViewInit {
     depositoSelec: Deposito;
     tipoOpSelect: SisTipoOperacion;
 
-    // Inhdice del producto enfocado del popup
+    // Indice del producto enfocado del popup
     proveedorEnfocadoIndex: number = -1;
-
     // Suma de todos los subtotales
     sumatoriaSubtotales: number = 0;
-
+    // Fps seleccionadas
     formasPagoSeleccionadas: FormaPago[] = [];
 
     /////////////////////////////////////////////
@@ -77,17 +78,18 @@ export class ComprobanteCompra implements AfterViewInit {
     /////////////////////////////////////////////
     tiposComprobantes: Observable<TipoComprobante[]>;
     tiposOperacion: Observable<SisTipoOperacion[]>;
-    monedas: Observable<Moneda[]>;
+    // monedas: Observable<Moneda[]>;
+    monedas: Subject<Moneda[]> = new Subject();
     depositos: Observable<Deposito[]>;
     tiposComprobantesFactura: Observable<TipoComprobante[]>;
-
     tiposComprobantesRel: Observable<TipoComprobante[]>;
 
-    // Lista de proveedores completa (necesaria para filtrar) y filtrada
+
     proveedores: {
-        todos: Padron[];
         filtrados: BehaviorSubject<Padron[]>;
-    } = {todos: [], filtrados: new BehaviorSubject([])}
+    } = {
+        filtrados: new BehaviorSubject([])
+    }
 
     letras: string[] = [];
 
@@ -98,8 +100,10 @@ export class ComprobanteCompra implements AfterViewInit {
      * Blurs customs
      */
     customsBlurProduct = {
-        // calculateImporte: (item: ProductoPendiente) => item.importe = item.pendiente * item.precio
-        calculateImporte: (item: ProductoPendiente) => item.importe = item.pendiente * Number(item.producto.costoReposicion)
+        calculateImporte: (item: ProductoPendiente, ev) => {
+            item.importe = item.pendiente * Number(item.precio);
+            this.utilsService.onBlurInputNumber(ev);
+        }
     }
 
     /////////////////////////////////////////////
@@ -115,12 +119,6 @@ export class ComprobanteCompra implements AfterViewInit {
     popupLista: any = {
         onClickListProv: (prove: Padron) => {
             this.proveedorSeleccionado = new Padron({...prove});
-            // this.comprobanteCompraService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
-
-            // Intento obtener las formas de pago
-            if(this.comprobante.fechaComprobante) {
-                this.dataTablaFormasPago = this.comprobanteCompraService.getFormasPago(this.comprobante.fechaComprobante);
-            }
 
             // Focus siguiente elemento
             document.getElementById('tipoOperacionSelect') ? document.getElementById('tipoOperacionSelect').focus() : null;
@@ -139,33 +137,31 @@ export class ComprobanteCompra implements AfterViewInit {
         private popupListaService: PopupListaService,
         configProgressBar: NgbProgressbarConfig
     ) {
-
-        ////////// Configuraciones ///////////
-        // customize default values of progress bars used by this component tree
+        ////////// Barra de progreso ///////////
         configProgressBar.max = 100;
         configProgressBar.striped = true;
         configProgressBar.animated = true;
         configProgressBar.type = 'success';
-
 
         ////////// Listas desplegables  //////////
         this.tiposOperacion = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)({
             'sisModulo': 1
         });
 
-        this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
+        // this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
         this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
 
         this.tiposComprobantesFactura = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
             'sisComprobante': 2
         });
 
+        this.dataTablaFormasPago = this.recursoService.getRecursoList(resourcesREST.formaPago)();
 
         ////////// Proveedores  //////////
         this.recursoService.getRecursoList(resourcesREST.padron)({
             grupo: gruposParametros.proveedor
         }).subscribe(proveedores => {
-            this.proveedores.todos = proveedores;
+            // this.proveedores.todos = proveedores;
             this.proveedores.filtrados.next(proveedores);
         });
 
@@ -185,7 +181,6 @@ export class ComprobanteCompra implements AfterViewInit {
     }
 
     ///////////////////////////////// Eventos OnClick /////////////////////////////////
-
     onClickRemove = (prodSelect: ProductoPendiente) => {
         _.remove(this.tablas.datos.productosPend, (prod: ProductoPendiente) => {
             // return prod.producto.idProductos === prodSelect.producto.idProductos;
@@ -197,6 +192,7 @@ export class ComprobanteCompra implements AfterViewInit {
     };
 
     onClickEdit = (tipoColumnas) => (itemSelect: any) => {
+        
 
         this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
             let newTabla = tabla;
@@ -224,11 +220,25 @@ export class ComprobanteCompra implements AfterViewInit {
             const elementFocus: any = document.getElementsByClassName(inputFocusClass);
             elementFocus && elementFocus[0] ? elementFocus[0].focus() : null
         });
+
+
+        // Cuando edita alguna forma de pago, se sugiere el Total Cte en monto
+        if (tipoColumnas && tipoColumnas === 'columnasDetallesFp') {
+            itemSelect.monto = this.utilsService.parseDecimal(this.cotizacionDatos.total + this.sumatoriaSubtotales);
+        }
     };
 
+    actualizarSumatoriaSubto = () => {
+        this.sumatoriaSubtotales = 
+            this.comprobante && this.comprobante.tipo && this.comprobante.tipo.comprobante &&
+            this.comprobante.tipo.comprobante.incluyeIva ? 
+                _.sumBy(
+                    this.tablas.datos.modelosFactura,
+                    (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
+                ) : 0
+    }
+
     onClickConfirmEdit = (tipoColumnas) => (itemSelect: any) => {
-
-
         // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
         this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
             let newTabla = tabla;
@@ -243,11 +253,7 @@ export class ComprobanteCompra implements AfterViewInit {
         if (tipoColumnas === 'columnasFactura') {
 
             // Actualizo el Total Comprobante sumando todos los precios nuevamente (no le sumo directamente el precio editado porque no es un precio nuevo, sino que ya está y debería sumarle la diferencia editada nomás)
-            this.sumatoriaSubtotales = 
-                _.sumBy(
-                    this.tablas.datos.modelosFactura,
-                    (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
-                )
+            this.actualizarSumatoriaSubto();
 
         }
 
@@ -255,12 +261,11 @@ export class ComprobanteCompra implements AfterViewInit {
         if (tipoColumnas === 'columnasProductos') {
             // Si el importe es 0, es la primer edicion por lo que calculo el importe
             if (itemSelect.importe === 0) {
-                // itemSelect.importe = itemSelect.pendiente * itemSelect.precio
-                itemSelect.importe = itemSelect.pendiente * Number(itemSelect.producto.costoReposicion)
+                itemSelect.importe = itemSelect.pendiente * Number(itemSelect.precio)
             } else {
                 // Si el importe es igual al importe previo, entonces el importe NO se editó, por lo que seguramte se editó la cantidad o el precio y debo recalcular el importe
                 if (itemSelect.importe === itemSelect.auxPreviusImporte) {
-                    itemSelect.importe = itemSelect.pendiente * Number(itemSelect.producto.costoReposicion)
+                    itemSelect.importe = itemSelect.pendiente * Number(itemSelect.precio)
                 }
             }
             // Guardo el importe para usarlo en la proxima edicion
@@ -280,7 +285,15 @@ export class ComprobanteCompra implements AfterViewInit {
      * Busca los productos pendientes de acuerdo al comprobante relacionado
      */
     onClickBuscarPendientes = () =>
-        this.comprobanteCompraService.buscarPendientes(this.proveedorSeleccionado)(this.comprobanteRelacionado)
+        this.comprobanteCompraService.buscarPendientes(
+            this.proveedorSeleccionado
+        )(
+            this.comprobanteRelacionado
+        )(
+            this.comprobante
+        )(
+            this.tipoOpSelect
+        )
             .subscribe(
                 prodsPend => {
                     // Agrego los productos
@@ -305,12 +318,12 @@ export class ComprobanteCompra implements AfterViewInit {
      */
     onClickProductoLista = (prodSelec: ProductoReducido) => {
         // Busco el producto seleccionado
-        this.comprobanteCompraService.buscarProducto(prodSelec.idProductos).subscribe(prodEnc => {
-            // debugger;
-            // Le seteo el nroComprobante
+        this.comprobanteCompraService.buscarProducto(prodSelec.idProductos, this.comprobante.moneda.idMoneda).subscribe(prodEnc => {
+            
             const auxProdSelect = Object.assign({}, prodEnc);
-            // auxProdSelect.numero = Number(this.comprobante.numerador.numero.ptoVenta + this.comprobante.numerador.numero.numero).toString();
-            auxProdSelect.numero = this.utilsService.numeroObjectToString(this.comprobante.numerador.ptoVenta)
+
+            // Seteo el nro del comprobante actual
+            auxProdSelect.numero = this.utilsService.numeroObjectToString(this.comprobante.numerador)
             
             // Checkeo que no exista
             const existeProd = this.tablas.datos.productosPend.find(
@@ -351,15 +364,26 @@ export class ComprobanteCompra implements AfterViewInit {
         tipoModal: 'confirmation'
     });
 
-    fechaComprobanteInvalida = () => this.comprobante.numerador && 
+    /**
+     * Valida que la fecha ingresada esté en el intervalo permitido por el numerador
+     */
+    fechaComprobanteInvalida = () => 
+        this.comprobante.numerador && 
         this.comprobante.numerador.fechaApertura &&
         this.comprobante.numerador.fechaCierre &&
         !moment(
             this.utilsService.dateLikePickerToDate(this.comprobante.fechaComprobante)
         ).isBetween(
-            moment(this.comprobante.numerador.fechaApertura),
-            moment(this.comprobante.numerador.fechaCierre)
+            moment(
+                this.utilsService.dateLikePickerToDate(this.comprobante.numerador.fechaApertura)
+            ),
+            moment(
+                this.utilsService.dateLikePickerToDate(this.comprobante.numerador.fechaCierre)
+            ), 
+            'days', 
+            '[]'
         )
+    
 
     /**
      * Valida y graba el comprobante
@@ -373,31 +397,32 @@ export class ComprobanteCompra implements AfterViewInit {
             if (
                 this.fechaComprobanteInvalida()
             ) {
-                // Si se sale del intervalo permitido, seteo la fecha como fechaApertura
-                this.comprobante.fechaComprobante = new DateLikePicker(
-                    new Date(this.comprobante.numerador.fechaApertura)
-                );
                 // Y le aviso
                 this.utilsService.showModal('Error de fecha')(
                     `Fecha inválida para este punto de venta (Intervalo permitido: ${
-                        moment(this.comprobante.numerador.fechaApertura).format('DD-MM-YYYY')
+                        moment(
+                            this.utilsService.dateLikePickerToDate(this.comprobante.numerador.fechaApertura)
+                        ).format('DD-MM-YYYY')
                     } al ${
-                        moment(this.comprobante.numerador.fechaCierre).format('DD-MM-YYYY')
+                        moment(
+                            this.utilsService.dateLikePickerToDate(this.comprobante.numerador.fechaCierre)
+                        ).format('DD-MM-YYYY')
                     })`
                 )()()
+
+                return;
             } else {
                 // Spinner bar
                 this.valueGuardandoCompro = 50;
     
                 // Actualizo las facturas antes de confirmar
-                this.comprobanteCompraService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
+                this.comprobanteCompraService.buscaModelos(
+                    this.tablas.datos.productosPend,
+                    this.comprobante.moneda ? this.comprobante.moneda.idMoneda : null
+                ).subscribe(modelProds => {
                     this.tablas.datos.modelosFactura = modelProds;
         
-                    this.sumatoriaSubtotales = 
-                        _.sumBy(
-                            this.tablas.datos.modelosFactura,
-                            (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
-                        );
+                    this.actualizarSumatoriaSubto();
     
                     this.comprobanteCompraService.confirmarYGrabarComprobante(this.comprobante)
                         (this.comprobanteRelacionado)
@@ -409,6 +434,11 @@ export class ComprobanteCompra implements AfterViewInit {
                         (this.tablas.datos.detallesFormaPago)
                         (this.factura)
                         (this.tipoOpSelect)
+                        .catch(err => {
+                            // Saco spinner
+                            this.valueGuardandoCompro = 0;
+                            return Observable.throw(null)
+                        })
                         .subscribe((respuesta: any) => {
                             // Saco spinner
                             this.valueGuardandoCompro = 0;
@@ -443,15 +473,16 @@ export class ComprobanteCompra implements AfterViewInit {
                             // this.cotizacionDatos = { cotizacion: new Cotizacion(), total: 0 };
                             this.cotizacionDatos.total = 0;
                             this.sumatoriaSubtotales = 0;
-                            this.depositoSelec = new Deposito()
+                            // this.depositoSelec = new Deposito()
+                            this.depositoSelec = null;
                             this.tablas.datos.detallesFormaPago = [];
-                            this.dataTablaFormasPago = Observable.of([]);
         
-                            // Limpio formas pago
-                            this.dataTablaFormasPago = null;
-                            this.formasPagoSeleccionadas = [];
+                            // Refresco formas pago
+                            this.dataTablaFormasPago = this.recursoService.getRecursoList(resourcesREST.formaPago)();
+                            // this.dataTablaFormasPago = null;
     
-                            this.tipoOpSelect = new SisTipoOperacion();
+                            // this.tipoOpSelect = new SisTipoOperacion();
+                            this.tipoOpSelect = null;
                             
         
                             // Focus en input proveedor (TODO SET TIME OUT)
@@ -479,24 +510,25 @@ export class ComprobanteCompra implements AfterViewInit {
      */
     actualizarDatosProductos = () => {
         
+        // Si tipoComprobante no incluye neto, el total es 0
         this.cotizacionDatos.total = 
-            _.sumBy(
-                this.tablas.datos.productosPend,
-                (prod) => Number(prod.importe) ? Number(prod.importe) : 0
-            )
+            this.comprobante.tipo.comprobante.incluyeNeto ?
+                _.sumBy(
+                    this.tablas.datos.productosPend,
+                    (prod) => Number(prod.importe) ? Number(prod.importe) : 0
+                ) : 0;
 
 
         // Busco las facturas de los productos
         if (this.tablas.datos.productosPend && this.tablas.datos.productosPend.length > 0) {
-            this.comprobanteCompraService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
+            this.comprobanteCompraService.buscaModelos(
+                this.tablas.datos.productosPend,
+                this.comprobante.moneda ? this.comprobante.moneda.idMoneda : null
+            ).subscribe(modelProds => {
 
                 this.tablas.datos.modelosFactura = modelProds;
 
-                this.sumatoriaSubtotales = 
-                    _.sumBy(
-                        this.tablas.datos.modelosFactura,
-                        (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
-                    )
+                this.actualizarSumatoriaSubto();
             })
         } else {
             this.tablas.datos.modelosFactura = [];
@@ -509,13 +541,36 @@ export class ComprobanteCompra implements AfterViewInit {
     /**
      * Evento change del input del proovedor
      */
-    onChangeInputProveedor = (codigo) => {
-        this.proveedores.filtrados.next(
-            this.comprobanteCompraService.filtrarProveedores(this.proveedores.todos, codigo)
-        );
+    onChangeInputProveedor = (busqueda) => {
+        this.proveedorSeleccionado = new Padron();
+
+        if (busqueda && busqueda.length >= 2) {
+            this.findProveedores(busqueda)
+        }
+
         // Reseteo el indice
         this.proveedorEnfocadoIndex = -1;
     }
+
+    buscandoProveedor = false;
+
+    findProveedores = _.throttle(
+        (busqueda) => {
+
+            this.buscandoProveedor = true;
+            this.proveedores.filtrados.next([]);
+            
+
+            this.recursoService.getRecursoList(resourcesREST.padron)({
+                grupo: gruposParametros.proveedor,
+                elementos: busqueda
+            }).subscribe(proveedores => {
+                this.proveedores.filtrados.next(proveedores);
+                this.buscandoProveedor = false;
+            })
+        },
+        400
+    )
 
 
     /**
@@ -524,18 +579,16 @@ export class ComprobanteCompra implements AfterViewInit {
      * También retorno el proveedor seleccionado en el input
      */
     onBlurInputProv = (e) => {
-        // Vacio filtrados
-        this.proveedores.filtrados.next([]);
-
         // Actualizo proveedor seleccionado
         try {
-            this.proveedorSeleccionado = this.comprobanteCompraService.seleccionarProveedor(this.proveedores.todos)(this.proveedorSeleccionado);
-            // this.comprobanteCompraService.getLetrasProveedor(this.proveedorSeleccionado).subscribe(letras => this.letras = letras);
-
-            // Intento obtener las formas de pago
-            if(this.comprobante.fechaComprobante) {
-                this.dataTablaFormasPago = this.comprobanteCompraService.getFormasPago(this.comprobante.fechaComprobante);
+            if (this.proveedorSeleccionado && this.proveedorSeleccionado.padronCodigo) {
+                this.proveedorSeleccionado = this.proveedores.filtrados.value.find(
+                    prov => prov.padronCodigo === Number(this.proveedorSeleccionado.padronCodigo)
+                )
             }
+
+            // Vacio filtrados
+            this.proveedores.filtrados.next([]);
         }
         catch(err) {
             // Muestro error
@@ -555,55 +608,27 @@ export class ComprobanteCompra implements AfterViewInit {
         // Si selecciona en el datePicker (el evento es una fecha de datelikepiker)
         if (e && e.day && e.month) {
             const fechaLikePicker = new DateLikePicker(null, e);
-            // Obtengo las formas de pago
-            if(fechaLikePicker) {
-                this.dataTablaFormasPago = this.comprobanteCompraService.getFormasPago(fechaLikePicker);
-            }
 
             if (keyFecha === 'fechaComprobante') {
                 this[objetoContenedor][keyFecha] = fechaLikePicker;
             }
         } 
 
-        if (!this[objetoContenedor][keyFecha] || (
-            typeof this[objetoContenedor][keyFecha] !== 'string' && (
-                !this[objetoContenedor][keyFecha].day &&
-                !this[objetoContenedor][keyFecha].month
+        if (
+            !this[objetoContenedor][keyFecha] || (
+                typeof this[objetoContenedor][keyFecha] !== 'string' && (
+                    !this[objetoContenedor][keyFecha].day &&
+                    !this[objetoContenedor][keyFecha].month
+                )
             )
-        )) return;
+        ) return;
 
         // La guardo
         this[objetoContenedor][keyFecha] = this.utilsService.stringToDateLikePicker(this[objetoContenedor][keyFecha]);
 
-        // Si es fecha de comprobante, antes que nada hay que validar que la fecha no se salga del intervalo
-        if (
-            keyFecha==='fechaComprobante' && 
-            this.fechaComprobanteInvalida()
-        ) {
-            // Si se sale del intervalo permitido, seteo la fecha como fechaApertura
-            this.comprobante.fechaComprobante = new DateLikePicker(
-                new Date(this.comprobante.numerador.fechaApertura)
-            );
-            // Y le aviso
-            this.utilsService.showModal('Error de fecha')(
-                `Fecha inválida para este punto de venta (Intervalo permitido: ${
-                    moment(this.comprobante.numerador.fechaApertura).format('DD-MM-YYYY')
-                } al ${
-                    moment(this.comprobante.numerador.fechaCierre).format('DD-MM-YYYY')
-                })`
-            )()()
-            return;
-        } else {
-            // Obtengo las formas de pago
-            if(this.comprobante.fechaComprobante) {
-                this.dataTablaFormasPago = this.comprobanteCompraService.getFormasPago(this.comprobante.fechaComprobante);
-            }
-    
-            // Hago focus en el prox input
-            (keyFecha==='fechaComprobante') || (keyFecha==='fechaContable') ?
-                document.getElementById(`fechaVto${this.utilsService.upperFirstLetter(objetoContenedor)}`).focus() : null;
-        }
-        
+        // Hago focus en el prox input
+        // (keyFecha==='fechaComprobante') || (keyFecha==='fechaContable') ?
+        //     document.getElementById(`fechaVto${this.utilsService.upperFirstLetter(objetoContenedor)}`).focus() : null;
 
     }
 
@@ -646,11 +671,6 @@ export class ComprobanteCompra implements AfterViewInit {
             provSelect ? this.popupLista.onClickListProv(provSelect) : null;
             // Reseteo el index
             this.proveedorEnfocadoIndex = -1;
-
-            // Intento obtener las formas de pago
-            if(this.comprobante.fechaComprobante) {
-                this.dataTablaFormasPago = this.comprobanteCompraService.getFormasPago(this.comprobante.fechaComprobante);
-            }
         })
     }
 
@@ -718,10 +738,26 @@ export class ComprobanteCompra implements AfterViewInit {
     onChangeCteTipo = (cteTipoSelect: TipoComprobante) => {
         this.tiposComprobantesRel = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
             'sisModulo': sisModulos.compra,
-            'idCteTipo': cteTipoSelect.idCteTipo
+            'idCteTipo': cteTipoSelect.idCteTipo,
+            'sisTipoOperacion': this.tipoOpSelect.idSisTipoOperacion
         });
 
         this.comprobante.numerador = new Numerador();
+
+        // Actualizo total cotizacion (si no incluye neto, es 0)
+        this.cotizacionDatos.total = 
+            this.comprobante.tipo.comprobante.incluyeNeto ?
+                _.sumBy(
+                    this.tablas.datos.productosPend,
+                    (prod) => Number(prod.importe) ? Number(prod.importe) : 0
+                ) : 0;
+
+        // Actualizo sumatoria subtotales
+        this.actualizarSumatoriaSubto();
+
+        // Actualizo monedas
+        this.monedas.next(cteTipoSelect.comprobante.monedas);
+            
     }
 
 
@@ -736,14 +772,13 @@ export class ComprobanteCompra implements AfterViewInit {
      */
     fetchFacturas = () => {
         // Busco las facturas de los productos
-        this.comprobanteCompraService.buscaModelos(this.tablas.datos.productosPend).subscribe(modelProds => {
+        this.comprobanteCompraService.buscaModelos(
+            this.tablas.datos.productosPend,
+            this.comprobante.moneda ? this.comprobante.moneda.idMoneda : null
+        ).subscribe(modelProds => {
             this.tablas.datos.modelosFactura = modelProds;
 
-            this.sumatoriaSubtotales = 
-                _.sumBy(
-                    this.tablas.datos.modelosFactura,
-                    (fact) => Number(fact.importeTotal) ? Number(fact.importeTotal) : 0
-                )
+            this.actualizarSumatoriaSubto();
         })
     }
 
@@ -752,8 +787,26 @@ export class ComprobanteCompra implements AfterViewInit {
      */
     onChangeTipoOperacion = (tipoOpSelect: SisTipoOperacion) => {
         this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
-            'sisTipoOperacion': tipoOpSelect.idSisTipoOperacion
+            'sisTipoOperacion': tipoOpSelect.idSisTipoOperacion,
+            'sisSitIva' : this.proveedorSeleccionado.condIva.descCorta
         });
+
+        this.limpioComprobanteYGrilla();
+    }
+
+    limpioComprobanteYGrilla = () => {
+        // Limpio grillas y datos comprobante
+        this.comprobante = new Comprobante();
+        this.comprobanteRelacionado = new ComprobanteRelacionado();
+        this.tablas.datos.productosPend = [];
+        this.tablas.datos.modelosFactura = [];
+        this.cotizacionDatos.total = 0;
+        this.sumatoriaSubtotales = 0;
+        this.depositoSelec = null;
+        this.tablas.datos.detallesFormaPago = [];
+        
+        // Refresco formas pago
+        this.dataTablaFormasPago = this.recursoService.getRecursoList(resourcesREST.formaPago)();
     }
 
     /**
@@ -778,12 +831,12 @@ export class ComprobanteCompra implements AfterViewInit {
         return (restoPagar === '-0.00') ? '0.00' : restoPagar
     }
 
-    onBlurNumeroCteRelacionado = (evento) => {
-        this.onBlurNumeroAutocomp(evento)('numero')('comprobanteRelacionado')
+    // onBlurNumeroCteRelacionado = (evento) => {
+    //     this.onBlurNumeroAutocomp(evento)('numero')('comprobanteRelacionado')
 
-        // Focus en input para agregar producto
-        document.getElementById('addInput') ? document.getElementById('addInput').focus() : null
-    }
+    //     // Focus en input para agregar producto
+    //     document.getElementById('addInput') ? document.getElementById('addInput').focus() : null
+    // }
 
 
     onBlurOrEnterFechaVtoComp = ($event) => {
@@ -809,5 +862,73 @@ export class ComprobanteCompra implements AfterViewInit {
         //     new Date(selectNumerador.fechaApertura)
         // );
     }
+
+
+    ngIfNumeradorComprobante = () => {
+        if (
+            !(
+                this.comprobante && 
+                this.comprobante.letraCodigo && 
+                this.comprobante.letraCodigo.numeradores && 
+                this.comprobante.letraCodigo.numeradores.length > 0
+            )
+        ) {
+            if (!this.comprobante.numerador.ptoVenta) {
+                this.comprobante.numerador.ptoVenta = new PtoVenta();
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    ngIfNumeradorFactura = () => {
+        if (
+            !(
+                this.factura && 
+                this.factura.letraCodigo && 
+                this.factura.letraCodigo.numeradores && 
+                this.factura.letraCodigo.numeradores.length > 0
+            )
+        ) {
+            if (!this.factura.numerador.ptoVenta) {
+                this.factura.numerador.ptoVenta = new PtoVenta();
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    onBlurPtoVenta = (e) => 
+        this.utilsService.onBlurInputNumber(e) &&
+            this.comprobante.numerador && this.comprobante.numerador.ptoVenta ?
+                this.comprobante.numerador.ptoVenta.ptoVenta = this.comprobante.numerador.ptoVenta.ptoVenta
+                    .padStart(4, '0') : null;
+
+    onBlurNumerador = (e) => 
+        this.utilsService.onBlurInputNumber(e) &&
+            this.comprobante.numerador && this.comprobante.numerador.numerador ?
+                this.comprobante.numerador.numerador = this.comprobante.numerador.numerador
+                    .padStart(8, '0') : null;
+
+    onBlurPtoVentaCteRel = (e) => 
+        this.utilsService.onBlurInputNumber(e) &&
+            this.comprobanteRelacionado.puntoVenta ?
+                this.comprobanteRelacionado.puntoVenta = this.comprobanteRelacionado.puntoVenta
+                    .padStart(4, '0') : null;
+
+    onBlurNumeradorCteRel = (e) => 
+        this.utilsService.onBlurInputNumber(e) &&
+            this.comprobanteRelacionado.numero ?
+                this.comprobanteRelacionado.numero = this.comprobanteRelacionado.numero
+                    .padStart(8, '0') : null;
+ 
+    onChangeLetra = (letraSelect: LetraCodigo) => 
+        this.comprobante.numerador = (letraSelect && letraSelect.numeradores && letraSelect.numeradores.length > 0) ?
+            letraSelect.numeradores[0] : null;
+        
+    
+                    
     
 }
