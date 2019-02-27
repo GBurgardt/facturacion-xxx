@@ -84,7 +84,8 @@ export class NuevoListaPrecio {
                 key: 'precio',
                 customClass: 'text-right',
                 ancho: '10%',
-                enEdicion: null
+                enEdicion: null,
+                threeDecimals: true
             },
             {
                 nombre: 'inferior',

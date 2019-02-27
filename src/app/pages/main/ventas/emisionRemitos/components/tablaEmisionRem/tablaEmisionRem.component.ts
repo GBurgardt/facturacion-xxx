@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-lista-service';
 import { ProductoPendiente } from '../../../../../../models/productoPendiente';
 import { ProductoReducido } from '../../../../../../models/productoReducido';
+import { TestBed } from '@angular/core/testing';
 
 @Component({
     selector: 'tabla-emision-rem',
@@ -34,7 +35,8 @@ export class TablaEmisionRem {
         idProducto: number,
         subtotal: number,
         subtotalIva: number,
-        numeroComp: string
+        numeroComp: string,
+        idFactDetalle: string
     }[];
 
     /////////// BUSQUEDA ///////////
@@ -121,6 +123,8 @@ export class TablaEmisionRem {
         // return typeof valueKey === 'number' ?
         //     this.utilsService.parseDecimal(valueKey) : 
         //     valueKey
+
+
         return (key && key === 'precio' || typeof valueKey !== 'number') ?
             valueKey :
             this.utilsService.parseDecimal(valueKey)
@@ -130,19 +134,24 @@ export class TablaEmisionRem {
      * Retorna el subtotal requerido
      */
     getSubtotal = (item: ProductoPendiente) => (key) => {
+
         if (this.subtotales && this.subtotales.length > 0) {
             const subtotalBuscado = this.subtotales
                 .find(
-                    st => 
-                        st.idProducto === item.producto.idProductos && 
-                        st.numeroComp === item.numero
+                    st => st.idFactDetalle === item.idFactDetalle
                 );
 
+            if (key === 'precioDesc') {
+                // debugger;
+                return subtotalBuscado && subtotalBuscado[key] ?
+                    this.utilsService.toThreeDecimals(subtotalBuscado[key]) : 0
+            } else {
+                return this.utilsService.parseDecimal(
+                    subtotalBuscado && subtotalBuscado[key] ?
+                        subtotalBuscado[key] : 0
+                )
+            }
 
-            return this.utilsService.parseDecimal(
-                subtotalBuscado && subtotalBuscado[key] ?
-                    subtotalBuscado[key] : 0
-            )
         } else {
             return null
         }
@@ -235,7 +244,7 @@ export class TablaEmisionRem {
     }
 
     checkIfEnEdicion = (col) => (item) =>
-        col.enEdicion && col.enEdicion === item.producto.idProductos
+        col.enEdicion && col.enEdicion === item.idFactDetalle
 
 
     // Checkea si pongo el 'tick' para finalizar la edicion.
@@ -244,7 +253,7 @@ export class TablaEmisionRem {
             return this.columns.some(col => {
 
                 return col.enEdicion && (
-                    (item.producto && item.producto.idProductos && col.enEdicion === item.producto.idProductos) ||
+                    (item && item.idFactDetalle && col.enEdicion === item.idFactDetalle) ||
                     (item.nroLote && col.enEdicion === item.nroLote) ||
                     (item.idFormaPagoDet && col.enEdicion === item.idFormaPagoDet) ||
                     (item.cuentaContable && col.enEdicion === item.cuentaContable)
@@ -256,7 +265,7 @@ export class TablaEmisionRem {
 
     // Cheackea si esta en edicion
     checkIfEditOn = (item) => (col) => col.enEdicion && (
-        (item.producto && item.producto.idProductos && col.enEdicion === item.producto.idProductos) ||
+        (item && item.idFactDetalle && col.enEdicion === item.idFactDetalle) ||
         (item.nroLote && col.enEdicion === item.nroLote) ||
         (item.idFormaPagoDet && col.enEdicion === item.idFormaPagoDet) ||
         (item.cuentaContable && col.enEdicion === item.cuentaContable)
@@ -274,7 +283,7 @@ export class TablaEmisionRem {
             const idItem = item.nroLote ? item.nroLote :
                 item.idFormaPagoDet ? item.idFormaPagoDet :
                     item.cuentaContable ? item.cuentaContable :
-                        item.producto && item.producto.idProductos ? item.producto.idProductos : '000';
+                        item && item.idFactDetalle ? item.idFactDetalle : '000';
 
             // 'form-control edit-input input-edit-' + item.producto.idProductos
             return `form-control edit-input${col.editarFocus ? ` editar-focus-${idItem}` : ''}`
@@ -334,4 +343,5 @@ export class TablaEmisionRem {
      */
     onBlurInput = (e, col) => col.decimal &&
         this.utilsService.onBlurInputNumber(e)
+
 }

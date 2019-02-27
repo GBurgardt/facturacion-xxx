@@ -199,13 +199,13 @@
 <ngb-tabset *ngIf="(compEncabezados | async)?.length>0" class="col-sm-12 tabset-consulta">
     <ngb-tab title="Comprobantes">
         <ng-template ngbTabContent>
-            <table class="table table-striped table-consulta-comp" [mfData]="compEncabezados | async" #mf="mfDataTable" mfRowsOnPage="10">
+            <table style="table-layout: fixed; width: 100%;" class="table table-striped table-consulta-comp" [mfData]="compEncabezados | async" #mf="mfDataTable" mfRowsOnPage="10">
                 <thead>
                     <tr>
                         <td></td>
-                        <th>Comprobante</th>
+                        <th>Comp</th>
                         <th class="text-right">Numero</th>
-                        <th>Fecha Emision</th>
+                        <th>Fecha Emi</th>
                         <th class="text-right">Cli/Pro</th>
                         <th>Nombre</th>
                         <th class="text-right">Cuit</th>
@@ -213,7 +213,10 @@
                         <th>Moneda</th>
                         <th>Imputada</th>
                         <th>Modulo</th>
-                        <!-- <th>Tipo Operacion</th> -->
+                        <th class="text-right">Neto</th>
+                        <th class="text-right">Total</th>
+                        <th class="text-right">Tipo Op</th>
+                        <th class="text-right">Aut</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -233,7 +236,11 @@
                             <td>{{ compBusc.moneda }}</td>
                             <td>{{ compBusc.imputada }}</td>
                             <td>{{ compBusc.modulo }}</td>
-                            <!-- <td>{{ compBusc.modulo }}</td> -->
+                            <td class="text-right">{{ utilsService.parseDecimal(compBusc.importeNeto) }}</td>
+                            <td class="text-right">{{ utilsService.parseDecimal(compBusc.importeTotal) }}</td>
+                            <td class="text-right">{{ compBusc.tipoOperacion }}</td>
+                            <td class="text-right">{{ compBusc.autorizada }}</td>
+
                             <td>
                                 <div (click)="comprobanteService.downloadComp(compBusc)" class="btn-print">
                                     <i *ngIf="!compBusc.isDownloading" class="fa fa-print" aria-hidden="true"></i>
@@ -251,8 +258,9 @@
                                     Detalles
                                 </div>
                             </td>
-                            <td class="detalles-tabla-td" colspan="11">
-                                <table class="table-inner" style="width:100%; ">
+                            <td class="detalles-tabla-td" colspan="14">
+                                <!-- <table style="table-layout: fixed; width: 100%;" class="table-inner" style="width:100%; background: #d6d6d67a;"> -->
+                                <table style="table-layout: fixed; width: 100%;" class="table-inner" style="width:100%; background: #174c6640;">
                                     <tr>
                                         <th>Producto</th>
                                         <th>Descripción</th>
@@ -270,13 +278,15 @@
                                         <td>{{ compDet.articulo }}</td>
                                         <td class="text-right">{{ utilsService.parseDecimal(compDet.original) }}</td>
                                         <td class="text-right">{{ utilsService.parseDecimal(compDet.pendiente) }}</td>
-                                        <td class="text-right">{{ utilsService.parseDecimal(compDet.precio) }}</td>
+                                        <td class="text-right">{{ 
+                                            utilsService.toThreeDecimals(compDet.precio)
+                                        }}</td>
                                         <td class="text-right">{{ utilsService.parseDecimal(
                                             (compDet.importe)
                                         ) }}</td>
-                                        <td class="text-right">{{ utilsService.parseDecimal(
-                                            (compDet.precioDesc)
-                                        ) }}</td>
+                                        <td class="text-right">{{ 
+                                            utilsService.toThreeDecimals(compDet.precioDesc) 
+                                        }}</td>
                                         <td class="text-right">{{ compDet.descuento }}</td>
                                         <td class="text-right">{{ compDet.unidadDescuento }}</td>
                                         <td class="text-right">{{ compDet.deposito }}</td>
@@ -289,7 +299,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="12">
+                        <td colspan="16">
                             <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
                         </td>
                     </tr>
@@ -309,7 +319,7 @@
     <ngb-tab title="Detalles">
         <ng-template ngbTabContent>
 
-            <table class="table table-striped" [mfData]="compDetalles | async" #mf="mfDataTable" mfRowsOnPage="10">
+            <table style="table-layout: fixed; width: 100%;" class="table table-striped" [mfData]="compDetalles | async" #mf="mfDataTable" mfRowsOnPage="10">
                 <thead>
                     <tr>
                         <th>Cte</th>
@@ -336,11 +346,11 @@
                         <td>{{ compDet.articulo }}</td>
                         <td class="text-right">{{ utilsService.parseDecimal(compDet.original) }}</td>
                         <td class="text-right">{{ utilsService.parseDecimal(compDet.pendiente) }}</td>
-                        <td class="text-right">{{ utilsService.parseDecimal(compDet.precio) }}</td>
+                        <td class="text-right">{{ utilsService.toThreeDecimals(compDet.precio) }}</td>
                         <td class="text-right">{{ utilsService.parseDecimal(
                             (compDet.pendiente) * (compDet.precio)
                         ) }}</td>
-                        <td class="text-right">{{ utilsService.parseDecimal(
+                        <td class="text-right">{{ utilsService.toThreeDecimals(
                             (compDet.precioDesc)
                         ) }}</td>
                         <td class="text-right">{{ compDet.descuento }}</td>

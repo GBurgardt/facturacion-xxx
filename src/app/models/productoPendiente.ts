@@ -43,9 +43,10 @@ export class ProductoPendiente {
     importe: number;
     auxPreviusImporte: number;
 
-    // nroComprobante: string;
+    codigoListaPrecio: string;
+    idListaPrecio: number;
 
-    // subtotal: number;
+    idFactDetalle: string;
 
     constructor(productoPendiente?: {
         comprobante: string;
@@ -67,7 +68,10 @@ export class ProductoPendiente {
         observaciones: string;
         itemImputada: number;
         producto: any;
+        codigoListaPrecio: string;
+        idListaPrecio: number;
         importe?: number;
+        idFactDetalle?: string;
     }) {
         if (productoPendiente) {
             this.comprobante = productoPendiente.comprobante;
@@ -114,9 +118,11 @@ export class ProductoPendiente {
             this.importe = productoPendiente.importe ? productoPendiente.importe : 0;
             this.auxPreviusImporte = 0;
 
-            // this.nroComprobante = '';
+            this.codigoListaPrecio = productoPendiente.codigoListaPrecio;
+            this.idListaPrecio = productoPendiente.idListaPrecio;
 
-
+            this.idFactDetalle = productoPendiente.idFactDetalle ? 
+                productoPendiente.idFactDetalle : this.generateId()
         } else {
             this.comprobante = null;
             this.numero = null;
@@ -151,8 +157,18 @@ export class ProductoPendiente {
             this.importe = null;
             this.auxPreviusImporte = null;
 
-            // this.nroComprobante = null;
+            this.codigoListaPrecio = null;
+            this.idListaPrecio = null;
+
+            this.idFactDetalle = this.generateId();
         }
     }
+
+    generateId = function () {
+        // Math.random should be unique because of its seeding algorithm.
+        // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+        // after the decimal.
+        return '_' + Math.random().toString(36).substr(2, 9);
+    };
 
 }

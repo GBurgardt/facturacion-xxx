@@ -19,6 +19,7 @@ import { FormaPago } from "app/models/formaPago";
 import { DetalleFormaPago } from "app/models/detalleFormaPago";
 import { Factura } from '../../../../models/factura';
 import { SisTipoOperacion } from '../../../../models/sisTipoOperacion';
+import sisModulos from 'constantes/sisModulos';
 
 @Injectable()
 export class ComprobanteCompraService {
@@ -207,7 +208,7 @@ export class ComprobanteCompraService {
                 comprobante
             )(
                 tipoOpSelect
-            )
+            )(null)(sisModulos.compra)
             .map(
                 respuesta => respuesta.arraydatos.map(
                     prodPend => new ProductoPendiente(prodPend)

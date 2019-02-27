@@ -1,5 +1,5 @@
 <div class="auth-main">
-    <div class="auth-block">
+    <div *ngIf="!spinnerStatus" class="auth-block">
 
         <div style="text-align: center">
             <!-- <img src="../../../assets/img/logo-kernel.fw.png" alt="Kernel Informática" /> -->
@@ -37,5 +37,9 @@
 
         <!-- <div class="auth-sep"><span><span translate>{{'login.sign_from_app_text'}}</span></span></div>-->
 
+    </div>
+
+    <div *ngIf="spinnerStatus" class="spinner-container">
+        <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
     </div>
 </div>

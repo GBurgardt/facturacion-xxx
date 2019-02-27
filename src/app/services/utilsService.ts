@@ -30,7 +30,7 @@ export class UtilsService {
     /** TODO: Refactorizar este modal y poner bien el titulo y la descrip
      * Método que muestra un modal con el error de logueo
      */
-    showModal = (titulo) => (descripcion) => (onClick?) => (datos?, onClickNo?) => {
+    showModal = (titulo) => (descripcion) => (onClick?) => (datos?, onClickNo?, isInnerHTML?) => {
         // Creo el modal
         let activeModal;
         // Me fijo el tipo de modal a mostrar
@@ -39,6 +39,7 @@ export class UtilsService {
             activeModal = this.modalService.open(ConfirmationModal, { size: 'sm' });
             activeModal.componentInstance.modalHeader = titulo;
             activeModal.componentInstance.modalContent = descripcion;
+            
 
             // Textos custom
             if (datos.textos) {
@@ -51,6 +52,9 @@ export class UtilsService {
             activeModal.componentInstance.modalHeader = titulo;
             activeModal.componentInstance.modalContent = descripcion;
         }
+
+        activeModal.isInnerHTML = isInnerHTML;
+
         if (onClick) {
             return activeModal.result.then(result => {
                 // Si hizo click en 'Si', entonces ejecuto la acción.
@@ -277,7 +281,7 @@ export class UtilsService {
     /**
      * Decodifica la respuesta del error (scando el _body) y muestra el mensaje
      */
-    showErrorWithBody = (err: any) => {
+    showErrorWithBody = (err: any, isInnerHTML?) => {
         
         const theBody =
             err && err['_body'] ?
@@ -285,7 +289,7 @@ export class UtilsService {
                     err['_body'] : JSON.parse(err['_body']) : 
                 null;
 
-        this.showModal(theBody.control.codigo)(theBody.control.descripcion)()()
+        this.showModal(theBody.control.codigo)(theBody.control.descripcion)()(null, null, isInnerHTML)
     }
 
     /**
@@ -524,4 +528,10 @@ export class UtilsService {
             return true
         }
     }
+
+    /**
+     * 3 decimales
+     */
+    toThreeDecimals = (num) => 
+        num.toLocaleString('en', { minimumFractionDigits:3, useGrouping:false })
 }

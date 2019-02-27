@@ -55,7 +55,12 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="listaPrecio">Seleccione Listas de precio</label>
-                    <div class="lista-precio-container">
+                    <div 
+                        class="lista-precio-container"
+                        [ngClass]="{
+                            'no-editable': recurso.perfil.descripcion === 'Admin'
+                        }"
+                        >
                         <div    *ngFor="let lista of listasPrecios | async" 
                                 (click)="recurso.addOrRemoveLista(lista)" class="lista"
                             [ngClass]="{'lista-select': recurso.existLista(lista)}">
@@ -65,7 +70,44 @@
         
                 </div>
             </div>
+
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="ptoVentas">Pto Venta</label>
+                    <select 
+                        name="ptoVentas" 
+                        id="idPtoVenta"
+                        required 
+                        [(ngModel)]="ptoVentaSelect" 
+                        [compareWith]="onComparePtoVenta"
+                        class="form-control" 
+                        >
+                        <option [ngValue]="ptoVentas">
+                            Todos
+                        </option>
+                        <option *ngFor="let ptoV of ptoVentas" [ngValue]="ptoV">
+                            {{ ptoV.ptoVenta }}
+                        </option>
+                    </select>
+                    <!-- <select 
+                        name="ptoVentas" 
+                        id="idPtoVenta"
+                        required 
+                        [(ngModel)]="recurso.ptoVentas" 
+                        [compareWith]="onComparePtoVenta"
+                        class="form-control" 
+                        >
+                        <option [ngValue]="ptoVentas | async">
+                            Todos
+                        </option>
+                        <option *ngFor="let ptoV of ptoVentas | async" [ngValue]="onNgValuePtoVenta(ptoV)">
+                            {{ ptoV.ptoVenta }}
+                        </option>
+                    </select> -->
+                </div>
+            </div>  
         </div>
+
 
         <div style="display: flex; justify-content: flex-end;">
 

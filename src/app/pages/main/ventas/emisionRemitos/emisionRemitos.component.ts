@@ -126,7 +126,8 @@ export class EmisionRemitos  {
                 subtotal: number,
                 subtotalIva: number,
                 numeroComp: string,
-                precioDesc: any
+                precioDesc: any,
+                idFactDetalle: string
             }[];
             productosCanje: ProductoPendiente[];
             lotesTraza: Lote[];
@@ -213,14 +214,10 @@ export class EmisionRemitos  {
     ///////////////////////////////////////////////////////////////////////////////////
 
     onClickRemove = (prodSelect: ProductoPendiente) => {
-        // _.remove(this.tablas.datos.productosPend, (prod: ProductoPendiente) => {
-        //     return prod.producto.idProductos === prodSelect.producto.idProductos 
-        // });
         _.remove(
             this.tablas.datos.productosPend,
             (prod: ProductoPendiente) => 
-                prod.producto.idProductos === prodSelect.producto.idProductos &&
-                prod.numero === prodSelect.numero
+                prod.idFactDetalle === prodSelect.idFactDetalle
         );
 
         // Actualizo nuevamente la lista de trazables
@@ -238,7 +235,7 @@ export class EmisionRemitos  {
         this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
             let newTabla = tabla;
             if (newTabla.enEdicion !== undefined) {
-                tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = itemSelect.producto.idProductos :
+                tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = itemSelect.idFactDetalle :
                 tipoColumnas === 'columnasTrazabilidad' ? newTabla.enEdicion = itemSelect.nroLote :
                 tipoColumnas === 'columnasFactura' ? newTabla.enEdicion = itemSelect.cuentaContable :
                 tipoColumnas === 'columnasDetallesFp' ? newTabla.enEdicion = itemSelect.idFormaPagoDet : null
@@ -248,13 +245,11 @@ export class EmisionRemitos  {
 
         // Hago focus en el select de imputacion
         setTimeout(() => {
-
             const idItem =  itemSelect.nroLote ? itemSelect.nroLote : 
                             itemSelect.idFormaPagoDet ? itemSelect.idFormaPagoDet : 
-                            itemSelect.producto && itemSelect.producto.idProductos ? itemSelect.producto.idProductos : '000';
+                            itemSelect.producto && itemSelect.idFactDetalle ? itemSelect.idFactDetalle : '000';
 
             const inputFocusClass = 'editar-focus-'+idItem;
-
             const elementFocus: any = document.getElementsByClassName(inputFocusClass);
             elementFocus && elementFocus[0] ? elementFocus[0].focus() : null
         });
@@ -316,7 +311,7 @@ export class EmisionRemitos  {
                 // Seteo el nro del comprobante actual
                 auxProdSelect.numero = this.utilsService.numeroObjectToString(this.comprobante.numerador)
 
-                const existeProd = this.tablas.datos.productosPend.find(prod=>prod.producto.idProductos === auxProdSelect.producto.idProductos)
+                const existeProd = this.tablas.datos.productosPend.find(prod=>prod.idFactDetalle === auxProdSelect.idFactDetalle)
 
                 if (!existeProd) {
                     // this.tablas.datos.productosPend.push(prodEnc);
@@ -411,69 +406,56 @@ export class EmisionRemitos  {
                             (this.tablas.datos.subtotalesProductos)
                             (this.listaPrecioSelect)
                             .subscribe((respuesta: any) => {
-                                // Ahora autorizo en AFIP. Si falla en AFIP, entonces BORRO el comprobante en nuestra db.
                                 
-                                // this.emisionRemitosService.autorizarAfip(
-                                    // '', respuesta.)
-    
-    
-                                // Modal para imprimir
-                                const compCreado = new ComprobanteEncabezado();
-                                compCreado.idFactCab = respuesta.datos.idFactCab;
-                                compCreado.numero = Number(
-                                    `${this.comprobante.numerador.ptoVenta.ptoVenta}${this.comprobante.numerador.ptoVenta.ptoVenta.toString().padStart(8, '0')}`
-                                );
-    
-                                this.utilsService.showImprimirModal(
-                                    respuesta.control.codigo
-                                )(
-                                    respuesta.control.descripcion
-                                )(
-                                    () => this.recursoService.downloadComp(compCreado)
-                                )(
-                                    compCreado
-                                );
-    
-                                // Blanqueo los campos
-                                const auxFecha = this.comprobante.fechaComprobante;
-                                this.comprobante = new Comprobante();
-                                this.comprobante.fechaComprobante = auxFecha;
-                                this.comprobanteRelacionado = new ComprobanteRelacionado();
-                                // this.cliente = new Padron();
-                                this.cliente = new Padron();
-    
-                                this.cliente.condIva = new CondIva(); setTimeout(() => { this.cliente.condIva = new CondIva() }, 1000); // TODO: Fix horrible, sacar
-    
-                                this.tablas.datos.productosPend = [];
-                                this.tablas.datos.modelosFactura = [];
-                                this.deposito = new Deposito()
-                                this.tablas.datos.detallesFormaPago = [];
-                                this.tablas.datos.lotesTraza = [];
-    
-                                // Limpio formas pago
-                                this.dataTablaFormasPago = null;
-                                this.formasPagoSeleccionadas = [];
-
-                                // Limpio lista pre
-                                this.listaPrecioSelect = null;
-                                this.listasPreciosUsuario = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
-    
-                                // Limpio vendedor
-                                this.dataVendedor.vendedor = new Vendedor();
-                                this.dataVendedor.incluir = false;
-    
-                                // Limpio cotizacion datos
-                                this.cotizacionDatos.total = 0;
-                                this.sumatoriaSubtotales = 0;
-
-                                // Limpio subtotales
-                                this.tablas.datos.subtotalesProductos = [];
-
-                                // Limpio datos canje
-                                this.sisCanje = new SisCanje();
-    
-                                // Focus en input proveedor (TODO SET TIME OUT)
-                                document.getElementById('clienteSeleccionado') ? document.getElementById('clienteSeleccionado').focus() : null
+                                // Autorizo en AFIP
+                                if (this.comprobante.tipo.cursoLegal) {
+                                    this.emisionRemitosService.autorizarAfip(
+                                        respuesta.datos.idFactCab
+                                    ).subscribe(respAfip => {
+                                        if (respAfip && respAfip.datos) {
+                                            // Modal para imprimir
+                                            const compCreado = new ComprobanteEncabezado();
+                                            compCreado.idFactCab = respuesta.datos.idFactCab;
+                                            compCreado.numero = Number(
+                                                `${this.comprobante.numerador.ptoVenta.ptoVenta}${this.comprobante.numerador.ptoVenta.ptoVenta.toString().padStart(8, '0')}`
+                                            );
+                
+                                            this.utilsService.showImprimirModal(
+                                                respuesta.control.codigo
+                                            )(
+                                                `${respuesta.control.descripcion}. 
+                                                CAI: ${respAfip.datos.cai}`
+                                            )(
+                                                () => this.recursoService.downloadComp(compCreado)
+                                            )(
+                                                compCreado
+                                            );
+                
+                                            // Blanqueo los campos
+                                            this.blanquearCampos();
+                                        }
+                                    })
+                                } else {
+                                    // Modal para imprimir
+                                    const compCreado = new ComprobanteEncabezado();
+                                    compCreado.idFactCab = respuesta.datos.idFactCab;
+                                    compCreado.numero = Number(
+                                        `${this.comprobante.numerador.ptoVenta.ptoVenta}${this.comprobante.numerador.ptoVenta.ptoVenta.toString().padStart(8, '0')}`
+                                    );
+        
+                                    this.utilsService.showImprimirModal(
+                                        respuesta.control.codigo
+                                    )(
+                                        `${respuesta.control.descripcion}`
+                                    )(
+                                        () => this.recursoService.downloadComp(compCreado)
+                                    )(
+                                        compCreado
+                                    );
+        
+                                    // Blanqueo los campos
+                                    this.blanquearCampos();
+                                }
                             })
                     }
 
@@ -482,19 +464,57 @@ export class EmisionRemitos  {
                 })({ tipoModal: 'confirmation' })
 
     /**
+     * Blanquea todos los campos (cuando confirma se usa)
+     */
+    blanquearCampos = () => {
+        const auxFecha = this.comprobante.fechaComprobante;
+        this.comprobante = new Comprobante();
+        this.comprobante.fechaComprobante = auxFecha;
+        this.comprobanteRelacionado = new ComprobanteRelacionado();
+        this.cliente = new Padron();
+
+        this.cliente.condIva = new CondIva(); setTimeout(() => { this.cliente.condIva = new CondIva() }, 1000); // TODO: Fix horrible, sacar
+
+        this.tablas.datos.productosPend = [];
+        this.tablas.datos.modelosFactura = [];
+        this.deposito = new Deposito()
+        this.tablas.datos.detallesFormaPago = [];
+        this.tablas.datos.lotesTraza = [];
+
+        // Limpio formas pago
+        this.dataTablaFormasPago = null;
+        this.formasPagoSeleccionadas = [];
+
+        // Limpio lista pre
+        this.listaPrecioSelect = null;
+        this.listasPreciosUsuario = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
+
+        // Limpio vendedor
+        this.dataVendedor.vendedor = new Vendedor();
+        this.dataVendedor.incluir = false;
+
+        // Limpio cotizacion datos
+        this.cotizacionDatos.total = 0;
+        this.sumatoriaSubtotales = 0;
+
+        // Limpio subtotales
+        this.tablas.datos.subtotalesProductos = [];
+
+        // Limpio datos canje
+        this.sisCanje = new SisCanje();
+
+        // Focus en input proveedor (TODO SET TIME OUT)
+        document.getElementById('clienteSeleccionado') ? document.getElementById('clienteSeleccionado').focus() : null
+    }
+
+    /**
      * Busca los productos pendientes de acuerdo al comprobante relacionado
      */
     onClickBuscarPendientes = () => 
-        this.emisionRemitosService.buscarPendientes(this.cliente)(this.comprobanteRelacionado)(this.comprobante)(this.tipoOperacion)
+        this.emisionRemitosService.buscarPendientes(this.cliente)(this.comprobanteRelacionado)(this.comprobante)(this.tipoOperacion)(this.listaPrecioSelect)
             .subscribe(prodsPend => {
                 // Agrego los productos
                 this.tablas.datos.productosPend = prodsPend;
-                // _.uniqWith(
-                //      this.tablas.datos.productosPend.concat(prodsPend),
-                //     (a:ProductoPendiente,b:ProductoPendiente) => 
-                //         a.producto.codProducto === b.producto.codProducto && 
-                //         a.comprobante === b.comprobante
-                // );
 
                 // Array de observables
                 const actualizacionObser = prodsPend.map(pp => this.actualizarSubtotales(pp))
@@ -780,9 +800,7 @@ export class EmisionRemitos  {
                 // Checkeo si hay uno viejo
                 const viejoSubtotal = this.tablas.datos.subtotalesProductos
                     .find(
-                        s => 
-                            prod.producto.idProductos === s.idProducto &&
-                            prod.numero === s.numeroComp
+                        s => prod.idFactDetalle === s.idFactDetalle
                     );
 
                 // Si hay uno viejo, lo edito. Si NO hay uno viejo, pusheo directamente el nuevo
@@ -826,9 +844,7 @@ export class EmisionRemitos  {
                         // Busco el subtotal
                         const subtotalBuscado = this.tablas.datos.subtotalesProductos
                             .find(
-                                st => 
-                                    st.idProducto === prod.producto.idProductos && 
-                                    st.numeroComp === prod.numero
+                                st => st.idFactDetalle === prod.idFactDetalle
                             );
                         
                         return subtotalBuscado && subtotalBuscado.subtotal ? subtotalBuscado.subtotal : 0;
@@ -860,7 +876,6 @@ export class EmisionRemitos  {
             )(
                 this.comprobante
             ).subscribe(
-                // lotes => this.tablas.datos.lotesTraza = lotes
                 lotes => {
                     const nuevosLotes = lotes.filter(
                         lotNew => !this.tablas.datos.lotesTraza.some(  
@@ -870,9 +885,10 @@ export class EmisionRemitos  {
 
                     this.tablas.datos.lotesTraza = this.tablas.datos.lotesTraza.concat(nuevosLotes);
 
-                    // Si se borró algùn producto, borro sus lotes correspondientes
+                    // Si se borró algún producto, borro sus lotes correspondientes
                     if (prodToDelete) {
                         this.tablas.datos.lotesTraza = this.tablas.datos.lotesTraza.filter(
+                            // TODO: Fijarse si está filtrando bien acá. Quizás filtrar por idFactDetalle
                             lot => lot.idProducto === prodToDelete.producto.idProducto
                         )
                     }
@@ -895,8 +911,9 @@ export class EmisionRemitos  {
             'sisTipoOperacion': this.tipoOperacion.idSisTipoOperacion
         })
 
-        this.comprobante.numerador.fechaApertura = null;
-        this.comprobante.numerador.fechaCierre = null;
+        // this.comprobante.numerador = new Numerador();
+        // this.comprobante.numerador.fechaApertura = null;
+        // this.comprobante.numerador.fechaCierre = null;
 
         // Actualizo total, si no incluye neto es 0
         this.actualizarTotalNeto();
@@ -1050,7 +1067,18 @@ export class EmisionRemitos  {
         });
 
         // Y limpio los productos que tenga agregado actualmente
-        this.tablas.datos.productosPend = [];
+        // this.tablas.datos.productosPend = [];
+
+        // Si ya hay productos, los filtro por la lp seleccionada
+        if (this.tablas.datos.productosPend && this.tablas.datos.productosPend.length > 0) {
+
+            this.onClickBuscarPendientes()
+
+            // this.tablas.datos.productosPend = this.tablas.datos.productosPend
+            //     .filter(
+            //         pp => pp.idListaPrecio === lp.idListaPrecio
+            //     )
+        }
     }
 
     fechaComprobanteInvalida = () => this.comprobante.numerador && 

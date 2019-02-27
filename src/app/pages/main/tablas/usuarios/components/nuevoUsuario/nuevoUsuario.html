@@ -4,19 +4,19 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="inputFirstName">Nombre</label>
-                    <input  [(ngModel)]="usuarioNuevo.nombre" type="text" class="form-control" id="inputFirstName" placeholder="Nombre">
+                    <input required [(ngModel)]="recurso.nombre" type="text" class="form-control" id="inputFirstName" placeholder="Nombre">
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="inputEmail">Email</label>
-                    <input  [(ngModel)]="usuarioNuevo.email" type="email" class="form-control" id="inputEmail" placeholder="Email">
+                    <input required [(ngModel)]="recurso.email" type="email" class="form-control" id="inputEmail" placeholder="Email">
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="clave">Clave</label>
-                    <input [(ngModel)]="usuarioNuevo.clave" type="password" class="form-control" id="Clave" placeholder="Clave">
+                    <input required [(ngModel)]="recurso.clave" type="password" class="form-control" id="Clave" placeholder="Clave">
                 </div>
             </div>
         </div>
@@ -24,7 +24,7 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="Sucursal">Sucursal</label>
-                    <select [compareWith]="compareWithSucursal" [(ngModel)]="usuarioNuevo.perfil.sucursal" (change)="changeSucursal($event)" class="form-control" id="Sucursal">
+                    <select required  [compareWith]="compareWithSucursal" [(ngModel)]="recurso.perfil.sucursal" (change)="changeSucursal($event)" class="form-control" id="Sucursal">
                         <!-- <option *ngFor="let suc of sucursales | async" [ngValue]="suc" [selected]="suc.idSucursal === 1"> -->
                         <option *ngFor="let suc of sucursales | async" [ngValue]="suc">
                             {{suc.nombre}} - {{suc.domicilio}}
@@ -36,7 +36,9 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="Perfil">Perfil</label>
-                    <select [compareWith]="compareWithPerfil" [(ngModel)]="usuarioNuevo.perfil" class="form-control" id="Perfil" [disabled]="!usuarioNuevo.perfil.sucursal">
+                    <select 
+                        required 
+                        [compareWith]="compareWithPerfil" [(ngModel)]="recurso.perfil" class="form-control" id="Perfil" [disabled]="!recurso.perfil.sucursal">
                         <option *ngFor="let per of perfiles | async" [ngValue]="per">
                             {{per.descripcion}}
                         </option>
@@ -47,7 +49,9 @@
             <div class="col-sm-4">
                 <div class="form-group">
                     <label for="Telefono">Telefono</label>
-                    <input [(ngModel)]="usuarioNuevo.telefono" type="text" class="form-control" id="Telefono" placeholder="Telefono">
+                    <input id="idTelefono"
+                        required  
+                        [(ngModel)]="recurso.telefono" type="text" class="form-control" placeholder="Telefono">
                 </div>
             </div>
         </div>
@@ -58,14 +62,34 @@
                     <label for="listaPrecio">Seleccione Listas de precio</label>
                     <div class="lista-precio-container">
                         <div    *ngFor="let lista of listasPrecios | async" 
-                                (click)="usuarioNuevo.addOrRemoveLista(lista)" class="lista"
-                            [ngClass]="{'lista-select': usuarioNuevo.existLista(lista)}">
+                                (click)="recurso.addOrRemoveLista(lista)" class="lista"
+                            [ngClass]="{'lista-select': recurso.existLista(lista)}">
                             {{ lista.codigoLista }}
                         </div>
                     </div>
         
                 </div>
             </div>
+
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="ptoVentas">Pto Venta</label>
+                    <select 
+                        name="ptoVentas" 
+                        id="idPtoVenta"
+                        required 
+                        [(ngModel)]="recurso.ptoVentas" 
+                        class="form-control" 
+                        >
+                        <option [ngValue]="ptoVentas | async">
+                            Todos
+                        </option>
+                        <option *ngFor="let ptoV of ptoVentas | async" [ngValue]="onNgValuePtoVenta(ptoV)">
+                            {{ ptoV.ptoVenta }}
+                        </option>
+                    </select>
+                </div>
+            </div>            
         </div>
 
         <div style="display: flex; justify-content: flex-end;">
@@ -78,10 +102,7 @@
                     Cancelar
                 </button>
         
-                <button [disabled]="utilsService.checkIfIncomplete(usuarioNuevo)([
-                                        'email',
-                                        'telefono'
-                                    ])()"
+                <button 
                         (click)="onClickCrearUsuario()" 
                         type="submit" 
                         class="btn btn-primary">
@@ -92,3 +113,11 @@
     </ba-card>
 
 </div>
+
+<!-- 
+
+    [disabled]="utilsService.checkIfIncomplete(recurso)([
+                                        'email',
+                                        'telefono'
+                                    ])()"
+ -->

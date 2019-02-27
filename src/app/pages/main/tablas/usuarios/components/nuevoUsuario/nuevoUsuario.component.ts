@@ -15,6 +15,7 @@ import * as crypto from 'crypto-js';
 import { resourcesREST } from 'constantes/resoursesREST';
 import { Observable } from 'rxjs/Observable';
 import { ListaPrecio } from 'app/models/listaPrecio';
+import { PtoVenta } from 'app/models/ptoVenta';
 
 @Component({
     selector: 'nuevo-usuario',
@@ -23,16 +24,11 @@ import { ListaPrecio } from 'app/models/listaPrecio';
 })
 // export class NuevoUsuario implements PendingChangeComponent {
 export class NuevoUsuario {
-    // Sucursales de la empresa
     sucursales: Observable<Sucursal[]>;
-
-    // Perfiles disponible para tal sucursal
     perfiles: Observable<Perfil[]>;
-
-    // Usuario nuevo
-    usuarioNuevo: Usuario = new Usuario();
-
+    recurso: Usuario = new Usuario();
     listasPrecios: Observable<ListaPrecio[]>;
+    ptoVentas: Observable<PtoVenta[]>;
 
     constructor(
         public utilsService: UtilsService,
@@ -42,6 +38,7 @@ export class NuevoUsuario {
     ) {
         this.sucursales = recursoService.getRecursoList(resourcesREST.sucursales)();
         this.listasPrecios = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
+        this.ptoVentas = this.recursoService.getRecursoList(resourcesREST.ptoVenta)();
     }
 
     ngOnInit() {
@@ -50,7 +47,7 @@ export class NuevoUsuario {
 
     @HostListener('window:beforeunload')
     canDeactivate = () => 
-        this.recursoService.checkIfEquals(this.usuarioNuevo, new Usuario()) || 
+        this.recursoService.checkIfEquals(this.recurso, new Usuario()) || 
         this.recursoService.getEdicionFinalizada();
     
     /**
@@ -61,7 +58,7 @@ export class NuevoUsuario {
         this.perfiles = this.recursoService.getRecursoList(
             resourcesREST.perfiles
         )({
-            sucursal: this.usuarioNuevo.perfil.sucursal.idSucursal
+            sucursal: this.recurso.perfil.sucursal.idSucursal
         });
     }
 
@@ -73,9 +70,9 @@ export class NuevoUsuario {
         try {
             // Creo el usuario nuevo
             const resp: any = await this.recursoService.setRecurso(
-                this.usuarioNuevo
+                this.recurso
             )({
-                clave: crypto.MD5(this.usuarioNuevo.clave),
+                clave: crypto.MD5(this.recurso.clave),
                 token: this.localStorageService.getObject(environment.localStorage.acceso).token
             });
 
@@ -105,4 +102,5 @@ export class NuevoUsuario {
         return item1.idPerfil === item2.idPerfil;
     }
 
+    onNgValuePtoVenta = (ptoV) => new Array(ptoV);
 }

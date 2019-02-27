@@ -13,6 +13,8 @@ import { resourcesREST } from 'constantes/resoursesREST';
 
 import * as crypto from 'crypto-js';
 import { ListaPrecio } from 'app/models/listaPrecio';
+import { PtoVenta } from 'app/models/ptoVenta';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'editar-usuario',
@@ -31,6 +33,10 @@ export class EditarUsuario {
     perfiles: Observable<Perfil[]>;
 
     listasPrecios: Observable<ListaPrecio[]>;
+    ptoVentas: PtoVenta[];
+
+    // Tengo que manejar el ptoVEnta por acá, por el mambo de 1 o todos
+    ptoVentaSelect;
 
     constructor(
         public utilsService: UtilsService,
@@ -41,8 +47,8 @@ export class EditarUsuario {
     ) {
         // Obtengo las sucursales disponibles de la empresa
         this.sucursales = recursoService.getRecursoList(resourcesREST.sucursales)();
-
         this.listasPrecios = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
+        this.recursoService.getRecursoList(resourcesREST.ptoVenta)().subscribe(resp => this.ptoVentas = resp)
         
         // Busco el id del usuario a editar en la ruta
         this.route.params.subscribe(params => {
@@ -62,8 +68,15 @@ export class EditarUsuario {
                     )({
                         sucursal: this.recurso.perfil.sucursal.idSucursal
                     });
+
+                    /**
+                     * Guardo el ptoVenta actual del usuario a editar (se maneja así por diseño de db)
+                     * Si es TODOS (lengt > 1), se guarda []..
+                     */
+                    this.ptoVentaSelect = this.recurso.ptoVentas;
                 });   
         });
+
         
     }
 
@@ -94,10 +107,12 @@ export class EditarUsuario {
      * Finaliza la creacion del user
      */
     onClickEditarUsuario = async() => {
-        
-        //console.log(this.usuarioEnEdicion);
-
         try {
+
+            // Guardo el ptoVenta seleccionado (se maneja asi por diseño db)
+            this.recurso.ptoVentas = this.ptoVentaSelect && this.ptoVentaSelect.length > 0 ?
+                this.ptoVentaSelect : [this.ptoVentaSelect];
+
             // Edito el usuario seleccionado
             const resp = await this.recursoService.editarRecurso(
                 this.recurso
@@ -125,4 +140,14 @@ export class EditarUsuario {
         }
     }
 
+    /**
+     * La comparacion es complejo por diseño de db
+     */
+    onComparePtoVenta = (p1, p2) => p1 && p2 && 
+        (
+            (p1.length && p1.length > 1 && p2.length > 1) ||
+            (p1.idPtoVenta === p2[0].idPtoVenta)
+        )
+    
+    
 }

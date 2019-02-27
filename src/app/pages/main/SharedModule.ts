@@ -21,7 +21,6 @@ import { SexiList } from '../reusable/listas/sexiList';
         DataTableModule,
         NgaModule,
         NgbDatepickerModule
-
     ],
     declarations: [
         CustomCard,

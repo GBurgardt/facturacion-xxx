@@ -14,7 +14,8 @@ export class Login {
     public form: FormGroup;
     public usuario: AbstractControl;
     public password: AbstractControl;
-    public submitted: boolean = false;
+
+    public spinnerStatus: boolean = false;
 
     constructor(
         fb: FormBuilder,
@@ -32,11 +33,13 @@ export class Login {
     }
 
     async onSubmit(values: Object) {
-        this.submitted = true;
         if (this.form.valid) {
             try {
+                this.spinnerStatus = true;
                 // Me logueo y obtengo la respuesta
                 const respLogin = await this.loginService.login(this.usuario.value)(this.password.value);
+
+                // this.spinnerStatus = false;
 
                 // Completa el login
                 this.loginService.completeLogin(respLogin);

@@ -113,7 +113,13 @@
         }
 
         .comprobante-tr-select {
-            background: #afafaf;
+            // background: #afafaf;
+            background: #174c6657;
+        }
+
+        .imputacion-tr-select {
+            // background: #afafaf;
+            background: #17662b57;
         }
     }
 
@@ -142,7 +148,8 @@ table {
     tbody {
         > tr {
             > td {
-                padding: 0 4px !important;
+                // padding: 0 4px !important;
+                padding: 0 13px !important;
             }
         }
     }

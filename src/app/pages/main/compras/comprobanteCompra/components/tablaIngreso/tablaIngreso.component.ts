@@ -227,11 +227,10 @@ export class TablaIngreso {
             const idItem =  item.cuentaContable ? item.cuentaContable :
                             item.idFormaPagoDet ? item.idFormaPagoDet :
 
-                            item.producto && item.producto.idProductos ? `${item.producto.idProductos}-${item.numero}` : '000'
+                            // item.producto && item.producto.idProductos ? `${item.producto.idProductos}-${item.numero}` : '000'
+                            item.producto && item.idFactDetalle ? `${item.idFactDetalle}-${item.numero}` : '000'
 
-            // if(item.producto && item.producto.idProductos ) debugger;
-
-            // 'form-control edit-input input-edit-' + item.producto.idProductos
+            
             return `form-control edit-input${col.editarFocus ? ` editar-focus-${idItem}` : '' }`
         }
     }
@@ -253,7 +252,8 @@ export class TablaIngreso {
     // Cheackea si esta en edicion
     checkIfEditOn = (item) => (col) => col.enEdicion && (
         // (item.producto && item.producto.idProductos && col.enEdicion === item.producto.idProductos) ||
-        (item.producto && item.producto.idProductos && col.enEdicion === `${item.producto.idProductos}-${item.numero}`) ||
+        // (item.producto && item.producto.idProductos && col.enEdicion === `${item.producto.idProductos}-${item.numero}`) ||
+        (item.producto && item.idFactDetalle && col.enEdicion === `${item.idFactDetalle}-${item.numero}`) ||
         (item.cuentaContable && col.enEdicion === item.cuentaContable) ||
         (item.idFormaPagoDet && col.enEdicion === item.idFormaPagoDet)
     )

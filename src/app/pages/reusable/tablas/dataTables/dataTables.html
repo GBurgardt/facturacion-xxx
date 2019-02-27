@@ -50,7 +50,11 @@
                 <td *ngFor="let col of columns" [ngClass]="col.customClass ? col.customClass : 'text-align: left;'">
                     <div *ngIf="!col.subkey">
                         <div *ngIf="!col.enEdicion || col.enEdicion !== item[utilsService.getNameIdKeyOfResource(item)]">
-                            {{parseKey(item[col.key])}}
+                            {{ 
+                                col.threeDecimals ? 
+                                    utilsService.toThreeDecimals(parseKey(item[col.key])) : parseKey(item[col.key])
+                            }}
+                            <!-- {{parseKey(item[col.key])}} -->
                         </div>
                         <div *ngIf="col.enEdicion && col.enEdicion === item[utilsService.getNameIdKeyOfResource(item)]">
                             <input [(ngModel)]="item[col.key]"  style="margin-top: 4px;" type="text" class="form-control edit-input" id="inputSubKey" placeholder="">

@@ -21,3 +21,10 @@
         background: #61e40a71;
     }
 }
+
+.no-editable {
+    .lista {
+        background: #cccccc;
+        cursor: not-allowed;
+    }
+}

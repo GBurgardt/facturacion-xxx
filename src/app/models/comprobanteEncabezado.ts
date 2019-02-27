@@ -13,13 +13,14 @@ export class ComprobanteEncabezado {
     imputada: string;
     fechaEmi: string;
     detalle: ComprobanteDetalle[];
-
     // Desplegable de detalles
     showDetalles: boolean;
     isDownloading;
     idCteTipo: number;
-
-    
+    importeNeto: number;
+    importeTotal: number;
+    autorizada: string;
+    tipoOperacion: string;
 
     constructor(comprobanteEncabezado?: {
         idFactCab: number;
@@ -35,6 +36,10 @@ export class ComprobanteEncabezado {
         fechaEmi: string;
         detalle: any[];
         idCteTipo: number;
+        importeNeto: number;
+        importeTotal: number;
+        autorizada: string;
+        tipoOperacion: string;
     }) {
         if (comprobanteEncabezado) {
             this.idFactCab = comprobanteEncabezado.idFactCab;
@@ -49,11 +54,13 @@ export class ComprobanteEncabezado {
             this.imputada = comprobanteEncabezado.imputada;
             this.fechaEmi = comprobanteEncabezado.fechaEmi;
             this.detalle = comprobanteEncabezado.detalle.map(det => new ComprobanteDetalle(det));
-
             this.showDetalles = false;
             this.isDownloading = false;
-
             this.idCteTipo = comprobanteEncabezado.idCteTipo;
+            this.importeNeto = comprobanteEncabezado.importeNeto;
+            this.importeTotal = comprobanteEncabezado.importeTotal;
+            this.autorizada = comprobanteEncabezado.autorizada;
+            this.tipoOperacion = comprobanteEncabezado.tipoOperacion;
         } else {
             this.idFactCab = null;
             this.numero = null;
@@ -67,11 +74,13 @@ export class ComprobanteEncabezado {
             this.imputada = null;
             this.fechaEmi = null;
             this.detalle = null;
-            
             this.showDetalles = false;
             this.isDownloading = false;
-
             this.idCteTipo = null;
+            this.importeNeto = null;
+            this.importeTotal = null;
+            this.autorizada = null;
+            this.tipoOperacion = null;
         }
     }
 

@@ -37,13 +37,13 @@ export class ImputacionesService {
             null,
             null,
             0
-            // compEnca.idSisTipoOperacion
         )
         .map(
             respuesta => respuesta.arraydatos.map(
                 prodPend => new ProductoPendiente(prodPend)
             )
         )
+    
     
     
 

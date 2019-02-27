@@ -20,6 +20,7 @@ import { PopupListaService } from 'app/pages/reusable/otros/popup-lista/popup-li
 import { Vendedor } from 'app/models/vendedor';
 import { PtoVenta } from 'app/models/ptoVenta';
 import { SisTipoOperacion } from 'app/models/sisTipoOperacion';
+import { Numerador } from 'app/models/numerador';
 
 @Component({
     selector: 'consulta-comprobante',
@@ -73,8 +74,10 @@ export class ConsultaComprobante {
         private comprobanteService: ComprobanteService,
         private popupListaService: PopupListaService
     ) {
-        this.comprobante.numerador.ptoVenta = new PtoVenta();// Es necesario
-
+        // Es necesario
+        this.comprobante.numerador = new Numerador();
+        this.comprobante.numerador.ptoVenta = new PtoVenta();
+        
         this.sisModulos = this.recursoService.getRecursoList(resourcesREST.sisModulos)();
         this.sisEstados = this.recursoService.getRecursoList(resourcesREST.sisEstados)();
         this.recursoService.getRecursoList(resourcesREST.productos)()

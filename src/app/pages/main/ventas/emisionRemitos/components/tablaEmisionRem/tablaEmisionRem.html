@@ -80,12 +80,18 @@
                             </div>
 
 
-                            <div *ngIf="col.decimal && col.key !== 'precio'">
+                            <div *ngIf="
+                                col.decimal && col.key !== 'precio'
+                            ">
                                 {{ utilsService.parseDecimal(item[col.key]) }}
                             </div>
 
-                            <div *ngIf="col.decimal && col.key === 'precio'">
-                                {{ item[col.key] }}
+                            <div *ngIf="
+                                col.decimal && col.key === 'precio'
+                            ">
+                                {{ 
+                                    utilsService.toThreeDecimals(item[col.key])
+                                }}
                             </div>
 
                             <div *ngIf="
@@ -93,6 +99,7 @@
                                     col.key !== 'imputacion' &&
                                     col.key !== 'tipoDescuento' &&
                                     col.key !== 'numero' &&
+                                    col.key !== 'codigoListaPrecio' &&
                                     !checkIncluyeNetoAndIva(col)
                                     
                                 ">
@@ -181,7 +188,7 @@
                             <!-- CASOS PARTICULARES -->
                             <select *ngIf="col.nombre === 'imputacion'" 
                                     [(ngModel)]="item[col.key].seleccionada"
-                                    [ngClass]="'form-control without-padding editar-focus-' + item.producto.idProductos" 
+                                    [ngClass]="'form-control without-padding editar-focus-' + item.idFactDetalle" 
                                     >
                                 <option *ngFor="let impu of item[col.key].todas" [ngValue]="impu">
                                     {{impu.descripcion}}
@@ -224,6 +231,8 @@
                                     [fatherPosition]="getOffsetOfAddInput()">
                     </popup-lista>
                 </td>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

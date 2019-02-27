@@ -22,6 +22,7 @@ import { PtoVenta } from 'app/models/ptoVenta';
 import { AuthService } from 'app/services/authService';
 import { ImputacionesService } from 'app/services/imputacionesService';
 import { SisTipoOperacion } from 'app/models/sisTipoOperacion';
+import { Numerador } from 'app/models/numerador';
 
 @Component({
     selector: 'consulta-imputaciones',
@@ -74,6 +75,7 @@ export class ConsultaImputaciones {
 
     // El comprobante seleccionado
     compSeleccionado: ComprobanteEncabezado;
+    impuSeleccionado: ComprobanteEncabezado;
 
     constructor(
         private recursoService: RecursoService,
@@ -82,6 +84,7 @@ export class ConsultaImputaciones {
         private popupListaService: PopupListaService,
         private imputacionesService: ImputacionesService,
     ) {
+        this.comprobante.numerador = new Numerador();
         this.comprobante.numerador.ptoVenta = new PtoVenta();// Es necesario
 
         this.sisModulos = this.recursoService.getRecursoList(resourcesREST.sisModulos)();
@@ -226,8 +229,7 @@ export class ConsultaImputaciones {
     onClickComprobante = (compBusc: ComprobanteEncabezado) => {
 
         this.compSeleccionado = compBusc;
-
-        debugger;
+        this.impuSeleccionado = null;
 
         this.imputacionesService.getProductosPendientes(compBusc)
             .subscribe(
@@ -242,9 +244,7 @@ export class ConsultaImputaciones {
      */
     onClickImputacion = (impu: any) => {
 
-        this.compSeleccionado = impu;
-
-        debugger;
+        this.impuSeleccionado = impu;
 
         this.imputacionesService.getProductosPendientes(impu)
             .subscribe(

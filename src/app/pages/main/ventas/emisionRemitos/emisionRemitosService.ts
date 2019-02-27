@@ -26,6 +26,7 @@ import { Cliente } from "../../../../models/cliente";
 import { Vendedor } from "../../../../models/vendedor";
 import { ListaPrecio } from "app/models/listaPrecio";
 import { TipoComprobante } from "app/models/tipoComprobante";
+import sisModulos from "constantes/sisModulos";
 
 @Injectable()
 export class EmisionRemitosService {
@@ -108,17 +109,17 @@ export class EmisionRemitosService {
             customClass: 'text-right'
         },
         {
+            nombre: 'precio desc',
+            key: 'precioDesc',
+            ancho: '5.5%',
+            customClass: 'text-right',
+        },
+        {
             nombre: 'subtotal',
             key: 'subtotal',
             ancho: '5.5%',
             // decimal: true,
             customClass: 'text-right'
-        },
-        {
-            nombre: 'precio desc',
-            key: 'precioDesc',
-            ancho: '5.5%',
-            customClass: 'text-right',
         },
         {
             nombre: '%IVA',
@@ -143,6 +144,12 @@ export class EmisionRemitosService {
         {
             nombre: 'Nro Comprobante',
             key: 'numero',
+            ancho: '5%',
+            customClass: 'text-left'
+        },
+        {
+            nombre: 'LP',
+            key: 'codigoListaPrecio',
             ancho: '5%',
             customClass: 'text-left'
         }
@@ -332,20 +339,26 @@ export class EmisionRemitosService {
     /**
      * Buscar los productos pendientes
      */
-    buscarPendientes = (cliente: Padron) => (comprobanteRel: ComprobanteRelacionado) => (comprobante: Comprobante) => (tipoOpSelect) => {
+    buscarPendientes = (cliente: Padron) => (comprobanteRel: ComprobanteRelacionado) => (comprobante: Comprobante) => (tipoOpSelect) => (listaPrecioSelect: ListaPrecio) => {
         return this.authService.getProductosPendientes(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(cliente)(comprobanteRel)(comprobante)(tipoOpSelect)
+        )(cliente)(comprobanteRel)(comprobante)(tipoOpSelect)(listaPrecioSelect)(sisModulos.venta)
             .catch(
                 err => {
-                    const respErr = 
-                        err && err['_body'] && err['_body'].control ? 
-                            err['_body'].control : null;
+                    // const respErr = 
+                    //     err && err['_body'] && err['_body'].control ? 
+                    //         err['_body'].control : null;
 
                     // this.utilsService.showModal(respErr.codigo)(respErr.descripcion)()();
-                    return Observable.throw(
-                        this.utilsService.showErrorWithBody(err)
-                    )
+                    // return Observable.throw(
+                    //     this.utilsService.showErrorWithBody(err)
+                    // )
+
+                    this.utilsService.showErrorWithBody(err);
+
+                    return Observable.of({
+                        arraydatos: []
+                    });
                 }
             )
             .map(
@@ -390,8 +403,7 @@ export class EmisionRemitosService {
                 const subtotalProd = subtotales
                     .find(
                         st => 
-                            st.idProducto === prodP.producto.idProductos && 
-                            st.numeroComp === prodP.numero
+                            st.idFactDetalle === prodP.idFactDetalle
                     )
 
                 return new ProductoBuscaModelo(
@@ -624,6 +636,7 @@ export class EmisionRemitosService {
                 subtotalIva: respuesta.datos.subTotalIva,
                 precioDesc: respuesta.datos.precioDesc,
                 numeroComp: prodPend.numero,
+                idFactDetalle: prodPend.idFactDetalle
             }
         });
 
@@ -634,7 +647,11 @@ export class EmisionRemitosService {
     buscaLotes = (productos: ProductoPendiente[]) => (comprobante: Comprobante) => 
         this.authService.getBuscaLotes(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(productos)(comprobante).map(resp => resp.arraydatos.map(lote => new Lote(lote)))
+        )(productos)(comprobante).map(
+            resp => resp.arraydatos.map(
+                lote => new Lote(lote)
+            )
+        )
  
     validarAntesDeConfirmar = (tipoColumnas) => (itemSelect: any) => {
         if (
@@ -725,12 +742,17 @@ export class EmisionRemitosService {
         )
     
 
-    autorizarAfip = (tipo, idFactCab) => {
+    autorizarAfip = (idFactCab) => 
         this.authService.autorizarAfip(
             this.localStorageService.getObject(environment.localStorage.acceso).token,
-            tipo,
+            'solicitarCae',
             idFactCab
         )
-    }
+            .catch((err, caught) => {
+                // debugger;
+                this.utilsService.showErrorWithBody(err, true);
+                return Observable.of([]);
+            })
+    
 
 }

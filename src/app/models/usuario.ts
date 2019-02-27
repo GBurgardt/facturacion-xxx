@@ -1,5 +1,6 @@
 import { Perfil } from "./perfil";
 import { ListaPrecio } from "./listaPrecio";
+import { PtoVenta } from "./ptoVenta";
 
 export class Usuario {
     idUsuario: number;
@@ -9,6 +10,7 @@ export class Usuario {
     telefono: string;
     perfil: Perfil;
     listaPrecios: ListaPrecio[];
+    ptoVentas: PtoVenta[];
 
     constructor (usuario?: {
         id: number,
@@ -28,7 +30,8 @@ export class Usuario {
                 empresa: any
             }   
         },
-        listaPrecios: any[]
+        listaPrecios: any[],
+        ptoVentas: any[]
     }) {
         if (usuario) {
             this.idUsuario = usuario.id;
@@ -38,6 +41,7 @@ export class Usuario {
             this.telefono = usuario.telefono;
             this.perfil = new Perfil(usuario.perfil);
             this.listaPrecios = usuario.listaPrecios.map(l => new ListaPrecio(l))
+            this.ptoVentas = usuario.ptoVentas.map(l => new PtoVenta(l))
         } else {
             this.idUsuario = null;
             this.email = null;
@@ -45,11 +49,16 @@ export class Usuario {
             this.clave = null;
             this.telefono = null;
             this.perfil = new Perfil();
-            this.listaPrecios = []
+            this.listaPrecios = [];
+            this.ptoVentas = [];
         }
     }
 
+    /**
+     * Los admin no pueden editar lp
+     */
     addOrRemoveLista = (lp: ListaPrecio) => this.listaPrecios &&
+        this.perfil.descripcion !== 'Admin' &&
         this.listaPrecios.some(cteLet => cteLet.idListaPrecio === lp.idListaPrecio) ?
             this.listaPrecios = this.listaPrecios.filter(cteLet => cteLet.idListaPrecio !== lp.idListaPrecio) :
             this.listaPrecios = this.listaPrecios.concat(lp)

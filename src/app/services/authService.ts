@@ -140,7 +140,9 @@ export class AuthService {
             { token },
             resourcesREST.facturacionElectronica.nombre,
             { idFactCab },
-            { tipo }, // "tipo": "ultimoAutorizado" // solicitarCae
+            { 
+                tipo
+            }, // "tipo": "ultimoAutorizado" // solicitarCae
             false,
             true // Fact electronica activada
         );
@@ -202,7 +204,7 @@ export class AuthService {
     * @argument token
     * @argument filtros Lo filtro
     */
-    getProductosPendientes = (token: string) => (proveedor: Padron) => (comproRel: ComprobanteRelacionado) => (comprobante: Comprobante) => (tipoOpSelect: SisTipoOperacion) => {
+    getProductosPendientes = (token: string) => (proveedor: Padron) => (comproRel: ComprobanteRelacionado) => (comprobante: Comprobante) => (tipoOpSelect: SisTipoOperacion) => (listaPrecioSelect: ListaPrecio) => (modulo) => {
         return this.request(
             [],
             RequestMethod.Post,
@@ -225,7 +227,9 @@ export class AuthService {
                     comprobante && comprobante.tipo && comprobante.tipo.comprobante ?
                         comprobante.tipo.comprobante.idSisOperacionComprobante : null,
                 letra: comprobante.letraCodigo && comprobante.letraCodigo.letra ? comprobante.letraCodigo.letra.letra : null,
-                idSisTipoOperacion: tipoOpSelect && tipoOpSelect.idSisTipoOperacion ? tipoOpSelect.idSisTipoOperacion : null
+                idSisTipoOperacion: tipoOpSelect && tipoOpSelect.idSisTipoOperacion ? tipoOpSelect.idSisTipoOperacion : null,
+                idListaPrecio: listaPrecioSelect && listaPrecioSelect.idListaPrecio ? listaPrecioSelect.idListaPrecio : 0,
+                modulo
             },
             {}
         );
@@ -255,14 +259,16 @@ export class AuthService {
                 idMoneda,
                 idSisOperacionComprobante,
                 letra,
-                idSisTipoOperacion
+                idSisTipoOperacion,
+                idListaPrecio: 0,
+                modulo: sisModulos.todos
             },
             {}
         );
     }
 
     /**
-     * Devulete la cotizacion
+     * Devuelve la cotizacion
      */
     getCotizacion = (token) => {
         return this.request(
@@ -359,8 +365,8 @@ export class AuthService {
                         idFactDetalleImputa: prod.idFactDetalleImputa ? prod.idFactDetalleImputa : null,
                         itemImputada: prod.itemImputada,
                         importe: prod.importe,
-                        precioDesc: 0,
-                        unidadDescuento: '-'
+                        precioDesc: prod.precio,
+                        unidadDescuento: ' '
                     }
                 }),
                 grillaSubTotales: modelosFactura.map(mod => {
@@ -371,7 +377,8 @@ export class AuthService {
                         totalComprobante: cotizacionDatos.total,
                         porcentaje: mod.porcentaje ? mod.porcentaje : 0,
                         idSisTipoModelo: mod.idSisTipoModelo ? mod.idSisTipoModelo : 0,
-                        baseImponible: mod.baseImponible ? mod.baseImponible : 0
+                        baseImponible: mod.baseImponible ? mod.baseImponible : 0,
+                        operador: mod.operador ? mod.operador : null
                     }
                 }),
                 grillaTrazabilidad: productosPend
@@ -527,7 +534,8 @@ export class AuthService {
                         itemImputada: prod.itemImputada,
                         importe: Number(subtotalProd) ? Number(subtotalProd) : 0,
                         precioDesc: precioDescProd,
-                        unidadDescuento: prod.tipoDescuento ? prod.tipoDescuento : '-'
+                        unidadDescuento: prod.tipoDescuento ? prod.tipoDescuento : '-',
+                        comprobanteRel: prod.numero ? prod.numero : null
                     }
                 }),
                 grillaSubTotales: modelosFactura.map(mod => {
@@ -538,7 +546,8 @@ export class AuthService {
                         totalComprobante: cotizacionDatos.total,
                         porcentaje: mod.porcentaje ? mod.porcentaje : 0,
                         idSisTipoModelo: mod.idSisTipoModelo ? mod.idSisTipoModelo : 0,
-                        baseImponible: mod.baseImponible ? mod.baseImponible : 0
+                        baseImponible: mod.baseImponible ? mod.baseImponible : 0,
+                        operador: mod.operador ? mod.operador : null
                     }
                 }),
                 grillaTrazabilidad: lotesTraza
@@ -575,7 +584,8 @@ export class AuthService {
                 idMoneda: comprobante.moneda.idMoneda,
                 idModeloCab: null,
                 idModulo: sisModulos.venta,
-                listaPrecio: listaPrecioSelec ? listaPrecioSelec.idListaPrecio : null,
+                listaPrecio: listaPrecioSelec ? 
+                    listaPrecioSelec.idListaPrecio : productosPend[0].idListaPrecio,
                 letra: comprobante.letraCodigo ? comprobante.letraCodigo.letra.letra : null,
                 lote:   productosPend.some(prodPend => prodPend.producto.trazable) &&
                 comprobante.tipo.comprobante.idSisComprobantes !== 4,
@@ -1077,7 +1087,10 @@ export class AuthService {
                 telefono: recurso.telefono,
                 perfil: recurso.perfil.idPerfil,
                 mail: recurso.email,
-                listaPrecios: recurso.listaPrecios.map(l => ({ idListaPrecio: l.idListaPrecio }))
+                listaPrecios: recurso.listaPrecios.map(l => ({ idListaPrecio: l.idListaPrecio })),
+                idPtoVenta: recurso.ptoVentas && 
+                    recurso.ptoVentas.length === 1 ? recurso.ptoVentas[0].idPtoVenta : null
+
             }
         }
 
@@ -1281,7 +1294,9 @@ export class AuthService {
                 telefono: recurso.telefono,
                 perfil: recurso.perfil.idPerfil,
                 mail: recurso.email,
-                listaPrecios: recurso.listaPrecios.map(l => ({ idListaPrecio: l.idListaPrecio }))
+                listaPrecios: recurso.listaPrecios.map(l => ({ idListaPrecio: l.idListaPrecio })),
+                idPtoVenta: recurso.ptoVentas && 
+                    recurso.ptoVentas.length === 1 ? recurso.ptoVentas[0].idPtoVenta : null
             }
         }
 

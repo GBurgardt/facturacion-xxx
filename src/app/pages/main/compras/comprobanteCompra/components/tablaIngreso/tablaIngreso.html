@@ -168,7 +168,9 @@
                                     )
                                 )
                             ">
-                                {{ item[col.key] }}
+                                {{ 
+                                    utilsService.toThreeDecimals(item[col.key])
+                                }}
                             </div>
                         </div>
 
@@ -228,9 +230,10 @@
                                 (blur)="col && col.customBlur ? customsBlur[col.customBlur](item, $event) : null"
                                 >
 
+                                <!-- [ngClass]="'form-control without-padding editar-focus-' + item.producto.idProductos+'-'+item.numero" -->
                             <select *ngIf="col.nombre === 'imputacion'"
                                     [(ngModel)]="item[col.key].seleccionada"
-                                    [ngClass]="'form-control without-padding editar-focus-' + item.producto.idProductos+'-'+item.numero"
+                                    [ngClass]="'form-control without-padding editar-focus-' + item.idFactDetalle+'-'+item.numero"
                                     >
                                 <option *ngFor="let impu of item[col.key].todas" [ngValue]="impu">
                                     {{impu.descripcion}}

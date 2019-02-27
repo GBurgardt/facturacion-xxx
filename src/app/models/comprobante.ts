@@ -40,7 +40,8 @@ export class Comprobante {
             this.fechaComprobante = new DateLikePicker()
             this.fechaVto = new DateLikePicker()
             this.observaciones = null
-            this.numerador = new Numerador();
+            // this.numerador = new Numerador();
+            this.numerador = null;
         }
     }
 

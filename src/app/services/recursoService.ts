@@ -12,7 +12,6 @@ import dynamicClass from 'app/services/dynamicClassService';
 import { FiltroListaPrecios } from '../models/filtroListaPrecio';
 import { DetalleProducto } from '../models/detalleProducto';
 import { BehaviorSubject } from '../../../node_modules/rxjs';
-import { ProductoPendiente } from 'app/models/productoPendiente';
 import { ComprobanteEncabezado } from 'app/models/comprobanteEncabezado';
 
 @Injectable()

@@ -24,6 +24,8 @@ export class DefaultModal implements OnInit {
     modalContent: string;
     buttonText: string = 'Aceptar';
 
+    isInnerHTML = false;
+
     constructor(private activeModal: NgbActiveModal) {
     }
 

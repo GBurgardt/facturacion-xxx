@@ -137,6 +137,8 @@ export class ComprobanteCompra implements AfterViewInit {
         private popupListaService: PopupListaService,
         configProgressBar: NgbProgressbarConfig
     ) {
+        this.comprobante.numerador = new Numerador();
+        
         ////////// Barra de progreso ///////////
         configProgressBar.max = 100;
         configProgressBar.striped = true;
@@ -183,8 +185,8 @@ export class ComprobanteCompra implements AfterViewInit {
     ///////////////////////////////// Eventos OnClick /////////////////////////////////
     onClickRemove = (prodSelect: ProductoPendiente) => {
         _.remove(this.tablas.datos.productosPend, (prod: ProductoPendiente) => {
-            // return prod.producto.idProductos === prodSelect.producto.idProductos;
-            return prod.producto.idProductos === prodSelect.producto.idProductos && prod.numero === prodSelect.numero;
+            // return prod.producto.idProductos === prodSelect.producto.idProductos && prod.numero === prodSelect.numero;
+            return prod.idFactDetalle === prodSelect.idFactDetalle
         });
 
         // Actualizo totales y eso
@@ -199,8 +201,10 @@ export class ComprobanteCompra implements AfterViewInit {
             if (newTabla.enEdicion !== undefined) {
 
                 // tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = itemSelect.producto.idProductos :
-                tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = `${itemSelect.producto.idProductos}-${itemSelect.numero}` :
-                tipoColumnas === 'columnasTrazabilidad' ? newTabla.enEdicion = `${itemSelect.producto.idProductos}-${itemSelect.numero}` :
+                // tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = `${itemSelect.producto.idProductos}-${itemSelect.numero}` :
+                // tipoColumnas === 'columnasTrazabilidad' ? newTabla.enEdicion = `${itemSelect.producto.idProductos}-${itemSelect.numero}` :
+                tipoColumnas === 'columnasProductos' ? newTabla.enEdicion = `${itemSelect.idFactDetalle}-${itemSelect.numero}` :
+                tipoColumnas === 'columnasTrazabilidad' ? newTabla.enEdicion = `${itemSelect.idFactDetalle}-${itemSelect.numero}` :
                 tipoColumnas === 'columnasFactura' ? newTabla.enEdicion = itemSelect.cuentaContable :
                 tipoColumnas === 'columnasDetallesFp' ? newTabla.enEdicion = itemSelect.idFormaPagoDet : null
             }
@@ -213,7 +217,8 @@ export class ComprobanteCompra implements AfterViewInit {
             const idItem =  itemSelect.cuentaContable ? itemSelect.cuentaContable :
                             itemSelect.idFormaPagoDet ? itemSelect.idFormaPagoDet :
                             // itemSelect.producto && itemSelect.producto.idProductos ? itemSelect.producto.idProductos : '000';
-                            itemSelect.producto && itemSelect.producto.idProductos ? `${itemSelect.producto.idProductos}-${itemSelect.numero}` : '000';
+                            // itemSelect.producto && itemSelect.producto.idProductos ? `${itemSelect.producto.idProductos}-${itemSelect.numero}` : '000';
+                            itemSelect.producto && itemSelect.idFactDetalle ? `${itemSelect.idFactDetalle}-${itemSelect.numero}` : '000';
 
             const inputFocusClass = 'editar-focus-'+idItem;
 
@@ -320,6 +325,7 @@ export class ComprobanteCompra implements AfterViewInit {
         // Busco el producto seleccionado
         this.comprobanteCompraService.buscarProducto(prodSelec.idProductos, this.comprobante.moneda.idMoneda).subscribe(prodEnc => {
             
+            // debugger;
             const auxProdSelect = Object.assign({}, prodEnc);
 
             // Seteo el nro del comprobante actual
@@ -327,8 +333,9 @@ export class ComprobanteCompra implements AfterViewInit {
             
             // Checkeo que no exista
             const existeProd = this.tablas.datos.productosPend.find(
-                prod => prod.producto.idProductos === auxProdSelect.producto.idProductos &&
-                        prod.numero === auxProdSelect.numero
+                prod => prod.idFactDetalle === auxProdSelect.idFactDetalle
+                // prod => prod.producto.idProductos === auxProdSelect.producto.idProductos &&
+                //         prod.numero === auxProdSelect.numero
             )
     
             if (!existeProd) {
@@ -812,7 +819,15 @@ export class ComprobanteCompra implements AfterViewInit {
     /**
      * Checkea si el resto a pagar es valido
      */
-    isRestoPagarValid = () => this.calcRestoPagar() === '0.00'
+    isRestoPagarValid = () => {
+
+        if (this.comprobante.tipo.requiereFormaPago) {
+            return this.calcRestoPagar() === '0.00';
+        } else {
+            return true;
+        }
+
+    }
 
     /**
      * Calcula el resto pagar
@@ -873,7 +888,10 @@ export class ComprobanteCompra implements AfterViewInit {
                 this.comprobante.letraCodigo.numeradores.length > 0
             )
         ) {
-            if (!this.comprobante.numerador.ptoVenta) {
+            if (!this.comprobante.numerador || !this.comprobante.numerador.ptoVenta) {
+                if (!this.comprobante.numerador) {
+                    this.comprobante.numerador = new Numerador();
+                }
                 this.comprobante.numerador.ptoVenta = new PtoVenta();
             }
             return true;

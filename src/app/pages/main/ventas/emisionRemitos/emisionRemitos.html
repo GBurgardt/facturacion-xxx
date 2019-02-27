@@ -151,7 +151,7 @@
                             comprobante.letraCodigo && comprobante.letraCodigo.numeradores
                         )" class="form-group inline-group">
                             <label for="cteNro">Nro:</label>
-                            <select required disabled id="selectPtoVentaNum" class="form-control" [ngStyle]="{padding: '1px 8px 0px 8px'}" name="clCompNro">
+                            <select required [(ngModel)]="comprobante.numerador" id="selectPtoVentaNum" class="form-control" [ngStyle]="{padding: '1px 8px 0px 8px'}" name="clCompNro">
                                 <option [ngValue]="null">
                                 </option>
                             </select>

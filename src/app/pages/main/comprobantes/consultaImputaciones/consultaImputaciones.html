@@ -214,7 +214,9 @@
                         <th>Tipo</th>
                         <th class="text-right">Numero</th>
                         <th class="text-right">Fecha</th>
-                        <th class="text-right">Clie/Prov</th>
+                        <th class="text-left">Clie/Prov</th>
+                        <th class="text-left">Tipo Op</th>
+                        <th class="text-left">Imp</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -225,14 +227,15 @@
                         class="comprobante-tr"
                         [ngClass]="{
                             'comprobante-tr-select': compSeleccionado && compBusc && 
-                                compSeleccionado.idFactCab === compBusc.idFactCab && 
-                                !compSeleccionado.fechaEmision
+                                compSeleccionado.idFactCab === compBusc.idFactCab
                         }"
                         >
                         <td>{{ compBusc.comprobante }}</td>
                         <td class="text-right td-nowrap">{{ formatNumero(compBusc.numero) }}</td>
                         <td class="text-right">{{ utilsService.formatearFecha('DD/MM/YYYY')(compBusc.fechaEmi) }}</td>  
-                        <td class="text-right">{{ compBusc.nombre }}</td>  
+                        <td class="text-left">{{ compBusc.nombre }}</td>  
+                        <td class="text-left">{{ compBusc.nombre }}</td>  
+                        <td class="text-left">{{ compBusc.imputada }}</td>  
                     </tr>
                 </tbody>
                 <tfoot>
@@ -264,14 +267,19 @@
                 <tbody>
                     <ng-container *ngFor="let impu of mfImpu.data">
                         <!-- En el ngClass con compSeleccionado.fechaEmision, si es true siginfica que es una imputacion -->
+                        <!-- [ngClass]="{
+                            'comprobante-tr-select': compSeleccionado && impu && 
+                                compSeleccionado.idFactCab === impu.idFactCab &&
+                                compSeleccionado.fechaEmision
+                        }" -->
                         <tr 
                             class="comprobante-tr" 
+                            (click)="onClickImputacion(impu)"
                             [ngClass]="{
-                                'comprobante-tr-select': compSeleccionado && impu && 
-                                    compSeleccionado.idFactCab === impu.idFactCab &&
-                                    compSeleccionado.fechaEmision
+                                'imputacion-tr-select': impuSeleccionado && impu && 
+                                    impuSeleccionado.idFactCab === impu.idFactCab
                             }"
-                            (click)="onClickImputacion(impu)">
+                            >
                             <td>{{ impu.descCorta }}</td>
                             <td class="text-right td-nowrap">{{ formatNumero(impu.numero) }}</td>
                             <td class="text-right">{{ utilsService.formatearFecha('DD/MM/YYYY')(impu.fechaEmision) }}</td>                        
@@ -317,8 +325,8 @@
                     <td>{{ compDet.producto.descripcion }}</td>
                     <td class="text-right">{{ utilsService.parseDecimal(compDet.original) }}</td>
                     <td class="text-right">{{ utilsService.parseDecimal(compDet.pendiente) }}</td>
-                    <td class="text-right">{{ utilsService.parseDecimal(compDet.precio) }}</td>
-                    <td class="text-right">{{ compDet.importe }}</td>
+                    <td class="text-right">{{ utilsService.toThreeDecimals(compDet.precio) }}</td>
+                    <td class="text-right">{{ utilsService.parseDecimal(compDet.importe) }}</td>
                     <td class="text-right">{{ compDet.deposito }}</td>
                 </tr>
             </tbody>
