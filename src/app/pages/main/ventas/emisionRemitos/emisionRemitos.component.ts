@@ -45,6 +45,9 @@ import { ListaPrecio } from 'app/models/listaPrecio';
 import { PtoVenta } from 'app/models/ptoVenta';
 import { FormControl } from '@angular/forms';
 import { LetraCodigo } from 'app/models/letraCodigo';
+import { Contrato } from 'app/models/contrato';
+import { Contratos } from '../../contratos';
+
 
 
 @Component({
@@ -73,8 +76,9 @@ export class EmisionRemitos  {
         vendedor: new Vendedor(),
         incluir: false
     };
-    
     listaPrecioSelect: ListaPrecio = new ListaPrecio();
+
+    contrato: Contrato = new Contrato();
 
     /////////////////////////////////////////////
     //////////// Listas desplegables ////////////
@@ -91,6 +95,8 @@ export class EmisionRemitos  {
     tiposComprobantesRel: Observable<TipoComprobante[]>;
     tiposComprobantesFactura: Observable<TipoComprobante[]>;
     listasPreciosUsuario: Observable<ListaPrecio[]>;
+
+    contratos: Observable<Contrato[]>;
 
     /////////////////////////////////////////////
     ////////////////// Otros ////////////////////
@@ -152,7 +158,9 @@ export class EmisionRemitos  {
         }
     };
 
-    // txtInputCliente: Subject<string> = new Subject<string>();
+    
+    // Porcentaje de grabado
+    grabandoPorcentaje = 0;
 
     /**
      * Toda la carga de data se hace en el mismo orden en el que está declarado arriba
@@ -165,20 +173,6 @@ export class EmisionRemitos  {
         private _state: GlobalState,
         private router: Router
     ) {
-
-        // _.throttle(this.findClientes, 500);
-
-        // TODO: Debounce inputCliente hacer despues
-        // this.txtInputCliente
-        //     .debounceTime(1000) // wait 1 sec after the last event before emitting last event
-        //     .distinctUntilChanged() // only emit if value is different from previous value
-        //     .subscribe(model => {
-        //         this.txtQuery = model;
-
-        //         // Call your function which calls API or do anything you would like do after a lag of 1 sec
-        //         this.getDataFromAPI(this.txtQuery);
-        //     });
- 
 
         ////////// Listas desplegables //////////
         this.sisSitIvas = this.recursoService.getRecursoList(resourcesREST.sisSitIva)();
@@ -205,6 +199,8 @@ export class EmisionRemitos  {
         this.tiposComprobantesFactura = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
             'sisComprobante': 3
         });
+
+        
     }
 
     
@@ -389,6 +385,9 @@ export class EmisionRemitos  {
                         )()()
                     
                     } else {
+                        // Activo poircentaje grabado spinbner
+                        this.grabandoPorcentaje = 30;
+
                         this.emisionRemitosService.confirmarYEmitirRemito(this.comprobante)
                             (this.comprobanteRelacionado)
                             (this.cliente)
@@ -405,37 +404,55 @@ export class EmisionRemitos  {
                             (this.dataVendedor)
                             (this.tablas.datos.subtotalesProductos)
                             (this.listaPrecioSelect)
+                            .catch(err => {
+                                this.grabandoPorcentaje = 0;
+                                this.utilsService.showErrorWithBody(err)
+                                return Observable.throw(null)
+                            })
                             .subscribe((respuesta: any) => {
-                                
+                                this.grabandoPorcentaje = 60;
+
+                                debugger;
+
                                 // Autorizo en AFIP
                                 if (this.comprobante.tipo.cursoLegal) {
                                     this.emisionRemitosService.autorizarAfip(
                                         respuesta.datos.idFactCab
-                                    ).subscribe(respAfip => {
-                                        if (respAfip && respAfip.datos) {
-                                            // Modal para imprimir
-                                            const compCreado = new ComprobanteEncabezado();
-                                            compCreado.idFactCab = respuesta.datos.idFactCab;
-                                            compCreado.numero = Number(
-                                                `${this.comprobante.numerador.ptoVenta.ptoVenta}${this.comprobante.numerador.ptoVenta.ptoVenta.toString().padStart(8, '0')}`
-                                            );
-                
-                                            this.utilsService.showImprimirModal(
-                                                respuesta.control.codigo
-                                            )(
-                                                `${respuesta.control.descripcion}. 
-                                                CAI: ${respAfip.datos.cai}`
-                                            )(
-                                                () => this.recursoService.downloadComp(compCreado)
-                                            )(
-                                                compCreado
-                                            );
-                
-                                            // Blanqueo los campos
-                                            this.blanquearCampos();
-                                        }
-                                    })
+                                    )
+                                        .catch(err => {
+                                            this.grabandoPorcentaje = 0;
+                                            this.utilsService.showErrorWithBody(err, true);
+                                            return Observable.throw(null)
+                                        })
+                                        .subscribe(respAfip => {
+                                            if (respAfip && respAfip.datos) {
+                                                this.grabandoPorcentaje = 0;
+
+                                                // Modal para imprimir
+                                                const compCreado = new ComprobanteEncabezado();
+                                                compCreado.idFactCab = respuesta.datos.idFactCab;
+                                                compCreado.numero = Number(
+                                                    `${this.comprobante.numerador.ptoVenta.ptoVenta}${this.comprobante.numerador.ptoVenta.ptoVenta.toString().padStart(8, '0')}`
+                                                );
+                    
+                                                this.utilsService.showImprimirModal(
+                                                    respuesta.control.codigo
+                                                )(
+                                                    `${respuesta.control.descripcion}. 
+                                                    CAI: ${respAfip.datos.cai}`
+                                                )(
+                                                    () => this.recursoService.downloadComp(compCreado)
+                                                )(
+                                                    compCreado
+                                                );
+                    
+                                                // Blanqueo los campos
+                                                this.blanquearCampos();
+                                            }
+                                        })
                                 } else {
+                                    this.grabandoPorcentaje = 0;
+                                    
                                     // Modal para imprimir
                                     const compCreado = new ComprobanteEncabezado();
                                     compCreado.idFactCab = respuesta.datos.idFactCab;
@@ -458,9 +475,6 @@ export class EmisionRemitos  {
                                 }
                             })
                     }
-
-
-
                 })({ tipoModal: 'confirmation' })
 
     /**
@@ -542,6 +556,8 @@ export class EmisionRemitos  {
 
         // Focus siguiente elemento
         document.getElementById('tipoOperacionSelect') ? document.getElementById('tipoOperacionSelect').focus() : null;
+
+        this.contratos = this.recursoService.getRecursoList(resourcesREST.contratos)({ idPadron: prove.padronCodigo });
     }
     
     ///////////////////////////////////////////////////////////////////////////////////
@@ -911,15 +927,42 @@ export class EmisionRemitos  {
             'sisTipoOperacion': this.tipoOperacion.idSisTipoOperacion
         })
 
-        // this.comprobante.numerador = new Numerador();
-        // this.comprobante.numerador.fechaApertura = null;
-        // this.comprobante.numerador.fechaCierre = null;
 
         // Actualizo total, si no incluye neto es 0
-        this.actualizarTotalNeto();
+        // this.actualizarTotalNeto();
 
-        // Actualizo sumatoria subtotales (por si cambió incluyeIva)
-        this.actualizarSumatoriaSubto();    
+        // // Actualizo sumatoria subtotales (por si cambió incluyeIva)
+        // this.actualizarSumatoriaSubto();
+        
+
+        this.comprobante.numerador = null;
+        this.comprobante.moneda = null;
+        this.comprobante.letraCodigo = null;
+
+        // Blanqueo todo lo que le sigue
+        this.comprobanteRelacionado = new ComprobanteRelacionado();
+        this.tablas.datos.productosPend = [];
+        this.tablas.datos.modelosFactura = [];
+        this.tablas.datos.detallesFormaPago = [];
+        this.tablas.datos.lotesTraza = [];
+
+        // Limpio formas pago
+        this.dataTablaFormasPago = null;
+        this.formasPagoSeleccionadas = [];
+
+        // Limpio lista pre
+        this.listaPrecioSelect = null;
+        this.listasPreciosUsuario = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
+
+        // Limpio cotizacion datos
+        this.cotizacionDatos.total = 0;
+        this.sumatoriaSubtotales = 0;
+
+        // Limpio subtotales
+        this.tablas.datos.subtotalesProductos = [];
+
+        // Limpio datos canje
+        this.sisCanje = new SisCanje();
         
         // Actualizo monedas
         this.monedas.next(cteTipoSelect.comprobante.monedas);
@@ -1061,7 +1104,8 @@ export class EmisionRemitos  {
         // Obtengo los productos que puede agregar a la venta
         this.recursoService.getRecursoList(resourcesREST.productosReducidos)({
             'tipo': 'reducida',
-            'listaPrecio': lp.idListaPrecio
+            'listaPrecio': lp.idListaPrecio,
+            'aptoCanje': this.tipoOperacion.canje
         }).subscribe(prods => {
             this.productos.next(prods);
         });
@@ -1109,17 +1153,16 @@ export class EmisionRemitos  {
                 this.comprobanteRelacionado.numero = this.comprobanteRelacionado.numero
                     .padStart(8, '0') : null;
 
-
-    /**
-     * Actualizo grilla 'Canje Referencia'
-     */
-    onChangeProductoCanje = (canjeSelect: SisCanje) => {
-        debugger
-        // this.tablas.datos.productosCanje.push(canjeSelect);
-    }
-
     onChangeLetra = (letraSelect: LetraCodigo) => 
         this.comprobante.numerador = (letraSelect && letraSelect.numeradores && letraSelect.numeradores.length > 0) ?
             letraSelect.numeradores[0] : null;
 
+
+    onChangeContrato = (cont: Contrato) => {
+        debugger;
+        this.sisCanje = cont ? cont.sisCanje : null
+    }
+
+    compareWithCanje = (a: SisCanje, b: SisCanje) => a.idSisCanje === b.idSisCanje
+    compareWithContrato = (a: Contrato, b: Contrato) => a.idContratos === b.idContratos
 }

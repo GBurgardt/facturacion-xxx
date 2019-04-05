@@ -31,12 +31,14 @@ export class DataTables {
 
     
     sortBy = 'nombre';
-    filterQuery = "";
     rowsOnPage = 10;
     sortOrder = "asc";
 
     // Sistema de filtros
     @Input() filtrosActivos = false;
+
+    // Sistema de búsqueda
+    @Input() filterQuery = "";
 
     constructor(
         public utilsService: UtilsService

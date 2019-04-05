@@ -1,0 +1,26 @@
+.abm-contratos {
+
+    .table-contratos {
+        margin: 1%;
+
+
+        tr {
+            th {
+                font-weight: bold;
+                margin-bottom: 3px;
+            }
+
+
+            .btn-accion {
+                margin: 4px;
+                cursor: pointer;
+            }
+            
+        }
+
+        tr:nth-child(even) {
+            background: rgba(219, 219, 219, 0.158);
+        }
+    }
+    
+}

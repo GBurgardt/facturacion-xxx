@@ -4,7 +4,7 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="descripcion">Descripcion</label>
-                    <input [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion" placeholder="Descripcion de la forma de pago">
+                    <input autocomplete="off"  [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion" placeholder="Descripcion de la forma de pago">
                 </div>
             </div>
 
@@ -113,14 +113,14 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="detalles">Detalle *</label>
-                    <input [(ngModel)]="detalleEnEdicion.detalle" type="text" class="form-control" id="inputDetalles">
+                    <input autocomplete="off"  [(ngModel)]="detalleEnEdicion.detalle" type="text" class="form-control" id="inputDetalles">
                 </div>
             </div>
 
             <!-- <div class="col-sm-2">
                 <div class="form-group">
                     <label for="monto">Monto *</label>
-                    <input [(ngModel)]="detalleEnEdicion.monto" type="text" class="form-control" id="inputMonto">
+                    <input autocomplete="off"  [(ngModel)]="detalleEnEdicion.monto" type="text" class="form-control" id="inputMonto">
                 </div>
             </div> -->
             
@@ -131,13 +131,13 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="porcentaje">Porcentaje *</label>
-                    <input [(ngModel)]="detalleEnEdicion.porcentaje" type="text" class="form-control" id="porcentaje">
+                    <input autocomplete="off"  [(ngModel)]="detalleEnEdicion.porcentaje" type="text" class="form-control" id="porcentaje">
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="cantDias">Cant Dias *</label>
-                    <input [(ngModel)]="detalleEnEdicion.cantDias" type="text" class="form-control" id="inputCantDias">
+                    <input autocomplete="off"  [(ngModel)]="detalleEnEdicion.cantDias" type="text" class="form-control" id="inputCantDias">
                 </div>
             </div>
             <div class="col-sm-6 btn-container-det">

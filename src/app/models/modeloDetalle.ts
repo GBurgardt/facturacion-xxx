@@ -1,6 +1,7 @@
 import { SisTipoModelo } from "./sisTipoModelo";
 import { PlanCuenta } from "./planCuenta";
 import { SisModulo } from "./sisModulo";
+import { Libro } from "./libro";
 
 export class ModeloDetalle {
     idModeloDetalle: number;
@@ -18,6 +19,8 @@ export class ModeloDetalle {
 
     idSisModulo: number;
 
+    idLibro: number;
+
     constructor (modeloDetalle?: {
         idModeloDetalle: number;
         ctaContable: string;
@@ -32,6 +35,8 @@ export class ModeloDetalle {
         planCuenta: any;
 
         sisModulo: any;
+
+        libro: any;
     }) {
         if (modeloDetalle) {
             this.idModeloDetalle = modeloDetalle.idModeloDetalle;
@@ -45,9 +50,10 @@ export class ModeloDetalle {
             this.idSisTipoModelo = modeloDetalle.tipoModelo ? modeloDetalle.tipoModelo.idTipoModelo : null;
             this.ctaContable = modeloDetalle.ctaContable;
             this.planCuenta = new PlanCuenta(modeloDetalle.planCuenta);
-
+            
             this.idSisModulo = modeloDetalle.sisModulo ? modeloDetalle.sisModulo.idSisModulos : null;
-            // debugger;
+
+            this.idLibro = modeloDetalle.libro ? modeloDetalle.libro.idLibro : null;
         } else {
             this.idModeloDetalle = null;
             this.ctaContable = null;
@@ -62,6 +68,8 @@ export class ModeloDetalle {
             this.planCuenta = new PlanCuenta();
 
             this.idSisModulo = null;
+
+            this.idLibro = null;
         }
     }
 

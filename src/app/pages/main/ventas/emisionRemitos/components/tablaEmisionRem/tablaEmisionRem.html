@@ -217,7 +217,7 @@
                 <td></td>
                 <td (mouseenter) = "showTooltip = true" (mouseleave) = "showTooltip = false">
                     <input  [(ngModel)]="textoBusqueda" type="text" class="form-control input-new-prod" id="addInput" placeholder="" 
-                            (blur)="onBlurInputItemAdd()" 
+                            (blur)="onBlurInputItemAdd($event)" 
                             (ngModelChange)="onChangeInputItemAdd($event)" 
                             (keydown.arrowdown)="keyPressInputTexto($event)('down')" 
                             (keydown.arrowup)="keyPressInputTexto($event)('up')" 

@@ -17,6 +17,10 @@ export class SisComprobante {
 
     monedas: Moneda[];
 
+    usaContrato: boolean;
+
+
+
     constructor(sisComprobante?: {
         idSisComprobantes: number;
         descripcion: string;
@@ -30,6 +34,8 @@ export class SisComprobante {
         relacionadosMultiples: boolean;
 
         monedas: any[];
+
+        usaContrato: boolean;
     }) {
         if (sisComprobante) {
             this.idSisComprobantes = sisComprobante.idSisComprobantes;
@@ -44,6 +50,8 @@ export class SisComprobante {
             this.relacionadosMultiples = sisComprobante.relacionadosMultiples;
 
             this.monedas = sisComprobante.monedas.map(m => new Moneda(m));
+
+            this.usaContrato = sisComprobante.usaContrato;
         } else {
             this.idSisComprobantes = null;
             this.descripcion = null;
@@ -57,6 +65,8 @@ export class SisComprobante {
             this.relacionadosMultiples = null;
 
             this.monedas = [];
+
+            this.usaContrato = null;
         }
     }
 

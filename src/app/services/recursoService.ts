@@ -8,7 +8,8 @@ import { Observable } from 'rxjs/Observable';
 import { UtilsService } from './utilsService';
 import { resourcesREST } from 'constantes/resoursesREST';
 
-import dynamicClass from 'app/services/dynamicClassService';
+// import dynamicClass from 'app/services/dynamicClassService';
+import {dynamicClass} from 'app/services/dynamicClassService';
 import { FiltroListaPrecios } from '../models/filtroListaPrecio';
 import { DetalleProducto } from '../models/detalleProducto';
 import { BehaviorSubject } from '../../../node_modules/rxjs';

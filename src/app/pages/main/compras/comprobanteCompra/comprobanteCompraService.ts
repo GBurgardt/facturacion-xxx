@@ -115,13 +115,13 @@ export class ComprobanteCompraService {
             nombre: 'articulo',
             key: 'producto',
             subkey: 'codProducto',
-            ancho: '15%'
+            ancho: '5%'
         },
         {
             nombre: 'descripcion',
             key: 'producto',
             subkey: 'descripcion',
-            ancho: '20%'
+            ancho: '15%'
         },
         {
             nombre: 'GLN',
@@ -140,7 +140,7 @@ export class ComprobanteCompraService {
             nombre: 'serie',
             key: 'trazabilidad',
             subkey: 'serie',
-            ancho: '5%',
+            ancho: '20%',
             enEdicion: null
         },
         {
@@ -302,7 +302,7 @@ export class ComprobanteCompraService {
         const noExistenNulos = this.checkIfNulosDatosComprobantes(comprobante)(provSelec)(productosPend)(modelosFactura)(depositoSelec);
 
         // Checkeo que haya productos agregados
-        const existenProductos = this.checkIfExistenProductos(productosPend)(modelosFactura);
+        const existenProductos = this.checkIfExistenProductos(productosPend);
 
         /// Checkeo que hayan cargado los datos de la trazabilidad (y que el tipo comprobatne NO sea Ordencompra)
         const trazabilidadCargada = 
@@ -350,10 +350,13 @@ export class ComprobanteCompraService {
     /**
      * Me fijo si hay productos agregados
      */
-    checkIfExistenProductos = (productosPend: ProductoPendiente[]) => (modelosFactura: ModeloFactura[]) => (
-        productosPend.length > 0 &&
-        modelosFactura.length > 0
+    checkIfExistenProductos = (productosPend: ProductoPendiente[]) => (
+        productosPend.length > 0
     )
+    // checkIfExistenProductos = (productosPend: ProductoPendiente[]) => (modelosFactura: ModeloFactura[]) => (
+    //     productosPend.length > 0 &&
+    //     modelosFactura.length > 0
+    // )
 
     /**
      * Checkea si existen nulos

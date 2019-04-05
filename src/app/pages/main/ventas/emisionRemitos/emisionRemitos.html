@@ -7,7 +7,7 @@
 
                     <div class="cliente-input-container" style="display: flex; flex-direction: column ">
 
-                        <input #emiRemInput
+                        <input autocomplete="off" #emiRemInput
                             id="clienteSeleccionado" 
                             (blur)="onBlurInputCliente($event)"
                             (ngModelChange)="onChangeInputCliente($event)"
@@ -16,6 +16,7 @@
                             [(ngModel)]="cliente.padronCodigo" type="text" class="form-control" placeholder=""
                             (keyup.enter)="onEnterInputProv($event)" (keydown.arrowdown)="keyPressInputTexto($event)('down')"
                             (keydown.arrowup)="keyPressInputTexto($event)('up')"
+                            
                             >
                         <div
                             class="spinner-container"
@@ -48,7 +49,7 @@
 
             <div class="col-sm-3">
                 <div class="form-group">
-                    <input disabled name="clPadApe" [(ngModel)]="cliente.padronApelli" type="text" class="form-control"
+                    <input autocomplete="off" disabled name="clPadApe" [(ngModel)]="cliente.padronApelli" type="text" class="form-control"
                         id="nombreCliente" placeholder="">
                 </div>
             </div>
@@ -56,8 +57,8 @@
             <div class="col-sm-2">
                 <div class="form-group inline-group">
                     <label for="cuit">CUIT</label>
-                    <!-- <input name="clCuit" (blur)="onBlurCuit($event)" [disabled]="disabledClienteCustom" [(ngModel)]="cliente.cuit" -->
-                    <input disabled name="clCuit" (blur)="onBlurCuit($event)" [(ngModel)]="cliente.cuit"
+                    <!-- <input autocomplete="off" name="clCuit" (blur)="onBlurCuit($event)" [disabled]="disabledClienteCustom" [(ngModel)]="cliente.cuit" -->
+                    <input autocomplete="off" disabled name="clCuit" (blur)="onBlurCuit($event)" [(ngModel)]="cliente.cuit"
                         type="text" class="form-control" id="cuitCliente" placeholder="">
                 </div>
             </div>
@@ -66,8 +67,8 @@
             <div class="col-sm-1">
                 <div class="form-group inline-group">
                     <label for="cuit">IVA</label>
-                    <!-- <input name="clDscCort" disabled [(ngModel)]="cliente.condIva.descCorta" type="text" class="form-control" id="cuit" -->
-                    <input name="clDscCort" disabled [ngModel]="cliente.condIva ? cliente.condIva.descCorta : ''" type="text" class="form-control" id="cuit"
+                    <!-- <input autocomplete="off" name="clDscCort" disabled [(ngModel)]="cliente.condIva.descCorta" type="text" class="form-control" id="cuit" -->
+                    <input autocomplete="off" name="clDscCort" disabled [ngModel]="cliente.condIva ? cliente.condIva.descCorta : ''" type="text" class="form-control" id="cuit"
                         placeholder="">
                 </div>
             </div>
@@ -105,7 +106,7 @@
         <div *ngIf="dataVendedor.vendedor.idVendedor && dataVendedor.vendedor.idVendedor" class="row">
             <div class="input-vend">
                 <label for="idInputVendedor">Vendedor:</label>
-                <input disabled name="clAuxNomCom" [(ngModel)]="dataVendedor.vendedor.auxNombreCompleto" type="text" class="form-control"
+                <input autocomplete="off" disabled name="clAuxNomCom" [(ngModel)]="dataVendedor.vendedor.auxNombreCompleto" type="text" class="form-control"
                     id="idInputVendedor">
             </div>
             <div class="checkbox-vend">
@@ -184,7 +185,11 @@
                     <div class="col-sm-5">
                         <div class="form-group inline-group">
                             <label for="cteMoneda">Moneda:</label>
-                            <select required [compareWith]="compareFnMonedas" name="compMoneda" [(ngModel)]="comprobante.moneda" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteMoneda">
+                            <select 
+                                required 
+                                [compareWith]="compareFnMonedas" 
+                                name="compMoneda" 
+                                [(ngModel)]="comprobante.moneda" class="form-control without-padding" [ngStyle]="{padding: '2px 8px 0px 8px'}" id="cteMoneda">
                                 <option *ngFor="let mon of monedas | async" [ngValue]="mon">
                                     {{mon.descripcion}}
                                 </option>
@@ -197,7 +202,7 @@
                             <label for="fechaComprobante">Fecha: </label>
                             <div class="input-group">
                                 <!-- Deshabilito la fecha si NÓ está seleccionado el cliente, el tipo comprobante y seteado el ptoventa -->
-                                <input required 
+                                <input autocomplete="off" required 
                                     (blur)="onBlurFechaComprobante($event)" 
                                     (keyup.enter)="onBlurFechaComprobante($event)"
                                     class="form-control" 
@@ -229,7 +234,7 @@
 
                                 <tr *ngFor="let lp of listasPreciosUsuario | async; index as indLp; last as isLast">
                                     <td>
-                                        <input 
+                                        <input autocomplete="off" 
                                             [attr.id]="'lp-radio-' + indLp" 
                                             type="radio"
                                             name="lista-radio"
@@ -259,12 +264,33 @@
                         <div class="canje-container">
                             <div class="canje-content">
                                 <div class="canje-item">
+                                    <label  for="tipoCompra">Contrato:</label>
+                                    <!-- [compareWith]="compareWithContrato" -->
+                                    <select 
+                                        name="clsisContra" 
+                                        [(ngModel)]="contrato" 
+                                        [disabled]="!tipoOperacion || tipoOperacion.canje !== true"
+                                        (ngModelChange)="onChangeContrato($event)"
+                                        class="form-control without-padding" id="selectContrato">
+
+                                        <option [ngValue]="null">Ninguno</option>
+                                        <option *ngFor="let con of contratos | async" [ngValue]="con">
+                                            {{ con.contratoNro }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="canje-item">
                                     <label for="tipoCompra">Producto:</label>
                                     <select 
+                                        [disabled]="
+                                            (!tipoOperacion || tipoOperacion.canje !== true) 
+                                            ||
+                                            contrato
+                                        "
+                                        [compareWith]="compareWithCanje"
                                         name="clsisCnj" 
                                         [(ngModel)]="sisCanje" 
-                                        [disabled]="!this.tipoOperacion || this.tipoOperacion.canje !== true"
-                                        (ngModelChange)="onChangeProductoCanje($event)"
                                         class="form-control without-padding" id="selectCanje">
                                         <option *ngFor="let canje of sisCanjes | async" [ngValue]="canje">
                                             {{ canje.descripcion }}
@@ -272,37 +298,22 @@
                                     </select>
                                 </div>
 
-                                <div class="canje-item">
-                                    <label for="cuit">Precio Ref:</label>
-                                    <input [disabled]="!this.tipoOperacion || this.tipoOperacion.canje !== true"
-                                        [(ngModel)]="sisCanje.precio" name="clSisPrec" type="text" class="form-control" id="cuit"
-                                        placeholder="">
-                                </div>
                             </div>
 
                             <div class="canje-content">
+                                <div class="canje-item">
+                                
+                                    <label  class="precio-ref">Precio Ref: </label>
+                                    <label>{{utilsService.parseDecimal(sisCanje.precio)}}</label>
+                                </div>
                                 <div class="canje-item fecha-item">
 
-                                    <label for="fechaCanjeVto">Fec.Vto.: </label>
-                                    <div class="input-group">
-                                        <input [disabled]="!this.tipoOperacion || this.tipoOperacion.canje !== true" id="fechaCanjeVto"
-                                            class="form-control" placeholder="dd/mm/aaaa" name="dp2" [(ngModel)]="sisCanje.fechaVto"
-                                            ngbDatepicker #dCompCanje="ngbDatepicker">
-                                        <div class="input-group-append">
-                                            <button [disabled]="!this.tipoOperacion || this.tipoOperacion.canje !== true"
-                                                class="btn btn-outline-secondary" (click)="dCompCanje.toggle()" type="button"
-                                                style="height: 100%;">
-                                                <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
-                                            </button>
-                                        </div>
-                                    </div>
-
+                                    <label  for="fechaVto">Fec.Vto.: </label>
+                                    <label>{{ utilsService.dateToString(sisCanje.fechaVto) }}</label>
                                 </div>
                                 <div class="canje-item">
-                                    <label for="cuit">Interes:</label>
-                                    <input [disabled]="!this.tipoOperacion || this.tipoOperacion.canje !== true" name="clInters"
-                                        [(ngModel)]="sisCanje.interes" type="text" class="form-control" id="cuit"
-                                        placeholder="">
+                                    <label  for="interes">Interes:</label>
+                                    <label>{{sisCanje.interes}}</label>
                                 </div>
                             </div>
                         </div>
@@ -328,29 +339,19 @@
                                 <div class="col-sm-5">
                                     <div class="form-group inline-group">
                                         <label for="cteNro">Nro:</label>
-                                        <input [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null"
+                                        <input autocomplete="off" [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null"
                                             (blur)="onBlurPtoVentaCteRel($event)"
                                             maxlength="4" 
                                             [(ngModel)]="comprobanteRelacionado.puntoVenta" 
                                             type="text" class="form-control pre-numero-input"
                                             name="clPtoVentRel"
                                             id="puntoVenta" placeholder="">
-                                        <input [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null"
+                                        <input autocomplete="off" [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null"
                                             (blur)="onBlurNumeradorCteRel($event)"
                                             maxlength="8" 
                                             name="clNroRel"
                                             [(ngModel)]="comprobanteRelacionado.numero" type="text" class="form-control"
                                             id="numero" placeholder="">
-                                        <!-- <input [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null"
-                                            (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('comprobanteRelacionado')"
-                                            [(ngModel)]="comprobanteRelacionado.puntoVenta" type="text" class="form-control pre-numero-input"
-                                            name="clPtoVentRel"
-                                            id="puntoVenta" placeholder="">
-                                        <input [attr.disabled]="comprobanteRelacionado.todosLosPendientes ? '' : null"
-                                            (blur)="onBlurNumeroAutocomp($event)('numero')('comprobanteRelacionado')"
-                                            name="clNroRel"
-                                            [(ngModel)]="comprobanteRelacionado.numero" type="text" class="form-control"
-                                            id="numero" placeholder=""> -->
                                     </div>
                                 </div>
                             </div>
@@ -446,14 +447,22 @@
                 <ngb-tab title="Canje Referencia">
                     <ng-template ngbTabContent>
 
-                        <tabla-emision-rem 
-                            [data]="tablas.datos.productosCanje" 
-                            [columns]="tablas.columnas.columnasCanje"
-                            [edit]="onClickEdit('columnasCanje')" 
-                            [confirmEdit]="onClickConfirmEdit('columnasCanje')"
-                            [onClickProductoLista]="onClickProductoLista" 
-                            [productosObservable]="productos">
-                        </tabla-emision-rem>
+                        <table *ngIf="sisCanje" class="table-canje-referencia">
+                            <tr>
+                                <td>Articulo</td>
+                                <!-- <td>Descripcion</td> -->
+                                <td style="text-align: right">Cantidad</td>
+                            </tr>
+                            <tr>
+                                <td>{{ sisCanje.descripcion }}</td>
+                                <td style="text-align: right">{{ 
+                                    utilsService.parseDecimal(
+                                        utilsService.parseDecimal(cotizacionDatos.total) /
+                                        sisCanje.precio 
+                                    )
+                                }}</td>
+                            </tr>
+                        </table>
 
                     </ng-template>
                 </ngb-tab>
@@ -517,7 +526,7 @@
                                 <div class="form-group inline-group last-child-custom-card">
                                     <label for="fechaComprobante">Fecha Contable</label>
                                     <div class="input-group">
-                                        <input 
+                                        <input autocomplete="off" 
                                             (blur)="factura.fechaComprobante = utilsService.stringToDateLikePicker(factura.fechaComprobante)"
                                             (keyup.enter)="onCalculateFecha($event)('fechaContable')('factura')" class="form-control"
                                             placeholder="dd/mm/aaaa" name="dp3" [(ngModel)]="factura.fechaComprobante"
@@ -535,7 +544,7 @@
                                 <div class="form-group inline-group last-child-custom-card">
                                     <label for="fechaVto">Fecha Vto</label>
                                     <div class="input-group">
-                                        <input 
+                                        <input autocomplete="off" 
                                             (blur)="factura.fechaVto = utilsService.stringToDateLikePicker(factura.fechaVto)"
                                             (keyup.enter)="onCalculateFecha($event)('fechaVto')('factura')"
                                             id="fechaVtoFactura" class="form-control" placeholder="dd/mm/aaaa" name="dp4"
@@ -626,15 +635,9 @@
 
             <custom-card class="col-sm-2 card-flex-column-reverse" title="">
                 <div class="col-sm-12 btn-container">
-                    <!-- <button [disabled]="!emisionRemitosService.checkIfDatosValidosComprobante(comprobante)
-                        (cliente)(tablas.datos.productosPend)(tablas.datos.modelosFactura)(deposito)" -->
                     <button [disabled]="disabledConfirmar()" (click)="onClickConfirmar()" class="btn btn-primary btn-ingreso-from">
                         Confirmar
                     </button>
-
-                    <!-- <button (click)="test()">
-                        test
-                    </button> -->
                     <button (click)="onClickCancelar()" class="btn btn-primary btn-ingreso-from">
                         Cancelar
                     </button>
@@ -643,3 +646,12 @@
         </div>
     </form>
 </ba-card>
+
+
+<div *ngIf="grabandoPorcentaje !== 0" class="spinner-container-2">
+    <p class="title">
+        Guardando Comprobante
+    </p>
+    <p><ngb-progressbar [value]="grabandoPorcentaje" type="info"></ngb-progressbar></p>
+</div>
+    

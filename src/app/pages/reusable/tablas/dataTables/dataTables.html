@@ -1,9 +1,25 @@
 <div class="panel panel-default">
-    <table class="table table-striped" [mfData]="data | dataFilter : filterQuery" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+    <!-- <div class="form-group">
+        <label for="searchInput">Buscar</label>
+        <input 
+            name="searchInput" 
+            [(ngModel)]="filterQuery" 
+            type="text"
+            class="form-control" 
+            id="searchInput" placeholder="Código o descripcion">
+    </div> -->
+
+
+    <table 
+        class="table table-striped" 
+        [mfData]="data | dataFilter : filterQuery" 
+        #mf="mfDataTable" 
+        [mfRowsOnPage]="rowsOnPage" 
+        [(mfSortBy)]="sortBy" 
+        [(mfSortOrder)]="sortOrder">
         <thead>
             <tr *ngIf="filtrosActivos">
                 <th *ngIf="enableEditDelete" style="width: 10%">
-                    
                 </th>
                 
                 <th class="table-column" *ngFor="let col of columns" [ngStyle]="getStyleFromCol(col)" [ngClass]="col.customClass ? col.customClass : 'text-align: left;'">

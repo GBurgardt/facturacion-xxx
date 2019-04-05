@@ -50,6 +50,9 @@ const classes = {
     Marca
 };
 
-export default function dynamicClass (name) {
+// export default function dynamicClass (name) {
+//     return classes[name];
+// }
+export function dynamicClass (name) {
     return classes[name];
 }

@@ -150,14 +150,29 @@ export class TablaIngreso {
     }
 
     /**
-     * El blur es cuando se hace un leave del input (caundo se apreta click afuera por ejemplo).
-     * Acá lo que hago es poner un array vacio como próx valor de los filtrados, cosa que la lista desaparezca porque no hay nada
+     * Busca el producto y limpia la lista
      */
-    onBlurInputItemAdd = () => {
+    onBlurInputItemAdd = (eventInput: any) => {
+
+        // Busco si ingresó un cód producto
+        const codIngre = eventInput && eventInput.currentTarget ? eventInput.currentTarget.value : null;
+        
+        // Si lo ingresó, lo busco en la lista de filtrados
+        if (codIngre) {
+            // Busco el producto en la lista
+            const prodBuscado = this.productosBusqueda.filtrados.getValue().find(
+                (p: ProductoReducido) => p.codProducto === codIngre
+            );
+
+            // Si lo encontré, lo selecciono. Sinó, no.
+            prodBuscado ? this.onClickProductoListaLocal(prodBuscado) : null;
+        }
+
+
         setTimeout(()=>this.productosBusqueda.filtrados.next([]), 100);
+
         // También reseteo el indice de busqueda
         this.productoEnfocadoIndex = -1;
-
         this.prodFocus = false;
     }
 
@@ -173,7 +188,13 @@ export class TablaIngreso {
      * Setea la fecha de compra calculandola dado un string en formato 'ddmm', parseando a 'dd/mm/aaaa'
      */
     onCalculateFecha = (e) => (key) => (subkey) => (item) => {
-        if (!item[key][subkey] || typeof item[key][subkey] !== 'string') return;
+        // if (!item[key][subkey] || typeof item[key][subkey] !== 'string') {
+        //     item[key][subkey] = '';
+        //     return;
+        // }
+        if (!item[key][subkey]) {
+            return;
+        }
 
         item[key][subkey] = this.utilsService.stringToDateLikePicker(item[key][subkey]);
 

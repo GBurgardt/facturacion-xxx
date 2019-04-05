@@ -17,8 +17,8 @@ import { PendingChangesGuard } from "app/guards/PendingChangesGuard";
     imports: [
         routing,
         NgbTabsetModule,
-        SharedModule,
-        NgbProgressbarModule
+        NgbProgressbarModule,
+        SharedModule
     ],
     declarations: [
         Compras,

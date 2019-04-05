@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { routing } from './ventas.routing';
 import { Ventas } from ".";
-import { NgbTabsetModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbTabsetModule, NgbProgressbarModule } from "@ng-bootstrap/ng-bootstrap";
 import { SharedModule } from "../SharedModule";
 import { RecursoService } from "app/services/recursoService";
 import { AuthService } from "../../../services/authService";
@@ -17,7 +17,8 @@ import { TablaFormaPago } from "app/pages/main/ventas/emisionRemitos/components/
     imports: [
         routing,
         NgbTabsetModule,
-        SharedModule
+        SharedModule,
+        NgbProgressbarModule
     ],
     declarations: [
         Ventas,

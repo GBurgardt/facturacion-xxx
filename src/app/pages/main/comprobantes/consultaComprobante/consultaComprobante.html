@@ -162,6 +162,25 @@
         <div class="input-row" style="justify-content: space-between; display: flex;">
 
             <div class="item-input">
+                <label for="comprobante">Estado Afip: </label>
+                <select 
+                    [compareWith]="utilsService.dropdownCompareWith" 
+                    [(ngModel)]="estadoAfip" 
+                    class="form-control select-input"
+                    id="idEstadoAfip">
+                    <option value="Todas">
+                        Todas
+                    </option>
+                    <option value="Si">
+                        Autorizadas
+                    </option>
+                    <option value="No">
+                        No Autorizadas
+                    </option>
+                </select>
+            </div>
+
+            <div class="item-input">
                 <label for="comprobante">Tipo Operacion: </label>
                 <select 
                     [compareWith]="utilsService.dropdownCompareWith" 
@@ -196,7 +215,12 @@
 
 </ba-card>
 
-<ngb-tabset *ngIf="(compEncabezados | async)?.length>0" class="col-sm-12 tabset-consulta">
+<div *ngIf="isLoading" class="spinner-container">
+    <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+</div>
+
+<!-- <ngb-tabset *ngIf="(compEncabezados | async)?.length > 0" class="col-sm-12 tabset-consulta"> -->
+<ngb-tabset *ngIf="!isLoading && (compEncabezados | async)?.length > 0" class="col-sm-12 tabset-consulta">
     <ngb-tab title="Comprobantes">
         <ng-template ngbTabContent>
             <table style="table-layout: fixed; width: 100%;" class="table table-striped table-consulta-comp" [mfData]="compEncabezados | async" #mf="mfDataTable" mfRowsOnPage="10">
@@ -241,10 +265,17 @@
                             <td class="text-right">{{ compBusc.tipoOperacion }}</td>
                             <td class="text-right">{{ compBusc.autorizada }}</td>
 
-                            <td>
-                                <div (click)="comprobanteService.downloadComp(compBusc)" class="btn-print">
+                            <td style="display: flex;">
+                                <div (click)="comprobanteService.downloadComp(compBusc)" class="btn-accion">
                                     <i *ngIf="!compBusc.isDownloading" class="fa fa-print" aria-hidden="true"></i>
                                     <i *ngIf="compBusc.isDownloading" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                                </div>
+                                <div 
+                                    *ngIf="compBusc && compBusc.autorizada === 'No'"
+                                    (click)="autorizarComprobante(compBusc)" 
+                                    class="btn-accion">
+                                    <i *ngIf="!compBusc.isBeingAuthorized" class="fa fa-key" aria-hidden="true"></i>
+                                    <i *ngIf="compBusc.isBeingAuthorized" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
                                 </div>
                             </td>
                         </tr>

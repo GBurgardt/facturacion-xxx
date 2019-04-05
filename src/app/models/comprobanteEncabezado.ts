@@ -16,6 +16,7 @@ export class ComprobanteEncabezado {
     // Desplegable de detalles
     showDetalles: boolean;
     isDownloading;
+    isBeingAuthorized;
     idCteTipo: number;
     importeNeto: number;
     importeTotal: number;
@@ -56,6 +57,7 @@ export class ComprobanteEncabezado {
             this.detalle = comprobanteEncabezado.detalle.map(det => new ComprobanteDetalle(det));
             this.showDetalles = false;
             this.isDownloading = false;
+            this.isBeingAuthorized = false;
             this.idCteTipo = comprobanteEncabezado.idCteTipo;
             this.importeNeto = comprobanteEncabezado.importeNeto;
             this.importeTotal = comprobanteEncabezado.importeTotal;
@@ -76,6 +78,7 @@ export class ComprobanteEncabezado {
             this.detalle = null;
             this.showDetalles = false;
             this.isDownloading = false;
+            this.isBeingAuthorized = false;
             this.idCteTipo = null;
             this.importeNeto = null;
             this.importeTotal = null;

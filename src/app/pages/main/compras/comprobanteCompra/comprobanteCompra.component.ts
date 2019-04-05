@@ -101,6 +101,7 @@ export class ComprobanteCompra implements AfterViewInit {
      */
     customsBlurProduct = {
         calculateImporte: (item: ProductoPendiente, ev) => {
+
             item.importe = item.pendiente * Number(item.precio);
             this.utilsService.onBlurInputNumber(ev);
         }
@@ -176,7 +177,7 @@ export class ComprobanteCompra implements AfterViewInit {
         ////////// Otros //////////
         this.comprobanteCompraService.getCotizacionDatos().subscribe(cotizDatos => this.cotizacionDatos.cotizacion = cotizDatos);
     }
-
+    
     ngAfterViewInit() {
         // Focus en input proveedor
         document.getElementById('inputProveedor') ? document.getElementById('inputProveedor').focus() : null
@@ -244,6 +245,7 @@ export class ComprobanteCompra implements AfterViewInit {
     }
 
     onClickConfirmEdit = (tipoColumnas) => (itemSelect: any) => {
+        debugger;
         // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
         this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
             let newTabla = tabla;
@@ -752,15 +754,29 @@ export class ComprobanteCompra implements AfterViewInit {
         this.comprobante.numerador = new Numerador();
 
         // Actualizo total cotizacion (si no incluye neto, es 0)
-        this.cotizacionDatos.total = 
-            this.comprobante.tipo.comprobante.incluyeNeto ?
-                _.sumBy(
-                    this.tablas.datos.productosPend,
-                    (prod) => Number(prod.importe) ? Number(prod.importe) : 0
-                ) : 0;
+        // this.cotizacionDatos.total = 
+        //     this.comprobante.tipo.comprobante.incluyeNeto ?
+        //         _.sumBy(
+        //             this.tablas.datos.productosPend,
+        //             (prod) => Number(prod.importe) ? Number(prod.importe) : 0
+        //         ) : 0;
 
-        // Actualizo sumatoria subtotales
-        this.actualizarSumatoriaSubto();
+        // // Actualizo sumatoria subtotales
+        // this.actualizarSumatoriaSubto();
+
+        // Blanqueo todo lo que le sigue
+        this.comprobanteRelacionado = new ComprobanteRelacionado();
+        this.tablas.datos.productosPend = [];
+        this.tablas.datos.modelosFactura = [];
+        this.tablas.datos.detallesFormaPago = [];
+
+        // Limpio formas pago
+        // this.dataTablaFormasPago = null;
+        // this.formasPagoSeleccionadas = [];
+
+        // Limpio cotizacion datos
+        this.cotizacionDatos.total = 0;
+        this.sumatoriaSubtotales = 0;
 
         // Actualizo monedas
         this.monedas.next(cteTipoSelect.comprobante.monedas);
@@ -795,7 +811,7 @@ export class ComprobanteCompra implements AfterViewInit {
     onChangeTipoOperacion = (tipoOpSelect: SisTipoOperacion) => {
         this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
             'sisTipoOperacion': tipoOpSelect.idSisTipoOperacion,
-            'sisSitIva' : this.proveedorSeleccionado.condIva.descCorta
+            'sisSitIva' : this.proveedorSeleccionado && this.proveedorSeleccionado.condIva ? this.proveedorSeleccionado.condIva.descCorta : null
         });
 
         this.limpioComprobanteYGrilla();
@@ -909,6 +925,9 @@ export class ComprobanteCompra implements AfterViewInit {
                 this.factura.letraCodigo.numeradores.length > 0
             )
         ) {
+            if (!this.factura.numerador) {
+                this.factura.numerador = new Numerador();
+            }
             if (!this.factura.numerador.ptoVenta) {
                 this.factura.numerador.ptoVenta = new PtoVenta();
             }
@@ -946,7 +965,30 @@ export class ComprobanteCompra implements AfterViewInit {
         this.comprobante.numerador = (letraSelect && letraSelect.numeradores && letraSelect.numeradores.length > 0) ?
             letraSelect.numeradores[0] : null;
         
-    
+ 
+    isDisabledConfirm = () => {
+
+        const datosNoValidos = !this.comprobanteCompraService.checkIfDatosValidosComprobante(this.comprobante)
+            (this.proveedorSeleccionado)
+            (this.tablas.datos.productosPend)
+            (this.tablas.datos.modelosFactura)
+            (this.depositoSelec);
+
+        const restoPagarNoValido = 
+            this.tablas.datos.detallesFormaPago && 
+            this.tablas.datos.detallesFormaPago.length > 0 &&
+            !this.isRestoPagarValid();
+
+        const formaPagoNoValido = 
+            this.comprobante && this.comprobante.tipo && this.comprobante.tipo.requiereFormaPago && 
+            (
+                !this.tablas.datos.detallesFormaPago ||
+                this.tablas.datos.detallesFormaPago.length <= 0
+            )
+        
+
+        return datosNoValidos || restoPagarNoValido || formaPagoNoValido;
+    }
                     
     
 }

@@ -44,6 +44,8 @@ import { Cliente } from '../models/cliente';
 import { Vendedor } from 'app/models/vendedor';
 import { ListaPrecio } from 'app/models/listaPrecio';
 import { ComprobanteEncabezado } from 'app/models/comprobanteEncabezado';
+import { Observable } from 'rxjs';
+import { Contrato } from 'app/models/contrato';
 
 @Injectable()
 export class AuthService {
@@ -366,7 +368,9 @@ export class AuthService {
                         itemImputada: prod.itemImputada,
                         importe: prod.importe,
                         precioDesc: prod.precio,
-                        unidadDescuento: ' '
+                        unidadDescuento: ' ',
+                        // idLibro: prod.modeloCab && prod.modeloCab.modeloDetalle ? prod.modeloCab.modeloDetalle[0].idLibro : null
+                        idLibro: prod.imputacion && prod.imputacion.seleccionada ? prod.imputacion.seleccionada.idLibro : null
                     }
                 }),
                 grillaSubTotales: modelosFactura.map(mod => {
@@ -378,7 +382,8 @@ export class AuthService {
                         porcentaje: mod.porcentaje ? mod.porcentaje : 0,
                         idSisTipoModelo: mod.idSisTipoModelo ? mod.idSisTipoModelo : 0,
                         baseImponible: mod.baseImponible ? mod.baseImponible : 0,
-                        operador: mod.operador ? mod.operador : null
+                        operador: mod.operador ? mod.operador : null,
+                        idLibro: mod.idLibro ? mod.idLibro : null
                     }
                 }),
                 grillaTrazabilidad: productosPend
@@ -505,15 +510,17 @@ export class AuthService {
                                 st.numeroComp === prod.numero
                         );
                         
-                    const subtotalProd = this.utilsService.parseDecimal(
-                        subtotalBuscado && subtotalBuscado['subtotal'] ? 
-                            subtotalBuscado['subtotal'] : 0
-                    );
+                    const subtotalProd = 
+                        // this.utilsService.parseDecimal(
+                            subtotalBuscado && subtotalBuscado['subtotal'] ? 
+                                subtotalBuscado['subtotal'] : 0
+                        // );
 
-                    const precioDescProd = this.utilsService.parseDecimal(
-                        subtotalBuscado && subtotalBuscado['precioDesc'] ? 
-                            subtotalBuscado['precioDesc'] : 0
-                    );
+                    const precioDescProd = 
+                        // this.utilsService.parseDecimal(
+                            subtotalBuscado && subtotalBuscado['precioDesc'] ? 
+                                subtotalBuscado['precioDesc'] : 0
+                        // );
 
 
                     return {
@@ -535,7 +542,9 @@ export class AuthService {
                         importe: Number(subtotalProd) ? Number(subtotalProd) : 0,
                         precioDesc: precioDescProd,
                         unidadDescuento: prod.tipoDescuento ? prod.tipoDescuento : '-',
-                        comprobanteRel: prod.numero ? prod.numero : null
+                        comprobanteRel: prod.numero ? prod.numero : null,
+                        // idLibro: prod.modeloCab && prod.modeloCab.modeloDetalle ? prod.modeloCab.modeloDetalle[0].idLibro : null
+                        idLibro: prod.imputacion && prod.imputacion.seleccionada ? prod.imputacion.seleccionada.idLibro : null
                     }
                 }),
                 grillaSubTotales: modelosFactura.map(mod => {
@@ -547,7 +556,8 @@ export class AuthService {
                         porcentaje: mod.porcentaje ? mod.porcentaje : 0,
                         idSisTipoModelo: mod.idSisTipoModelo ? mod.idSisTipoModelo : 0,
                         baseImponible: mod.baseImponible ? mod.baseImponible : 0,
-                        operador: mod.operador ? mod.operador : null
+                        operador: mod.operador ? mod.operador : null,
+                        idLibro: mod.idLibro ? mod.idLibro : null
                     }
                 }),
                 grillaTrazabilidad: lotesTraza
@@ -699,7 +709,8 @@ export class AuthService {
                                                 (padronSelec: Padron) =>
                                                 (depositoSelec: Deposito) => 
                                                 (vendedorSelec: Vendedor) => 
-                                                (sisTipoOpSelect: SisTipoOperacion) => {
+                                                (sisTipoOpSelect: SisTipoOperacion) => 
+                                                (estadoAfip: string) => {
         return this.request(
             [],
             RequestMethod.Post,
@@ -718,7 +729,8 @@ export class AuthService {
                 idDeposito : depositoSelec && depositoSelec.idDeposito ? depositoSelec.idDeposito : 0,
                 idEstado : sisEstadoSelec && sisEstadoSelec.idSisEstados ? sisEstadoSelec.idSisEstados : 0,
                 idVendedor : vendedorSelec && vendedorSelec.idVendedor ? vendedorSelec.idVendedor : 0,
-                idSisTipoOperacion: sisTipoOpSelect && sisTipoOpSelect.idSisTipoOperacion ? sisTipoOpSelect.idSisTipoOperacion : 0
+                idSisTipoOperacion: sisTipoOpSelect && sisTipoOpSelect.idSisTipoOperacion ? sisTipoOpSelect.idSisTipoOperacion : 0,
+                autorizada: estadoAfip ? estadoAfip : 'Todas'
             },
             {}
         );
@@ -1221,7 +1233,8 @@ export class AuthService {
                     valor: det.valor,
                     operador: det.operador,
                     idSisTipoModelo: det.idSisTipoModelo,
-                    modulo: det.idSisModulo ? det.idSisModulo : null
+                    modulo: det.idSisModulo ? det.idSisModulo : null,
+                    idLibro: det.idLibro ? det.idLibro : null
                 }))
             }
 
@@ -1431,7 +1444,8 @@ export class AuthService {
                     valor: det.valor ? det.valor : 0,
                     operador: det.operador,
                     idSisTipoModelo: det.idSisTipoModelo,
-                    modulo: det.idSisModulo ? det.idSisModulo : null
+                    modulo: det.idSisModulo ? det.idSisModulo : null,
+                    idLibro: det.idLibro ? det.idLibro : null
                 }))
             }
         }
@@ -1495,4 +1509,94 @@ export class AuthService {
         }
 
     }
+
+    /**
+     * Graba un contrato (POST Abm), y guarda el docx
+     */
+    grabarContrato = (fileDocx, contrato: Contrato, token) => {
+        let formData = new FormData();
+        
+        formData.append('file', new Blob(
+            [fileDocx], 
+            { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" } 
+        ));
+
+        formData.append('contratoNro', contrato.contratoNro);
+        formData.append('idPadron', contrato.idPadron.toString());
+        formData.append('fechaNacimiento', this.utilsService.formatearFecha('yyyy-mm-dd')(contrato.fechaNacimiento));
+        formData.append('nacionalidad', contrato.nacionalidad);
+        formData.append('profesion', contrato.profesion);
+        formData.append('documento', contrato.documento);
+        formData.append('padre', contrato.padre);
+        formData.append('madre', contrato.madre);
+        formData.append('kilos', contrato.kilos.toString());
+        formData.append('cosecha', contrato.cosecha.toString());
+        formData.append('observaciones', contrato.observaciones);
+        formData.append('idSisCanje', contrato.sisCanje.idSisCanje.toString());
+        formData.append('fechaVto', this.utilsService.formatearFecha('yyyy-mm-dd')(contrato.fechaVto));
+
+        const options = new RequestOptions({ headers: new Headers({ token }) });
+
+        return this.http.post(`${environment.facturacionRest.urlBase}/contratos`, formData, options)
+            .map(res => res.json())
+            .catch(error => Observable.throw(error))
+            
+    }
+
+    /**
+     * Edita un contrato (PUT Abm), y guarda/reemplaza el docx
+     */
+    editarContrato = (fileDocx, contrato: Contrato, token) => {
+        let formData = new FormData();
+        debugger;
+        formData.append(
+            'file', 
+            fileDocx ?
+                new Blob(
+                    [fileDocx], 
+                    { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" } 
+                ) : 
+                null
+        );
+
+        formData.append('idContrato', contrato.idContratos.toString());
+        formData.append('contratoNro', contrato.contratoNro);
+        formData.append('idPadron', contrato.idPadron.toString());
+        formData.append('fechaNacimiento', this.utilsService.formatearFecha('yyyy-mm-dd')(contrato.fechaNacimiento));
+        formData.append('nacionalidad', contrato.nacionalidad);
+        formData.append('profesion', contrato.profesion);
+        formData.append('documento', contrato.documento);
+        formData.append('padre', contrato.padre);
+        formData.append('madre', contrato.madre);
+        formData.append('kilos', contrato.kilos.toString());
+        formData.append('cosecha', contrato.cosecha.toString());
+        formData.append('observaciones', contrato.observaciones);
+        formData.append('idSisCanje', contrato.sisCanje.idSisCanje.toString());
+        formData.append('fechaVto', this.utilsService.formatearFecha('yyyy-mm-dd')(contrato.fechaVto));
+        formData.append(
+            'editaArchivo',
+            fileDocx ? "1" : "0"
+        );
+
+        const options = new RequestOptions({ headers: new Headers({ token }) });
+
+        return this.http.put(`${environment.facturacionRest.urlBase}/contratos`, formData, options)
+            .map(res => res.json())
+            .catch(error => Observable.throw(error))
+            
+    }
+
+    
+    downloadContrato = (token, idContrato) => {
+        const options = new RequestOptions({ 
+            headers: new Headers({ token}),
+            responseType: ResponseContentType.ArrayBuffer
+        });
+
+        return this.http.post(`${environment.facturacionRest.urlBase}/descargarContrato?idContrato=${idContrato}`, null, options)
+            
+    }
+    
+    
+
 }

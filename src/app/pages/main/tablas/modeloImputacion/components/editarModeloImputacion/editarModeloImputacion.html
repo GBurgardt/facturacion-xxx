@@ -5,7 +5,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="descripcion">Descripcion</label>
-                        <input [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion">
+                        <input autocomplete="off"  [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion">
                     </div>
                 </div>
 
@@ -34,21 +34,21 @@
                 <div class="col-sm-4">
                     <div class="form-group">
                         <label for="descripcion">Descripcion *</label>
-                        <input [(ngModel)]="detalleEnEdicion.descripcion" type="text" class="form-control" id="inputDescripcion">
+                        <input autocomplete="off"  [(ngModel)]="detalleEnEdicion.descripcion" type="text" class="form-control" id="inputDescripcion">
                     </div>
                 </div>
 
                 <div class="col-sm-2">
                     <div class="form-group">
                         <label for="descripcion">Orden *</label>
-                        <input [(ngModel)]="detalleEnEdicion.orden" type="text" class="form-control" id="descripcion">
+                        <input autocomplete="off"  [(ngModel)]="detalleEnEdicion.orden" type="text" class="form-control" id="descripcion">
                     </div>
                 </div>
 
                 <div class="col-sm-2">
                     <div class="form-group">
                         <label for="descripcion">Valor</label>
-                        <input [(ngModel)]="detalleEnEdicion.valor" type="text" class="form-control" id="descripcion">
+                        <input autocomplete="off"  [(ngModel)]="detalleEnEdicion.valor" type="text" class="form-control" id="descripcion">
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
                 <div class="col-sm-2">
                     <div class="form-group">
                         <label for="selectCtaCont">Operador *</label>
-                        <select [compareWith]="compareWithAbsolut" [(ngModel)]="detalleEnEdicion.operador" class="form-control" id="selectCtaCont">
+                        <select [compareWith]="utilsService.compareWithAbsolut" [(ngModel)]="detalleEnEdicion.operador" class="form-control" id="selectCtaCont">
                             <option *ngFor="let sig of signos" [value]="sig">
                                 {{ sig }}
                             </option>
@@ -79,7 +79,7 @@
                 <div class="col-sm-2">
                     <div class="form-group">
                         <label for="selectCtaCont">Tipo Modelo *</label>
-                        <select [compareWith]="compareWithAbsolut" [(ngModel)]="detalleEnEdicion.idSisTipoModelo" class="form-control" id="selectSisTipoModelo">
+                        <select [compareWith]="utilsService.compareWithAbsolut" [(ngModel)]="detalleEnEdicion.idSisTipoModelo" class="form-control" id="selectSisTipoModelo">
                             <option *ngFor="let stm of sisTipoModeloList | async" [value]="stm.idTipoModelo">
                                 {{ stm.descripcion }}
                             </option>
@@ -90,9 +90,20 @@
                 <div class="col-sm-2">
                     <div class="form-group">
                         <label for="selectSisModulo">Compra/Venta *</label>
-                        <select [(ngModel)]="detalleEnEdicion.idSisModulo" class="form-control" id="selectSisModulo">
+                        <select (ngModelChange)="onChangeSisModulo($event)" [(ngModel)]="detalleEnEdicion.idSisModulo" class="form-control" id="selectSisModulo">
                             <option *ngFor="let sisMod of sisModulos | async" [value]="sisMod.idSisModulos">
                                 {{ sisMod.descripcion }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="selectLibro">Libro *</label>
+                        <select [(ngModel)]="detalleEnEdicion.idLibro" class="form-control" id="selectLibro">
+                            <option *ngFor="let lib of libros | async" [value]="lib.idLibro">
+                                {{ lib.columnaNombre }}
                             </option>
                         </select>
                     </div>

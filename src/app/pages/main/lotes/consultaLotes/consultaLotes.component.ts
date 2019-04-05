@@ -53,6 +53,8 @@ export class ConsultaLotes {
     proveedorEnfocadoIndex: number = -1;
     productoEnfocadoIndex: number = -1;
 
+    isLoading = false;
+
     constructor(
         public utilsService: UtilsService,
         private popupListaService: PopupListaService,
@@ -221,13 +223,21 @@ export class ConsultaLotes {
      * Evento click consultar
      */
     onClickConsultar = () => {
+
+        this.isLoading = true;
+
         // Si hay error, entonces mando un array vacio para que actualice la grilla
         this.consultaLotesService.consultarLotes(this.filtros)
-            .catch(
-                err => Observable.of([])
-            )
+            .catch((err, caught) => {
+                this.utilsService.showErrorWithBody(err, true);
+                return Observable.of([]);
+            })
             .subscribe(
-                lotes => this.lotes.next(lotes)
+                lotes => {
+                    this.lotes.next(lotes);
+                    
+                    this.isLoading = false;
+                }
             )
             
     }

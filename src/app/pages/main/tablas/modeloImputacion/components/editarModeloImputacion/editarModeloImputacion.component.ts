@@ -13,6 +13,7 @@ import { ModeloDetalle } from 'app/models/modeloDetalle';
 import { PlanCuenta } from 'app/models/planCuenta';
 import { SisTipoModelo } from 'app/models/sisTipoModelo';
 import { SisModulo } from 'app/models/sisModulo';
+import { Libro } from 'app/models/libro';
 
 
 @Component({
@@ -39,6 +40,7 @@ export class EditarModeloImputacion {
     contPlanCuentaList: Observable<PlanCuenta[]> = Observable.of([]);
     sisTipoModeloList: Observable<SisTipoModelo[]> = Observable.of([]);
     sisModulos: Observable<SisModulo[]> = Observable.of([]);
+    libros: Observable<Libro[]> = Observable.of([]);
 
     constructor(
         public utilsService: UtilsService,
@@ -48,7 +50,10 @@ export class EditarModeloImputacion {
     ) {
         this.contPlanCuentaList = this.recursoService.getRecursoList(resourcesREST.contPlanCuenta)();
         this.sisTipoModeloList = this.recursoService.getRecursoList(resourcesREST.sisTipoModelo)();
-        this.sisModulos = this.recursoService.getRecursoList(resourcesREST.sisModulos)();
+        this.sisModulos = this.recursoService.getRecursoList(resourcesREST.sisModulos)()
+            .map(
+                sisModulos => sisModulos.filter(a => a.descripcion.toLowerCase() !== 'todos')
+            )
 
         this.route.params.subscribe(params =>
             this.recursoService.getRecursoList(resourcesREST.modeloImputacion)()
@@ -140,6 +145,8 @@ export class EditarModeloImputacion {
         this.addDetalleTitle = 'Editar Detalle';
         this.editandoDetalle = true;
         this.detalleEnEdicion = Object.assign({}, det);
+
+        this.libros = this.recursoService.getRecursoList(resourcesREST.libros)({ idSisModulo: det.idSisModulo });
     }
 
     compareWithGeneric = (item1: any, item2: any) => {
@@ -185,5 +192,12 @@ export class EditarModeloImputacion {
     checkIfShowLiVenta = (liDet: ModeloDetalle) => {
         return Number(liDet.idSisModulo) === 1 ? 
             `detalle-li hiddenLi` : 'detalle-li'
+    }
+
+    /**
+     * Actualizo desplegable libros
+     */
+    onChangeSisModulo = (idSisModSelect: number) => {
+        this.libros = this.recursoService.getRecursoList(resourcesREST.libros)({ idSisModulo: idSisModSelect });
     }
 }

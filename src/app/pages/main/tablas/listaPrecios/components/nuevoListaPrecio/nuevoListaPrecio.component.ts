@@ -54,6 +54,8 @@ export class NuevoListaPrecio {
     proveedores: { todos: Padron[]; filtrados: BehaviorSubject<Padron[]> } = { todos: [], filtrados: new BehaviorSubject([]) }
     proveedorEnfocadoIndex: number = -1;
 
+    textProdSearched;
+
     constructor(
         private recursoService: RecursoService,
         public utilsService: UtilsService,
@@ -92,14 +94,16 @@ export class NuevoListaPrecio {
                 key: 'cotaInf',
                 customClass: 'text-right',
                 ancho: '5%',
-                enEdicion: null
+                enEdicion: null,
+                threeDecimals: true
             },
             {
                 nombre: 'superior',
                 key: 'cotaSup',
                 customClass: 'text-right',
                 ancho: '5%',
-                enEdicion: null
+                enEdicion: null,
+                threeDecimals: true
             },
             {
                 nombre: '% inferior',

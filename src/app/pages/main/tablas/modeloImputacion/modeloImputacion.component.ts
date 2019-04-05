@@ -43,6 +43,7 @@ export class ModeloImputacion {
                 ancho: '75%',
                 customClass: 'text-left'
             }
+
         ]
 
         this.tableData = this.recursoService.getRecursoList(resourcesREST.modeloImputacion)();

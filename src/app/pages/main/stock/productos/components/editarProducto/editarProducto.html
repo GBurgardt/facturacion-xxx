@@ -105,8 +105,9 @@
                                 <label for="marca">Marca </label>
                                 <select [compareWith]="utilsService.dropdownCompareWith" required name="fafa12" [(ngModel)]="recurso.marca" class="form-control text-right-select"
                                     id="marca">
+                                    <!-- [attr.selected]="i == 0 ? true : null" -->
                                     <option *ngFor="let mar of marcas | async; let i = index" [ngValue]="mar"
-                                        [attr.selected]="i == 0 ? true : null">
+                                        >
                                         {{ mar.descripcion }}
                                     </option>
                                 </select>

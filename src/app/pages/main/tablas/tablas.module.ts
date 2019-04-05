@@ -53,6 +53,7 @@ import { EditarCultivos } from './cultivos/components/editarCultivos';
 import { Marcas } from './marcas';
 import { NuevoMarca } from './marcas/components/nuevoMarca';
 import { EditarMarca } from './marcas/components/editarMarca';
+import { FilesService } from 'app/services/filesService';
 
 @NgModule({
     imports: [
@@ -111,7 +112,8 @@ import { EditarMarca } from './marcas/components/editarMarca';
         LocalStorageService,
         UtilsService,
         RecursoService,
-        PendingChangesGuard
+        PendingChangesGuard,
+        FilesService
     ]
 })
 export class TablasModule {

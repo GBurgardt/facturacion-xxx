@@ -35,8 +35,8 @@ export class ComprobanteService {
     /**
      * Busca los comprobantes dado los filtros dados
      */
-    buscarComprobantes = (comprobante: Comprobante) => (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker }) => (sisModuloSelec: SisModulo) => (tipoComprobanteSelec: TipoComprobante) => (productoSelec: Producto) => (sisEstadoSelec: SisEstado) => (padronSelec: Padron) => (depositoSelec: Deposito) => (vendedorSelec: Vendedor) => (sisTipoOpSelect: SisTipoOperacion) =>
-        this.authService.buscaComprobantes(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(fechasFiltro)(sisModuloSelec)(tipoComprobanteSelec)(productoSelec)(sisEstadoSelec)(padronSelec)(depositoSelec)(vendedorSelec)(sisTipoOpSelect)
+    buscarComprobantes = (comprobante: Comprobante) => (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker }) => (sisModuloSelec: SisModulo) => (tipoComprobanteSelec: TipoComprobante) => (productoSelec: Producto) => (sisEstadoSelec: SisEstado) => (padronSelec: Padron) => (depositoSelec: Deposito) => (vendedorSelec: Vendedor) => (sisTipoOpSelect: SisTipoOperacion) => (estadoAfip) => 
+        this.authService.buscaComprobantes(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(fechasFiltro)(sisModuloSelec)(tipoComprobanteSelec)(productoSelec)(sisEstadoSelec)(padronSelec)(depositoSelec)(vendedorSelec)(sisTipoOpSelect)(estadoAfip)
             .catch(
                 err => this.utilsService.decodeErrorResponse(err)
             )
@@ -83,5 +83,16 @@ export class ComprobanteService {
             (prov: Producto) =>   prov.codProducto.toString().includes(textoBuscado) ||
                                 prov.descripcion.toString().toLowerCase().includes(textoBuscado)
         );
+
+    autorizarAfip = (idFactCab) => 
+        this.authService.autorizarAfip(
+            this.localStorageService.getObject(environment.localStorage.acceso).token,
+            'solicitarCae',
+            idFactCab
+        )
+            .catch((err, caught) => {
+                this.utilsService.showErrorWithBody(err, true);
+                return Observable.of([]);
+            })
 
 }

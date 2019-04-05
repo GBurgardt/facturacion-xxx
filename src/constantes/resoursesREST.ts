@@ -45,6 +45,8 @@ import { SisLetra } from "app/models/sisLetra";
 import { Vendedor } from "app/models/vendedor";
 import { PtoVenta } from "app/models/ptoVenta";
 import { LetraCodigo } from "app/models/letraCodigo";
+import { Contrato } from "app/models/contrato";
+import { Libro } from "app/models/libro";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -277,5 +279,13 @@ export const resourcesREST = {
     imputaciones: {
         nombre: 'imputaciones',
         Clase: null
+    },
+    contratos: {
+        nombre: 'contratos',
+        Clase: Contrato
+    },
+    libros: {
+        nombre: 'libros',
+        Clase: Libro
     }
 };

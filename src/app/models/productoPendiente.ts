@@ -1,6 +1,7 @@
 import { Producto } from "./producto";
 import { ModeloDetalle } from "app/models/modeloDetalle";
 import { DateLikePicker } from "./dateLikePicker";
+import { ModeloCab } from "./modeloCab";
 
 export class ProductoPendiente {
     comprobante: string;
@@ -48,6 +49,8 @@ export class ProductoPendiente {
 
     idFactDetalle: string;
 
+    modeloCab: ModeloCab;
+
     constructor(productoPendiente?: {
         comprobante: string;
         numero: any;
@@ -72,6 +75,7 @@ export class ProductoPendiente {
         idListaPrecio: number;
         importe?: number;
         idFactDetalle?: string;
+        modeloCab?: any;
     }) {
         if (productoPendiente) {
             this.comprobante = productoPendiente.comprobante;
@@ -123,6 +127,8 @@ export class ProductoPendiente {
 
             this.idFactDetalle = productoPendiente.idFactDetalle ? 
                 productoPendiente.idFactDetalle : this.generateId()
+
+            this.modeloCab = productoPendiente.modeloCab ? new ModeloCab(productoPendiente.modeloCab) : null
         } else {
             this.comprobante = null;
             this.numero = null;
@@ -161,6 +167,8 @@ export class ProductoPendiente {
             this.idListaPrecio = null;
 
             this.idFactDetalle = this.generateId();
+
+            this.modeloCab = null;
         }
     }
 

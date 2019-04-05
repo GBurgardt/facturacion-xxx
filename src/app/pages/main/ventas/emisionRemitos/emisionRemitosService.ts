@@ -485,11 +485,11 @@ export class EmisionRemitosService {
         )(
             listaPrecioSelec
         )
-            .catch(err => {
+            // .catch(err => {
                 
-                this.utilsService.showErrorWithBody(err)
-                return Observable.throw(null)
-            })
+            //     this.utilsService.showErrorWithBody(err)
+            //     return Observable.throw(null)
+            // })
 
     /**
      * Valida que los datos estén correctos
@@ -748,11 +748,11 @@ export class EmisionRemitosService {
             'solicitarCae',
             idFactCab
         )
-            .catch((err, caught) => {
-                // debugger;
-                this.utilsService.showErrorWithBody(err, true);
-                return Observable.of([]);
-            })
+            // .catch((err, caught) => {
+            //     // debugger;
+            //     this.utilsService.showErrorWithBody(err, true);
+            //     return Observable.of([]);
+            // })
     
 
 }

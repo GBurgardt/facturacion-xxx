@@ -5,8 +5,8 @@ export class ModeloFactura {
     porcentaje: number;
     idSisTipoModelo: number;
     baseImponible: number;
-
     operador: string;
+    idLibro: number;
 
     constructor(modeloFactura?: {
         cuentaContable: string;
@@ -15,8 +15,8 @@ export class ModeloFactura {
         porcentaje: number;
         idSisTipoModelo: number;
         baseImponible: number;
-
         operador: string;
+        idLibro: number;
     }) {
         if (modeloFactura) {
             this.cuentaContable = modeloFactura.cuentaContable
@@ -25,8 +25,8 @@ export class ModeloFactura {
             this.porcentaje = modeloFactura.porcentaje
             this.idSisTipoModelo = modeloFactura.idSisTipoModelo
             this.baseImponible = modeloFactura.baseImponible
-            
             this.operador = modeloFactura.operador
+            this.idLibro = modeloFactura.idLibro
         } else {
             this.cuentaContable = null
             this.descripcion = null
@@ -34,8 +34,8 @@ export class ModeloFactura {
             this.porcentaje = null
             this.idSisTipoModelo = null
             this.baseImponible = null
-            
             this.operador = null
+            this.idLibro = null
         }
     }
 }

@@ -4,7 +4,7 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="descripcion">Descripcion</label>
-                    <input (ngModelChange)="recursoEditado = true" [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion" placeholder="Descripcion de la forma de pago">
+                    <input autocomplete="off"  (ngModelChange)="recursoEditado = true" [(ngModel)]="recurso.descripcion" type="text" class="form-control" id="descripcion" placeholder="Descripcion de la forma de pago">
                 </div>
             </div>
 
@@ -95,14 +95,14 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="detalles">Detalle *</label>
-                    <input (ngModelChange)="recursoEditado = true" [(ngModel)]="detalleEnEdicion.detalle" type="text" class="form-control" id="inputDetalles">
+                    <input autocomplete="off"  (ngModelChange)="recursoEditado = true" [(ngModel)]="detalleEnEdicion.detalle" type="text" class="form-control" id="inputDetalles">
                 </div>
             </div>
 
             <!-- <div class="col-sm-2">
                 <div class="form-group">
                     <label for="monto">Monto *</label>
-                    <input (ngModelChange)="recursoEditado = true" [(ngModel)]="detalleEnEdicion.monto" type="text" class="form-control" id="inputMonto">
+                    <input autocomplete="off"  (ngModelChange)="recursoEditado = true" [(ngModel)]="detalleEnEdicion.monto" type="text" class="form-control" id="inputMonto">
                 </div>
             </div> -->
             
@@ -113,13 +113,13 @@
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="porcentaje">Porcentaje *</label>
-                    <input (ngModelChange)="recursoEditado = true" [(ngModel)]="detalleEnEdicion.porcentaje" type="text" class="form-control" id="porcentaje">
+                    <input autocomplete="off"  (ngModelChange)="recursoEditado = true" [(ngModel)]="detalleEnEdicion.porcentaje" type="text" class="form-control" id="porcentaje">
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group">
                     <label for="cantDias">Cant Dias *</label>
-                    <input (ngModelChange)="recursoEditado = true" [(ngModel)]="detalleEnEdicion.cantDias" type="text" class="form-control" id="inputCantDias">
+                    <input autocomplete="off"  (ngModelChange)="recursoEditado = true" [(ngModel)]="detalleEnEdicion.cantDias" type="text" class="form-control" id="inputCantDias">
                 </div>
             </div>
             <div class="col-sm-6 btn-container-det">

@@ -5,15 +5,14 @@ import { DefaultModal } from '../pages/reusable/modals/default-modal/default-mod
 import { AppState } from 'app/app.service';
 import { ConfirmationModal } from 'app/pages/reusable/modals/confirmation-modal/confirmation-modal.component';
 import { isString } from 'util';
-import dynamicClass from 'app/services/dynamicClassService';
+// import dynamicClass from 'app/services/dynamicClassService';
+import {dynamicClass} from 'app/services/dynamicClassService';
 import { resourcesREST } from 'constantes/resoursesREST';
-import { routing } from '../pages/main/tablas/tablas.routing';
 import { DateLikePicker } from 'app/models/dateLikePicker';
 import { ImprimirModal } from 'app/pages/reusable/modals/imprimir-modal/imprimir-modal.component';
 import { Padron } from 'app/models/padron';
 import { ActivatedRoute } from '@angular/router';
 import { LocalStorageService } from './localStorageService';
-import { PtoVenta } from 'app/models/ptoVenta';
 import { Numerador } from 'app/models/numerador';
 import { Observable } from 'rxjs';
 
@@ -269,14 +268,24 @@ export class UtilsService {
      * Dado un string en formato ddmm retorna dd/mm/aaaa en typeData DateLikePicker, o null en caso de formato incorrecto
      * Si es formato dd/mm/aaaa, tambien retoron un datelikepicker
      */
-    stringToDateLikePicker = (valueFecha) =>
-        valueFecha && valueFecha.length === 4 ?
+    stringToDateLikePicker = (valueFecha) => {
+        // debugger;
+        return valueFecha && 
+        valueFecha.length === 4 && 
+        /^\d+$/.test(valueFecha) ? // Todos numeros
             new DateLikePicker(null, {
                 day: Number(valueFecha.substring(0, 2)),
                 month: Number(valueFecha.substring(2)),
                 year: (new Date()).getFullYear()
-            }) :
-            new DateLikePicker(null, valueFecha);
+            }) 
+            :
+            valueFecha && 
+            valueFecha.day && 
+            valueFecha.month ?
+                new DateLikePicker(null, valueFecha)
+                :
+                null
+    }
 
     /**
      * Decodifica la respuesta del error (scando el _body) y muestra el mensaje
@@ -438,11 +447,13 @@ export class UtilsService {
 
     focusElement = (idElement) => document.getElementById('idBtnConfirmar') ? document.getElementById('idBtnConfirmar').focus() : null
 
-    downloadBlob = (bodyResp, name) => {
+    downloadBlob = (bodyResp, name, formato?) => {
         // const bodyResp = resp['_body'];
 
-        var newBlob = new Blob([bodyResp], {type: "application/pdf"})
+        var newBlob = new Blob([bodyResp], {type: formato ? formato : "application/pdf"})
         
+        debugger;
+
         // IE
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
             window.navigator.msSaveOrOpenBlob(newBlob);
@@ -454,7 +465,7 @@ export class UtilsService {
         var link = document.createElement('a');
         link.href = data;
         // link.download="fileBody.pdf";
-        link.download=`${name}.pdf`;
+        link.download=`${name}.${formato ? 'docx' : 'pdf'}`;
         link.click();
 
         // Firefox
@@ -463,6 +474,20 @@ export class UtilsService {
             window.URL.revokeObjectURL(data);
         }, 100);
     }
+
+    // saveByteArray = (function () {
+    //     var a = document.createElement("a");
+    //     document.body.appendChild(a);
+
+    //     return function (data, name) {
+    //         var blob = new Blob(data, {type: "octet/stream"}),
+    //             url = window.URL.createObjectURL(blob);
+    //         a.href = url;
+    //         a.download = name;
+    //         a.click();
+    //         window.URL.revokeObjectURL(url);
+    //     };
+    // }());
 
     numeroObjectToString = (numerador: Numerador) => 
         numerador && numerador.ptoVenta && numerador.numerador ?

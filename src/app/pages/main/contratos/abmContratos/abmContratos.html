@@ -1,0 +1,45 @@
+<div class="abm-contratos">
+    <ba-card cardTitle="Contratos" baCardClass="with-scroll">
+
+        <table class="table-contratos" *ngIf="tableData && tableColumns" style="width:100%">
+            <tr>
+                <th></th>
+                <th *ngFor="let tc of tableColumns">
+                    {{ tc.nombre }}
+                </th>
+                <th></th>
+            </tr>
+            <tr *ngFor="let td of tableData | async">
+                <td style="display: flex;">
+                    <div (click)="onClickEdit(td)" class="btn-accion btn-editar" style="padding-top: 1px;">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </div>
+                    <div (click)="onClickRemove(td)" class="btn-accion btn-remover">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </div>
+                </td>
+                <td *ngFor="let tc of tableColumns">
+                    {{ getDato(td[tc.key]) }}
+                </td>
+                <td>
+                    <div (click)="onClickDownload(td)" class="btn-accion btn-download">
+                        <i *ngIf="!td.isDownloading" class="fa fa-download" aria-hidden="true"></i>
+                        <i *ngIf="td.isDownloading" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div class="btn-container">
+            <button routerLink="/pages/contratos/abm/nuevo" type="submit" class="btn btn-default" translate>
+                Nuevo Contrato
+            </button>
+        </div>
+    </ba-card>
+</div>
+
+
+
+<!-- 
+        <data-tables [data]="tableData | async" [columns]="tableColumns" [edit]="onClickEdit" [remove]="onClickRemove" tituloTabla="Contratos">
+        </data-tables> -->

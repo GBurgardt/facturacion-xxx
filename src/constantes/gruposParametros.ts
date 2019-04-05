@@ -4,4 +4,5 @@ const gruposParametros = {
     vendedor: 3
 }
 
+// export default gruposParametros;
 export default gruposParametros;

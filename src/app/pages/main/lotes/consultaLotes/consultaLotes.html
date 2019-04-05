@@ -121,7 +121,11 @@
 
 </ba-card>
 
-<ba-card>
+<div *ngIf="isLoading" class="spinner-container">
+    <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+</div>
+
+<ba-card *ngIf="!isLoading && (lotes | async)?.length > 0">
     <table class="table table-striped" [mfData]="lotes | async" #mf="mfDataTable" mfRowsOnPage="10">
         <thead>
             <tr>

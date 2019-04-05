@@ -63,10 +63,13 @@ export class ConsultaComprobante {
     vendedorSelec: Vendedor = new Vendedor();
     sisTipoOpSelect: SisTipoOperacion = new SisTipoOperacion();
 
-    // compEncabezados: Observable<ComprobanteEncabezado[]> = Observable.of([]);
     compEncabezados: BehaviorSubject<ComprobanteEncabezado[]> = new BehaviorSubject([]);
     compDetalles: BehaviorSubject<ComprobanteDetalle[]> = new BehaviorSubject([]);
+
     
+    estadoAfip: string = 'Todas'; 
+
+    isLoading = false;
 
     constructor(
         private recursoService: RecursoService,
@@ -115,10 +118,12 @@ export class ConsultaComprobante {
      * On click buscar
      */
     onClickBuscar = () => {
+        this.isLoading = true;
+
         // Busco los encabezados
         // Me suscribo a los cambios de los encabezados y en cada actualizacion de estos, actualizo también todos los detalles
         // Aprovecho a fijarme si la cantidad es 0. En ese caso, muestro mensaje
-        this.comprobanteService.buscarComprobantes(this.comprobante)(this.fechasFiltro)(this.sisModuloSelec)(this.tipoComprobanteSelec)(this.productoSelec)(this.sisEstadoSelec)(this.padronSelec)(this.depositoSelec)(this.vendedorSelec)(this.sisTipoOpSelect)
+        this.comprobanteService.buscarComprobantes(this.comprobante)(this.fechasFiltro)(this.sisModuloSelec)(this.tipoComprobanteSelec)(this.productoSelec)(this.sisEstadoSelec)(this.padronSelec)(this.depositoSelec)(this.vendedorSelec)(this.sisTipoOpSelect)(this.estadoAfip)
             
             .subscribe(encabezados => {
 
@@ -134,7 +139,9 @@ export class ConsultaComprobante {
                         (encabezado: ComprobanteEncabezado) => encabezado.detalle,
                         encabezados
                     )
-                )
+                );
+
+                this.isLoading = false;
 
             })
 
@@ -217,5 +224,29 @@ export class ConsultaComprobante {
 
     onClickPopupProducto = (prod: Producto) => 
         this.productoSelec = new Producto({...prod})
+
+    autorizarComprobante = (compBusc: ComprobanteEncabezado) => {
+        // Activo spinner
+        compBusc.isBeingAuthorized = true;
+
+        this.comprobanteService.autorizarAfip(compBusc.idFactCab)
+            .subscribe(respAfip => {
+                compBusc.isBeingAuthorized = false;
+
+                this.utilsService.showImprimirModal(
+                    'OK'
+                )(
+                    `${respAfip.control.descripcion}. 
+                    CAI: ${respAfip.datos.cai}`
+                )(
+                    () => this.recursoService.downloadComp(compBusc)
+                )(
+                    compBusc
+                );
+
+                this.onClickBuscar();
+
+            })
+    }
 
 }

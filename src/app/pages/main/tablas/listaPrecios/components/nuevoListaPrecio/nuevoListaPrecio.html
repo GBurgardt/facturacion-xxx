@@ -291,16 +291,31 @@
                 </div>
             </custom-card>
 
-            <!-- [data]="listaPrecio.listaPrecioDetCollection | async" -->
+            <div *ngIf="detallesActivos" class="bar-separator"></div>
+
+            <div *ngIf="detallesActivos" class="search-container">
+                <div class="form-group">
+                    <label for="searchInput">Buscar</label>
+                    <input 
+                        name="searchInput" 
+                        [(ngModel)]="textProdSearched" 
+                        type="text"
+                        class="form-control" 
+                        id="searchInput" placeholder="Código o descripcion">
+                </div>
+            </div>
+            
             <data-tables *ngIf="detallesActivos" 
+                        tituloTabla="Productos" 
+                        class="data-table-productos" 
+                        baCardClase="with-scroll with-box-shadow-custom"
                         [data]="recurso.listaPrecioDetCollection"
                         [columns]="columnasTabla"
                         [edit]="onClickEdit"
                         [remove]="onClickRemove"
                         [confirmEdit]="onClickConfirmEdit"
-                        tituloTabla="Productos" 
-                        class="data-table-productos" 
-                        baCardClase="with-scroll with-box-shadow-custom">
+                        [filterQuery]="textProdSearched"
+                        >
             </data-tables>
 
             <div *ngIf="detallesActivos" class="col-sm-12 btn-confirm-container">

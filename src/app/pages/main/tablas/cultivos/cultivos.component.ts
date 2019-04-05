@@ -5,6 +5,7 @@ import { RecursoService } from '../../../../services/recursoService';
 import { resourcesREST } from 'constantes/resoursesREST';
 
 import { Cultivo } from 'app/models/cultivo';
+import { FilesService } from 'app/services/filesService';
 
 @Component({
     selector: 'cultivos',

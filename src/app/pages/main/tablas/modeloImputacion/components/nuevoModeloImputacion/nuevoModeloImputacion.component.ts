@@ -14,6 +14,8 @@ import { PlanCuenta } from '../../../../../../models/planCuenta';
 import { SisTipoModelo } from '../../../../../../models/sisTipoModelo';
 import { SisModulo } from '../../../../../../models/sisModulo';
 import { ModeloImputacion } from '../../modeloImputacion.component';
+import { Libro } from 'app/models/libro';
+import sisModulos from 'constantes/sisModulos';
 
 
 @Component({
@@ -40,6 +42,7 @@ export class NuevoModeloImputacion {
     contPlanCuentaList: Observable<PlanCuenta[]> = Observable.of([]);
     sisTipoModeloList: Observable<SisTipoModelo[]> = Observable.of([]);
     sisModulos: Observable<SisModulo[]> = Observable.of([]);
+    libros: Observable<Libro[]> = Observable.of([]);
 
     constructor(
         private recursoService: RecursoService,
@@ -48,7 +51,10 @@ export class NuevoModeloImputacion {
     ) {
         this.contPlanCuentaList = this.recursoService.getRecursoList(resourcesREST.contPlanCuenta)();
         this.sisTipoModeloList = this.recursoService.getRecursoList(resourcesREST.sisTipoModelo)();
-        this.sisModulos = this.recursoService.getRecursoList(resourcesREST.sisModulos)();
+        this.sisModulos = this.recursoService.getRecursoList(resourcesREST.sisModulos)()
+            .map(
+                sisModulos => sisModulos.filter(a => a.descripcion.toLowerCase() !== 'todos')
+            )
     }
 
     ngOnInit() {
@@ -64,7 +70,7 @@ export class NuevoModeloImputacion {
         try {
             // Agrego los detalles
             this.recurso.modeloDetalle = Object.assign([], this.detalles);
-
+            debugger;
             const resp: any = await this.recursoService.setRecurso(this.recurso)();
 
             this.utilsService.showModal(
@@ -170,5 +176,12 @@ export class NuevoModeloImputacion {
     checkIfShowLiVenta = (liDet: ModeloDetalle) => {
         return Number(liDet.idSisModulo) === 1 ? 
             `detalle-li hiddenLi` : 'detalle-li'
+    }
+
+    /**
+     * Actualizo desplegable libros
+     */
+    onChangeSisModulo = (idSisModSelect: number) => {
+        this.libros = this.recursoService.getRecursoList(resourcesREST.libros)({ idSisModulo: idSisModSelect });
     }
 }

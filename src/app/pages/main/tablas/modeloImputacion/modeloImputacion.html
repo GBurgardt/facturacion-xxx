@@ -8,7 +8,7 @@
                      tituloTabla="Modelo Imputacion" >
         </data-tables>
 
-        <div *ngIf="utilsService.getCurrentMenu() && utilsService.getCurrentMenu().alta" class="btn-container">
+        <div style="margin:6px 12px" *ngIf="utilsService.getCurrentMenu() && utilsService.getCurrentMenu().alta" class="btn-container">
             <button routerLink="/pages/tablas/modelo-imputacion/nuevo" type="submit" class="btn btn-default btn-new-user" translate>
                 Nuevo
             </button>

@@ -77,6 +77,8 @@ export class ConsultaImputaciones {
     compSeleccionado: ComprobanteEncabezado;
     impuSeleccionado: ComprobanteEncabezado;
 
+    isLoading = false;
+
     constructor(
         private recursoService: RecursoService,
         public utilsService: UtilsService,
@@ -190,6 +192,8 @@ export class ConsultaImputaciones {
      */
     onClickBuscar = () => {
 
+        this.isLoading = true;
+
         // Limpio tablas
         this.compEncabezados.next([]);
         this.compDetalles.next([]);
@@ -197,7 +201,7 @@ export class ConsultaImputaciones {
 
         // Si fechaDesde es 
 
-        this.comprobanteService.buscarComprobantes(this.comprobante)(this.fechasFiltro)(this.sisModuloSelec)(this.tipoComprobanteSelec)(this.productoSelec)(this.sisEstadoSelec)(this.padronSelec)(this.depositoSelec)(this.vendedorSelec)(this.sisTipoOpSelect)
+        this.comprobanteService.buscarComprobantes(this.comprobante)(this.fechasFiltro)(this.sisModuloSelec)(this.tipoComprobanteSelec)(this.productoSelec)(this.sisEstadoSelec)(this.padronSelec)(this.depositoSelec)(this.vendedorSelec)(this.sisTipoOpSelect)(null)
             .subscribe(encabezados => {
 
                 // Actualizo encabezados
@@ -205,6 +209,8 @@ export class ConsultaImputaciones {
 
                 encabezados && encabezados.length === 0 ?
                     this.utilsService.showModal('Aviso')('No se encontraron comprobantes con esas condiciones')()() : null;
+
+                this.isLoading = false;
 
             })
     }
