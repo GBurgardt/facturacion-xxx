@@ -22,6 +22,8 @@ import { Cliente } from "app/models/cliente";
 import { Cultivo } from "app/models/cultivo";
 import { Vendedor } from "app/models/vendedor";
 import { Marca } from "app/models/marca";
+import { Proveedor } from "app/models/proveedor";
+import { RelacionCanje } from "app/models/relacionCanje";
 
 const classes = {
     Usuario,
@@ -47,7 +49,9 @@ const classes = {
     Cliente,
     Cultivo,
     Vendedor,
-    Marca
+    Marca,
+    Proveedor,
+    RelacionCanje
 };
 
 // export default function dynamicClass (name) {

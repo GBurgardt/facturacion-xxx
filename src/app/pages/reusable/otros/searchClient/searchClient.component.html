@@ -5,7 +5,7 @@
         class="form-control"
         name="inputSearch"
         type="text" 
-        required
+        [required]="isRequired"
     
         (ngModelChange)="onChangeInputCliente($event)"
         [(ngModel)]="cliente.padronCodigo" 

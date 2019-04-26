@@ -27,6 +27,8 @@ import { Vendedor } from "../../../../models/vendedor";
 import { ListaPrecio } from "app/models/listaPrecio";
 import { TipoComprobante } from "app/models/tipoComprobante";
 import sisModulos from "constantes/sisModulos";
+import { Contrato } from "app/models/contrato";
+import { RelacionCanje } from "app/models/relacionCanje";
 
 @Injectable()
 export class EmisionRemitosService {
@@ -420,7 +422,7 @@ export class EmisionRemitosService {
 
         return this.authService.buscaModelos(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(prodsModel)(2)(idMoneda)
+        )(prodsModel)(2)(idMoneda)(null)
             .map(
                 responBuscMod => 
                     responBuscMod.arraydatos.map(
@@ -450,6 +452,8 @@ export class EmisionRemitosService {
                                 (dataVendedor: any) => 
                                 (subtotalesProductos: any) => 
                                 (listaPrecioSelec: ListaPrecio) => 
+                                (contrato: Contrato) => 
+                                (relacionCanje: RelacionCanje) => 
         this.authService.emitirRemito(
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
@@ -484,12 +488,7 @@ export class EmisionRemitosService {
             subtotalesProductos
         )(
             listaPrecioSelec
-        )
-            // .catch(err => {
-                
-            //     this.utilsService.showErrorWithBody(err)
-            //     return Observable.throw(null)
-            // })
+        )(contrato)(relacionCanje)
 
     /**
      * Valida que los datos estén correctos
@@ -580,8 +579,8 @@ export class EmisionRemitosService {
      * Me fijo si hay productos agregados
      */
     checkIfExistenProductos = (productosPend: ProductoPendiente[]) => (modelosFactura: ModeloFactura[]) => (
-        productosPend.length > 0 && 
-        modelosFactura.length > 0
+        productosPend.length > 0 
+        // modelosFactura.length > 0
     )
 
 

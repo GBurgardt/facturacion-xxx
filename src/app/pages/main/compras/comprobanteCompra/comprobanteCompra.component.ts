@@ -33,6 +33,7 @@ import { ComprobanteEncabezado } from 'app/models/comprobanteEncabezado';
 import { PtoVenta } from 'app/models/ptoVenta';
 import { SisLetra } from 'app/models/sisLetra';
 import { LetraCodigo } from 'app/models/letraCodigo';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'comprobante-compra',
@@ -136,6 +137,7 @@ export class ComprobanteCompra implements AfterViewInit {
         public comprobanteCompraService: ComprobanteCompraService,
         public utilsService: UtilsService,
         private popupListaService: PopupListaService,
+        private router: Router,
         configProgressBar: NgbProgressbarConfig
     ) {
         this.comprobante.numerador = new Numerador();
@@ -158,7 +160,9 @@ export class ComprobanteCompra implements AfterViewInit {
             'sisComprobante': 2
         });
 
-        this.dataTablaFormasPago = this.recursoService.getRecursoList(resourcesREST.formaPago)();
+        this.dataTablaFormasPago = this.recursoService.getRecursoList(resourcesREST.formaPago)({
+            codPadron: this.proveedorSeleccionado ? this.proveedorSeleccionado.padronCodigo : null
+        })
 
         ////////// Proveedores  //////////
         this.recursoService.getRecursoList(resourcesREST.padron)({
@@ -245,7 +249,6 @@ export class ComprobanteCompra implements AfterViewInit {
     }
 
     onClickConfirmEdit = (tipoColumnas) => (itemSelect: any) => {
-        debugger;
         // Todos los atributos 'enEdicion' distintos de undefined y también distintos de null o false, los seteo en false
         this.tablas.columnas[tipoColumnas] = this.tablas.columnas[tipoColumnas].map(tabla => {
             let newTabla = tabla;
@@ -427,7 +430,8 @@ export class ComprobanteCompra implements AfterViewInit {
                 // Actualizo las facturas antes de confirmar
                 this.comprobanteCompraService.buscaModelos(
                     this.tablas.datos.productosPend,
-                    this.comprobante.moneda ? this.comprobante.moneda.idMoneda : null
+                    this.comprobante.moneda ? this.comprobante.moneda.idMoneda : null,
+                    this.proveedorSeleccionado.padronCodigo
                 ).subscribe(modelProds => {
                     this.tablas.datos.modelosFactura = modelProds;
         
@@ -487,7 +491,9 @@ export class ComprobanteCompra implements AfterViewInit {
                             this.tablas.datos.detallesFormaPago = [];
         
                             // Refresco formas pago
-                            this.dataTablaFormasPago = this.recursoService.getRecursoList(resourcesREST.formaPago)();
+                            this.dataTablaFormasPago = this.recursoService.getRecursoList(resourcesREST.formaPago)({
+                                codPadron: this.proveedorSeleccionado ? this.proveedorSeleccionado.padronCodigo : null
+                            });
                             // this.dataTablaFormasPago = null;
     
                             // this.tipoOpSelect = new SisTipoOperacion();
@@ -532,7 +538,8 @@ export class ComprobanteCompra implements AfterViewInit {
         if (this.tablas.datos.productosPend && this.tablas.datos.productosPend.length > 0) {
             this.comprobanteCompraService.buscaModelos(
                 this.tablas.datos.productosPend,
-                this.comprobante.moneda ? this.comprobante.moneda.idMoneda : null
+                this.comprobante.moneda ? this.comprobante.moneda.idMoneda : null,
+                this.proveedorSeleccionado.padronCodigo
             ).subscribe(modelProds => {
 
                 this.tablas.datos.modelosFactura = modelProds;
@@ -593,7 +600,32 @@ export class ComprobanteCompra implements AfterViewInit {
             if (this.proveedorSeleccionado && this.proveedorSeleccionado.padronCodigo) {
                 this.proveedorSeleccionado = this.proveedores.filtrados.value.find(
                     prov => prov.padronCodigo === Number(this.proveedorSeleccionado.padronCodigo)
-                )
+                );
+
+                // Lo busco en la base de facturacion
+                this.comprobanteCompraService.checkIfProvExistInFacturacion(this.proveedorSeleccionado)
+                    .then(resp => {
+                        // Si pasa, todo ok
+                        // debugger;
+                    })
+                    .catch(err => {
+                         // Si NO lo encuentra, le pido que lo cree
+                         this.utilsService.showModal('Aviso')('Proveedor no existente en nuestra base. ¿Desea crearlo?')(()=>{
+                            this.router.navigate(
+                                ['/pages/tablas/proveedores/nuevo'],
+                                { 
+                                    queryParams: { 
+                                        // codPadronCliente: clienteExistente.padronCodigo
+                                    } 
+                                }
+                            );
+                        })({tipoModal:'confirmation'}, () => {
+                            // this.dataVendedor = {
+                            //     vendedor: new Vendedor(),
+                            //     incluir: false
+                            // };
+                        })
+                    })
             }
 
             // Vacio filtrados
@@ -797,7 +829,8 @@ export class ComprobanteCompra implements AfterViewInit {
         // Busco las facturas de los productos
         this.comprobanteCompraService.buscaModelos(
             this.tablas.datos.productosPend,
-            this.comprobante.moneda ? this.comprobante.moneda.idMoneda : null
+            this.comprobante.moneda ? this.comprobante.moneda.idMoneda : null,
+            this.proveedorSeleccionado.padronCodigo
         ).subscribe(modelProds => {
             this.tablas.datos.modelosFactura = modelProds;
 
@@ -829,7 +862,9 @@ export class ComprobanteCompra implements AfterViewInit {
         this.tablas.datos.detallesFormaPago = [];
         
         // Refresco formas pago
-        this.dataTablaFormasPago = this.recursoService.getRecursoList(resourcesREST.formaPago)();
+        this.dataTablaFormasPago = this.recursoService.getRecursoList(resourcesREST.formaPago)({
+            codPadron: this.proveedorSeleccionado ? this.proveedorSeleccionado.padronCodigo : null
+        })
     }
 
     /**
@@ -838,7 +873,17 @@ export class ComprobanteCompra implements AfterViewInit {
     isRestoPagarValid = () => {
 
         if (this.comprobante.tipo.requiereFormaPago) {
-            return this.calcRestoPagar() === '0.00';
+
+            /**
+             * El importe no es valido si es CERO y No se permite importe cero
+             */
+            const importeCeroValido = this.comprobante && this.comprobante.tipo && this.comprobante.tipo.comprobante &&
+                (
+                    (this.cotizacionDatos.total + this.sumatoriaSubtotales) === 0 &&
+                    this.comprobante.tipo.comprobante.permiteImporteCero
+                )
+
+            return importeCeroValido || this.calcRestoPagar() === '0.00';
         } else {
             return true;
         }
@@ -966,7 +1011,13 @@ export class ComprobanteCompra implements AfterViewInit {
             letraSelect.numeradores[0] : null;
         
  
+    /**
+     * Deshabilita btn grabar de acuerdo a diferentes parámetors
+     */
     isDisabledConfirm = () => {
+
+        // const auxPermiteImporteCero = this.comprobante.tipo && this.comprobante.tipo.comprobante ?
+        //     this.comprobante.tipo.comprobante.permiteImporteCero : false;
 
         const datosNoValidos = !this.comprobanteCompraService.checkIfDatosValidosComprobante(this.comprobante)
             (this.proveedorSeleccionado)
@@ -974,20 +1025,28 @@ export class ComprobanteCompra implements AfterViewInit {
             (this.tablas.datos.modelosFactura)
             (this.depositoSelec);
 
-        const restoPagarNoValido = 
-            this.tablas.datos.detallesFormaPago && 
-            this.tablas.datos.detallesFormaPago.length > 0 &&
-            !this.isRestoPagarValid();
-
         const formaPagoNoValido = 
             this.comprobante && this.comprobante.tipo && this.comprobante.tipo.requiereFormaPago && 
             (
                 !this.tablas.datos.detallesFormaPago ||
                 this.tablas.datos.detallesFormaPago.length <= 0
-            )
-        
+            ) 
 
-        return datosNoValidos || restoPagarNoValido || formaPagoNoValido;
+        const restoPagarNoValido = 
+            (
+                this.tablas.datos.detallesFormaPago && 
+                this.tablas.datos.detallesFormaPago.length > 0 &&
+                !this.isRestoPagarValid()
+            )
+
+        const noPermiteImporteCero = this.cotizacionDatos && this.comprobante.tipo && this.comprobante.tipo.comprobante &&
+            (
+                this.cotizacionDatos.total + this.sumatoriaSubtotales === 0 &&
+                !this.comprobante.tipo.comprobante.permiteImporteCero
+            )
+
+        return datosNoValidos || restoPagarNoValido || formaPagoNoValido || noPermiteImporteCero
+            
     }
                     
     

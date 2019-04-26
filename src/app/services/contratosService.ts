@@ -6,6 +6,8 @@ import { LocalStorageService } from "./localStorageService";
 import { UtilsService } from "./utilsService";
 import { BoundCallbackObservable } from "rxjs/observable/BoundCallbackObservable";
 import { FilesService } from "./filesService";
+import { DateLikePicker } from "app/models/dateLikePicker";
+import { Padron } from "app/models/padron";
 
 
 
@@ -128,4 +130,11 @@ export class ContratosService {
             idContrato
         )
     }
+
+    buscarComprobantesCanje = (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker }, padronSelect: Padron) => 
+        this.authService.buscaComprobantesCanje(
+            this.localStorageService.getObject(environment.localStorage.acceso).token,
+            fechasFiltro,
+            padronSelect
+        )
 }

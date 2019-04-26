@@ -23,6 +23,8 @@ export class ComprobanteEncabezado {
     autorizada: string;
     tipoOperacion: string;
 
+    permiteBorrado: boolean;
+
     constructor(comprobanteEncabezado?: {
         idFactCab: number;
         numero: number;
@@ -41,6 +43,8 @@ export class ComprobanteEncabezado {
         importeTotal: number;
         autorizada: string;
         tipoOperacion: string;
+
+        permiteBorrado: boolean;
     }) {
         if (comprobanteEncabezado) {
             this.idFactCab = comprobanteEncabezado.idFactCab;
@@ -63,6 +67,7 @@ export class ComprobanteEncabezado {
             this.importeTotal = comprobanteEncabezado.importeTotal;
             this.autorizada = comprobanteEncabezado.autorizada;
             this.tipoOperacion = comprobanteEncabezado.tipoOperacion;
+            this.permiteBorrado = comprobanteEncabezado.permiteBorrado;
         } else {
             this.idFactCab = null;
             this.numero = null;
@@ -84,6 +89,7 @@ export class ComprobanteEncabezado {
             this.importeTotal = null;
             this.autorizada = null;
             this.tipoOperacion = null;
+            this.permiteBorrado = null;
         }
     }
 

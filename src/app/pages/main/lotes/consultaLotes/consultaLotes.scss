@@ -19,6 +19,8 @@
             display: flex;
             padding: 2px;
             margin-bottom: 10px;
+            justify-content: space-between;
+
             > .item-input {
                 display: flex;
                 padding: 0 5px;
@@ -36,6 +38,10 @@
                 .minor-input {
                     width: 70px;
                 }
+            }
+
+            > .item-input:last-child {
+                margin-left: 20px;
             }
 
             .date-picker-venc-hasta {

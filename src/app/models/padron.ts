@@ -7,6 +7,8 @@ export class Padron {
     codigoPostal: number;
     cuit: number;
     condIva: CondIva;
+    padronDomicilio: string;
+    padronNro: string;
 
     constructor(padron?: {
         padronCodigo: any;
@@ -15,6 +17,8 @@ export class Padron {
         codigoPostal: number;
         cuit: number;
         condIva: CondIva;
+        padronDomicilio: string;
+        padronNro: string;
     }) {
         if (padron) {
             this.padronCodigo = padron.padronCodigo;
@@ -23,6 +27,8 @@ export class Padron {
             this.codigoPostal = padron.codigoPostal;
             this.cuit = padron.cuit;
             this.condIva = new CondIva(padron.condIva);
+            this.padronDomicilio = padron.padronDomicilio;
+            this.padronNro = padron.padronNro;
         } else {
             // this.padronCodigo = null;
             // this.padronApelli = null;
@@ -37,6 +43,8 @@ export class Padron {
             this.cuit = undefined;
             // this.condIva = new CondIva(null);
             this.condIva = null;
+            this.padronDomicilio = null;
+            this.padronNro = null;
         }
     }
 

@@ -8,11 +8,13 @@ import { resourcesREST } from 'constantes/resoursesREST';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UtilsService } from 'app/services/utilsService';
 import { ContratosService } from 'app/services/contratosService';
+import { NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'editar-contrato',
     styleUrls: ['./editarContrato.scss'],
-    templateUrl: './editarContrato.html'
+    templateUrl: './editarContrato.html',
+    providers: [NgbDatepickerConfig]
 })
 export class EditarContrato {
 
@@ -29,7 +31,8 @@ export class EditarContrato {
         private recursoService: RecursoService,
         public utilsService: UtilsService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        config: NgbDatepickerConfig
     ) {
 
         this.route.params.subscribe(params => 
@@ -44,6 +47,10 @@ export class EditarContrato {
         );
 
         this.sisCanjes = this.recursoService.getRecursoList(resourcesREST.sisCanjes)();
+
+        // config NgbDatepickerConfig
+        config.minDate = {year: 1850, month: 1, day: 1};
+        config.maxDate = {year: 2020, month: 12, day: 31};    
     }
 
     // Si NO finalizó la edición, y SI editó el recurso..

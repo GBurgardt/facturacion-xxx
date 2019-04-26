@@ -1,0 +1,79 @@
+import { Component } from '@angular/core';
+import { resourcesREST } from 'constantes/resoursesREST';
+import { UtilsService } from '../../../../services/utilsService';
+import { ComprobanteEncabezado } from '../../../../models/comprobanteEncabezado';
+import { BehaviorSubject } from 'rxjs';
+import { DateLikePicker } from 'app/models/dateLikePicker';
+import { ComprobanteService } from 'app/services/comprobanteService';
+import { Padron } from 'app/models/padron';
+import { ContratosService } from 'app/services/contratosService';
+@Component({
+    selector: 'relacion-comprobante',
+    styleUrls: ['./relacionComprobante.scss'],
+    templateUrl: './relacionComprobante.html'
+})
+export class RelacionComprobante {
+    resourcesREST = resourcesREST;
+
+    compEncabezados: BehaviorSubject<ComprobanteEncabezado[]> = new BehaviorSubject([]);
+
+    fechasFiltro: {
+        desde: DateLikePicker,
+        hasta: DateLikePicker
+    } = {
+        desde: new DateLikePicker(),
+        hasta: new DateLikePicker()
+    }
+
+    padronSelect: Padron;
+
+    constructor(
+        public utilsService: UtilsService,
+        private contratosService: ContratosService
+    ) {
+        
+
+    }
+
+    onClickRefrescar = () => 
+        this.contratosService.buscarComprobantesCanje(this.fechasFiltro, this.padronSelect)
+            .subscribe(resp => {
+                
+                const encabezados = resp.arraydatos;
+
+                // Actualizo encabezados
+                this.compEncabezados.next(encabezados);
+
+                encabezados && encabezados.length === 0 ?
+                    this.utilsService.showModal('Aviso')('No se encontraron comprobantes con esas condiciones')()() : null;
+
+            })
+
+    /**
+     * Setea la fecha de compra calculandola dado un string en formato 'ddmm', parseando a 'dd/mm/aaaa'
+     */
+    onCalculateFecha = (e) => (keyFecha) => {
+        if (!this.fechasFiltro[keyFecha] || typeof this.fechasFiltro[keyFecha] !== 'string') return;
+        
+        this.fechasFiltro[keyFecha] = this.utilsService.stringToDateLikePicker(this.fechasFiltro[keyFecha]);
+
+        // Hago focus en el prox input y luego al boton buscar
+        (keyFecha==='desde') ? document.getElementById("fechaHasta").focus() : 
+            (keyFecha==='hasta') ? document.getElementById("btnBuscar").focus() : null;
+    }
+
+    onSelectCliente = (cli) => {
+
+        this.padronSelect = cli;
+    }
+
+    /**
+     * Formatea el numero pto-venta 4 caracteres y numero 8 caracteres
+     */
+    formatNumero = (numero) => 
+        numero && numero.toString() && 
+        numero.toString().substring(0, numero.toString().length - 8) ?
+            `${numero.toString().substring(0, numero.toString().length - 8).padStart(4,0)} - ${numero.toString().substring(numero.toString().length - 8)}` :
+            ''
+
+}

@@ -12,6 +12,7 @@ import { AuthService } from "app/services/authService";
 import { EditarContrato } from "./abmContratos/editarContrato";
 import { PendingChangesGuard } from "app/guards/PendingChangesGuard";
 import { ContratosService } from "app/services/contratosService";
+import { RelacionComprobante } from "./relacionComprobante";
 
 @NgModule({
     imports: [
@@ -23,7 +24,8 @@ import { ContratosService } from "app/services/contratosService";
         Contratos,
         AbmContratos,
         NuevoContrato,
-        EditarContrato
+        EditarContrato,
+        RelacionComprobante
     ],
     providers: [
         FilesService,

@@ -15,6 +15,7 @@ import { ComprobanteEncabezado } from '../models/comprobanteEncabezado';
 import { UtilsService } from './utilsService';
 import { Vendedor } from 'app/models/vendedor';
 import { SisTipoOperacion } from 'app/models/sisTipoOperacion';
+import sisModulos from 'constantes/sisModulos';
 
 @Injectable()
 export class ComprobanteService { 
@@ -46,8 +47,8 @@ export class ComprobanteService {
     /**
      * Genera los comprobantes dado los filtros dados
      */
-    generarReportes = (tipo) => (comprobante: Comprobante) => (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker }) => (sisModuloSelec: SisModulo) => (tipoComprobanteSelec: TipoComprobante) => (productoSelec: Producto) => (sisEstadoSelec: SisEstado) => (padronSelec: Padron) => (depositoSelec: Deposito) =>
-        this.authService.reporteComprobantes(tipo)(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(fechasFiltro)(sisModuloSelec)(tipoComprobanteSelec)(productoSelec)(sisEstadoSelec)(padronSelec)(depositoSelec)                                        
+    generarReportes = (tipo) => (comprobante: Comprobante) => (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker }) => (sisModuloSelec: SisModulo) => (tipoComprobanteSelec: TipoComprobante) => (productoSelec: Producto) => (sisEstadoSelec: SisEstado) => (padronSelec: Padron) => (depositoSelec: Deposito) => (vendedorSelec: Vendedor) => (sisTipoOpSelect: SisTipoOperacion) => (estadoAfip: string) =>
+        this.authService.reporteComprobantes(tipo)(this.localStorageService.getObject(environment.localStorage.acceso).token)(comprobante)(fechasFiltro)(sisModuloSelec)(tipoComprobanteSelec)(productoSelec)(sisEstadoSelec)(padronSelec)(depositoSelec)(vendedorSelec)(sisTipoOpSelect)(estadoAfip)
 
 
     /**
@@ -94,5 +95,31 @@ export class ComprobanteService {
                 this.utilsService.showErrorWithBody(err, true);
                 return Observable.of([]);
             })
+
+    borrarComprobante = (comp: ComprobanteEncabezado) => {
+        return this.authService.borrarComprobante(
+            this.localStorageService.getObject(environment.localStorage.acceso).token,
+            comp.idFactCab
+        )
+            .catch((err, caught) => {
+                this.utilsService.showErrorWithBody(err, true);
+                return Observable.of([]);
+            })
+    }
+
+    imprimirLibrosIva = (sisModulo: SisModulo, fecDesde, fecHasta) => 
+        this.authService.imprimirLibrosIva(
+            this.localStorageService.getObject(environment.localStorage.acceso).token,
+            sisModulo.idSisModulos,
+            fecDesde,
+            fecHasta
+        ).catch((err) => {
+            debugger;
+            return Observable.of(null)
+        })
+    
+
+    
+    
 
 }

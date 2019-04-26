@@ -18,6 +18,10 @@ export class Contrato {
     fechaVto: DateLikePicker;
     contratoDet: any[];
     isDownloading: boolean;
+
+    padronNombre: string;
+    padronApelli: string;
+    kilosCumplidos: number;
     
     constructor(contrato?: {
         idContratos: number;
@@ -35,6 +39,9 @@ export class Contrato {
         sisCanje: any;
         fechaVto: any;
         contratoDet: any;
+        padronNombre: string;
+        padronApelli: string;   
+        kilosCumplidos: number;   
     }) {
         if (contrato) {
             this.idContratos = contrato.idContratos;
@@ -54,6 +61,10 @@ export class Contrato {
             this.contratoDet = contrato.contratoDet;
 
             this.isDownloading = false;
+
+            this.padronNombre = contrato.padronNombre;
+            this.padronApelli = contrato.padronApelli;
+            this.kilosCumplidos = contrato.kilosCumplidos;
         } else {
             this.idContratos = null;
             this.contratoNro = null;
@@ -72,6 +83,10 @@ export class Contrato {
             this.contratoDet = [];
 
             this.isDownloading = false;
+
+            this.padronNombre = null;
+            this.padronApelli = null;
+            this.kilosCumplidos = null;
         }
     }
 }

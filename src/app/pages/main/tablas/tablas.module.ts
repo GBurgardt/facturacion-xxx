@@ -54,6 +54,12 @@ import { Marcas } from './marcas';
 import { NuevoMarca } from './marcas/components/nuevoMarca';
 import { EditarMarca } from './marcas/components/editarMarca';
 import { FilesService } from 'app/services/filesService';
+import { Proveedores } from './proveedores';
+import { NuevoProveedor } from './proveedores/components/nuevoProveedor';
+import { EditarProveedor } from './proveedores/components/editarProveedor';
+import { RelacionesCanje } from './relacionesCanje';
+import { NuevoRelacionCanje } from './relacionesCanje/nuevoRelacionCanje';
+import { EditarRelacionCanje } from './relacionesCanje/editarRelacionCanje';
 
 @NgModule({
     imports: [
@@ -104,7 +110,13 @@ import { FilesService } from 'app/services/filesService';
         EditarCultivos,
         Marcas,
         NuevoMarca,
-        EditarMarca
+        EditarMarca,
+        Proveedores,
+        NuevoProveedor,
+        EditarProveedor,
+        RelacionesCanje,
+        NuevoRelacionCanje,
+        EditarRelacionCanje
     ],
     providers: [
         DataTablesService,

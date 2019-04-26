@@ -14,7 +14,7 @@
                         <div class="form-group">
                             <label for="codigoLista">Fecha Alta</label>
                             <div class="input-group">
-                                <input required name="fechalt-lp" (blur)="onCalculateFecha($event)('fechaAlta')('recurso')" class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.fechaAlta" ngbDatepicker #dAlta="ngbDatepicker">
+                                <input required name="fechalt-lp" (blur)="onCalculateFecha($event)('fechaAlta')('recurso')" class="form-control" placeholder="dd/mm/yyyy" name="dp" [(ngModel)]="recurso.fechaAlta" ngbDatepicker #dAlta="ngbDatepicker">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" (click)="dAlta.toggle()" type="button" style="height: 100%;">
                                         <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -28,7 +28,7 @@
                         <div class="form-group">
                             <label for="vigenciaDesde">Vigencia Desde</label>
                             <div class="input-group">
-                                <input required name="fechvig-lp" (blur)="onCalculateFecha($event)('vigenciaDesde')('recurso')" id="fechaVigenciaDesde" class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.vigenciaDesde" ngbDatepicker #dVigDes="ngbDatepicker">
+                                <input required name="fechvig-lp" (blur)="onCalculateFecha($event)('vigenciaDesde')('recurso')" id="fechaVigenciaDesde" class="form-control" placeholder="dd/mm/yyyy" name="dp" [(ngModel)]="recurso.vigenciaDesde" ngbDatepicker #dVigDes="ngbDatepicker">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" (click)="dVigDes.toggle()" type="button" style="height: 100%;">
                                         <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -42,7 +42,7 @@
                         <div class="form-group">
                             <label for="vigenciaHasta">Vigencia Hasta</label>
                             <div class="input-group">
-                                <input required name="fechvighasta-lp" (blur)="onCalculateFecha($event)('vigenciaHasta')('recurso')" id="fechaVigenciaHasta" class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.vigenciaHasta" ngbDatepicker #dVigHas="ngbDatepicker">
+                                <input required name="fechvighasta-lp" (blur)="onCalculateFecha($event)('vigenciaHasta')('recurso')" id="fechaVigenciaHasta" class="form-control" placeholder="dd/mm/yyyy" name="dp" [(ngModel)]="recurso.vigenciaHasta" ngbDatepicker #dVigHas="ngbDatepicker">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" (click)="dVigHas.toggle()" type="button" style="height: 100%;">
                                         <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />

@@ -23,54 +23,40 @@ export class AbmContratos {
     ) {
         this.tableColumns = [
             {
-                nombre: 'Nro',
-                key: 'contratoNro',
-                ancho: '5%'
+                nombre: 'Cod Cliente',
+                key: 'idPadron',
+                ancho: '20%'
             },
             {
-                nombre: 'Fecha Nac',
-                key: 'fechaNacimiento',
-                ancho: '10%'
+                nombre: 'Nombre',
+                key: 'padronNombre',
+                ancho: '20%'
             },
             {
-                nombre: 'Nacionali',
-                key: 'nacionalidad',
-                ancho: '10%'
+                nombre: 'Apellido',
+                key: 'padronApelli',
+                ancho: '20%'
             },
             {
-                nombre: 'Profesion',
-                key: 'profesion',
-                ancho: '10%'
-            },
-            {
-                nombre: 'Doc',
-                key: 'documento',
-                ancho: '10%'
-            },
-            {
-                nombre: 'Padre',
-                key: 'padre',
-                ancho: '15%'
-            },
-            {
-                nombre: 'Madre',
-                key: 'madre',
-                ancho: '15%'
+                nombre: 'Cereal',
+                key: 'sisCanje',
+                subkey: 'descripcion',
+                ancho: '20%'
             },
             {
                 nombre: 'Kilos',
                 key: 'kilos',
-                ancho: '5%'
-            },
-            {
-                nombre: 'Cosecha',
-                key: 'cosecha',
-                ancho: '10%'
+                ancho: '20%'
             },
             {
                 nombre: 'Fecha Vto',
                 key: 'fechaVto',
-                ancho: '10%'
+                ancho: '20%'
+            },
+            {
+                nombre: 'Kilos Cumplidos',
+                key: 'kilosCumplidos',
+                ancho: '15%'
             }
         ]
         this.tableData = this.recursoService.getRecursoList(resourcesREST.contratos)();
@@ -114,12 +100,15 @@ export class AbmContratos {
             )
     }
 
-    getDato = (dato) => 
-        dato ?
+    getDato = (td, tc) => {
+        const dato = tc.subkey ? td[tc.key][tc.subkey] : td[tc.key];
+
+        return dato ?
             dato.day ? 
                 `${dato.day<10 ? '0' : ''}${dato.day}/${dato.month<10 ? '0' : ''}${dato.month}/${dato.year}`
                 :
                 dato
             : 
             ''
+    }
 }

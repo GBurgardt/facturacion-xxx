@@ -43,7 +43,8 @@ export class PadronGral {
             this.nro = null;
             this.localidad = null;
             this.categoria = null;
-            this.sisSitIVA = new SisSitIVA();
+            // this.sisSitIVA = new SisSitIVA();
+            this.sisSitIVA = null;
         }
     }
 

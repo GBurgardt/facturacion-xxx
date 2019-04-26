@@ -47,6 +47,8 @@ import { PtoVenta } from "app/models/ptoVenta";
 import { LetraCodigo } from "app/models/letraCodigo";
 import { Contrato } from "app/models/contrato";
 import { Libro } from "app/models/libro";
+import { Proveedor } from "app/models/proveedor";
+import { RelacionCanje } from "app/models/relacionCanje";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -287,5 +289,13 @@ export const resourcesREST = {
     libros: {
         nombre: 'libros',
         Clase: Libro
+    },
+    proveedores: {
+        nombre: 'proveedores',
+        Clase: Proveedor
+    },
+    relacionesCanje: {
+        nombre: 'relacionesCanje',
+        Clase: RelacionCanje
     }
 };

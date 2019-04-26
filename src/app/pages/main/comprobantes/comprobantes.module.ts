@@ -10,6 +10,7 @@ import { ConsultaComprobante } from "app/pages/main/comprobantes/consultaComprob
 import { ComprobanteService } from "../../../services/comprobanteService";
 import { ConsultaImputaciones } from "./consultaImputaciones";
 import { ImputacionesService } from "app/services/imputacionesService";
+import { ConsultaLibrosIva } from "./consultaLibrosIva";
 
 @NgModule({
     imports: [
@@ -20,7 +21,8 @@ import { ImputacionesService } from "app/services/imputacionesService";
     declarations: [
         Comprobantes,
         ConsultaComprobante,
-        ConsultaImputaciones
+        ConsultaImputaciones,
+        ConsultaLibrosIva
     ],
     providers: [
         RecursoService,

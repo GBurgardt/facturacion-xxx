@@ -18,8 +18,9 @@
                         <i class="fa fa-trash" aria-hidden="true"></i>
                     </div>
                 </td>
+                <!-- {{ getDato(td[tc.key]) }} -->
                 <td *ngFor="let tc of tableColumns">
-                    {{ getDato(td[tc.key]) }}
+                    {{ getDato(td, tc) }}
                 </td>
                 <td>
                     <div (click)="onClickDownload(td)" class="btn-accion btn-download">

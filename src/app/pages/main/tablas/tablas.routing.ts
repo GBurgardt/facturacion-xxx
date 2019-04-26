@@ -50,6 +50,12 @@ import { EditarCultivos } from './cultivos/components/editarCultivos';
 import { Marcas } from './marcas';
 import { NuevoMarca } from './marcas/components/nuevoMarca';
 import { EditarMarca } from './marcas/components/editarMarca';
+import { Proveedores } from './proveedores';
+import { NuevoProveedor } from './proveedores/components/nuevoProveedor';
+import { EditarProveedor } from './proveedores/components/editarProveedor';
+import { RelacionesCanje } from './relacionesCanje';
+import { NuevoRelacionCanje } from './relacionesCanje/nuevoRelacionCanje';
+import { EditarRelacionCanje } from './relacionesCanje/editarRelacionCanje';
 
 // noinspection TypeScriptValidateTypes
 const routes: Routes = [
@@ -99,6 +105,12 @@ const routes: Routes = [
             { path: 'marcas', component: Marcas },
             { path: 'marcas/nuevo', component: NuevoMarca, canDeactivate: [PendingChangesGuard] },
             { path: 'marcas/editar/:idMarcas', component: EditarMarca, canDeactivate: [PendingChangesGuard] },
+            { path: 'proveedores', component: Proveedores },
+            { path: 'proveedores/nuevo', component: NuevoProveedor, canDeactivate: [PendingChangesGuard] },
+            { path: 'proveedores/editar/:idPadronProveedor', component: EditarProveedor, canDeactivate: [PendingChangesGuard] },
+            { path: 'relaciones-canje', component: RelacionesCanje },
+            { path: 'relaciones-canje/nuevo', component: NuevoRelacionCanje, canDeactivate: [PendingChangesGuard] },
+            { path: 'relaciones-canje/editar/:idRelacionSisCanje', component: EditarRelacionCanje, canDeactivate: [PendingChangesGuard] }
         ]
     }
 ];

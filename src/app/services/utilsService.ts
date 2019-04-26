@@ -235,7 +235,8 @@ export class UtilsService {
      *
      */
     dateToString = (fechaDate) => {
-        return `${fechaDate.year}-${fechaDate.month}-${fechaDate.day}`
+        // return `${fechaDate.year}-${fechaDate.month}-${fechaDate.day}`
+        return `${fechaDate.day}/${fechaDate.month}/${fechaDate.year}`
     }
 
     /**

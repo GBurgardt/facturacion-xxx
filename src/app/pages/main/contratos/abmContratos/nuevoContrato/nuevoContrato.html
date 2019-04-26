@@ -4,9 +4,9 @@
         <div class="line">
             <div class="form-group item">
                 <label for="idCliente">Cliente:</label>
-                <!-- [idNextElementToFocus]="idFechaNacInput" -->
+                
                 <search-client 
-                    (selectCliente)="onSelectCliente($event)"
+                    (selectItem)="onSelectCliente($event)"
                     ></search-client>
             </div>
             <div class="form-group item">
@@ -16,7 +16,8 @@
                         id="idFechaNacInput"
                         name="fechaNac" 
                         class="form-control" 
-                        placeholder="yyyy-mm-dd" 
+                        placeholder="dd/mm/yyyy" 
+                        (dateSelect)="onDateSelect($event)"
                         (blur)="recurso.fechaNacimiento = utilsService.stringToDateLikePicker(recurso.fechaNacimiento)"
                         [(ngModel)]="recurso.fechaNacimiento" ngbDatepicker #dNac="ngbDatepicker">
                     <div class="input-group-append">
@@ -83,7 +84,7 @@
                     <input required 
                         name="fechaNac" 
                         class="form-control" 
-                        placeholder="yyyy-mm-dd" 
+                        placeholder="dd/mm/yyyy" 
                         (blur)="recurso.fechaVto = utilsService.stringToDateLikePicker(recurso.fechaVto)"
                         [(ngModel)]="recurso.fechaVto" ngbDatepicker #dVto="ngbDatepicker">
                     <div class="input-group-append">

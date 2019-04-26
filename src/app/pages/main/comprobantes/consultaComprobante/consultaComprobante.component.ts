@@ -185,7 +185,7 @@ export class ConsultaComprobante {
      * On click buscar
      */
     onClickReporte = (tipo) => {
-        this.comprobanteService.generarReportes(tipo)(this.comprobante)(this.fechasFiltro)(this.sisModuloSelec)(this.tipoComprobanteSelec)(this.productoSelec)(this.sisEstadoSelec)(this.padronSelec)(this.depositoSelec)
+        this.comprobanteService.generarReportes(tipo)(this.comprobante)(this.fechasFiltro)(this.sisModuloSelec)(this.tipoComprobanteSelec)(this.productoSelec)(this.sisEstadoSelec)(this.padronSelec)(this.depositoSelec)(this.vendedorSelec)(this.sisTipoOpSelect)(this.estadoAfip)
             .subscribe(resp => {
                 if (resp) {
                     this.utilsService.downloadBlob(resp['_body'], tipo);
@@ -247,6 +247,32 @@ export class ConsultaComprobante {
                 this.onClickBuscar();
 
             })
+    }
+
+    /**
+     * Onclick borrar comprobante
+     */
+    borrarComprobante = (comp: ComprobanteEncabezado) => {
+        this.comprobanteService.borrarComprobante(comp).subscribe((resp: any) => {
+
+            const theBody =
+                resp && resp['_body'] ?
+                    (typeof resp['_body'] === 'object') ?
+                        resp['_body'] : JSON.parse(resp['_body']) : null;
+
+            // debugger;
+
+            this.utilsService.showModal(
+                theBody.control.codigo
+            )(
+                theBody.control.descripcion
+            )(
+                () => {
+                    // Actualizo grilla
+                    this.onClickBuscar();
+                }
+            )();
+        })
     }
 
 }

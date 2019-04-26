@@ -39,7 +39,7 @@ export class Login {
                 // Me logueo y obtengo la respuesta
                 const respLogin = await this.loginService.login(this.usuario.value)(this.password.value);
 
-                // this.spinnerStatus = false;
+                this.spinnerStatus = false;
 
                 // Completa el login
                 this.loginService.completeLogin(respLogin);
@@ -50,6 +50,7 @@ export class Login {
 
 
             }catch(ex) {
+                this.spinnerStatus = false;
                 this.utilsService.decodeErrorResponse(ex);
             }
         }

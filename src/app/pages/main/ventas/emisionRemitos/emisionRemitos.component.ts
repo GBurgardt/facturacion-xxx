@@ -47,6 +47,7 @@ import { FormControl } from '@angular/forms';
 import { LetraCodigo } from 'app/models/letraCodigo';
 import { Contrato } from 'app/models/contrato';
 import { Contratos } from '../../contratos';
+import { RelacionCanje } from 'app/models/relacionCanje';
 
 
 
@@ -79,6 +80,7 @@ export class EmisionRemitos  {
     listaPrecioSelect: ListaPrecio = new ListaPrecio();
 
     contrato: Contrato = new Contrato();
+    relacionCanje: RelacionCanje = new RelacionCanje();
 
     /////////////////////////////////////////////
     //////////// Listas desplegables ////////////
@@ -97,6 +99,7 @@ export class EmisionRemitos  {
     listasPreciosUsuario: Observable<ListaPrecio[]>;
 
     contratos: Observable<Contrato[]>;
+    relacionesCanje: Observable<RelacionCanje[]>;
 
     /////////////////////////////////////////////
     ////////////////// Otros ////////////////////
@@ -184,7 +187,7 @@ export class EmisionRemitos  {
         this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
         this.sisCanjes = this.recursoService.getRecursoList(resourcesREST.sisCanjes)();
 
-        this.listasPreciosUsuario = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
+        // this.listasPreciosUsuario = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
 
         ////////// Tablas //////////
         this.tablas.columnas.columnasProductos = emisionRemitosService.getColumnsProductos();
@@ -404,6 +407,8 @@ export class EmisionRemitos  {
                             (this.dataVendedor)
                             (this.tablas.datos.subtotalesProductos)
                             (this.listaPrecioSelect)
+                            (this.contrato)
+                            (this.relacionCanje)
                             .catch(err => {
                                 this.grabandoPorcentaje = 0;
                                 this.utilsService.showErrorWithBody(err)
@@ -411,8 +416,6 @@ export class EmisionRemitos  {
                             })
                             .subscribe((respuesta: any) => {
                                 this.grabandoPorcentaje = 60;
-
-                                debugger;
 
                                 // Autorizo en AFIP
                                 if (this.comprobante.tipo.cursoLegal) {
@@ -501,7 +504,7 @@ export class EmisionRemitos  {
 
         // Limpio lista pre
         this.listaPrecioSelect = null;
-        this.listasPreciosUsuario = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
+        // this.listasPreciosUsuario = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
 
         // Limpio vendedor
         this.dataVendedor.vendedor = new Vendedor();
@@ -586,7 +589,12 @@ export class EmisionRemitos  {
                     // Muestra mensaje cuit no tiene
                     this.utilsService.showModal('Aviso')('Debe seleccionar un cliente que tenga un cuit')()();
                     this.cliente = new Padron();
+                    
                 } else {
+                    // Actualizo listas precios
+                    this.listasPreciosUsuario = this.recursoService.getRecursoList(resourcesREST.listaPrecios)({
+                        codPadron: clienteExistente.padronCodigo
+                    });
 
                     // Limpio primero el formulario
                     this.limpiarFormulario(['cotizacion']);
@@ -952,7 +960,7 @@ export class EmisionRemitos  {
 
         // Limpio lista pre
         this.listaPrecioSelect = null;
-        this.listasPreciosUsuario = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
+        // this.listasPreciosUsuario = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
 
         // Limpio cotizacion datos
         this.cotizacionDatos.total = 0;
@@ -1021,7 +1029,20 @@ export class EmisionRemitos  {
     /**
      * Checkea si el resto a pagar es valido
      */
-    isRestoPagarValid = () => this.calcRestoPagar() === '0.00'
+    isRestoPagarValid = () => {
+
+        /**
+         * El importe no es valido si es CERO y No se permite importe cero
+         */
+        const importeCeroValido = this.comprobante && this.comprobante.tipo && this.comprobante.tipo.comprobante &&
+            (
+                (this.cotizacionDatos.total + this.sumatoriaSubtotales) === 0 &&
+                this.comprobante.tipo.comprobante.permiteImporteCero
+            )
+
+
+        return importeCeroValido || this.calcRestoPagar() === '0.00'
+    }
 
     /**
      * Calcula el resto pagar
@@ -1070,13 +1091,20 @@ export class EmisionRemitos  {
 
     disabledConfirmar = () => {
 
-        return !this.emisionRemitosService.checkIfDatosValidosComprobante(this.comprobante)
+        const noPermiteImporteCero = this.cotizacionDatos && this.comprobante.tipo && this.comprobante.tipo.comprobante &&
+            (
+                this.cotizacionDatos.total + this.sumatoriaSubtotales === 0 &&
+                !this.comprobante.tipo.comprobante.permiteImporteCero
+            )
+
+        const datosNoValidos = !this.emisionRemitosService.checkIfDatosValidosComprobante(this.comprobante)
             (this.cliente)
             (this.tablas.datos.productosPend)
             (this.tablas.datos.modelosFactura)
             (this.deposito)
-            (this.tablas.datos.lotesTraza)
-            ||
+            (this.tablas.datos.lotesTraza);
+
+        const formaPagoNoValido = 
             (
                 this.comprobante && this.comprobante.tipo && this.comprobante.tipo.requiereFormaPago 
                 &&
@@ -1086,6 +1114,7 @@ export class EmisionRemitos  {
                     !this.isRestoPagarValid()
                 )
             )
+        return datosNoValidos || formaPagoNoValido || noPermiteImporteCero
     }
 
     compareFnMonedas = (m1: Moneda, m2: Moneda) =>
@@ -1105,7 +1134,8 @@ export class EmisionRemitos  {
         this.recursoService.getRecursoList(resourcesREST.productosReducidos)({
             'tipo': 'reducida',
             'listaPrecio': lp.idListaPrecio,
-            'aptoCanje': this.tipoOperacion.canje
+            'aptoCanje': this.tipoOperacion.canje,
+            'idDeposito': this.deposito ? this.deposito.idDeposito : null
         }).subscribe(prods => {
             this.productos.next(prods);
         });
@@ -1159,10 +1189,41 @@ export class EmisionRemitos  {
 
 
     onChangeContrato = (cont: Contrato) => {
-        debugger;
         this.sisCanje = cont ? cont.sisCanje : null
+
+        this.relacionesCanje = this.recursoService.getRecursoList(resourcesREST.relacionesCanje)({
+            idSisCanje: this.sisCanje.idSisCanje
+        })
+    }
+
+    onChangeProductoCanje = (sisCanje: SisCanje) => {
+        
+        this.relacionesCanje = this.recursoService.getRecursoList(resourcesREST.relacionesCanje)({
+            idSisCanje: sisCanje.idSisCanje
+        })
     }
 
     compareWithCanje = (a: SisCanje, b: SisCanje) => a.idSisCanje === b.idSisCanje
     compareWithContrato = (a: Contrato, b: Contrato) => a.idContratos === b.idContratos
+
+
+    getCantidadCanjeReferencia = () => 
+        this.comprobante && this.comprobante.tipo && 
+            this.comprobante.tipo.comprobante && this.comprobante.tipo.comprobante.usaRelacion ? 
+            (
+                this.relacionCanje && this.tablas.datos.productosPend && this.tablas.datos.productosPend.length > 0 ?
+                    _.sumBy(
+                        this.tablas.datos.productosPend,
+                        prod => Number(prod.pendiente)
+                    ) * this.relacionCanje.factor 
+                    :
+                    0
+            )
+            :
+            this.utilsService.parseDecimal(
+                Number(this.utilsService.parseDecimal(this.cotizacionDatos.total)) /
+                this.sisCanje.precio 
+            )
+    
+    
 }

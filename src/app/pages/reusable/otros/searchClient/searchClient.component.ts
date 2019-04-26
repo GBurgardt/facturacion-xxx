@@ -19,17 +19,20 @@ import { UtilsService } from 'app/services/utilsService';
 
 export class SearchClient implements OnChanges {
     
-    @Output() selectCliente = new EventEmitter<Padron>();
+    @Output() selectItem = new EventEmitter<Padron>();
 
     // Le paso un id padron inicial (se usa en los editar de los abm)
     @Input() idPadronInit;
     @Input() idNextElementToFocus;
-
+    
     filtrados: BehaviorSubject<Padron[]> = new BehaviorSubject([]);
     cliente: Padron = new Padron();
-
+    
     indEnfocado: number = -1;
     buscandoCliente = false;
+    
+    @Input() grupo = 'cliente';
+    @Input() isRequired = true;
 
     constructor(
         private popupListaService: PopupListaService,
@@ -53,7 +56,8 @@ export class SearchClient implements OnChanges {
             this.buscandoCliente = true;
 
             this.recursoService.getRecursoList(resourcesREST.padron)({
-                grupo: gruposParametros.cliente,
+                // grupo: gruposParametros.cliente,
+                grupo: gruposParametros[this.grupo],
                 elementos: busqueda
             }).subscribe(clientes => {
                 this.filtrados.next(clientes);
@@ -110,7 +114,7 @@ export class SearchClient implements OnChanges {
      * Event on click en la lista del popup de cliente
      */
     onClickPopupCliente = (cli: Padron) => {
-        this.selectCliente.emit(cli);
+        this.selectItem.emit(cli);
         this.cliente = cli;
     }
 }

@@ -32,6 +32,37 @@
                         id="nroProv"
                         placeholder="">
             </div>
+
+            <div class="item-input nro-cte">
+                <label  for="desde" >
+                    Producto
+                </label>
+                <input  [(ngModel)]="filtros.codProducto"
+                        type="text"
+                        class="form-control text-right minor-input"
+                        id="inputProducto"
+                        placeholder=""
+                        (keydown.arrowdown)="keyPressInputTextoProd($event)('down')"
+                        (keydown.arrowup)="keyPressInputTextoProd($event)('up')"
+                        (keyup.enter)="onEnterInputProd($event)"
+                        (ngModelChange)="onChangeInputProd($event)"
+                        (blur)="onBlurInputProd($event)"
+                        >
+
+                <popup-lista    *ngIf="filtros.codProducto && filtros.codProducto.length > 0"
+                                [items]="productos.filtrados.asObservable().distinctUntilChanged()"
+                                [keysToShow]="['descripcion', 'codProducto']"
+                                [onClickItem]="onSelectProducto"
+                                [fatherPosition]="popupListaService.getOffsetOfInputCliente('inputProducto')">
+                </popup-lista>
+
+                <input  [disabled]="true"
+                        [(ngModel)]="info.nombreProd"
+                        type="text"
+                        class="form-control text-right"
+                        id="nroProv"
+                        placeholder="">
+            </div>
         </div>
 
         <div class="input-row">
@@ -47,10 +78,26 @@
                         >
 
             </div>
+
+            <div class="item-input nro-cte">
+                <label for="desde" [ngStyle]="{'min-width': '117px', 'margin-top': '7px'}">
+                    Vencimiento Hasta
+                </label>
+
+                <div class="input-group date-picker-venc-hasta">
+                    <input id="idFechaVenc" (blur)="blurFechaVencHasta($event)" [(ngModel)]="filtros.fechaVtoHasta" class="form-control" placeholder="dd/mm/aaaa" name="dp" ngbDatepicker #dDesd="ngbDatepicker">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" (click)="dDesd.toggle()" type="button" style="height: 100%;">
+                            <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                        </button>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 
-    <div class="block-column">
+    <!-- <div class="block-column">
         <div class="input-row">
             <div class="item-input nro-cte">
                 <label  for="desde" [ngStyle]="{'min-width': '117px'}">
@@ -91,7 +138,7 @@
                 </label>
 
                 <div class="input-group date-picker-venc-hasta">
-                    <input (blur)="blurFechaVencHasta($event)" [(ngModel)]="filtros.fechaVtoHasta" class="form-control" placeholder="dd/mm/aaaa" name="dp" ngbDatepicker #dDesd="ngbDatepicker">
+                    <input id="idFechaVenc" (blur)="blurFechaVencHasta($event)" [(ngModel)]="filtros.fechaVtoHasta" class="form-control" placeholder="dd/mm/aaaa" name="dp" ngbDatepicker #dDesd="ngbDatepicker">
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary" (click)="dDesd.toggle()" type="button" style="height: 100%;">
                             <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -103,7 +150,7 @@
 
 
         </div>
-    </div>
+    </div> -->
 
     <div class="block-column column-reverse">
         <div class="input-row">

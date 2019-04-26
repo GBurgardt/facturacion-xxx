@@ -248,7 +248,7 @@ export class ComprobanteCompraService {
     /**
      * Busca modelos para tab facturacion
      */
-    buscaModelos = (prodsPend: ProductoPendiente[], idMoneda) => {
+    buscaModelos = (prodsPend: ProductoPendiente[], idMoneda, idProveedor) => {
         const prodsModel = prodsPend.map(prodP => new ProductoBuscaModelo(
             {
                 idProducto: prodP.producto.idProductos,
@@ -259,7 +259,7 @@ export class ComprobanteCompraService {
 
         return this.authService.buscaModelos(
             this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(prodsModel)(1)(idMoneda).map(responBuscMod => responBuscMod.arraydatos.map(respModFact => {
+        )(prodsModel)(1)(idMoneda)(idProveedor).map(responBuscMod => responBuscMod.arraydatos.map(respModFact => {
             // const auxModFact = Object.assign({}, respModFact);
             // auxModFact.idProducto = prod
             return new ModeloFactura(respModFact)
@@ -564,6 +564,18 @@ export class ComprobanteCompraService {
             )    
 
 
+    /**
+     * Checkea si el proveedor existe en la db de facturación
+     */
+    checkIfProvExistInFacturacion = (prov: Padron) => 
+        this.authService.getResourceList(
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )(
+            resourcesREST.proveedores.nombre
+        )({
+            codProveedor: prov.padronCodigo
+        })('query')
+        .toPromise()
 
 
 }

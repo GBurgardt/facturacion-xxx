@@ -12,14 +12,13 @@ export class SisComprobante {
     referencia: string;
     difCotizacion: boolean;
     idSisOperacionComprobante: number;
-    
     relacionadosMultiples: boolean;
-
     monedas: Moneda[];
-
     usaContrato: boolean;
-
-
+    
+    permiteImporteCero: boolean;
+    
+    usaRelacion: boolean;
 
     constructor(sisComprobante?: {
         idSisComprobantes: number;
@@ -32,10 +31,11 @@ export class SisComprobante {
         idSisOperacionComprobante: number;
         difCotizacion: boolean;
         relacionadosMultiples: boolean;
-
         monedas: any[];
-
         usaContrato: boolean;
+        permiteImporteCero: boolean;
+
+        usaRelacion: boolean;
     }) {
         if (sisComprobante) {
             this.idSisComprobantes = sisComprobante.idSisComprobantes;
@@ -48,10 +48,12 @@ export class SisComprobante {
             this.idSisOperacionComprobante = sisComprobante.idSisOperacionComprobante;
             this.difCotizacion = sisComprobante.difCotizacion;
             this.relacionadosMultiples = sisComprobante.relacionadosMultiples;
-
             this.monedas = sisComprobante.monedas.map(m => new Moneda(m));
-
             this.usaContrato = sisComprobante.usaContrato;
+            this.permiteImporteCero = sisComprobante.permiteImporteCero;
+            
+            this.usaRelacion = sisComprobante.usaRelacion;
+
         } else {
             this.idSisComprobantes = null;
             this.descripcion = null;
@@ -63,10 +65,11 @@ export class SisComprobante {
             this.idSisOperacionComprobante = null;
             this.difCotizacion = null;
             this.relacionadosMultiples = null;
-
             this.monedas = [];
-
             this.usaContrato = null;
+            
+            this.permiteImporteCero = null;
+
         }
     }
 

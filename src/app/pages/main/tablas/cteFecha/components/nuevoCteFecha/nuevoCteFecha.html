@@ -12,7 +12,7 @@
                 <div class="form-group">
                     <label for="fechaApertura">Fecha Apertura</label>
                     <div class="input-group">
-                        <input id="fechaApertura" (blur)="onCalculateFecha($event)('fechaApertura')('recurso')" class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.fechaApertura" ngbDatepicker #dApertura="ngbDatepicker">
+                        <input id="fechaApertura" (blur)="onCalculateFecha($event)('fechaApertura')('recurso')" class="form-control" placeholder="dd/mm/yyyy" name="dp" [(ngModel)]="recurso.fechaApertura" ngbDatepicker #dApertura="ngbDatepicker">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" (click)="dApertura.toggle()" type="button" style="height: 100%;">
                                 <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
@@ -26,7 +26,7 @@
                 <div class="form-group">
                     <label for="codigoLista">Fecha Cierre</label>
                     <div class="input-group">
-                        <input id="fechaCierre" (blur)="onCalculateFecha($event)('fechaCierre')('recurso')" class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="recurso.fechaCierre" ngbDatepicker #dCierre="ngbDatepicker">
+                        <input id="fechaCierre" (blur)="onCalculateFecha($event)('fechaCierre')('recurso')" class="form-control" placeholder="dd/mm/yyyy" name="dp" [(ngModel)]="recurso.fechaCierre" ngbDatepicker #dCierre="ngbDatepicker">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" (click)="dCierre.toggle()" type="button" style="height: 100%;">
                                 <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />

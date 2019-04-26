@@ -264,12 +264,14 @@
                         <div class="canje-container">
                             <div class="canje-content">
                                 <div class="canje-item">
-                                    <label  for="tipoCompra">Contrato:</label>
-                                    <!-- [compareWith]="compareWithContrato" -->
+                                    <label for="tipoCompra">Contrato:</label>
                                     <select 
                                         name="clsisContra" 
                                         [(ngModel)]="contrato" 
-                                        [disabled]="!tipoOperacion || tipoOperacion.canje !== true"
+                                        [disabled]="
+                                            (!tipoOperacion || tipoOperacion.canje !== true) ||
+                                            (comprobante && comprobante.tipo && comprobante.tipo.comprobante && !comprobante.tipo.comprobante.usaContrato)
+                                        "
                                         (ngModelChange)="onChangeContrato($event)"
                                         class="form-control without-padding" id="selectContrato">
 
@@ -279,21 +281,46 @@
                                         </option>
                                     </select>
                                 </div>
+                                
+                                
 
                                 <div class="canje-item">
                                     <label for="tipoCompra">Producto:</label>
                                     <select 
                                         [disabled]="
-                                            (!tipoOperacion || tipoOperacion.canje !== true) 
-                                            ||
-                                            contrato
+                                            (comprobante && comprobante.tipo && comprobante.tipo.comprobante && comprobante.tipo.comprobante.usaContrato)
+                                            && 
+                                            (
+                                                (!tipoOperacion || tipoOperacion.canje !== true) 
+                                                ||
+                                                contrato
+                                            )
                                         "
                                         [compareWith]="compareWithCanje"
+                                        (ngModelChange)="onChangeProductoCanje($event)"
                                         name="clsisCnj" 
                                         [(ngModel)]="sisCanje" 
                                         class="form-control without-padding" id="selectCanje">
                                         <option *ngFor="let canje of sisCanjes | async" [ngValue]="canje">
                                             {{ canje.descripcion }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div    *ngIf="
+                                            comprobante && comprobante.tipo && 
+                                            comprobante.tipo.comprobante && 
+                                            comprobante.tipo.comprobante.usaRelacion
+                                        "
+                                        class="canje-item">
+                                    <label for="selectRelCanje">Relaciones:</label>
+                                    <select 
+                                        name="relCanjeName" 
+                                        [(ngModel)]="relacionCanje" 
+                                        class="form-control without-padding" id="selectRelCanje">
+
+                                        <option *ngFor="let rc of relacionesCanje | async" [ngValue]="rc">
+                                            {{ rc.descripcion }}, {{ rc.factor }}
                                         </option>
                                     </select>
                                 </div>
@@ -308,8 +335,13 @@
                                 </div>
                                 <div class="canje-item fecha-item">
 
-                                    <label  for="fechaVto">Fec.Vto.: </label>
-                                    <label>{{ utilsService.dateToString(sisCanje.fechaVto) }}</label>
+                                    <label  for="fechaVto">Fec Vto: </label>
+                                    <label>{{ 
+                                        contrato && contrato.idContratos ? 
+                                        utilsService.prettyDate(contrato.fechaVto)
+                                        :
+                                        utilsService.dateToString(sisCanje.fechaVto) 
+                                    }}</label>
                                 </div>
                                 <div class="canje-item">
                                     <label  for="interes">Interes:</label>
@@ -450,16 +482,12 @@
                         <table *ngIf="sisCanje" class="table-canje-referencia">
                             <tr>
                                 <td>Articulo</td>
-                                <!-- <td>Descripcion</td> -->
                                 <td style="text-align: right">Cantidad</td>
                             </tr>
                             <tr>
                                 <td>{{ sisCanje.descripcion }}</td>
                                 <td style="text-align: right">{{ 
-                                    utilsService.parseDecimal(
-                                        utilsService.parseDecimal(cotizacionDatos.total) /
-                                        sisCanje.precio 
-                                    )
+                                    getCantidadCanjeReferencia()
                                 }}</td>
                             </tr>
                         </table>
@@ -530,7 +558,8 @@
                                             (blur)="factura.fechaComprobante = utilsService.stringToDateLikePicker(factura.fechaComprobante)"
                                             (keyup.enter)="onCalculateFecha($event)('fechaContable')('factura')" class="form-control"
                                             placeholder="dd/mm/aaaa" name="dp3" [(ngModel)]="factura.fechaComprobante"
-                                            ngbDatepicker #dComp="ngbDatepicker">
+                                            ngbDatepicker 
+                                            #dComp="ngbDatepicker">
                                         <div class="input-group-append">
                                             <button class="btn btn-outline-secondary" (click)="dComp.toggle()" type="button"
                                                 style="height: 100%;">

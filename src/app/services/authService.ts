@@ -46,6 +46,7 @@ import { ListaPrecio } from 'app/models/listaPrecio';
 import { ComprobanteEncabezado } from 'app/models/comprobanteEncabezado';
 import { Observable } from 'rxjs';
 import { Contrato } from 'app/models/contrato';
+import { RelacionCanje } from 'app/models/relacionCanje';
 
 @Injectable()
 export class AuthService {
@@ -288,7 +289,7 @@ export class AuthService {
     /**
      * Busca los modelos de la tab facutracion
      */
-    buscaModelos = (token) => (productos: ProductoBuscaModelo[]) => (idSisModulo) => (idMoneda) => {
+    buscaModelos = (token) => (productos: ProductoBuscaModelo[]) => (idSisModulo) => (idMoneda) => (idProveedor) => {
         return this.request(
             [],
             RequestMethod.Post,
@@ -299,7 +300,8 @@ export class AuthService {
             {
                 modulo: idSisModulo,
                 productos: productos,
-                idMoneda: idMoneda
+                idMoneda,
+                idProveedor
             },
             {}
         );
@@ -475,6 +477,8 @@ export class AuthService {
                         (dataVendedor: any) => 
                         (subtotalesProductos: any) => 
                         (listaPrecioSelec: ListaPrecio) => 
+                        (contrato: Contrato) => 
+                        (relacionCanje: RelacionCanje) => 
     {
         return this.request(
             [],
@@ -618,7 +622,21 @@ export class AuthService {
                 idNumeroFact: factura && factura.numerador ? factura.numerador.idCteNumerador : null,
                 codigoAfip: comprobante.letraCodigo ? comprobante.letraCodigo.codigoAfip.codigoAfip : null,
                 codigoAfipFact: factura.letraCodigo ? factura.letraCodigo.codigoAfip.codigoAfip : null,
-                idSisOperacionComprobante: comprobante.tipo.comprobante.idSisOperacionComprobante ? comprobante.tipo.comprobante.idSisOperacionComprobante : null
+                idSisOperacionComprobante: comprobante.tipo.comprobante.idSisOperacionComprobante ? comprobante.tipo.comprobante.idSisOperacionComprobante : null,
+
+                kilosCanje: cotizacionDatos && sisCanje ? 
+                    Math.round(
+                        Number(
+                            this.utilsService.parseDecimal(
+                                Number(this.utilsService.parseDecimal(cotizacionDatos.total)) /
+                                sisCanje.precio 
+                            )
+                        )
+                    )
+                    : null,
+                idContrato: contrato ? contrato.idContratos : null,
+                observacionesCanje: sisCanje ? sisCanje.descripcion : null,
+                idRelacionSisCanje: relacionCanje ? relacionCanje.idRelacionSisCanje : null
             },
             {}
         );
@@ -662,14 +680,17 @@ export class AuthService {
     * @argument token
     * @argument filtros Lo filtro
     */
-    reporteComprobantes = (tipo) => (token: string) =>   (comprobante: Comprobante) =>
+    reporteComprobantes = (tipo) => (token: string) => (comprobante: Comprobante) =>
                                                 (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker}) =>
                                                 (sisModuloSelec: SisModulo) =>
                                                 (tipoComprobanteSelec: TipoComprobante) =>
                                                 (productoSelec: Producto) =>
                                                 (sisEstadoSelec: SisEstado) =>
                                                 (padronSelec: Padron) =>
-                                                (depositoSelec: Deposito) => {
+                                                (depositoSelec: Deposito) => 
+                                                (vendedorSelec: Vendedor) => 
+                                                (sisTipoOpSelect: SisTipoOperacion) => 
+                                                (estadoAfip: string) => {
         return this.request(
             [],
             RequestMethod.Post,
@@ -686,7 +707,11 @@ export class AuthService {
                 idProducto : productoSelec && productoSelec.idProductos ? productoSelec.idProductos : 0,
                 padCodigo : padronSelec && padronSelec.padronCodigo ? padronSelec.padronCodigo : 0,
                 idDeposito : depositoSelec && depositoSelec.idDeposito ? depositoSelec.idDeposito : 0,
-                idEstado : sisEstadoSelec && sisEstadoSelec.idSisEstados ? sisEstadoSelec.idSisEstados : 0
+                idEstado : sisEstadoSelec && sisEstadoSelec.idSisEstados ? sisEstadoSelec.idSisEstados : 0,
+
+                idVendedor : vendedorSelec && vendedorSelec.idVendedor ? vendedorSelec.idVendedor : 0,
+                idSisTipoOperacion: sisTipoOpSelect && sisTipoOpSelect.idSisTipoOperacion ? sisTipoOpSelect.idSisTipoOperacion : 0,
+                autorizada: estadoAfip ? estadoAfip : 'Todas'
             },
             {
                 tipo
@@ -731,6 +756,32 @@ export class AuthService {
                 idVendedor : vendedorSelec && vendedorSelec.idVendedor ? vendedorSelec.idVendedor : 0,
                 idSisTipoOperacion: sisTipoOpSelect && sisTipoOpSelect.idSisTipoOperacion ? sisTipoOpSelect.idSisTipoOperacion : 0,
                 autorizada: estadoAfip ? estadoAfip : 'Todas'
+            },
+            {}
+        );
+    }
+
+    buscaComprobantesCanje = (token: string, fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker}, padronSelec: Padron) =>{
+        return this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            resourcesREST.buscaComprobantes.nombre,
+            {
+                comprobanteModulo: sisModulos.venta,
+                comprobanteTipo: 0,
+                comprobanteNumero: 0,
+                fechaDesde: this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.desde),
+                fechaHasta: this.utilsService.formatearFecha('yyyy-mm-dd')(fechasFiltro.hasta),
+                idProducto: 0,
+                padCodigo: padronSelec && padronSelec.padronCodigo ? padronSelec.padronCodigo : 0,
+                idDeposito: 0,
+                idEstado: 0,
+                idVendedor: 0,
+                idSisTipoOperacion: 5,
+                autorizada: 'Todas'
             },
             {}
         );
@@ -1294,6 +1345,32 @@ export class AuthService {
             }
         }
 
+        if (nombreRecurso === resourcesREST.proveedores.nombre) {
+            return {
+                idPadron: recurso.padronAux.padronCodigo,
+                nombre: recurso.padronAux.padronNombre,
+                apellido: recurso.padronAux.padronApelli,
+                cuit: recurso.padronAux.cuit,
+                domicilio: recurso.padronAux.padronDomicilio,
+                nro: recurso.padronAux.padronNro,
+                localidad: recurso.padronAux.codigoPostal,
+                idCategoria: recurso.padronGral.categoria.idCategoria,
+                idSisSitIVA: recurso.padronGral.sisSitIVA ? recurso.padronGral.sisSitIVA.idSisSitIVA : null,
+                iibbRet: recurso.iibbRet,
+                iibbPer: recurso.iibbPer
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.relacionesCanje.nombre) {
+            return {
+                codigoCosecha: recurso.codigoCosecha,
+                codigoClase: recurso.codigoClase,
+                descripcion: recurso.descripcion,
+                factor: recurso.factor,
+                idSisCanje: recurso.idSisCanje.idSisCanje
+            }
+        }
+
     }
 
     /**
@@ -1508,6 +1585,33 @@ export class AuthService {
             }
         }
 
+        if (nombreRecurso === resourcesREST.proveedores.nombre) {
+            return {
+                idPadronProveedor: recurso.idPadronProveedor,
+                nombre: recurso.padronGral.nombre,
+                apellido: recurso.padronGral.apellido,
+                cuit: recurso.padronGral.cuit,
+                domicilio: recurso.padronGral.domicilio,
+                nro: recurso.padronGral.nro,
+                localidad: recurso.padronGral.localidad,
+                idCategoria: recurso.padronGral.categoria.idCategoria,
+                idSisSitIVA: recurso.padronGral.sisSitIVA.idSisSitIVA,
+                iibbRet: recurso.iibbRet,
+                iibbPer: recurso.iibbPer
+            }
+        }
+
+        if (nombreRecurso === resourcesREST.relacionesCanje.nombre) {
+            return {
+                idRelacionesCanje: recurso.idRelacionSisCanje,
+                codigoCosecha: recurso.codigoCosecha,
+                codigoClase: recurso.codigoClase,
+                descripcion: recurso.descripcion,
+                factor: recurso.factor,
+                idSisCanje: recurso.idSisCanje.idSisCanje
+            }
+        }
+
     }
 
     /**
@@ -1534,6 +1638,8 @@ export class AuthService {
         formData.append('observaciones', contrato.observaciones);
         formData.append('idSisCanje', contrato.sisCanje.idSisCanje.toString());
         formData.append('fechaVto', this.utilsService.formatearFecha('yyyy-mm-dd')(contrato.fechaVto));
+        formData.append('padronNombre', contrato.padronNombre.toString());
+        formData.append('padronApelli', contrato.padronApelli.toString());
 
         const options = new RequestOptions({ headers: new Headers({ token }) });
 
@@ -1577,6 +1683,8 @@ export class AuthService {
             'editaArchivo',
             fileDocx ? "1" : "0"
         );
+        formData.append('padronNombre', contrato.padronNombre.toString());
+        formData.append('padronApelli', contrato.padronApelli.toString());
 
         const options = new RequestOptions({ headers: new Headers({ token }) });
 
@@ -1596,7 +1704,32 @@ export class AuthService {
         return this.http.post(`${environment.facturacionRest.urlBase}/descargarContrato?idContrato=${idContrato}`, null, options)
             
     }
+
+    /**
+     * Borrar un comprobante
+     */
+    borrarComprobante = (token, idFactCab) => 
+        this.http
+            .delete(`${environment.facturacionRest.urlBase}/borraComprobante/${idFactCab}`, new RequestOptions({ 
+                headers: new Headers({ token})
+            }))
     
-    
+
+    imprimirLibrosIva = (token, modulo, fecDesde, fecHasta) => 
+        this.request(
+            [],
+            RequestMethod.Post,
+            {
+                token: token,
+            },
+            `descargarLibroIva`,
+            {
+                modulo, 
+                fechaDesde: this.utilsService.formatearFecha('yyyy-mm-dd')(fecDesde),
+                fechaHasta: this.utilsService.formatearFecha('yyyy-mm-dd')(fecHasta)
+            },
+            { },
+            true
+        )            
 
 }

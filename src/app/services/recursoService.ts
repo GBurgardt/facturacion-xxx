@@ -107,7 +107,12 @@ export class RecursoService {
             this.localStorageService.getObject(environment.localStorage.acceso).token
         )(
             recursoRest.nombre
-        );
+        ).catch(
+            (err) => {
+                this.utilsService.showErrorWithBody(err, true);
+                return null;
+            }
+        )
     }
 
 

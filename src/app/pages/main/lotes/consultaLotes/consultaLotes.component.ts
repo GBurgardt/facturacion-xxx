@@ -151,7 +151,7 @@ export class ConsultaLotes {
         // Vacio filtrados
         this.proveedores.filtrados.next([]);
         // Hago focus en input producto
-        document.getElementById('inputProducto') ? document.getElementById('inputProducto').focus() : null
+        // document.getElementById('inputProducto') ? document.getElementById('inputProducto').focus() : null
 
     }
 
@@ -213,7 +213,7 @@ export class ConsultaLotes {
         // Vacio filtrados
         this.productos.filtrados.next([]);
         // Hago focus en input producto
-        document.getElementById('inputLoteNro') ? document.getElementById('inputLoteNro').focus() : null
+        // document.getElementById('inputLoteNro') ? document.getElementById('inputLoteNro').focus() : null
 
     }
 
@@ -241,4 +241,9 @@ export class ConsultaLotes {
             )
             
     }
+
+    // onBlurLoteNro = () => {
+    //     document.getElementById('idFechaVenc') ? 
+    //         document.getElementById('idFechaVenc').focus() : null
+    // }
 }

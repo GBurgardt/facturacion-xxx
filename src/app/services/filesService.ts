@@ -17,13 +17,13 @@ export class FilesService {
     }
 
     generateDoc = (file, varsToReemplace) => {
-
-
         let zip = new JSZip(file);
 
         let doc = new Docxtemplater();
         
         doc.loadZip(zip)
+
+        debugger;
         
         doc.setData(varsToReemplace);
 
@@ -42,7 +42,7 @@ export class FilesService {
         }
 
         let out = doc.getZip().generate({
-            type:"blob",
+            type: "blob",
             mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         })
 
