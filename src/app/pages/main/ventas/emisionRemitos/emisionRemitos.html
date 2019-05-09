@@ -331,7 +331,7 @@
                                 <div class="canje-item">
                                 
                                     <label  class="precio-ref">Precio Ref: </label>
-                                    <label>{{utilsService.parseDecimal(sisCanje.precio)}}</label>
+                                    <label>{{ sisCanje && sisCanje.precio ? utilsService.parseDecimal(sisCanje.precio) : ''}}</label>
                                 </div>
                                 <div class="canje-item fecha-item">
 

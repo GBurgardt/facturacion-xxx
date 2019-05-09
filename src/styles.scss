@@ -122,3 +122,11 @@ input[type="checkbox"]:focus ~ span {
 .form-control {
     padding: 0.3rem 0.45rem;
 }
+
+.bar-separator {
+  width: 100%;
+  background: #e2e2e2;
+  height: 3px;
+  border-radius: 15px;
+  margin: 15px 15px 0 0;
+}

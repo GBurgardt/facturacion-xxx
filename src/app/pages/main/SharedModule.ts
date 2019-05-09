@@ -14,6 +14,7 @@ import { ListPopup } from 'app/pages/reusable/otros/listFinder/components/listPo
 import { DateLickePicker } from 'app/pages/reusable/otros/dateLickePicker/dateLickePicker.component';
 import { SexiList } from '../reusable/listas/sexiList';
 import { SearchClient } from '../reusable/otros/searchClient/searchClient.component';
+import { SearchProducto } from '../reusable/otros/searchProducto/searchProducto.component';
 
 @NgModule({
     imports: [
@@ -32,7 +33,8 @@ import { SearchClient } from '../reusable/otros/searchClient/searchClient.compon
         ListPopup,
         DateLickePicker,
         SexiList,
-        SearchClient
+        SearchClient,
+        SearchProducto
     ],
     providers: [
     ],
@@ -50,7 +52,8 @@ import { SearchClient } from '../reusable/otros/searchClient/searchClient.compon
         ListPopup,
         DateLickePicker,
         SexiList,
-        SearchClient
+        SearchClient,
+        SearchProducto
     ]
 })
 export class SharedModule {}

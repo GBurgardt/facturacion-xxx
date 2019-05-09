@@ -59,6 +59,7 @@
     
     </ba-card>
 </div>
+
 <div class="relacion-compro-container">
     <ba-card class="comprobante-container" toggleBtn="true">
         <div class="mini-title">
@@ -85,6 +86,11 @@
                 <tr 
                     *ngFor="let compBusc of mfEnca.data" 
                     class="comprobante-tr"
+                    (click)="onClickComprobante(compBusc)"
+                    [ngClass]="{
+                        'comprobante-tr-select': compSeleccionado && compBusc && 
+                            compSeleccionado.idFactCab === compBusc.idFactCab
+                    }"
                     >
                     <td>{{ compBusc.comprobante }}</td>
                     <td class="text-right td-nowrap">{{ formatNumero(compBusc.numero) }}</td>
@@ -103,5 +109,66 @@
             </tfoot>
         </table>
     </ba-card>
+
+    <ba-card class="contrato-container" toggleBtn="true">
+        <div class="mini-title">
+            Contratos
+        </div>
+
+        <table 
+            class="table table-striped table-consulta-comp" 
+            [mfData]="contratos | async"
+            #mfCont="mfDataTable" 
+            mfRowsOnPage="10">
+            <thead>
+                <tr>
+                    <th>Cod Cliente</th>
+                    <th class="text-right">Nombre</th>
+                    <th class="text-right">Apellido</th>
+                    <th class="text-left">Cereal</th>
+                    <th class="text-left">Kilos</th>
+                    <th class="text-left">Fecha Vto</th>
+                    <th class="text-left">Kilos Cumplidos</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr 
+                    *ngFor="let cont of mfCont.data" 
+                    class="comprobante-tr"
+                    (click)="onClickContrato(cont)"
+                    [ngClass]="{
+                        'comprobante-tr-select': contSeleccionado && cont && 
+                            contSeleccionado.idFactCab === cont.idFactCab
+                    }"
+                    >
+                    <td>{{ cont.idPadron }}</td>
+                    <td class="text-left">{{ cont.padronNombre }}</td>
+                    <td class="text-left">{{ cont.padronApelli }}</td>
+                    <td class="text-left">{{ cont.sisCanje ? cont.sisCanje.descripcion : '' }}</td>
+                    <td class="text-right">{{ cont.kilos }}</td>
+                    <td class="text-right">{{ utilsService.formatearFecha('DD/MM/YYYY')(cont.fechaVto) }}</td>
+                    <td class="text-right">{{ cont.kilosCumplidos }}</td>
+                    
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="12">
+                        <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </ba-card>
     
+</div>
+
+<div class="btn-container">
+    <button id="btnRelacionar"
+            (click)="onClickRelacionar()"
+            class="btn btn-primary"
+            [disabled]="!contSeleccionado || !compSeleccionado"
+            >
+        Relacionar
+    </button>  
 </div>

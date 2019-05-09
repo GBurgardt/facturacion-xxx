@@ -270,7 +270,7 @@ export class UtilsService {
      * Si es formato dd/mm/aaaa, tambien retoron un datelikepicker
      */
     stringToDateLikePicker = (valueFecha) => {
-        // debugger;
+        //debugger;
         return valueFecha && 
         valueFecha.length === 4 && 
         /^\d+$/.test(valueFecha) ? // Todos numeros
@@ -310,6 +310,7 @@ export class UtilsService {
 
 
     formatearFecha = (formato) => (fecha) => {
+        debugger;
         // debugger;
         if (fecha && fecha.year) {
             if (formato === 'yyyy-mm-dd') {
@@ -424,9 +425,13 @@ export class UtilsService {
 
 
     prettyDate = (theDate) => {
-        const day = theDate.getDate();
-        const month = theDate.getMonth() + 1;
-        const year = theDate.getFullYear();
+        let mutTheDate = theDate;
+        if (!theDate.getDate) {
+            mutTheDate = this.dateLikePickerToDate(theDate);
+        }
+        const day = mutTheDate.getDate();
+        const month = mutTheDate.getMonth() + 1;
+        const year = mutTheDate.getFullYear();
 
         return `${day<10 ? '0' : ''}${day}/${month<10 ? '0' : ''}${month}/${year}`
     }

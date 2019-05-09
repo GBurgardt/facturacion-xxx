@@ -15,11 +15,17 @@ import { ConsultaPorProductoService } from "./consultaPorProducto/consultaPorPro
 import { ConsultaGeneralService } from "./consultaGeneral/consultaGeneralService";
 import { ConsultaGeneral } from "./consultaGeneral";
 import { PendingChangesGuard } from "app/guards/PendingChangesGuard";
+import { RemitosInternos } from "./remitosInternos";
+import { NgbTabsetModule } from "@ng-bootstrap/ng-bootstrap";
+import { ComprobanteService } from "app/services/comprobanteService";
+import { TablaRemitosInternos } from "./remitosInternos/components/tablaRemitosInternos";
+import { RemitosInternosService } from "./remitosInternos/remitosInternosService";
 
 @NgModule({
     imports: [
         routing,
-        SharedModule
+        SharedModule,
+        NgbTabsetModule
     ],
     declarations: [
         Stock,
@@ -28,7 +34,9 @@ import { PendingChangesGuard } from "app/guards/PendingChangesGuard";
         EditarProducto,
         TablaProductos,
         ConsultaPorProducto,
-        ConsultaGeneral
+        ConsultaGeneral,
+        RemitosInternos,
+        TablaRemitosInternos
     ],
     providers: [
         RecursoService,
@@ -36,7 +44,10 @@ import { PendingChangesGuard } from "app/guards/PendingChangesGuard";
         UtilsService,
         ConsultaPorProductoService,
         ConsultaGeneralService,
-        PendingChangesGuard
+        PendingChangesGuard,
+        ComprobanteService,
+        TablaRemitosInternos,
+        RemitosInternosService
     ],
     exports: [
         TablaProductos

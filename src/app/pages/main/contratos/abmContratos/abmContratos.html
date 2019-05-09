@@ -1,7 +1,48 @@
 <div class="abm-contratos">
     <ba-card cardTitle="Contratos" baCardClass="with-scroll">
 
-        <table class="table-contratos" *ngIf="tableData && tableColumns" style="width:100%">
+        <div class="filter-container">
+            <span>Filtrar: </span>
+
+            <div class="form-group item">
+                <label for="searchCliente">Cliente</label>
+                <input 
+                    name="searchClienteName" 
+                    [(ngModel)]="filtros.cliente" 
+                    (ngModelChange)="onFiltrar($event)"
+                    type="text"
+                    class="form-control" 
+                    id="searchCliente">
+            </div>
+
+            <div class="form-group item">
+                <label for="searchProducto">Producto</label>
+                <input 
+                    name="searchProductoName" 
+                    [(ngModel)]="filtros.producto" 
+                    (ngModelChange)="onFiltrar($event)"
+                    type="text"
+                    class="form-control" 
+                    id="searchProducto">
+            </div>
+            <div class="form-group item">
+                <label for="selectEstado">Estado</label>
+                <select 
+                    name="selectEstadoName" 
+                    [(ngModel)]="filtros.estado" 
+                    (ngModelChange)="onFiltrar($event)"
+                    class="form-control" 
+                    id="selectEstado">
+                    <option value="todos">Todos</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="cumplido">Cumplido</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="bar-separator"></div>
+
+        <table class="table-contratos" *ngIf="tableDataFiltered && tableColumns" style="width:100%">
             <tr>
                 <th></th>
                 <th *ngFor="let tc of tableColumns">
@@ -9,7 +50,7 @@
                 </th>
                 <th></th>
             </tr>
-            <tr *ngFor="let td of tableData | async">
+            <tr *ngFor="let td of tableDataFiltered | async">
                 <td style="display: flex;">
                     <div (click)="onClickEdit(td)" class="btn-accion btn-editar" style="padding-top: 1px;">
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
@@ -38,9 +79,3 @@
         </div>
     </ba-card>
 </div>
-
-
-
-<!-- 
-        <data-tables [data]="tableData | async" [columns]="tableColumns" [edit]="onClickEdit" [remove]="onClickRemove" tituloTabla="Contratos">
-        </data-tables> -->

@@ -136,7 +136,7 @@
                     Cancelar
                 </button>
  
-                <button (click)="onGrabar()" type="submit" class="btn btn-primary" id="idBtnConfirmar">Confirmar</button>
+                <button [disabled]="!this.file" (click)="onGrabar()" type="submit" class="btn btn-primary" id="idBtnConfirmar">Confirmar</button>
             </div>
         </div>
     </ba-card>

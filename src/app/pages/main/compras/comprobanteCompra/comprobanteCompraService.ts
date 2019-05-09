@@ -561,7 +561,7 @@ export class ComprobanteCompraService {
             .map(
                 respProdEnc => respProdEnc && respProdEnc.arraydatos && respProdEnc.arraydatos.length > 0 ?
                     new ProductoPendiente(respProdEnc.arraydatos[0]) : null
-            )    
+            )   
 
 
     /**

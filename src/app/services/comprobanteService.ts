@@ -16,6 +16,8 @@ import { UtilsService } from './utilsService';
 import { Vendedor } from 'app/models/vendedor';
 import { SisTipoOperacion } from 'app/models/sisTipoOperacion';
 import sisModulos from 'constantes/sisModulos';
+import { Numerador } from 'app/models/numerador';
+import { PtoVenta } from 'app/models/ptoVenta';
 
 @Injectable()
 export class ComprobanteService { 
@@ -120,6 +122,28 @@ export class ComprobanteService {
     
 
     
-    
+    /**
+     * Check if comprobante contain numerador
+     */
+    comprobanteContainNumerador = (comprobante) => {
+        if (
+            !(
+                comprobante && 
+                comprobante.letraCodigo && 
+                comprobante.letraCodigo.numeradores && 
+                comprobante.letraCodigo.numeradores.length > 0
+            )
+        ) {
+            if (!comprobante.numerador || !comprobante.numerador.ptoVenta) {
+                if (!comprobante.numerador) {
+                    comprobante.numerador = new Numerador();
+                }
+                comprobante.numerador.ptoVenta = new PtoVenta();
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

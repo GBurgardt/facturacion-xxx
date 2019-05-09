@@ -150,8 +150,9 @@
                                     </option>
                                 </select>
                             </div>
+                            <!-- *ngIf="ngIfNumeradorComprobante()" -->
                             <div 
-                                *ngIf="ngIfNumeradorComprobante()"
+                                *ngIf="comprobanteService.comprobanteContainNumerador(comprobante)"
                                 [ngStyle]="{display: 'flex'}" 
                                 >
                                 <input autocomplete="off"   required
@@ -425,8 +426,10 @@
                                     factura.tipo && 
                                     factura.tipo.numerador &&
                                     factura.tipo.numerador.length > 0
-                                ) -->
-                                <div    *ngIf="ngIfNumeradorFactura()" 
+                                    ) -->
+                                    <!-- *ngIf="ngIfNumeradorFactura()"  -->
+                                    <div 
+                                        *ngIf="comprobanteService.comprobanteContainNumerador(factura)"   
                                         class="form-group inline-group">
                                     <label for="cteNro">Nro:</label>
 

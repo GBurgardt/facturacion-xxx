@@ -117,6 +117,35 @@
                         <input name="numeroInput" required class="form-control" [(ngModel)]="recurso.numerador" id="numero">
                     </div>
                 </div>
+
+                <div class="line">
+
+                    <div class="form-group item">
+                        <label for="cai">CAI:</label>
+                        <input name="cai" class="form-control" [(ngModel)]="recurso.cai" id="cai">
+                    </div>
+    
+                    <div class="form-group item">
+                        <label for="idFechaVtoCai">
+                            Fecha Vto Cai
+                        </label>
+                        <div class="input-group date-picker-fecha">
+                            <input 
+                                (blur)="recurso.vtoCai = utilsService.stringToDateLikePicker(recurso.vtoCai)"
+                                class="form-control" 
+                                placeholder="dd/mm/aaaa" 
+                                name="dp" 
+                                [(ngModel)]="recurso.vtoCai"
+                                ngbDatepicker 
+                                #dVtoCai="ngbDatepicker">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" (click)="dVtoCai.toggle()" type="button" style="height: 100%;">
+                                    <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         
                 <div class="line btn-container">
                     <button 

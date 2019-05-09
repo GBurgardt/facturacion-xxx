@@ -181,10 +181,13 @@ export class EmisionRemitos  {
         this.sisSitIvas = this.recursoService.getRecursoList(resourcesREST.sisSitIva)();
 
         this.tiposOperacion = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)({
-            sisModulo: 2
+            sisModulo: sisModulos.venta
         });
-        // this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
-        this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
+        
+        // this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)({
+        //     todos: 
+        // });
+
         this.sisCanjes = this.recursoService.getRecursoList(resourcesREST.sisCanjes)();
 
         // this.listasPreciosUsuario = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
@@ -659,13 +662,8 @@ export class EmisionRemitos  {
      * Evento que se dispara cuando se selecciona una fecha
      */
     onModelChangeFechaComp(e, d) {
-        
         // Actualizo fecha (sobretodo si el formato es 'ddmm')
         this.comprobante.fechaComprobante = this.utilsService.stringToDateLikePicker(this.comprobante.fechaComprobante);
-
-        // Reinicio detalles forma pago (ya que tiene que seleccionar de nuevo la forma de pago)
-        // this.tablas.datos.detallesFormaPago = [];
-
     }   
 
     /**
@@ -926,22 +924,19 @@ export class EmisionRemitos  {
 
 
     /**
-     * 
+     * Trae data que depende del tipo comprobante relacionado
+     * También limpia varios campos
      */
-    onChangeTipoComprobante = (cteTipoSelect) => {
+    onChangeTipoComprobante = (cteTipoSelect: TipoComprobante) => {
         this.tiposComprobantesRel = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
             'sisModulo': sisModulos.venta,
             'idCteTipo': cteTipoSelect.idCteTipo,
             'sisTipoOperacion': this.tipoOperacion.idSisTipoOperacion
-        })
+        });
 
-
-        // Actualizo total, si no incluye neto es 0
-        // this.actualizarTotalNeto();
-
-        // // Actualizo sumatoria subtotales (por si cambió incluyeIva)
-        // this.actualizarSumatoriaSubto();
-        
+        // Si trae observaciones, las seteo en el nuevo comprobante que se está creando
+        this.comprobante.observaciones = cteTipoSelect.comprobante && cteTipoSelect.comprobante.observaciones ?
+            cteTipoSelect.comprobante.observaciones : null;
 
         this.comprobante.numerador = null;
         this.comprobante.moneda = null;
@@ -1010,6 +1005,10 @@ export class EmisionRemitos  {
         this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
             'sisTipoOperacion': tipoOpSelect.idSisTipoOperacion,
             'sisSitIva' : this.cliente.condIva.descCorta
+        });
+
+        this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)({
+            todos: tipoOpSelect.depositoOrigen
         });
 
         // Limpio grilla articulos y afines

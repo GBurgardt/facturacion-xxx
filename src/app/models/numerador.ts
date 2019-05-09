@@ -10,10 +10,12 @@ export class Numerador {
     fechaApertura: DateLikePicker;
     fechaCierre: DateLikePicker;
     ptoVenta: PtoVenta;
-    // numerador: number;
     numerador: string;
     letrasCodigos: LetraCodigo;
     auxNumero: string;
+
+    cai: string;
+    vtoCai: DateLikePicker;
     
     constructor(numerador?: {
         idCteNumerador: number;
@@ -23,6 +25,9 @@ export class Numerador {
         fechaCierre: any;
         numerador: string;
         letrasCodigos: any;
+
+        cai: string;
+        vtoCai: any;
     }) {
         if (numerador) {
             this.idCteNumerador = numerador.idCteNumerador;
@@ -33,6 +38,9 @@ export class Numerador {
             this.numerador = numerador.numerador;
             this.letrasCodigos = new LetraCodigo(numerador.letrasCodigos)
             this.auxNumero = `${this.ptoVenta.ptoVenta.toString().padStart(4, '0')}-${this.numerador.toString().padStart(8, '0')}`;
+
+            this.cai = numerador.cai;
+            this.vtoCai = new DateLikePicker(new Date(numerador.vtoCai));
         } else {
             this.idCteNumerador = null;
             this.descripcion = null;
@@ -42,6 +50,9 @@ export class Numerador {
             this.numerador = null;
             this.letrasCodigos = null;
             this.auxNumero = null;
+
+            this.cai = null;
+            this.vtoCai = null;
         }
     }
 }

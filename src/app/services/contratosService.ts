@@ -8,6 +8,8 @@ import { BoundCallbackObservable } from "rxjs/observable/BoundCallbackObservable
 import { FilesService } from "./filesService";
 import { DateLikePicker } from "app/models/dateLikePicker";
 import { Padron } from "app/models/padron";
+import { ComprobanteEncabezado } from "app/models/comprobanteEncabezado";
+import { Contrato } from "app/models/contrato";
 
 
 
@@ -137,4 +139,18 @@ export class ContratosService {
             fechasFiltro,
             padronSelect
         )
+
+
+    /**
+     * Relaciona un comprobante con un contrato
+     */
+    relacionContrato = (comprobante: ComprobanteEncabezado, contrato: Contrato) => 
+        this.authService.relacionContrato(
+            this.localStorageService.getObject(environment.localStorage.acceso).token,
+            comprobante.idFactCab,
+            contrato.idContratos
+        ).catch(err => {
+            this.utilsService.decodeErrorResponse(err);
+            return Observable.throw(null)
+        })
 }

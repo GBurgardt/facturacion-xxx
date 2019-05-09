@@ -11,7 +11,9 @@
             (keydown.arrowup)="keyPressInput($event)('up')"
             (keyup.enter)="onEnterInput($event)"
             (focus)="isOpenList = true"
-            (blur)="isOpenList = false">
+            (blur)="isOpenList = false"
+            autocomplete="off"
+            >
 
     <list-popup     *ngIf="isOpenList"
                     [items]="itemsPlain.filtered.asObservable().distinctUntilChanged()"

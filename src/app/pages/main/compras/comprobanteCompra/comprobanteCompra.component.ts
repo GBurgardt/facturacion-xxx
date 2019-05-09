@@ -34,6 +34,7 @@ import { PtoVenta } from 'app/models/ptoVenta';
 import { SisLetra } from 'app/models/sisLetra';
 import { LetraCodigo } from 'app/models/letraCodigo';
 import { Router } from '@angular/router';
+import { ComprobanteService } from 'app/services/comprobanteService';
 
 @Component({
     selector: 'comprobante-compra',
@@ -135,6 +136,7 @@ export class ComprobanteCompra implements AfterViewInit {
     constructor(
         private recursoService: RecursoService,
         public comprobanteCompraService: ComprobanteCompraService,
+        public comprobanteService: ComprobanteService,
         public utilsService: UtilsService,
         private popupListaService: PopupListaService,
         private router: Router,
@@ -154,14 +156,15 @@ export class ComprobanteCompra implements AfterViewInit {
         });
 
         // this.monedas = this.recursoService.getRecursoList(resourcesREST.sisMonedas)();
-        this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
+        // this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)();
 
         this.tiposComprobantesFactura = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
             'sisComprobante': 2
         });
 
         this.dataTablaFormasPago = this.recursoService.getRecursoList(resourcesREST.formaPago)({
-            codPadron: this.proveedorSeleccionado ? this.proveedorSeleccionado.padronCodigo : null
+            codPadron: this.proveedorSeleccionado ? this.proveedorSeleccionado.padronCodigo : null,
+            idSisModulo: sisModulos.compra
         })
 
         ////////// Proveedores  //////////
@@ -330,7 +333,6 @@ export class ComprobanteCompra implements AfterViewInit {
         // Busco el producto seleccionado
         this.comprobanteCompraService.buscarProducto(prodSelec.idProductos, this.comprobante.moneda.idMoneda).subscribe(prodEnc => {
             
-            // debugger;
             const auxProdSelect = Object.assign({}, prodEnc);
 
             // Seteo el nro del comprobante actual
@@ -492,7 +494,8 @@ export class ComprobanteCompra implements AfterViewInit {
         
                             // Refresco formas pago
                             this.dataTablaFormasPago = this.recursoService.getRecursoList(resourcesREST.formaPago)({
-                                codPadron: this.proveedorSeleccionado ? this.proveedorSeleccionado.padronCodigo : null
+                                codPadron: this.proveedorSeleccionado ? this.proveedorSeleccionado.padronCodigo : null,
+                                idSisModulo: sisModulos.compra
                             });
                             // this.dataTablaFormasPago = null;
     
@@ -847,6 +850,10 @@ export class ComprobanteCompra implements AfterViewInit {
             'sisSitIva' : this.proveedorSeleccionado && this.proveedorSeleccionado.condIva ? this.proveedorSeleccionado.condIva.descCorta : null
         });
 
+        this.depositos = this.recursoService.getRecursoList(resourcesREST.depositos)({
+            todos: tipoOpSelect.depositoDestino
+        });
+
         this.limpioComprobanteYGrilla();
     }
 
@@ -863,7 +870,8 @@ export class ComprobanteCompra implements AfterViewInit {
         
         // Refresco formas pago
         this.dataTablaFormasPago = this.recursoService.getRecursoList(resourcesREST.formaPago)({
-            codPadron: this.proveedorSeleccionado ? this.proveedorSeleccionado.padronCodigo : null
+            codPadron: this.proveedorSeleccionado ? this.proveedorSeleccionado.padronCodigo : null,
+            idSisModulo: sisModulos.compra
         })
     }
 
@@ -940,47 +948,47 @@ export class ComprobanteCompra implements AfterViewInit {
     }
 
 
-    ngIfNumeradorComprobante = () => {
-        if (
-            !(
-                this.comprobante && 
-                this.comprobante.letraCodigo && 
-                this.comprobante.letraCodigo.numeradores && 
-                this.comprobante.letraCodigo.numeradores.length > 0
-            )
-        ) {
-            if (!this.comprobante.numerador || !this.comprobante.numerador.ptoVenta) {
-                if (!this.comprobante.numerador) {
-                    this.comprobante.numerador = new Numerador();
-                }
-                this.comprobante.numerador.ptoVenta = new PtoVenta();
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
+    // ngIfNumeradorComprobante = () => {
+    //     if (
+    //         !(
+    //             this.comprobante && 
+    //             this.comprobante.letraCodigo && 
+    //             this.comprobante.letraCodigo.numeradores && 
+    //             this.comprobante.letraCodigo.numeradores.length > 0
+    //         )
+    //     ) {
+    //         if (!this.comprobante.numerador || !this.comprobante.numerador.ptoVenta) {
+    //             if (!this.comprobante.numerador) {
+    //                 this.comprobante.numerador = new Numerador();
+    //             }
+    //             this.comprobante.numerador.ptoVenta = new PtoVenta();
+    //         }
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
-    ngIfNumeradorFactura = () => {
-        if (
-            !(
-                this.factura && 
-                this.factura.letraCodigo && 
-                this.factura.letraCodigo.numeradores && 
-                this.factura.letraCodigo.numeradores.length > 0
-            )
-        ) {
-            if (!this.factura.numerador) {
-                this.factura.numerador = new Numerador();
-            }
-            if (!this.factura.numerador.ptoVenta) {
-                this.factura.numerador.ptoVenta = new PtoVenta();
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
+    // ngIfNumeradorFactura = () => {
+    //     if (
+    //         !(
+    //             this.factura && 
+    //             this.factura.letraCodigo && 
+    //             this.factura.letraCodigo.numeradores && 
+    //             this.factura.letraCodigo.numeradores.length > 0
+    //         )
+    //     ) {
+    //         if (!this.factura.numerador) {
+    //             this.factura.numerador = new Numerador();
+    //         }
+    //         if (!this.factura.numerador.ptoVenta) {
+    //             this.factura.numerador.ptoVenta = new PtoVenta();
+    //         }
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
     onBlurPtoVenta = (e) => 
         this.utilsService.onBlurInputNumber(e) &&
@@ -1025,12 +1033,13 @@ export class ComprobanteCompra implements AfterViewInit {
             (this.tablas.datos.modelosFactura)
             (this.depositoSelec);
 
-        const formaPagoNoValido = 
-            this.comprobante && this.comprobante.tipo && this.comprobante.tipo.requiereFormaPago && 
-            (
-                !this.tablas.datos.detallesFormaPago ||
-                this.tablas.datos.detallesFormaPago.length <= 0
-            ) 
+        // Si permite importe cero, la forma de pago NO se controla (por eso retorno false)
+        const formaPagoNoValido = this.comprobante && this.comprobante.tipo && 
+                this.comprobante.tipo.requiereFormaPago && 
+                (
+                    !this.tablas.datos.detallesFormaPago ||
+                    this.tablas.datos.detallesFormaPago.length <= 0
+                ) 
 
         const restoPagarNoValido = 
             (

@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
 import { Headers, Http, Request, RequestOptions, RequestOptionsArgs, RequestMethod, ResponseContentType } from '@angular/http';
@@ -624,16 +625,28 @@ export class AuthService {
                 codigoAfipFact: factura.letraCodigo ? factura.letraCodigo.codigoAfip.codigoAfip : null,
                 idSisOperacionComprobante: comprobante.tipo.comprobante.idSisOperacionComprobante ? comprobante.tipo.comprobante.idSisOperacionComprobante : null,
 
-                kilosCanje: cotizacionDatos && sisCanje ? 
-                    Math.round(
-                        Number(
-                            this.utilsService.parseDecimal(
-                                Number(this.utilsService.parseDecimal(cotizacionDatos.total)) /
-                                sisCanje.precio 
+                kilosCanje: comprobante && comprobante.tipo && 
+                    comprobante.tipo.comprobante && comprobante.tipo.comprobante.usaRelacion ? 
+                    (
+                        relacionCanje && productosPend && productosPend.length > 0 ?
+                            _.sumBy(
+                                productosPend,
+                                prod => Number(prod.pendiente)
+                            ) * relacionCanje.factor 
+                            :
+                            0
+                    )
+                    :
+                    cotizacionDatos && sisCanje ? 
+                        Math.round(
+                            Number(
+                                this.utilsService.parseDecimal(
+                                    Number(this.utilsService.parseDecimal(cotizacionDatos.total)) /
+                                    sisCanje.precio
+                                )
                             )
                         )
-                    )
-                    : null,
+                        : null,
                 idContrato: contrato ? contrato.idContratos : null,
                 observacionesCanje: sisCanje ? sisCanje.descripcion : null,
                 idRelacionSisCanje: relacionCanje ? relacionCanje.idRelacionSisCanje : null
@@ -1309,7 +1322,9 @@ export class AuthService {
                 numerador: recurso.numerador,
                 idCteTipoSisLetra: recurso.letrasCodigos.idCteTipoSisLetra,
                 idPtoVenta: recurso.ptoVenta && recurso.ptoVenta.idPtoVenta ? recurso.ptoVenta.idPtoVenta : null,
-                ptoVenta: recurso.ptoVenta && !recurso.ptoVenta.idPtoVenta ? recurso.ptoVenta.ptoVenta : null
+                ptoVenta: recurso.ptoVenta && !recurso.ptoVenta.idPtoVenta ? recurso.ptoVenta.ptoVenta : null,
+                cai: recurso.cai,
+                vtoCai: this.utilsService.formatearFecha('yyyy-mm-dd')(recurso.vtoCai)
             }
         }
 
@@ -1547,7 +1562,9 @@ export class AuthService {
                 numerador: recurso.numerador,
                 idCteTipoSisLetra: recurso.letrasCodigos.idCteTipoSisLetra,
                 idPtoVenta: recurso.ptoVenta && recurso.ptoVenta.idPtoVenta ? recurso.ptoVenta.idPtoVenta : null,
-                ptoVenta: recurso.ptoVenta && !recurso.ptoVenta.idPtoVenta ? recurso.ptoVenta.ptoVenta : null
+                ptoVenta: recurso.ptoVenta && !recurso.ptoVenta.idPtoVenta ? recurso.ptoVenta.ptoVenta : null,
+                cai: recurso.cai,
+                vtoCai: this.utilsService.formatearFecha('yyyy-mm-dd')(recurso.vtoCai)
             }
         }
 
@@ -1731,5 +1748,22 @@ export class AuthService {
             { },
             true
         )            
+
+    /**
+     * Relaciona un comprobante con un contrato
+     */
+    relacionContrato = (token, idComprobante, idContrato) => 
+        this.http.post(
+            `${environment.facturacionRest.urlBase}/relacionContrato`, 
+            {
+                idComprobante,
+                idContrato
+            }, 
+            new RequestOptions({ 
+                headers: new Headers({ token})
+            })
+        )
+            
+    
 
 }
