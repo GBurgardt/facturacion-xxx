@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RecursoService } from '../../../../services/recursoService';
 import { UtilsService } from '../../../../services/utilsService';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { Libro } from 'app/models/libro';
 import { resourcesREST } from 'constantes/resoursesREST';
 import { SisModulo } from 'app/models/sisModulo';
@@ -161,8 +161,19 @@ export class RemitosInternos {
         this.recursoService.getRecursoList(resourcesREST.productosReducidos)({
             tipo: 'reducida',
             idDeposito: depSelec.idDeposito
-        }).toPromise().then(
+        })
+        .take(1)
+        .takeUntil(this._destroyed$)
+        .subscribe(
             prods => this.productosReducidos.next(prods)
         )
+    }
+
+    // Using a private subject like this is a pattern to manage unsubscribing many observables in the component.
+    private _destroyed$ = new Subject<any>();
+
+    public ngOnDestroy (): void {
+        this._destroyed$.next();
+        this._destroyed$.complete();
     }
 }
