@@ -41,6 +41,11 @@ export class Numeradores {
                 key: 'fechaCierre',
                 ancho: '22%'
             },
+            {
+                nombre: 'electronico',
+                key: 'electronico',
+                ancho: '22%'
+            }
         ]
         this.tableData = this.recursoService.getRecursoList(resourcesREST.cteNumerador)();
     }

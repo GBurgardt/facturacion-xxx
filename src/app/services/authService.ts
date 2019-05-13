@@ -288,10 +288,10 @@ export class AuthService {
     }
 
     /**
-     * Busca los modelos de la tab facutracion
+     * Busca los modelos de la tab facturacion
      */
-    buscaModelos = (token) => (productos: ProductoBuscaModelo[]) => (idSisModulo) => (idMoneda) => (idProveedor) => {
-        return this.request(
+    buscaModelos = (token, productos: ProductoBuscaModelo[], idSisModulo, idMoneda, idPadron, idSisTipoOperacion?) => 
+        this.request(
             [],
             RequestMethod.Post,
             {
@@ -302,11 +302,12 @@ export class AuthService {
                 modulo: idSisModulo,
                 productos: productos,
                 idMoneda,
-                idProveedor
+                idProveedor: idSisTipoOperacion ? null : idPadron,
+                idCliente: idSisTipoOperacion ? idPadron : null,
+                idSisTipoOperacion: idSisTipoOperacion
             },
             {}
-        );
-    }
+        )
 
     /**
      * Graba un comprobante de comprobanteCompra
@@ -774,7 +775,7 @@ export class AuthService {
         );
     }
 
-    buscaComprobantesCanje = (token: string, fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker}, padronSelec: Padron) =>{
+    buscaComprobantesCanje = (token: string, fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker}, padronSelec: Padron, estadoComprobante) =>{
         return this.request(
             [],
             RequestMethod.Post,
@@ -794,7 +795,8 @@ export class AuthService {
                 idEstado: 0,
                 idVendedor: 0,
                 idSisTipoOperacion: 5,
-                autorizada: 'Todas'
+                autorizada: 'Todas',
+                contratoRelacionado: estadoComprobante
             },
             {}
         );
@@ -1324,7 +1326,8 @@ export class AuthService {
                 idPtoVenta: recurso.ptoVenta && recurso.ptoVenta.idPtoVenta ? recurso.ptoVenta.idPtoVenta : null,
                 ptoVenta: recurso.ptoVenta && !recurso.ptoVenta.idPtoVenta ? recurso.ptoVenta.ptoVenta : null,
                 cai: recurso.cai,
-                vtoCai: this.utilsService.formatearFecha('yyyy-mm-dd')(recurso.vtoCai)
+                vtoCai: this.utilsService.formatearFecha('yyyy-mm-dd')(recurso.vtoCai),
+                electronico: recurso.electronico
             }
         }
 
@@ -1564,7 +1567,8 @@ export class AuthService {
                 idPtoVenta: recurso.ptoVenta && recurso.ptoVenta.idPtoVenta ? recurso.ptoVenta.idPtoVenta : null,
                 ptoVenta: recurso.ptoVenta && !recurso.ptoVenta.idPtoVenta ? recurso.ptoVenta.ptoVenta : null,
                 cai: recurso.cai,
-                vtoCai: this.utilsService.formatearFecha('yyyy-mm-dd')(recurso.vtoCai)
+                vtoCai: this.utilsService.formatearFecha('yyyy-mm-dd')(recurso.vtoCai),
+                electronico: recurso.electronico
             }
         }
 

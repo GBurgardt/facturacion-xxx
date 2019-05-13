@@ -133,11 +133,12 @@ export class ContratosService {
         )
     }
 
-    buscarComprobantesCanje = (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker }, padronSelect: Padron) => 
+    buscarComprobantesCanje = (fechasFiltro: { desde: DateLikePicker, hasta: DateLikePicker }, padronSelect: Padron, estadoComprobante) => 
         this.authService.buscaComprobantesCanje(
             this.localStorageService.getObject(environment.localStorage.acceso).token,
             fechasFiltro,
-            padronSelect
+            padronSelect,
+            estadoComprobante
         )
 
 

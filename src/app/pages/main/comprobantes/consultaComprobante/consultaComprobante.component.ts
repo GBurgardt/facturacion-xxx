@@ -173,13 +173,11 @@ export class ConsultaComprobante {
 
     }
 
-    /**
-     * Evento blur de pto venta y numero en comprobante
-     * tipo: puntoVenta o numero
-     * keyTipoe: comprobante, comprobanteRelacionado
-     */
-    onBlurNumeroAutocomp = (e) => (tipo: string) => (keyTipo: string) => 
-        this[keyTipo][tipo] = this.utilsService.autocompNroComp(tipo)(this[keyTipo])
+    onBlurPtoVenta = (e) => this.comprobante && this.comprobante.numerador && this.comprobante.numerador.ptoVenta ?
+        this.comprobante.numerador.ptoVenta.ptoVenta = this.comprobante.numerador.ptoVenta.ptoVenta.padStart(4, '0') : null
+
+    onBlurNumerador = (e) => this.comprobante && this.comprobante.numerador ?
+        this.comprobante.numerador.numerador = this.comprobante.numerador.numerador.padStart(8, '0') : null
 
     /**
      * On click buscar
@@ -253,26 +251,32 @@ export class ConsultaComprobante {
      * Onclick borrar comprobante
      */
     borrarComprobante = (comp: ComprobanteEncabezado) => {
-        this.comprobanteService.borrarComprobante(comp).subscribe((resp: any) => {
 
-            const theBody =
-                resp && resp['_body'] ?
-                    (typeof resp['_body'] === 'object') ?
-                        resp['_body'] : JSON.parse(resp['_body']) : null;
+        this.utilsService.showModal(
+            'Borrar comprobante'
+        )(
+            '¿Estás seguro de borrarlo?'
+        )(
+            () => {
+                this.comprobanteService.borrarComprobante(comp).subscribe((resp: any) => {
 
-            // debugger;
-
-            this.utilsService.showModal(
-                theBody.control.codigo
-            )(
-                theBody.control.descripcion
-            )(
-                () => {
-                    // Actualizo grilla
-                    this.onClickBuscar();
-                }
-            )();
-        })
+                    const theBody = this.utilsService.parseBody(resp);
+        
+                    this.utilsService.showModal(
+                        theBody.control.codigo
+                    )(
+                        theBody.control.descripcion
+                    )(
+                        () => {
+                            // Actualizo grilla
+                            this.onClickBuscar();
+                        }
+                    )();
+                })
+            }
+        )({
+            tipoModal: 'confirmation'
+        });
     }
 
 }

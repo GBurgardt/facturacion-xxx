@@ -6,6 +6,7 @@ import { resourcesREST } from 'constantes/resoursesREST';
 import { Contrato } from 'app/models/contrato';
 import { ContratosService } from 'app/services/contratosService';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { DateLikePicker } from 'app/models/dateLikePicker';
 
 @Component({
     selector: 'abm-contratos',
@@ -20,8 +21,9 @@ export class AbmContratos {
     filtros: {
         cliente: string,
         producto: string,
-        estado: string
-    } = { cliente: null, producto: null, estado: 'todos' };
+        estado: string,
+        fechaVto: DateLikePicker
+    } = { cliente: null, producto: null, estado: 'todos', fechaVto: new DateLikePicker() };
 
     constructor(
         private router: Router,
@@ -165,70 +167,32 @@ export class AbmContratos {
                                     true
                             ) : true
                 )
-                    
-                    // &&
-                    // //Si es cumplido, lois kilos y kilosCumplidos deben ser iguales
-                    // (
-                    //     this.filtros.estado === 'cumplido' ?
-                    //         cont.kilos === cont.kilosCumplidos :
-                    //     this.filtros.estado === 'pendiente' ?
-                    //         cont.kilos !== cont.kilosCumplidos :
-                    //         true
-                    // )
+                .filter(
+                    (cont: Contrato) => 
+                        this.filtros.fechaVto ?
+                            this.utilsService.dateLikePickerToDate(cont.fechaVto) <=
+                            this.utilsService.dateLikePickerToDate(this.filtros.fechaVto)
+                            : true
+                )
 
         )
-
     }
 
-    // onFiltrar = (e) => {
-    //     if (this.filtros && this.filtros.cliente && this.filtros.producto && this.filtros.estado) {
-    //         this.tableDataFiltered.next(
-    //             this.tableDataComplete.filter(
-    //                 (cont: Contrato) =>
-    //                     (
-    //                         cont.idPadron.toString().toLowerCase().trim().includes(this.filtros.cliente.toString().toLowerCase()) ||
-    //                         cont.padronNombre.toString().toLowerCase().trim().includes(this.filtros.cliente.toString().toLowerCase()) ||
-    //                         cont.padronApelli.toString().toLowerCase().trim().includes(this.filtros.cliente.toString().toLowerCase())
-    //                     )
-    //                     &&   
-    //                     (
-    //                         cont.sisCanje && 
-    //                         cont.sisCanje.descripcion.toString().toLowerCase().trim().includes(this.filtros.producto.toString().toLowerCase())
-    //                     )
-    //                     &&
-    //                     //Si es cumplido, lois kilos y kilosCumplidos deben ser iguales
-    //                     (
-    //                         this.filtros.estado === 'cumplido' ?
-    //                             cont.kilos === cont.kilosCumplidos :
-    //                         this.filtros.estado === 'pendiente' ?
-    //                             cont.kilos !== cont.kilosCumplidos :
-    //                             true
-    //                     )
-                        
-    //             )
-    //         )
-    //     } else if (this.filtros && (this.filtros.cliente || this.filtros.producto)) {
-    //         this.tableDataFiltered.next(
-    //             this.tableDataComplete.filter(
-    //                 (cont: Contrato) =>
-    //                     this.filtros.cliente &&
-    //                         (
-    //                             cont.idPadron.toString().toLowerCase().trim().includes(this.filtros.cliente.toString().toLowerCase()) ||
-    //                             cont.padronNombre.toString().toLowerCase().trim().includes(this.filtros.cliente.toString().toLowerCase()) ||
-    //                             cont.padronApelli.toString().toLowerCase().trim().includes(this.filtros.cliente.toString().toLowerCase())
-    //                         )
-    //                     ||    
-    //                     this.filtros.producto &&
-    //                         (
-    //                             cont.sisCanje && 
-    //                             cont.sisCanje.descripcion.toString().toLowerCase().trim().includes(this.filtros.producto.toString().toLowerCase())
-    //                         )
-                        
-    //             )
-    //         )
-    //     } else {
-    //         this.tableDataFiltered.next(this.tableDataComplete)
-    //     }
+    /**
+     * Parsea fecha
+     */
+    onCalculateFecha = (e) => {
+        if (!this.filtros.fechaVto || typeof this.filtros.fechaVto !== 'string') return;
+        this.filtros.fechaVto = this.utilsService.stringToDateLikePicker(this.filtros.fechaVto);
+    }
 
-    // }
+    onChangeFechaVto = (e) => {
+        if (!e || e.length === 0) {
+            // this.filtros.fechaVto = new DateLikePicker(new Date());
+            this.filtros.fechaVto = null;
+        }
+        this.onCalculateFecha(e);
+        
+        this.onFiltrar(e)
+    }
 }

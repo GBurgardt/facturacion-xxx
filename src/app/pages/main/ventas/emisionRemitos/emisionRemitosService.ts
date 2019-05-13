@@ -398,31 +398,32 @@ export class EmisionRemitosService {
      * Busca modelos para tab facturacion
      * 
      */
-    buscaModelos = (prodsPend: ProductoPendiente[]) => (subtotales: any[]) => (idMoneda) => {
+    buscaModelos = (prodsPend: ProductoPendiente[], subtotales: any[], idMoneda, idCliente, idSisTipoOperacion) => {
         const prodsModel = prodsPend
             .map(prodP => {
 
                 const subtotalProd = subtotales
                     .find(
-                        st => 
-                            st.idFactDetalle === prodP.idFactDetalle
-                    )
+                        st => st.idFactDetalle === prodP.idFactDetalle
+                    );
 
                 return new ProductoBuscaModelo(
                     {
                         idProducto: prodP.producto.idProductos,
                         precio: prodP.precio,
-                        // precio: Number(prodP.producto.costoReposicion),
                         cantidad: prodP.pendiente,
                         subTotal: subtotalProd ? subtotalProd.subtotal : null
-                        // numeroComp: prodP.numero
                     }
                 )
             });
 
         return this.authService.buscaModelos(
-            this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(prodsModel)(2)(idMoneda)(null)
+            this.localStorageService.getObject(environment.localStorage.acceso).token,
+            prodsModel,
+            sisModulos.venta,
+            idMoneda,
+            idCliente,
+            idSisTipoOperacion)
             .map(
                 responBuscMod => 
                     responBuscMod.arraydatos.map(

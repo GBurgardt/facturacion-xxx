@@ -37,18 +37,21 @@ export class Proveedores {
                 nombre: 'Nombre',
                 key: 'padronGral',
                 subkey: 'nombre',
+                customClass: 'text-left',
                 ancho: '15%'
             },
             {
                 nombre: 'Apellido',
                 key: 'padronGral',
                 subkey: 'apellido',
+                customClass: 'text-left',
                 ancho: '15%'
             },
             {
                 nombre: 'Retencion Ing Br',
                 key: 'iibbRet',
-                ancho: '15%'
+                ancho: '15%',
+                // customClass: 'text-righ'
             },
             {
                 nombre: 'Persepcion Ing Br',

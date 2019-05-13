@@ -427,7 +427,14 @@ export class EmisionRemitos  {
                                     )
                                         .catch(err => {
                                             this.grabandoPorcentaje = 0;
-                                            this.utilsService.showErrorWithBody(err, true);
+                                            this.utilsService.showErrorWithBody(
+                                                err, 
+                                                true,
+                                                // Recargo pantalla (TODO: Podría limpiar campo por campo, pero es mas simple y menos costozo recargar la página)
+                                                () => window.location.reload()
+                                            );
+
+
                                             return Observable.throw(null)
                                         })
                                         .subscribe(respAfip => {
@@ -537,7 +544,7 @@ export class EmisionRemitos  {
                 this.tablas.datos.productosPend = prodsPend;
 
                 // Array de observables
-                const actualizacionObser = prodsPend.map(pp => this.actualizarSubtotales(pp))
+                const actualizacionObser = prodsPend.map(pp => this.actualizarSubtotales(pp, true))
 
                 // DESPUES de actualizar todos los subtotales, ahí actualizo datos productos
                 Promise.all(actualizacionObser).then(fa => {
@@ -813,27 +820,41 @@ export class EmisionRemitos  {
     /**
      * Actualizo subtotales
      */
-    actualizarSubtotales = (prod: ProductoPendiente) => {
-        // Obtengo el nuevo subtotal
-        return this.emisionRemitosService.getCalculoSubtotales(prod)
-            .toPromise()
-            .then(nuevoSubtotal => {
-                
-                // Checkeo si hay uno viejo
-                const viejoSubtotal = this.tablas.datos.subtotalesProductos
-                    .find(
-                        s => prod.idFactDetalle === s.idFactDetalle
-                    );
+    actualizarSubtotales = (prod: ProductoPendiente, buscaPendiente = false) => {
+        // Si busca pendientes..
+        // if (prod.importe === 0 && this.tablas.datos.subtotalesProductos.length <= 0) {
+        if (buscaPendiente) {
+            this.tablas.datos.subtotalesProductos.push({
+                idProducto: prod.producto.idProductos,
+                subtotal: 0,
+                subtotalIva: 0,
+                numeroComp: prod.comprobante,
+                precioDesc: 0,
+                idFactDetalle: prod.idFactDetalle
+            });
+        } else {
+            // Obtengo el nuevo subtotal
+            return this.emisionRemitosService.getCalculoSubtotales(prod)
+                .toPromise()
+                .then(nuevoSubtotal => {
+                    
+                    // Checkeo si hay uno viejo
+                    const viejoSubtotal = this.tablas.datos.subtotalesProductos
+                        .find(
+                            s => prod.idFactDetalle === s.idFactDetalle
+                        );
+    
+                    // Si hay uno viejo, lo edito. Si NO hay uno viejo, pusheo directamente el nuevo
+                    if (viejoSubtotal) {
+                        viejoSubtotal.subtotal = nuevoSubtotal.subtotal;
+                        viejoSubtotal.subtotalIva = nuevoSubtotal.subtotalIva;
+                        viejoSubtotal.precioDesc = nuevoSubtotal.precioDesc;
+                    } else {
+                        this.tablas.datos.subtotalesProductos.push(nuevoSubtotal);
+                    }
+                })
+        }
 
-                // Si hay uno viejo, lo edito. Si NO hay uno viejo, pusheo directamente el nuevo
-                if (viejoSubtotal) {
-                    viejoSubtotal.subtotal = nuevoSubtotal.subtotal;
-                    viejoSubtotal.subtotalIva = nuevoSubtotal.subtotalIva;
-                    viejoSubtotal.precioDesc = nuevoSubtotal.precioDesc;
-                } else {
-                    this.tablas.datos.subtotalesProductos.push(nuevoSubtotal);
-                }
-            })
     }
     
     /**
@@ -978,14 +999,15 @@ export class EmisionRemitos  {
      * Busca facturas
      */
     fetchFacturas = () => {
+
         // Busco las facturas de los productos
-        if (this.tablas.datos.productosPend && this.tablas.datos.productosPend.length > 0) {
+        if (this.cliente && this.tipoOperacion && this.tablas.datos.productosPend && this.tablas.datos.productosPend.length > 0) {
             this.emisionRemitosService.buscaModelos(
-                this.tablas.datos.productosPend
-            )(
-                this.tablas.datos.subtotalesProductos
-            )(
-                this.comprobante.moneda ? this.comprobante.moneda.idMoneda : null
+                this.tablas.datos.productosPend,
+                this.tablas.datos.subtotalesProductos,
+                this.comprobante.moneda ? this.comprobante.moneda.idMoneda : null,
+                this.cliente.padronCodigo,
+                this.tipoOperacion.idSisTipoOperacion
             ).subscribe(modelProds => {
                 this.tablas.datos.modelosFactura = modelProds;
 

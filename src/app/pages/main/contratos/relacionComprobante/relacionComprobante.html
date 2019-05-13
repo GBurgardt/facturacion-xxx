@@ -43,11 +43,28 @@
                         >
                     </search-client>
                 </div>
+
+                <div class="item-input">
+                    <label for="idEstadoComp">Estado: </label>
+                    <select 
+                        [(ngModel)]="estadoComprobante" 
+                        class="form-control select-input" 
+                        id="idEstadoComp">
+                        <option value=1>
+                            Con contratos
+                        </option>
+                        <option value=2>
+                            Sin contratos
+                        </option>
+                    </select>
+                </div>
+
             </div>
 
             <div class="btn-container item-input">
                 <button id="btnBuscar"
                         (click)="onClickRefrescar()"
+                        [disabled]="!padronSelect"
                         style="height: 25px;"
                         class="btn btn-primary">
                     Refrescar
@@ -60,7 +77,12 @@
     </ba-card>
 </div>
 
-<div class="relacion-compro-container">
+
+<div *ngIf="isLoading" class="spinner-container">
+    <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+</div>
+
+<div *ngIf="!isLoading" class="relacion-compro-container">
     <ba-card class="comprobante-container" toggleBtn="true">
         <div class="mini-title">
             Comprobantes
@@ -79,6 +101,7 @@
                     <th class="text-left">Clie/Prov</th>
                     <th class="text-left">Tipo Op</th>
                     <th class="text-left">Imp</th>
+                    <th class="text-left">Kilos</th>
                 </tr>
             </thead>
             <tbody>
@@ -98,6 +121,7 @@
                     <td class="text-left">{{ compBusc.nombre }}</td>  
                     <td class="text-left">{{ compBusc.nombre }}</td>  
                     <td class="text-left">{{ compBusc.imputada }}</td>  
+                    <td class="text-right">{{ compBusc.kilosCanje }}</td>  
                 </tr>
             </tbody>
             <tfoot>

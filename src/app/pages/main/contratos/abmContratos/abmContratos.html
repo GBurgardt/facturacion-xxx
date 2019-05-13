@@ -38,6 +38,26 @@
                     <option value="cumplido">Cumplido</option>
                 </select>
             </div>
+
+            <div class="form-group item">
+                <label for="idFechaVto">Fecha Vto</label>
+                <div class="input-group date-picker-fecha">
+                    <input 
+                        id="idFechaVto"
+                        (blur)="onCalculateFecha($event)" 
+                        class="form-control" 
+                        placeholder="dd/mm/aaaa" 
+                        name="dp" 
+                        [(ngModel)]="filtros.fechaVto"
+                        (ngModelChange)="onChangeFechaVto($event)"
+                        ngbDatepicker #dDesd="ngbDatepicker">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" (click)="dDesd.toggle()" type="button" style="height: 100%;">
+                            <img src="assets/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;" />
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="bar-separator"></div>

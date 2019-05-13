@@ -291,7 +291,7 @@ export class UtilsService {
     /**
      * Decodifica la respuesta del error (scando el _body) y muestra el mensaje
      */
-    showErrorWithBody = (err: any, isInnerHTML?) => {
+    showErrorWithBody = (err: any, isInnerHTML?, onClickEvent?) => {
         
         const theBody =
             err && err['_body'] ?
@@ -299,7 +299,13 @@ export class UtilsService {
                     err['_body'] : JSON.parse(err['_body']) : 
                 null;
 
-        this.showModal(theBody.control.codigo)(theBody.control.descripcion)()(null, null, isInnerHTML)
+        this.showModal(
+            theBody && theBody.control ?
+                theBody.control.codigo : 'Error'
+        )(
+            theBody && theBody.control ?
+                theBody.control.descripcion : 'Error de red'
+        )(onClickEvent)(null, null, isInnerHTML)
     }
 
     /**
@@ -310,8 +316,6 @@ export class UtilsService {
 
 
     formatearFecha = (formato) => (fecha) => {
-        debugger;
-        // debugger;
         if (fecha && fecha.year) {
             if (formato === 'yyyy-mm-dd') {
                 return `${fecha.year}-${fecha.month < 10 ? '0'+fecha.month:fecha.month}-${fecha.day < 10 ? '0'+fecha.day : fecha.day}`;
@@ -565,4 +569,9 @@ export class UtilsService {
      */
     toThreeDecimals = (num) => 
         num.toLocaleString('en', { minimumFractionDigits:3, useGrouping:false })
+
+
+    parseBody = (resp) => resp && resp['_body'] ?
+        (typeof resp['_body'] === 'object') ?
+            resp['_body'] : JSON.parse(resp['_body']) : null;
 }

@@ -140,20 +140,30 @@
                 </div>
             </div>
 
-            <div class="line btn-container">
+            <div class="line">
 
-                <button 
-                    routerLink="/pages/tablas/numeradores"
-                    style="margin-right: 5px;"
-                    class="btn btn-secondary 
-                    btn-detalle">
-                    Cancelar
-                </button>
-                <button
-                    (click)="onClickCrear()" 
-                    type="submit" class="btn btn-primary" id="idBtnConfirmar">
-                    Confirmar
-                </button>
+                <div class="item checkbox-container" style="padding-top: 9px;">
+                    <ba-checkbox style="padding-top: 13px;"
+                        [(ngModel)]="recurso.electronico" 
+                        [label]="'Electronico'" 
+                        [ngModelOptions]="{standalone: true}"></ba-checkbox>
+                </div>
+
+                <div class="btn-container">
+                    <button 
+                        routerLink="/pages/tablas/numeradores"
+                        style="margin-right: 5px;"
+                        class="btn btn-secondary 
+                        btn-detalle">
+                        Cancelar
+                    </button>
+                    <button
+                        (click)="onClickCrear()" 
+                        type="submit" class="btn btn-primary" id="idBtnConfirmar">
+                        Confirmar
+                    </button>
+                </div>
+
                 
             </div>
         </form>    

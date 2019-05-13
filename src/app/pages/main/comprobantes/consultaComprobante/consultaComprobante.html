@@ -40,9 +40,13 @@
             <div class="input-row">
                 <div class="item-input nro-cte">
                     <label for="desde">Nro: </label>
-                    <input maxlength="4" (blur)="onBlurNumeroAutocomp($event)('puntoVenta')('comprobante')" 
+                    <input 
+                        maxlength="4" 
+                        (blur)="onBlurPtoVenta($event)" 
                         [(ngModel)]="comprobante.numerador.ptoVenta.ptoVenta" type="text" class="form-control text-right" id="ptoVentaCte" placeholder="">
-                    <input maxlength="8" (blur)="onBlurNumeroAutocomp($event)('numero')('comprobante')" 
+                    <input 
+                        maxlength="8" 
+                        (blur)="onBlurNumerador($event)" 
                         [(ngModel)]="comprobante.numerador.numerador" type="text" class="form-control text-right" id="nroCte" placeholder="">
                 </div>
             </div>

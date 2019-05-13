@@ -258,12 +258,16 @@ export class ComprobanteCompraService {
         ));
 
         return this.authService.buscaModelos(
-            this.localStorageService.getObject(environment.localStorage.acceso).token
-        )(prodsModel)(1)(idMoneda)(idProveedor).map(responBuscMod => responBuscMod.arraydatos.map(respModFact => {
-            // const auxModFact = Object.assign({}, respModFact);
-            // auxModFact.idProducto = prod
-            return new ModeloFactura(respModFact)
-        }));
+            this.localStorageService.getObject(environment.localStorage.acceso).token, 
+            prodsModel, 
+            1, 
+            idMoneda, 
+            idProveedor)
+                .map(
+                    responBuscMod => responBuscMod.arraydatos.map(
+                        respModFact => new ModeloFactura(respModFact)
+                    )
+                );
     }
 
     /**

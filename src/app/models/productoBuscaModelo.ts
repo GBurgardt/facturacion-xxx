@@ -16,7 +16,8 @@ export class ProductoBuscaModelo {
             this.idProducto = productoBuscaModelo.idProducto
             this.precio = productoBuscaModelo.precio
             this.cantidad = productoBuscaModelo.cantidad
-            this.subTotal = productoBuscaModelo.subTotal ? productoBuscaModelo.subTotal : null;
+            // this.subTotal = productoBuscaModelo.subTotal ? productoBuscaModelo.subTotal : null;
+            this.subTotal = productoBuscaModelo.subTotal;
             // this.numeroComp = productoBuscaModelo.numeroComp ? productoBuscaModelo.numeroComp : null;
         } else {
             this.idProducto = null

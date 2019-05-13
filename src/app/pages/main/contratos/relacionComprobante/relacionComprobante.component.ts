@@ -4,12 +4,11 @@ import { UtilsService } from '../../../../services/utilsService';
 import { ComprobanteEncabezado } from '../../../../models/comprobanteEncabezado';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { DateLikePicker } from 'app/models/dateLikePicker';
-import { ComprobanteService } from 'app/services/comprobanteService';
 import { Padron } from 'app/models/padron';
 import { ContratosService } from 'app/services/contratosService';
 import { Contrato } from 'app/models/contrato';
 import { RecursoService } from 'app/services/recursoService';
-import { Router } from '@angular/router';
+
 @Component({
     selector: 'relacion-comprobante',
     styleUrls: ['./relacionComprobante.scss'],
@@ -34,18 +33,23 @@ export class RelacionComprobante {
 
     padronSelect: Padron;
 
+    estadoComprobante = 2;
+
+    isLoading = false;
+
     constructor(
         public utilsService: UtilsService,
         private contratosService: ContratosService,
-        private recursoService: RecursoService,
-        private router: Router
+        private recursoService: RecursoService
     ) {
         
 
     }
 
     onClickRefrescar = () => {
-        this.contratosService.buscarComprobantesCanje(this.fechasFiltro, this.padronSelect)
+        this.isLoading = true;
+
+        this.contratosService.buscarComprobantesCanje(this.fechasFiltro, this.padronSelect, this.estadoComprobante)
             .subscribe(resp => {
                 const encabezados = resp.arraydatos;
 
@@ -59,6 +63,8 @@ export class RelacionComprobante {
                     null;
 
                 this.compSeleccionado = null;
+
+                this.isLoading = false;
 
             })
 
