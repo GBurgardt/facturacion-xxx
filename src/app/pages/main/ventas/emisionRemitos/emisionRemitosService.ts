@@ -347,15 +347,6 @@ export class EmisionRemitosService {
         )(cliente)(comprobanteRel)(comprobante)(tipoOpSelect)(listaPrecioSelect)(sisModulos.venta)
             .catch(
                 err => {
-                    // const respErr = 
-                    //     err && err['_body'] && err['_body'].control ? 
-                    //         err['_body'].control : null;
-
-                    // this.utilsService.showModal(respErr.codigo)(respErr.descripcion)()();
-                    // return Observable.throw(
-                    //     this.utilsService.showErrorWithBody(err)
-                    // )
-
                     this.utilsService.showErrorWithBody(err);
 
                     return Observable.of({

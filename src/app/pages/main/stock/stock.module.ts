@@ -20,6 +20,7 @@ import { NgbTabsetModule } from "@ng-bootstrap/ng-bootstrap";
 import { ComprobanteService } from "app/services/comprobanteService";
 import { TablaRemitosInternos } from "./remitosInternos/components/tablaRemitosInternos";
 import { RemitosInternosService } from "./remitosInternos/remitosInternosService";
+import { TablaRemitosInternosTraza } from "./remitosInternos/components/tablaRemitosInternosTraza";
 
 @NgModule({
     imports: [
@@ -36,7 +37,8 @@ import { RemitosInternosService } from "./remitosInternos/remitosInternosService
         ConsultaPorProducto,
         ConsultaGeneral,
         RemitosInternos,
-        TablaRemitosInternos
+        TablaRemitosInternos,
+        TablaRemitosInternosTraza
     ],
     providers: [
         RecursoService,
@@ -47,7 +49,8 @@ import { RemitosInternosService } from "./remitosInternos/remitosInternosService
         PendingChangesGuard,
         ComprobanteService,
         TablaRemitosInternos,
-        RemitosInternosService
+        RemitosInternosService,
+        TablaRemitosInternosTraza
     ],
     exports: [
         TablaProductos

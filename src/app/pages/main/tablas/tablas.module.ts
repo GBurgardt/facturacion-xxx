@@ -60,6 +60,9 @@ import { EditarProveedor } from './proveedores/components/editarProveedor';
 import { RelacionesCanje } from './relacionesCanje';
 import { NuevoRelacionCanje } from './relacionesCanje/nuevoRelacionCanje';
 import { EditarRelacionCanje } from './relacionesCanje/editarRelacionCanje';
+import { SisCotsDolar } from './sisCotDolar';
+import { NuevoSisCotDolar } from './sisCotDolar/components/nuevoSisCotDolar';
+import { EditarSisCotDolar } from './sisCotDolar/components/editarSisCotDolar';
 
 @NgModule({
     imports: [
@@ -116,7 +119,10 @@ import { EditarRelacionCanje } from './relacionesCanje/editarRelacionCanje';
         EditarProveedor,
         RelacionesCanje,
         NuevoRelacionCanje,
-        EditarRelacionCanje
+        EditarRelacionCanje,
+        SisCotsDolar,
+        NuevoSisCotDolar,
+        EditarSisCotDolar
     ],
     providers: [
         DataTablesService,

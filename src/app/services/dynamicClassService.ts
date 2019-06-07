@@ -24,6 +24,7 @@ import { Vendedor } from "app/models/vendedor";
 import { Marca } from "app/models/marca";
 import { Proveedor } from "app/models/proveedor";
 import { RelacionCanje } from "app/models/relacionCanje";
+import { SisCotDolar } from "app/models/sisCotDolar";
 
 const classes = {
     Usuario,
@@ -51,7 +52,8 @@ const classes = {
     Vendedor,
     Marca,
     Proveedor,
-    RelacionCanje
+    RelacionCanje,
+    SisCotDolar
 };
 
 // export default function dynamicClass (name) {

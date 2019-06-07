@@ -107,7 +107,9 @@ export class TablaIngreso {
 
         if (tipoDato === 'boolean') {
             return key ? 'Si' : 'No';
-        } else if (tipoDato === 'object'){
+        }
+
+        if (tipoDato === 'object'){
             // Me fijo el nombre de la clase del objeto
             if (
                 key &&
@@ -118,7 +120,12 @@ export class TablaIngreso {
             ) {
                 return `${key.day<10 ? '0' : ''}${key.day}/${key.month<10 ? '0' : ''}${key.month}/${key.year}`
             }
-        };
+        }
+
+
+        if (tipoDato === 'number') {
+            return key.toLocaleString()
+        }
 
         return key;
     }

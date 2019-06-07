@@ -219,19 +219,21 @@ export class AuthService {
             {
                 cteTipo : comproRel.tipo.idCteTipo,
                 facNumero : comproRel.todosLosPendientes ? 0 : Number(comproRel.puntoVenta + comproRel.numero),
-                codigoProv : Number(proveedor.padronCodigo),
+                codigoProv : proveedor ? Number(proveedor.padronCodigo) : 0,
                 // pendiente : comproRel.todosLosPendientes ? 1 : 0,
                 pendiente : 1,
                 idProducto : 0,
                 idDeposito : 0,
                 despacho : "",
                 idMoneda: comprobante && comprobante.moneda ? 
-                    comprobante.moneda.idMoneda : null,
+                    comprobante.moneda.idMoneda : 1,
                 idSisOperacionComprobante: 
                     comprobante && comprobante.tipo && comprobante.tipo.comprobante ?
                         comprobante.tipo.comprobante.idSisOperacionComprobante : null,
                 letra: comprobante.letraCodigo && comprobante.letraCodigo.letra ? comprobante.letraCodigo.letra.letra : null,
-                idSisTipoOperacion: tipoOpSelect && tipoOpSelect.idSisTipoOperacion ? tipoOpSelect.idSisTipoOperacion : null,
+                idSisTipoOperacion: tipoOpSelect && tipoOpSelect.idSisTipoOperacion ? 
+                    tipoOpSelect.idSisTipoOperacion : 0,
+                    // tipoOpSelect.idSisTipoOperacion : null,
                 idListaPrecio: listaPrecioSelect && listaPrecioSelect.idListaPrecio ? listaPrecioSelect.idListaPrecio : 0,
                 modulo
             },
@@ -1389,6 +1391,13 @@ export class AuthService {
             }
         }
 
+        if (nombreRecurso === resourcesREST.sisCotDolar.nombre) {
+            return {
+                fechaCoti: this.utilsService.formatearFecha('yyyy-mm-dd')(recurso.fechaCotizacion),
+                cotizacion: recurso.cotizacion
+            }
+        }
+
     }
 
     /**
@@ -1633,6 +1642,14 @@ export class AuthService {
             }
         }
 
+        if (nombreRecurso === resourcesREST.sisCotDolar.nombre) {
+            return {
+                idSisCotDolar: recurso.idSisCotDolar,
+                fechaCoti: this.utilsService.formatearFecha('yyyy-mm-dd')(recurso.fechaCotizacion),
+                cotizacion: recurso.cotizacion
+            }
+        }
+
     }
 
     /**
@@ -1668,6 +1685,28 @@ export class AuthService {
             .map(res => res.json())
             .catch(error => Observable.throw(error))
             
+    }
+
+    /**
+     * Genera un contrato a partir de un nuevo comprobante
+     */
+    generarContratoByComprobante = (cliente: Padron, kilosCanjeReferencia: number, sisCanje: SisCanje, token) => {
+        debugger;
+        return this.http.post(
+            `${environment.facturacionRest.urlBase}/contratos/generar`, 
+            {
+                idPadron: cliente.padronCodigo,
+                kilos: kilosCanjeReferencia,
+                documento: cliente.cuit,
+                idSisCanje: sisCanje.idSisCanje,
+                fechaVto: this.utilsService.formatearFecha('yyyy-mm-dd')(sisCanje.fechaVto),
+                padronNombre: cliente.padronNombre,
+                padronApelli: cliente.padronApelli
+            },
+            new RequestOptions({ headers: new Headers({ token }) })
+        )
+            .map(res => res.json())
+            .catch(error => Observable.throw(error))
     }
 
     /**
@@ -1768,6 +1807,144 @@ export class AuthService {
             })
         )
             
-    
 
+    grabaRemitoInterno = (
+        token,
+        tipoOperacion: SisTipoOperacion,
+        comprobante: Comprobante,
+        depositoDestino: Deposito,
+        depositoOrigen: Deposito,
+        productosPend: ProductoPendiente[],
+        lotesTraza: Lote[]
+    ) => 
+        this.http.post(
+            `${environment.facturacionRest.urlBase}/grabaComprobante`,
+            {
+                idSisTipoOperacion: tipoOperacion.idSisTipoOperacion,
+                idSisOperacionComprobante: comprobante.tipo.comprobante.idSisOperacionComprobante ? comprobante.tipo.comprobante.idSisOperacionComprobante : null,
+                idDepositoDestino: depositoDestino.idDeposito,
+                nombre: `${depositoDestino.descripcion} (Cod: ${depositoDestino.codigoDep})`,
+                direccion: depositoDestino.domicilio,
+                codigoPostal: depositoDestino.codigoPostal,
+                idCteTipo: comprobante.tipo.idCteTipo,
+                idModulo: sisModulos.interno,
+                codigoAfip: comprobante.letraCodigo ? comprobante.letraCodigo.codigoAfip.codigoAfip : null,
+                letra: comprobante.letraCodigo ? comprobante.letraCodigo.letra.letra : null,
+                numero: Number(comprobante.numerador.ptoVenta.ptoVenta + comprobante.numerador.numerador),
+                idNumero: comprobante.numerador && comprobante.numerador.ptoVenta ? 
+                    comprobante.numerador.idCteNumerador : null,
+                cai: ' ',
+                codBarra: ' ',
+                cotDolar: 0,
+                cuit: ' ',
+                caiVto: this.utilsService.formatearFecha('yyyy-mm-dd')(new Date()),
+                fechaEmision: this.utilsService.formatearFecha('yyyy-mm-dd')(new Date()),
+                fechaVencimiento: this.utilsService.formatearFecha('yyyy-mm-dd')(new Date()),
+                fechaConta: this.utilsService.formatearFecha('yyyy-mm-dd')(new Date()),
+                fechaDolar: this.utilsService.formatearFecha('yyyy-mm-dd')(new Date()),
+                fechaVencimientoFact: this.utilsService.formatearFecha('yyyy-mm-dd')(new Date()),
+                fechaContaFact: this.utilsService.formatearFecha('yyyy-mm-dd')(new Date()),
+                idPadron: 0,
+                idMoneda: 1,
+                numeroFact: 0,
+                precioReferenciaCanje: 0,
+                productoCanje: ' ',
+                sisSitIva: ' ',
+                interesCanje: 0,
+                factCabecera: true,
+                factDet: true,
+                factFormaPago: false,
+                factImputa: true,
+                factPie: false,
+                grabaFactura: false,
+                produmo: true,
+                lote: true,
+                grillaArticulos: productosPend
+                    .map(
+                        prod => ({
+                            idProducto: prod.producto.idProductos,
+                            articulo: prod.producto.descripcion ? prod.producto.descripcion : '',
+                            pendiente: prod.pendiente,
+                            precio: prod.precio,
+                            porCalc: prod.porCalc ? prod.porCalc : 0,
+                            descuento: prod.descuento,
+                            ivaPorc: prod.ivaPorc,
+                            cantidadBulto: prod.cantBultos,
+                            despacho: prod.despacho ? prod.despacho : ' ',
+                            trazable: prod.producto.trazable,
+                            idDeposito: depositoOrigen.idDeposito,
+                            observacionDetalle: prod.producto.observaciones ? prod.producto.observaciones : ' ',
+                            imputacion: prod.imputacion.seleccionada.ctaContable,
+                            idFactDetalleImputa: prod.idFactDetalleImputa ? prod.idFactDetalleImputa : null,
+                            itemImputada: prod.itemImputada,
+                            importe: prod.importe,
+                            precioDesc: prod.precio,
+                            unidadDescuento: ' ',
+                            idLibro: prod.imputacion && prod.imputacion.seleccionada ? prod.imputacion.seleccionada.idLibro : null
+                        })
+                    ),
+                grillaTrazabilidad: lotesTraza
+                    .map(theLote => {
+                        return {
+                            nroLote: theLote.nroLote,
+                            serie: theLote.serie,
+                            fechaElab: this.utilsService.formatearFecha('yyyy-mm-dd')(theLote.fechaElab),
+                            fechaVto: this.utilsService.formatearFecha('yyyy-mm-dd')(theLote.fechaVto),
+                            vigencia: true,
+                            idProducto: theLote.idProducto
+                        }
+                    }),
+                grillaSubTotales: [],
+                grillaFormaPago: []
+
+            },
+            new RequestOptions({ 
+                headers: new Headers({ token})
+            })
+        )
+
+
+    /**
+    * @description Get productos pendientes refactoreado
+    * @argument token
+    * @argument filtros Lo filtro
+    */
+//    getProductosPendientesNew = (
+//         token: string, 
+//         proveedor: Padron, 
+//         comproRel: ComprobanteRelacionado, 
+//         comprobante: Comprobante, 
+//         tipoOpSelect: SisTipoOperacion, 
+//         listaPrecioSelect: ListaPrecio, 
+//         modulo
+//     ) =>
+        // this.request(
+        //     [],
+        //     RequestMethod.Post,
+        //     {
+        //         token: token,
+        //     },
+        //     resourcesREST.buscaPendientes.nombre,
+        //     {
+        //         cteTipo : comproRel.tipo.idCteTipo,
+        //         facNumero : comproRel.todosLosPendientes ? 0 : Number(comproRel.puntoVenta + comproRel.numero),
+        //         codigoProv : proveedor ? Number(proveedor.padronCodigo) : 0,
+        //         pendiente : 1,
+        //         idProducto : 0,
+        //         idDeposito : 0,
+        //         despacho : "",
+        //         idMoneda: comprobante && comprobante.moneda ? 
+        //             comprobante.moneda.idMoneda : 1,
+        //         idSisOperacionComprobante: 
+        //             comprobante && comprobante.tipo && comprobante.tipo.comprobante ?
+        //                 comprobante.tipo.comprobante.idSisOperacionComprobante : null,
+        //         letra: comprobante.letraCodigo && comprobante.letraCodigo.letra ? comprobante.letraCodigo.letra.letra : null,
+        //         idSisTipoOperacion: tipoOpSelect && tipoOpSelect.idSisTipoOperacion ? tipoOpSelect.idSisTipoOperacion : null,
+        //         idListaPrecio: listaPrecioSelect && listaPrecioSelect.idListaPrecio ? listaPrecioSelect.idListaPrecio : 0,
+        //         modulo
+        //     },
+        //     {}
+        // )
+
+        
 }

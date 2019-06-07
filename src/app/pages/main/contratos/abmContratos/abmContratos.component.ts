@@ -124,6 +124,10 @@ export class AbmContratos {
     getDato = (td, tc) => {
         const dato = tc.subkey ? td[tc.key][tc.subkey] : td[tc.key];
 
+        if (typeof dato === 'number') {
+            return this.utilsService.toLocateString(dato);
+        }
+
         return dato ?
             dato.day ? 
                 `${dato.day<10 ? '0' : ''}${dato.day}/${dato.month<10 ? '0' : ''}${dato.month}/${dato.year}`

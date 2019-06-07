@@ -32,6 +32,12 @@ export class Numeradores {
                 ancho: '22%'
             },
             {
+                nombre: 'numero',
+                key: 'ptoVenta',
+                subkey: 'sucursal',
+                ancho: '22%'
+            },
+            {
                 nombre: 'fecha apertura',
                 key: 'fechaApertura',
                 ancho: '22%'

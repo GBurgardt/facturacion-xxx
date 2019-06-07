@@ -2,11 +2,7 @@ import { Component } from '@angular/core';
 import { RecursoService } from '../../../../services/recursoService';
 import { UtilsService } from '../../../../services/utilsService';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { Libro } from 'app/models/libro';
 import { resourcesREST } from 'constantes/resoursesREST';
-import { SisModulo } from 'app/models/sisModulo';
-import { DateLikePicker } from 'app/models/dateLikePicker';
-import { AuthService } from 'app/services/authService';
 import { ComprobanteService } from 'app/services/comprobanteService';
 import { SisTipoOperacion } from 'app/models/sisTipoOperacion';
 import sisModulos from 'constantes/sisModulos';
@@ -15,8 +11,10 @@ import { Comprobante } from 'app/models/comprobante';
 import { ComprobanteRelacionado } from 'app/models/comprobanteRelacionado';
 import { TipoComprobante } from 'app/models/tipoComprobante';
 import { ProductoPendiente } from 'app/models/productoPendiente';
-import { Lote } from 'app/models/lote';
 import { ProductoReducido } from 'app/models/productoReducido';
+import { RemitosInternosService } from './remitosInternosService';
+import { ComprobanteEncabezado } from 'app/models/comprobanteEncabezado';
+import { Lote } from 'app/models/lote';
 
 @Component({
     selector: 'remitos-internos',
@@ -24,23 +22,33 @@ import { ProductoReducido } from 'app/models/productoReducido';
     templateUrl: './remitosInternos.html'
 })
 export class RemitosInternos {
+
+    // Using a private subject like this is a pattern to manage unsubscribing many observables in the component.
+    private _destroyed$ = new Subject<any>();
+
+    public ngOnDestroy (): void {
+        this._destroyed$.next();
+        this._destroyed$.complete();
+    }
+
     comprobante: Comprobante = new Comprobante();
     comprobanteRelacionado: ComprobanteRelacionado = new ComprobanteRelacionado();
     
+    /** Seleccionados **/
+    tipoOpSelect: SisTipoOperacion;
+    depositoOrigenSelect: Deposito;
+    depositoDestinoSelect: Deposito;
+
+    /** Tablas **/
+    dataProductos: ProductoPendiente[] = [];
+    lotesTraza: Lote[] = [];
+
     /** Listas Desplegables **/
     tiposOperaciones: Observable<SisTipoOperacion[]>;
     depositosOrigen: Observable<Deposito[]>;
     depositosDestino: Observable<Deposito[]>;
     tiposComprobantes: Observable<TipoComprobante[]>;
     tiposComprobantesRel: Observable<TipoComprobante[]>;
-    
-    /** Seleccionados **/
-    tipoOpSelect: SisTipoOperacion;
-    depositoOrigenSelect: SisTipoOperacion;
-    depositoDestinoSelect: SisTipoOperacion;
-
-    /** Tablas **/
-    dataProductos: ProductoPendiente[] = [];
 
     /** Buscador productos **/
     productosReducidos: BehaviorSubject<ProductoReducido[]> = new BehaviorSubject([]);
@@ -48,7 +56,8 @@ export class RemitosInternos {
     constructor(
         private recursoService: RecursoService,
         private utilsService: UtilsService,
-        public comprobanteService: ComprobanteService
+        public comprobanteService: ComprobanteService,
+        public remitosInternosService: RemitosInternosService
     ) { 
         this.tiposOperaciones = this.recursoService.getRecursoList(resourcesREST.sisTipoOperacion)({
             sisModulo: sisModulos.interno
@@ -69,8 +78,7 @@ export class RemitosInternos {
         });
 
         this.tiposComprobantes = this.recursoService.getRecursoList(resourcesREST.cteTipo)({
-            'sisTipoOperacion': tipoOpSelect.idSisTipoOperacion
-            // 'sisSitIva' : this.cliente.condIva.descCorta
+            'sisTipoOperacion': tipoOpSelect.idSisTipoOperacion,
         });
     }
 
@@ -82,9 +90,6 @@ export class RemitosInternos {
 
         // Actualizo fecha (sobretodo si el formato es 'ddmm')
         this.comprobante.fechaComprobante = this.utilsService.stringToDateLikePicker(this.comprobante.fechaComprobante);
-
-        // Actualizo grilla trazable lotes
-        // this.actualizarTrazableLotes();
 
         // Hago foco en el primer checbkox de la sformas de pago (el timeout es necesario para que espere a que se haga la consulta)
         // en gral esta consulta dura poquito (entre 10 y 40 milisegundos). Por eso con 150 milisegundos de espera es mas que suficiente
@@ -154,7 +159,7 @@ export class RemitosInternos {
         // Blanqueo todo lo que le sigue
         this.comprobanteRelacionado = new ComprobanteRelacionado();
         this.dataProductos = [];
-        // this.tablas.datos.lotesTraza = [];
+        this.lotesTraza = [];
     }
 
     onChangeDeposito = (depSelec: Deposito) => {
@@ -162,18 +167,102 @@ export class RemitosInternos {
             tipo: 'reducida',
             idDeposito: depSelec.idDeposito
         })
-        .take(1)
-        .takeUntil(this._destroyed$)
-        .subscribe(
-            prods => this.productosReducidos.next(prods)
+            .take(1)
+            .takeUntil(this._destroyed$)
+            .subscribe(
+                prods => this.productosReducidos.next(prods)
+            )
+    }
+
+    onClickConfirmar = () => {
+        this.remitosInternosService.grabaRemitoInterno(
+            this.tipoOpSelect,
+            this.comprobante,
+            this.depositoDestinoSelect,
+            this.depositoOrigenSelect,
+            this.dataProductos,
+            this.lotesTraza
+        ).subscribe(
+            (resp: any) => {
+                if (resp) {
+                    // Modal para imprimir
+                    const compCreado = new ComprobanteEncabezado();
+                    compCreado.idFactCab = resp.datos.idFactCab;
+                    compCreado.numero = Number(
+                        `${this.comprobante.numerador.ptoVenta.ptoVenta}${this.comprobante.numerador.ptoVenta.ptoVenta.toString().padStart(8, '0')}`
+                    );
+
+                    this.utilsService.showImprimirModal(
+                        resp.control.codigo
+                    )(
+                        `${resp.control.descripcion}`
+                    )(
+                        () => this.recursoService.downloadComp(compCreado)
+                    )(
+                        compCreado
+                    );
+
+                    this.comprobante = new Comprobante();
+                    this.comprobanteRelacionado = new ComprobanteRelacionado();
+                    
+                    /** Seleccionados **/
+                    this.tipoOpSelect = null;
+                    this.depositoOrigenSelect = null;
+                    this.depositoDestinoSelect = null;
+
+                    /** Tablas **/
+                    this.dataProductos = [];
+
+                    /** Hago focus en Tipo Operacion (idTipoOp) **/
+                    document.getElementById('idTipoOp') ? 
+                        document.getElementById('idTipoOp').focus() : null
+                }
+            }
         )
     }
 
-    // Using a private subject like this is a pattern to manage unsubscribing many observables in the component.
-    private _destroyed$ = new Subject<any>();
+    /**
+     * Busca pendientes
+     */
+    onClickBuscarPendientes = () =>
+        this.remitosInternosService.buscarPendientes(
+            this.comprobante,
+            this.comprobanteRelacionado
+        )
+            .subscribe(
+                prodsPend => this.dataProductos = prodsPend
+            );
 
-    public ngOnDestroy (): void {
-        this._destroyed$.next();
-        this._destroyed$.complete();
+
+    /**
+     * Actualiza trazables
+     */
+    onEmitActualizarTraza = (p: ProductoReducido, isRemove = false) => {
+        // Agrego los lotes de los productos trazables a la grilla de trazabilidad lotes
+        if (this.dataProductos.length > 0) {
+            this.remitosInternosService
+                .buscaLotes(this.dataProductos, this.comprobante)
+                    .subscribe(
+                        lotes => {
+                            const nuevosLotes = lotes.filter(
+                                lotNew => !this.lotesTraza.some(  
+                                    lotOld => lotOld.idLote === lotNew.idLote
+                                )
+                            );
+
+                            this.lotesTraza = this.lotesTraza.concat(nuevosLotes);
+
+                            // Si se borró algún producto, borro sus lotes correspondientes
+                            if (isRemove) {
+                                this.lotesTraza = this.lotesTraza.filter(
+                                    lot => lot.idProducto === p.idProductos
+                                )
+                            }
+                        }
+                    )
+        } else {
+            this.lotesTraza = [];
+        }
+
     }
 }

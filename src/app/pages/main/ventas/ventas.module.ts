@@ -12,6 +12,8 @@ import { EmisionRemitos } from "./emisionRemitos";
 import { EmisionRemitosService } from "./emisionRemitos/emisionRemitosService";
 import { TablaEmisionRem } from "app/pages/main/ventas/emisionRemitos/components/tablaEmisionRem/tablaEmisionRem.component";
 import { TablaFormaPago } from "app/pages/main/ventas/emisionRemitos/components/tablaFormaPago";
+import { ContratosService } from "app/services/contratosService";
+import { FilesService } from "app/services/filesService";
 
 @NgModule({
     imports: [
@@ -30,7 +32,9 @@ import { TablaFormaPago } from "app/pages/main/ventas/emisionRemitos/components/
         RecursoService,
         AuthService,
         UtilsService,
-        EmisionRemitosService
+        EmisionRemitosService,
+        ContratosService,
+        FilesService
     ],
     exports: [
         TablaEmisionRem,

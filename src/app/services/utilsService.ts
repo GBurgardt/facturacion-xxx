@@ -336,23 +336,20 @@ export class UtilsService {
         arr.reduce((x, y) => [...x, ...f(y)], [])
 
     parseDecimal = (key) => {
-        
-        // const nro = Number.parseFloat(key);
-
-        // if (nro) {
-        //     return this.toFixedTrunc(Number.parseFloat(key), 3);
-        // } else {
-        //     return 0;
-        // }
 
         const nro = Number.parseFloat(key);
 
         if (nro && Number.parseFloat(key).toFixed(2)) {
-            return Number.parseFloat(key).toFixed(2);
+            return this.toLocateString(Number.parseFloat(key))
+            
+            // return Number.parseFloat(key).toFixed(2);
         } else {
             return 0;
         }
     }
+
+    // toLocateString = (num) => num.toLocaleString('en-IN', { maximumSignificantDigits: 3 })
+    toLocateString = (num) => num.toLocaleString()
 
     toFixedTrunc = (num, fixed) => {
         var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');

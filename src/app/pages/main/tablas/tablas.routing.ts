@@ -56,6 +56,9 @@ import { EditarProveedor } from './proveedores/components/editarProveedor';
 import { RelacionesCanje } from './relacionesCanje';
 import { NuevoRelacionCanje } from './relacionesCanje/nuevoRelacionCanje';
 import { EditarRelacionCanje } from './relacionesCanje/editarRelacionCanje';
+import { SisCotsDolar } from './sisCotDolar';
+import { NuevoSisCotDolar } from './sisCotDolar/components/nuevoSisCotDolar';
+import { EditarSisCotDolar } from './sisCotDolar/components/editarSisCotDolar';
 
 // noinspection TypeScriptValidateTypes
 const routes: Routes = [
@@ -110,7 +113,10 @@ const routes: Routes = [
             { path: 'proveedores/editar/:idPadronProveedor', component: EditarProveedor, canDeactivate: [PendingChangesGuard] },
             { path: 'relaciones-canje', component: RelacionesCanje },
             { path: 'relaciones-canje/nuevo', component: NuevoRelacionCanje, canDeactivate: [PendingChangesGuard] },
-            { path: 'relaciones-canje/editar/:idRelacionSisCanje', component: EditarRelacionCanje, canDeactivate: [PendingChangesGuard] }
+            { path: 'relaciones-canje/editar/:idRelacionSisCanje', component: EditarRelacionCanje, canDeactivate: [PendingChangesGuard] },
+            { path: 'cot-dolar', component: SisCotsDolar },
+            { path: 'cot-dolar/nuevo', component: NuevoSisCotDolar, canDeactivate: [PendingChangesGuard] },
+            { path: 'cot-dolar/editar/:idSisCotDolar', component: EditarSisCotDolar, canDeactivate: [PendingChangesGuard] }
         ]
     }
 ];

@@ -49,6 +49,7 @@ import { Contrato } from "app/models/contrato";
 import { Libro } from "app/models/libro";
 import { Proveedor } from "app/models/proveedor";
 import { RelacionCanje } from "app/models/relacionCanje";
+import { SisCotDolar } from "app/models/sisCotDolar";
 
 /**
  * Todos los recursos disposnibles en el serivcio REST
@@ -297,5 +298,9 @@ export const resourcesREST = {
     relacionesCanje: {
         nombre: 'relacionesCanje',
         Clase: RelacionCanje
+    },
+    sisCotDolar: {
+        nombre: 'sisCotDolar',
+        Clase: SisCotDolar
     }
 };

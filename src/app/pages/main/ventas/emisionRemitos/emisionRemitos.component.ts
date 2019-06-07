@@ -48,6 +48,7 @@ import { LetraCodigo } from 'app/models/letraCodigo';
 import { Contrato } from 'app/models/contrato';
 import { Contratos } from '../../contratos';
 import { RelacionCanje } from 'app/models/relacionCanje';
+import { ContratosService } from 'app/services/contratosService';
 
 
 
@@ -174,7 +175,8 @@ export class EmisionRemitos  {
         public utilsService: UtilsService,
         private popupListaService: PopupListaService,
         private _state: GlobalState,
-        private router: Router
+        private router: Router,
+        private contratosService: ContratosService
     ) {
 
         ////////// Listas desplegables //////////
@@ -459,8 +461,8 @@ export class EmisionRemitos  {
                                                     compCreado
                                                 );
                     
-                                                // Blanqueo los campos
-                                                this.blanquearCampos();
+                                                // // Blanqueo los campos
+                                                // this.blanquearCampos();
                                             }
                                         })
                                 } else {
@@ -483,9 +485,27 @@ export class EmisionRemitos  {
                                         compCreado
                                     );
         
-                                    // Blanqueo los campos
-                                    this.blanquearCampos();
+                                    // // Blanqueo los campos
+                                    // this.blanquearCampos();
                                 }
+
+                                // Genero un contrato nuevo
+                                this.contratosService.generarContratoByComprobante(this.cliente, this.getCantidadCanjeReferencia(), this.sisCanje)
+                                    .catch(err => {
+                                        // Si falla queda por generar el contrato Pendiente. Le aviso al usuario
+                                        this.utilsService.showErrorWithBody(err);
+
+                                        return Observable.of({
+                                            arraydatos: []
+                                        });
+                                    })
+                                    .subscribe(
+                                        resp => {
+                                            // Blanqueo los campos
+                                            this.blanquearCampos();
+                                        }
+                                    )
+
                             })
                     }
                 })({ tipoModal: 'confirmation' })
@@ -514,7 +534,17 @@ export class EmisionRemitos  {
 
         // Limpio lista pre
         this.listaPrecioSelect = null;
-        // this.listasPreciosUsuario = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
+
+        // Reinicio radio buttons
+        this.listasPreciosUsuario.subscribe(
+            resp => resp.forEach(
+                (lp, ind) => {
+                    const e = document.getElementById('lp-radio-' + ind) as HTMLInputElement;
+                    e.checked = false;
+                }
+            )
+        )
+        
 
         // Limpio vendedor
         this.dataVendedor.vendedor = new Vendedor();
@@ -544,7 +574,7 @@ export class EmisionRemitos  {
                 this.tablas.datos.productosPend = prodsPend;
 
                 // Array de observables
-                const actualizacionObser = prodsPend.map(pp => this.actualizarSubtotales(pp, true))
+                const actualizacionObser = prodsPend.map(pp => this.actualizarSubtotales(pp, { fromBuscaPendiente: true }))
 
                 // DESPUES de actualizar todos los subtotales, ahí actualizo datos productos
                 Promise.all(actualizacionObser).then(fa => {
@@ -820,10 +850,11 @@ export class EmisionRemitos  {
     /**
      * Actualizo subtotales
      */
-    actualizarSubtotales = (prod: ProductoPendiente, buscaPendiente = false) => {
+    actualizarSubtotales = (prod: ProductoPendiente, options = { fromBuscaPendiente: false }) => {
         // Si busca pendientes..
         // if (prod.importe === 0 && this.tablas.datos.subtotalesProductos.length <= 0) {
-        if (buscaPendiente) {
+
+        if (options.fromBuscaPendiente && prod.importe === 0) {
             this.tablas.datos.subtotalesProductos.push({
                 idProducto: prod.producto.idProductos,
                 subtotal: 0,
@@ -976,7 +1007,16 @@ export class EmisionRemitos  {
 
         // Limpio lista pre
         this.listaPrecioSelect = null;
-        // this.listasPreciosUsuario = this.recursoService.getRecursoList(resourcesREST.listaPrecios)();
+        
+        // Reinicio radio buttons
+        this.listasPreciosUsuario.subscribe(
+            resp => resp.forEach(
+                (lp, ind) => {
+                    const e = document.getElementById('lp-radio-' + ind) as HTMLInputElement;
+                    e.checked = false;
+                }
+            )
+        )
 
         // Limpio cotizacion datos
         this.cotizacionDatos.total = 0;
@@ -1075,9 +1115,12 @@ export class EmisionRemitos  {
         )
 
         // Los paréntesis son ilustrativos, ya sabemos que la suma es asociativa y conmutativa
-        const restoPagar = Number(
+        const restoPagar = this.utilsService.toLocateString(Number(
             (this.cotizacionDatos.total + this.sumatoriaSubtotales) - sumMontos
-        ).toFixed(2);
+        ))
+        // const restoPagar = Number(
+        //     (this.cotizacionDatos.total + this.sumatoriaSubtotales) - sumMontos
+        // ).toFixed(2);
 
         return (
             restoPagar === '-0.00' || 

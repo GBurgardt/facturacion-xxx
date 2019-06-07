@@ -10,6 +10,8 @@ import { DateLikePicker } from "app/models/dateLikePicker";
 import { Padron } from "app/models/padron";
 import { ComprobanteEncabezado } from "app/models/comprobanteEncabezado";
 import { Contrato } from "app/models/contrato";
+import { Comprobante } from "app/models/comprobante";
+import { SisCanje } from "app/models/sisCanje";
 
 
 
@@ -154,4 +156,18 @@ export class ContratosService {
             this.utilsService.decodeErrorResponse(err);
             return Observable.throw(null)
         })
+
+
+
+    /**
+    * Genera un contrato nuevo al crear un nuevo comprobante venta
+    */
+    generarContratoByComprobante = (cliente: Padron, kilosCanjeReferencia: number, sisCanje: SisCanje) => {
+        return this.authService.generarContratoByComprobante(
+            cliente,
+            kilosCanjeReferencia,
+            sisCanje,
+            this.localStorageService.getObject(environment.localStorage.acceso).token
+        )
+    }
 }

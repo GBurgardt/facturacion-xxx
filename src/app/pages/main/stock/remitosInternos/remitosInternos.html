@@ -22,7 +22,7 @@
             </div>
             <div class="col-sm-3">
                 <div class="form-group inline-group">
-                    <label for="idDepoOr">Deposito</label>
+                    <label for="idDepoOr">Deposito Origen</label>
                     <select 
                         id="idDepoOr"
                         class="form-control"
@@ -244,11 +244,6 @@
                                     !(
                                         comprobanteRelacionado.puntoVenta &&
                                         comprobanteRelacionado.numero
-                                    ) 
-                                    ||
-                                    !(
-                                        cliente &&
-                                        cliente.padronCodigo
                                     )
                                 "
                                 (click)="onClickBuscarPendientes()" 
@@ -272,6 +267,8 @@
                         <tabla-remitos-internos 
                             [dataTable]="dataProductos"
                             [productosReducidos]="productosReducidos"
+                            [comprobante]="comprobante"
+                            (emitActualizarTraza)="onEmitActualizarTraza($event)"
                             >
 
                         </tabla-remitos-internos>
@@ -281,7 +278,23 @@
 
                 <ngb-tab title="Trazable Lotes">
                     <ng-template ngbTabContent>
-                        Maincra
+                    
+
+                        <tabla-remitos-internos-traza 
+                            [dataTable]="lotesTraza"
+                            [comprobante]="comprobante"
+                            >
+
+                        </tabla-remitos-internos-traza>
+
+                        <!-- <tabla-emision-rem  
+                            [data]="tablas.datos.lotesTraza" 
+                            [columns]="tablas.columnas.columnasTrazabilidad"
+                            [edit]="onClickEdit('columnasTrazabilidad')" 
+                            [confirmEdit]="onClickConfirmEdit('columnasTrazabilidad')"
+                            >
+                        </tabla-emision-rem> -->
+
                     </ng-template>
                 </ngb-tab>
             </ngb-tabset>
@@ -301,7 +314,7 @@
 
             <custom-card class="col-sm-2 card-flex-column-reverse" title="">
                 <div class="col-sm-12 btn-container">
-                    <button class="btn btn-primary btn-ingreso-from">
+                    <button (click)="onClickConfirmar()" class="btn btn-primary btn-ingreso-from">
                         Confirmar
                     </button>
                     <button class="btn btn-primary btn-ingreso-from">

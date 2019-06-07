@@ -908,9 +908,9 @@ export class ComprobanteCompra implements AfterViewInit {
         )
 
         // Los paréntesis son ilustrativos, ya sabemos que la suma es asociativa y conmutativa
-        const restoPagar = Number(
+        const restoPagar = this.utilsService.toLocateString(Number(
             (this.cotizacionDatos.total + this.sumatoriaSubtotales) - sumMontos
-        ).toFixed(2);
+        ))
 
         return (restoPagar === '-0.00') ? '0.00' : restoPagar
     }
